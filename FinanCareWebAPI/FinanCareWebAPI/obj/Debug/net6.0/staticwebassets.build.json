@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vYaJaH85NQtwyio2PI0vD6vFpA67Kd4wlRvlOeeYMQI=",
+  "Source": "FinanCareWebAPI",
+  "BasePath": "_content/FinanCareWebAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
