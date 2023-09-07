@@ -1,5 +1,20 @@
-import classes from './Styles/NavBar.module.css';
 import './Styles/ModalDheTabela.css';
+import {
+  MDBContainer,
+  MDBNavbar,
+  MDBNavbarBrand,
+  MDBNavbarToggler,
+  MDBNavbarNav,
+  MDBNavbarItem,
+  MDBNavbarLink,
+  MDBCollapse,
+  MDBIcon,
+  MDBDropdown,
+  MDBDropdownMenu,
+  MDBDropdownItem,
+  MDBDropdownToggle
+} from 'mdb-react-ui-kit';
+
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
@@ -21,6 +36,11 @@ function NavBar(props) {
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
   const [perditeso, setPerditeso] = useState('');
 
+  const [teDhenat, setTeDhenat] = useState([]);
+
+  const [showNav, setShowNav] = useState(false);
+
+  const getID = localStorage.getItem("id");
   const getToken = localStorage.getItem("token");
 
   const authentikimi = {
@@ -40,6 +60,25 @@ function NavBar(props) {
     };
 
     ShfaqTeDhenat();
+  }, [perditeso]);
+
+  useEffect(() => {
+    if (getID) {
+      const vendosTeDhenat = async () => {
+        try {
+          const perdoruesi = await axios.get(
+            `https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${getID}`, authentikimi
+          );
+          setTeDhenat(perdoruesi.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      vendosTeDhenat();
+    } else {
+      navigate("/login");
+    }
   }, [perditeso]);
 
   useEffect(() => {
@@ -93,110 +132,114 @@ function NavBar(props) {
         });
     });
   }
+  
 
   return (
-    <header>
-      <nav className={classes.nav}>
-        <div className={classes.navleft}>
-          {teDhenatBiznesit && (teDhenatBiznesit.logo === null || teDhenatBiznesit.logo === "" || teDhenatBiznesit.logo === "PaLogo.png") ?
-            <Link to="/">
-              <h3>{teDhenatBiznesit.shkurtesaEmritBiznesit}</h3>
-            </Link> :
-            <Link className={classes.logo} to="/">
-              <img src={`${process.env.PUBLIC_URL}/img/web/${teDhenatBiznesit.logo}`} alt="" />
-            </Link>
-          }
-        </div>
-        <ul className={classes.navLinks}>
-          <div className={classes.navCenter}>
-            <li className={classes.navItem}>
-              <Link to='/'>Home</Link>
-              <span className={classes.line}></span>
-            </li>
-            <li className={classes.navItem}>
-              <Link to='/AboutUs'>About Us</Link>
-              <span className={classes.line}></span>
-            </li>
-            <li className={classes.navItem}>
-              <Link to='/ContactUs'>Contact Us</Link>
-              <span className={classes.line}></span>
-            </li>
-            <li className={classes.navItem}>
-              <a href='/Produktet'>Products</a>
-              <span className={classes.line}></span>
-            </li>
-          </div>
-          <div className={classes.navRight}>
-            <li className={classes.navItem}>
-              <a href='/Cart' onClick={kontrolloProduktet}><FontAwesomeIcon icon={faCartShopping} />
-                <span className={classes.badge} value={cart.length} />
-              </a>
-              <span className={classes.line}></span>
-            </li>
-            {token &&
-              <>
-                <li className={classes.navItem}>
-                  <Link to='/Dashboard'><span
-                  >Dashboard <FontAwesomeIcon icon={faCircleUser} /></span></Link>
-                  <span className={classes.line}></span>
-                </li>
-                <li className={classes.navItem}>
-                  <Link to='/' onClick={handleSignOut}>Log out <FontAwesomeIcon icon={faRightFromBracket} /></Link>
-                  <span className={classes.line}></span>
-                </li>
-              </>
-            }
-            {!token &&
-              <>
-                <li className={classes.navItem}>
-                  <Link to='/LogIn'>Log in <FontAwesomeIcon icon={faRightToBracket} /></Link>
-                  <span className={classes.line}></span>
-                </li>
-                <li className={classes.navItem}>
-                  <Link to='/SignUp'>Sign up <FontAwesomeIcon icon={faUserPlus} /></Link>
-                  <span className={classes.line}></span>
-                </li>
-              </>
-            }
-          </div>
-        </ul>
+    <MDBNavbar expand='lg' light style={{ backgroundColor: '#009879'}}>
+      <MDBContainer fluid>
+        <MDBNavbarBrand href='/'>
+          <img
+            src={`${process.env.PUBLIC_URL}/img/web/${teDhenatBiznesit.logo}`}
+            height='30'
+            alt=''
+            loading='lazy'
+          />
+        </MDBNavbarBrand>
+        <MDBNavbarToggler
+          type='button'
+          aria-expanded='false'
+          aria-label='Toggle navigation'
+          onClick={() => setShowNav(!showNav)}
+        >
+          <MDBIcon icon='bars' fas />
+        </MDBNavbarToggler>
+        <MDBCollapse navbar show={showNav}>
+          <MDBNavbarNav className='d-flex mr-auto mb-2' >
+          <MDBNavbarItem>
+              <MDBNavbarLink active aria-current='page' href='#'>
+              <Link to='/Statistika'>Statistikat e Dyqanit</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBDropdown >
+              <MDBDropdownToggle>Te Dhenat</MDBDropdownToggle>
+              <MDBDropdownMenu>
+                <MDBDropdownItem link><Link to='/PerditesoTeDhenat'>Perditeso Te Dhenat</Link></MDBDropdownItem>
+                <MDBDropdownItem link><Link to='/TeDhenatEBiznesit'>Te Dhenat e Biznesit</Link></MDBDropdownItem>
+              </MDBDropdownMenu>
+            </MDBDropdown>
+            <MDBNavbarItem>
+              <MDBNavbarLink active aria-current='page' href='#'>
+              
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem>
+              <MDBNavbarLink active aria-current='page' href='#'>
+              <Link to='/Porosite'>Porosite</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBDropdown >
+              <MDBDropdownToggle>Produktet</MDBDropdownToggle>
+              <MDBDropdownMenu>
+                <MDBDropdownItem link><Link to='/Produktet'>Produktet</Link></MDBDropdownItem>
+                <MDBDropdownItem link><Link to='/Kategorite'>Kategorite</Link></MDBDropdownItem>
+                <MDBDropdownItem link><Link to='/Kompanite'>Kompanit</Link></MDBDropdownItem>
+                <MDBDropdownItem link><Link to='/ZbritjetEProduktit'>Zbritjet e Produkteve</Link></MDBDropdownItem>
+              </MDBDropdownMenu>
+            </MDBDropdown>
+            <MDBDropdown >
+              <MDBDropdownToggle>Stafi</MDBDropdownToggle>
+              <MDBDropdownMenu>
+                <MDBDropdownItem link><Link to='/Stafi'>Perdoruesit</Link></MDBDropdownItem>
+                <MDBDropdownItem link><Link to='/Rolet'>Rolet</Link></MDBDropdownItem>
+              </MDBDropdownMenu>
+            </MDBDropdown>
+            <MDBNavbarItem>
+              <MDBNavbarLink active aria-current='page' href='#'>
+              <Link to='/KodiZbritjes'>Kodet e Zbritjev</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+            <MDBNavbarItem >
+              <MDBNavbarLink active aria-current='page' href='#'><Link to='/KalkulimiIMallit'>Kalkulimi i Mallit</Link></MDBNavbarLink>
+            </MDBNavbarItem>
 
-        <ul className={classes.mobileShporta}>
-          <li className={classes.navItem}>
-            <a href='/Cart' onClick={kontrolloProduktet}><FontAwesomeIcon icon={faCartShopping} />
-              <span className={classes.badge} value={cart.length} />
-            </a>
-          </li>
-        </ul>
-        <div className={classes.hamburger}>
-          <div className={classes.dropdown}>
-            <button className={classes.dropbtn}>
-              <span className={classes.hamIkona}></span>
-              <span className={classes.hamIkona}></span>
-              <span className={classes.hamIkona}></span>
-            </button>
-            <div className={classes.dropdownContent}>
-              <Link to='/'>Home</Link>
-              <Link to='/AboutUs'>About Us</Link>
-              <Link to='/ContactUs'>Contact Us</Link>
-              <a href='/Produktet'>Products</a>
+            <MDBNavbarNav right={showNav ? false : true} fullWidth={false} className='mb-2 mb-lg-0'>
               {token &&
                 <>
-                  <Link to='/Dashboard'>Dashboard <FontAwesomeIcon icon={faCircleUser} /></Link>
-                  <Link to='/' onClick={handleSignOut}>Sign out <FontAwesomeIcon icon={faRightFromBracket} /></Link>
+                  <MDBNavbarItem >
+                    <MDBNavbarLink>
+                      <Link to='/Dashboard'>Miresevini, <strong>{teDhenat.perdoruesi && teDhenat.perdoruesi.emri}</strong></Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to='/' onClick={handleSignOut}>Sign out <FontAwesomeIcon icon={faRightFromBracket} /></Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
                 </>
               }
               {!token &&
                 <>
-                  <Link to='/LogIn'>Sign in <FontAwesomeIcon icon={faRightToBracket} /></Link>
-                  <Link to='/SignUp'>Sign up <FontAwesomeIcon icon={faUserPlus} /></Link>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to='/LogIn'>Sign in <FontAwesomeIcon icon={faRightToBracket} /></Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+                  <MDBNavbarItem>
+                    <MDBNavbarLink>
+                      <Link to='/SignUp'>Sign up <FontAwesomeIcon icon={faUserPlus} /></Link>
+                    </MDBNavbarLink>
+                  </MDBNavbarItem>
+
                 </>
               }
-            </div>
-          </div>
-        </div>
-      </nav>
-    </header >
+            </MDBNavbarNav>
+          </MDBNavbarNav>
+        </MDBCollapse>
+
+
+      </MDBContainer>
+    </MDBNavbar >
   );
 }
 

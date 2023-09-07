@@ -1,3 +1,5 @@
+import NavBar from "../../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/Rolet.module.css';
 import axios from "axios";
@@ -57,6 +59,10 @@ function TabelaEKompanive(props) {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shto && <ShtoRolin
                 shfaq={handleShow}
                 largo={handleClose}

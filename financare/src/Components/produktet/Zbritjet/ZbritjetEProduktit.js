@@ -1,3 +1,5 @@
+import NavBar from "../../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/TabelaEKompanive.module.css';
 import axios from "axios";
@@ -50,7 +52,7 @@ function ZbritjetEProduktit(props) {
         zbritjet.forEach(zbritja => {
             const dataSkadimit = new Date(zbritja.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' });
             if (dataSkadimit < currentDate) {
-                
+
                 fshijZbritjen(zbritja.produktiId);
             }
         });
@@ -70,6 +72,10 @@ function ZbritjetEProduktit(props) {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shfaqMesazhin &&
                 <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}

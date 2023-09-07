@@ -1,3 +1,5 @@
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import classes from "./Styles/Statistika.module.css";
 import Card from 'react-bootstrap/Card';
 import axios from "axios";
@@ -77,6 +79,10 @@ function Statistika() {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             <h1 className="title">Statistikat e Dyqanit</h1>
             <hr />
             <h1 className="title">Statistikat e Pergjithshme</h1>

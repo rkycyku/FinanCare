@@ -1,3 +1,5 @@
+import NavBar from "../../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/TabelaEKategorive.module.css';
 import axios from "axios";
@@ -65,6 +67,10 @@ function TabelaEKategorive(props) {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shto && <ShtoKategori
                 shfaq={handleShow}
                 largo={handleClose}

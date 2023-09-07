@@ -1,3 +1,5 @@
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/AdminDashboard.css';
 import axios from "axios";
@@ -340,6 +342,10 @@ function PerditesoTeDhenat(props) {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shfaqMesazhin && <Mesazhi
                 setShfaqMesazhin={setShfaqMesazhin}
                 pershkrimi={pershkrimiMesazhit}
@@ -363,7 +369,7 @@ function PerditesoTeDhenat(props) {
                     <h1 className="titulliPerditeso">Perditesimi i Te Dhenave</h1>
                     <div className="PerditesoTeDhenatContainer">
 
-                        <button className="btn btn-secondary btn-small" role="button"  onClick={() => props.setMbyllPerditesoTeDhenat()}>Mbyll <FontAwesomeIcon icon={faX} /></button>
+                        <button className="btn btn-secondary btn-small" role="button" onClick={() => props.setMbyllPerditesoTeDhenat()}>Mbyll <FontAwesomeIcon icon={faX} /></button>
 
                         <h1 className="title">Te Dhenat Personale</h1>
                         <MDBRow tag="form" className='g-3'>
@@ -425,13 +431,13 @@ function PerditesoTeDhenat(props) {
                             </MDBCol>
                             <div className='col-12'>
                                 {!editoTeDhenat &&
-                                    <button className="btn btn-primary btn-small" role="button"  onClick={handleEditoTeDhenat}>Ndrysho te dhenat Personale <FontAwesomeIcon icon={faPenToSquare} /></button>
+                                    <button className="btn btn-primary btn-small" role="button" onClick={handleEditoTeDhenat}>Ndrysho te dhenat Personale <FontAwesomeIcon icon={faPenToSquare} /></button>
                                 }
 
                                 {editoTeDhenat &&
                                     <div className="butonatPerditesoTeDhenat">
-                                        <button className="btn btn-success btn-small" role="button"  onClick={EditoTeDhenat}>Ruaj</button>
-                                        <button className="btn btn-secondary btn-small" role="button"  onClick={handleAnuloPerditesimin}>Anulo</button>
+                                        <button className="btn btn-success btn-small" role="button" onClick={EditoTeDhenat}>Ruaj</button>
+                                        <button className="btn btn-secondary btn-small" role="button" onClick={handleAnuloPerditesimin}>Anulo</button>
                                     </div>
                                 }
                             </div>
@@ -481,13 +487,13 @@ function PerditesoTeDhenat(props) {
                             </MDBCol>
                             <div className='col-12'>
                                 {!editoAdresen &&
-                                    <button className="btn btn-primary btn-small" role="button"  onClick={handleEditoAdresen}>Ndrysho Adresen <FontAwesomeIcon icon={faPenToSquare} /></button>
+                                    <button className="btn btn-primary btn-small" role="button" onClick={handleEditoAdresen}>Ndrysho Adresen <FontAwesomeIcon icon={faPenToSquare} /></button>
                                 }
 
                                 {editoAdresen &&
                                     <div className="butonatPerditesoTeDhenat">
-                                        <button className="btn btn-success btn-small" role="button"  onClick={EditoAdresen}>Ruaj</button>
-                                        <button className="btn btn-secondary btn-small" role="button"  onClick={handleAnuloPerditesimin}>Anulo</button>
+                                        <button className="btn btn-success btn-small" role="button" onClick={EditoAdresen}>Ruaj</button>
+                                        <button className="btn btn-secondary btn-small" role="button" onClick={handleAnuloPerditesimin}>Anulo</button>
                                     </div>
                                 }
                             </div>
@@ -517,16 +523,16 @@ function PerditesoTeDhenat(props) {
                             </MDBCol>
                             <div className='col-12'>
                                 {!editoFjalekalimin &&
-                                    <button className="btn btn-primary btn-small" role="button"  onClick={handleEditoFjalekalimn}>Ndrysho Fjalekalimin <FontAwesomeIcon icon={faPenToSquare} /></button>
+                                    <button className="btn btn-primary btn-small" role="button" onClick={handleEditoFjalekalimn}>Ndrysho Fjalekalimin <FontAwesomeIcon icon={faPenToSquare} /></button>
                                 }
 
                                 {editoFjalekalimin &&
                                     <div className="butonatPerditesoTeDhenat">
-                                        <button className="btn btn-success btn-small" role="button"  onClick={EditoFjalekalimin}>Ruaj</button>
+                                        <button className="btn btn-success btn-small" role="button" onClick={EditoFjalekalimin}>Ruaj</button>
                                         <button type="button" onClick={handleTogglePassword}>
                                             {showPassword ? <FontAwesomeIcon icon={faEyeSlash} /> : <FontAwesomeIcon icon={faEye} />}
                                         </button>
-                                        <button className="btn btn-secondary btn-small" role="button"  onClick={handleAnuloPerditesimin}>Anulo</button>
+                                        <button className="btn btn-secondary btn-small" role="button" onClick={handleAnuloPerditesimin}>Anulo</button>
                                     </div>
                                 }
 

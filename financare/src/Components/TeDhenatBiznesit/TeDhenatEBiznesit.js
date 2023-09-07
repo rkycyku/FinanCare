@@ -1,3 +1,5 @@
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/TeDhenatEBiznesit.css';
 import axios from "axios";
@@ -134,6 +136,10 @@ function TeDhenatEBiznesit(props) {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shfaqMesazhin && <Mesazhi
                 setShfaqMesazhin={setShfaqMesazhin}
                 pershkrimi={pershkrimiMesazhit}
@@ -269,11 +275,11 @@ function TeDhenatEBiznesit(props) {
                             </MDBCol>
                             <div className='col-12'>
                                 {!edito &&
-                                    <button className="btn btn-primary btn-small" role="button"  onClick={handleEdito}>Ndrysho te dhenat</button>
+                                    <button className="btn btn-primary btn-small" role="button" onClick={handleEdito}>Ndrysho te dhenat</button>
                                 }
 
                                 {edito &&
-                                    <button className="btn btn-primary btn-small" role="button"  onClick={handleRuaj}>Ruaj</button>
+                                    <button className="btn btn-primary btn-small" role="button" onClick={handleRuaj}>Ruaj</button>
                                 }
                             </div>
                         </MDBRow>

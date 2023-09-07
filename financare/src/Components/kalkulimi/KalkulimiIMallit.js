@@ -1,3 +1,5 @@
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/TabelaEKompanive.module.css';
 import axios from "axios";
@@ -64,6 +66,10 @@ function KalkulimiIMallit() {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shto && <RegjistroFaturen
                 setMbyllFaturen={mbyllFaturen}
                 setPerditeso={setPerditeso}

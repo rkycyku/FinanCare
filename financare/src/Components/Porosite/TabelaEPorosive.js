@@ -1,3 +1,5 @@
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import classes from './Styles/TabelaEPorosive.module.css';
 import axios from "axios";
@@ -7,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import PerditesoStatusinPorosis from "./PerditesoStatusinPorosis";
 import { TailSpin } from 'react-loader-spinner';
-import PagesaMeSukses from "../produktet/cart/Checkout/PagesaMeSukses";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -67,6 +68,10 @@ function TabelaEPorosive() {
 
     return (
         <div className={classes.containerDashboardP}>
+            <Helmet>
+                <title>Dashboard | Tech Store</title>
+            </Helmet>
+            <NavBar />
             {shfaqMesazhin && <Mesazhi
                 setShfaqMesazhin={setShfaqMesazhin}
                 pershkrimi={pershkrimiMesazhit}
@@ -103,15 +108,6 @@ function TabelaEPorosive() {
                         Porosit e datave: {new Date(dataFillestare).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })} deri me {new Date(dataFundit).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                     </h1>
                 }
-                {shfaqDetajet && (
-                    <PagesaMeSukses
-                        handleMbyll={() => {
-                            setShfaqDetajet(false);
-                            setShfaqPorosite(true);
-                        }}
-                        nrFatures={nrFatures}
-                    />
-                )}
 
                 {shfaqPorosite &&
                     <>

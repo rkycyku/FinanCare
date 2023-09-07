@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+import NavBar from "../layout/NavBar";
+import { Helmet } from "react-helmet";
 import React, { useState, useEffect } from "react";
 import "./Styles/ProductTables.css";
 import Button from "react-bootstrap/Button";
@@ -108,151 +109,158 @@ const ProductTables = () => {
   }
 
   return (
-    <div className="containerDashboardP">
-      {(mbyllZbritjen == false && mbyllKategorite && mbyllKompanit) &&
-        <ZbritjetEProduktit
-          setMbyllZbritjen={handleMbyllZbritjen}
-          setPerditeso={setPerditeso}
-        />
-      }
-      {(mbyllZbritjen && mbyllKategorite == false && mbyllKompanit) &&
-        <TabelaEKategorive
-          setMbyllKategorite={handleMbyllKategorite}
-          setPerditeso={setPerditeso}
-        />
-      }
-      {(mbyllZbritjen && mbyllKategorite && mbyllKompanit == false) &&
-        <TabelaEKompanive
-          setMbyllKompanit={handleMbyllKompanit}
-          setPerditeso={setPerditeso}
-        />
-      }
-      {show && (
-        <ShtoProduktin
-          show={handleShow}
-          hide={handleClose}
-          shfaqmesazhin={() => setShfaqMesazhin(true)}
-          perditesoTeDhenat={() => setPerditeso(Date.now())}
-          setTipiMesazhit={setTipiMesazhit}
-          setPershkrimiMesazhit={setPershkrimiMesazhit}
-        />
-      )}
-      {shfaqMesazhin && (
-        <Mesazhi
-          setShfaqMesazhin={setShfaqMesazhin}
-          pershkrimi={pershkrimiMesazhit}
-          tipi={tipiMesazhit}
-        />
-      )}
-      {edito && (
-        <EditoProduktin
-          show={handleShow}
-          hide={handleEditoMbyll}
-          id={id}
-          shfaqmesazhin={() => setShfaqMesazhin(true)}
-          perditesoTeDhenat={() => setPerditeso(Date.now())}
-          setTipiMesazhit={setTipiMesazhit}
-          setPershkrimiMesazhit={setPershkrimiMesazhit}
-        />
-      )}
-      <Modal show={showD} onHide={handleCloseD}>
-        <Modal.Header closeButton>
-          <Modal.Title style={{ color: "red" }}>Largo Produktin</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h6>A jeni te sigurt qe deshironi ta fshini kete produkt?</h6>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseD}>
-            Anulo <FontAwesomeIcon icon={faXmark} />
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Largo Produktin <FontAwesomeIcon icon={faBan} />
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      {loading ? (
-        <div className="Loader">
-          <TailSpin
-            height="80"
-            width="80"
-            color="#009879"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
+    <>
+      <Helmet>
+        <title>Dashboard | Tech Store</title>
+      </Helmet>
+      <NavBar />
+      <div className="containerDashboardP">
+
+        {(mbyllZbritjen == false && mbyllKategorite && mbyllKompanit) &&
+          <ZbritjetEProduktit
+            setMbyllZbritjen={handleMbyllZbritjen}
+            setPerditeso={setPerditeso}
           />
-        </div>
-      ) : (mbyllZbritjen && mbyllKategorite && mbyllKompanit) && <>
-        <h1 className="title">Tabela e Produkteve</h1>
-        <Button className="mb-3 Butoni" onClick={handleShow}>
-          Shto Produktin <FontAwesomeIcon icon={faPlus} />
-        </Button>
-        <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllZbritjen(false); }}>
-          Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} />
-        </Button>
-        <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllKompanit(false); }}>
-          Kompanit <FontAwesomeIcon icon={faInfoCircle} />
-        </Button>
-        <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllKategorite(false); }}>
-          Kategorite <FontAwesomeIcon icon={faInfoCircle} />
-        </Button>
-        <table className="tableBig">
-          <thead>
-            <tr>
-              <th>Emri i Produktit</th>
-              <th>Pershkrimi</th>
-              <th>Foto e Produktit</th>
-              <th>Kompania</th>
-              <th>Kategoria</th>
-              <th>Qmimi i Produktit</th>
-              <th>Sasia ne Stok</th>
-              <th>Funksione</th>
-            </tr>
-          </thead>
+        }
+        {(mbyllZbritjen && mbyllKategorite == false && mbyllKompanit) &&
+          <TabelaEKategorive
+            setMbyllKategorite={handleMbyllKategorite}
+            setPerditeso={setPerditeso}
+          />
+        }
+        {(mbyllZbritjen && mbyllKategorite && mbyllKompanit == false) &&
+          <TabelaEKompanive
+            setMbyllKompanit={handleMbyllKompanit}
+            setPerditeso={setPerditeso}
+          />
+        }
+        {show && (
+          <ShtoProduktin
+            show={handleShow}
+            hide={handleClose}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
+        {shfaqMesazhin && (
+          <Mesazhi
+            setShfaqMesazhin={setShfaqMesazhin}
+            pershkrimi={pershkrimiMesazhit}
+            tipi={tipiMesazhit}
+          />
+        )}
+        {edito && (
+          <EditoProduktin
+            show={handleShow}
+            hide={handleEditoMbyll}
+            id={id}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
+        <Modal show={showD} onHide={handleCloseD}>
+          <Modal.Header closeButton>
+            <Modal.Title style={{ color: "red" }}>Largo Produktin</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h6>A jeni te sigurt qe deshironi ta fshini kete produkt?</h6>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseD}>
+              Anulo <FontAwesomeIcon icon={faXmark} />
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              Largo Produktin <FontAwesomeIcon icon={faBan} />
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {loading ? (
+          <div className="Loader">
+            <TailSpin
+              height="80"
+              width="80"
+              color="#009879"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </div>
+        ) : (mbyllZbritjen && mbyllKategorite && mbyllKompanit) && <>
+          <h1 className="title">Tabela e Produkteve</h1>
+          <Button className="mb-3 Butoni" onClick={handleShow}>
+            Shto Produktin <FontAwesomeIcon icon={faPlus} />
+          </Button>
+          <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllZbritjen(false); }}>
+            Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} />
+          </Button>
+          <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllKompanit(false); }}>
+            Kompanit <FontAwesomeIcon icon={faInfoCircle} />
+          </Button>
+          <Button className="mb-3 Butoni" onClick={() => { setPerditeso(Date.now()); setMbyllKategorite(false); }}>
+            Kategorite <FontAwesomeIcon icon={faInfoCircle} />
+          </Button>
+          <table className="tableBig">
+            <thead>
+              <tr>
+                <th>Emri i Produktit</th>
+                <th>Pershkrimi</th>
+                <th>Foto e Produktit</th>
+                <th>Kompania</th>
+                <th>Kategoria</th>
+                <th>Qmimi i Produktit</th>
+                <th>Sasia ne Stok</th>
+                <th>Funksione</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {produkti.map((p) => {
-              return (
-                <tr key={p.produktiId}>
-                  <td>{p.emriProduktit}</td>
-                  <td>{p.pershkrimi ? <FontAwesomeIcon icon={faCheck} color="green" /> : <FontAwesomeIcon icon={faXmark} color="red" />}</td>
-                  <td>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/img/products/${p.fotoProduktit}`}
-                      width="50"
-                      alt=""
-                    />
-                  </td>
+            <tbody>
+              {produkti.map((p) => {
+                return (
+                  <tr key={p.produktiId}>
+                    <td>{p.emriProduktit}</td>
+                    <td>{p.pershkrimi ? <FontAwesomeIcon icon={faCheck} color="green" /> : <FontAwesomeIcon icon={faXmark} color="red" />}</td>
+                    <td>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/img/products/${p.fotoProduktit}`}
+                        width="50"
+                        alt=""
+                      />
+                    </td>
 
-                  <td>{p.emriKompanis}</td>
-                  <td>{p.llojiKategoris}</td>
-                  <td>{(p.qmimiProduktit).toFixed(2)} €</td>
-                  <td>{p.sasiaNeStok}</td>
-                  <td>
-                    <Button
-                      style={{ marginRight: "0.5em" }}
-                      variant="success"
-                      onClick={() => handleEdito(p.produktiId)}
-                    >
-                      <FontAwesomeIcon icon={faPenToSquare} />
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleShowD(p.produktiId)}
-                    >
-                      <FontAwesomeIcon icon={faBan} />
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </>
-      }
-    </div>
+                    <td>{p.emriKompanis}</td>
+                    <td>{p.llojiKategoris}</td>
+                    <td>{(p.qmimiProduktit).toFixed(2)} €</td>
+                    <td>{p.sasiaNeStok}</td>
+                    <td>
+                      <Button
+                        style={{ marginRight: "0.5em" }}
+                        variant="success"
+                        onClick={() => handleEdito(p.produktiId)}
+                      >
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleShowD(p.produktiId)}
+                      >
+                        <FontAwesomeIcon icon={faBan} />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </>
+        }
+      </div>
+    </>
   );
 };
 

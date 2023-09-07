@@ -2,8 +2,12 @@
   margin-top: 7em;
 }
 
-.modalEditShto{
+.modalEditShto {
   margin-top: 0;
+}
+
+.ripple-wave {
+  display: none; /* Hide the ripple element */
 }
 
 .imgFshij {
@@ -37,11 +41,9 @@
   margin-bottom: 10em;
 }
 
-.table{
+.table {
   width: 100%;
 }
-
-
 
 .tableBig {
   display: block;
@@ -63,7 +65,6 @@
 .containerDashboardP th,
 .containerDashboardP td {
   padding: 12px 15px;
-  
 }
 
 .containerDashboardP tr td {
@@ -82,11 +83,11 @@
     max-width: 90%;
     margin: 0 auto;
   }
-  .tableBig{
+  .tableBig {
     max-width: 90%;
   }
 
-  .modalEditShto{
+  .modalEditShto {
     margin-top: 6em;
   }
 }

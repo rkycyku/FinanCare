@@ -7,7 +7,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import PorositeUserit from "../Components/Dashboard/PorositeUserit";
-import PagesaMeSukses from "../Components/produktet/cart/Checkout/PagesaMeSukses";
 import MesazhetUserit from "../Components/Dashboard/MesazhetUserit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -194,77 +193,8 @@ const Dashboard = () => {
               </td>
             </tr>
           </table>
-          <div class="butonatDiv">
-            <button
-              onClick={() => handleShow(teDhenat.perdoruesi.userId)}
-              class="button"
-            >
-              
-              Perditeso te Dhenat <FontAwesomeIcon icon={faPenToSquare} />
-            </button>
-            <button onClick={handleShfaqPorosite} class="button">
-              Porosite e tua
-            </button>
-            {(teDhenat.rolet.includes("Admin") ||
-              teDhenat.rolet.includes("Menaxher")) && (
-                <button class="button" onClick={handleShfaqAdminDashboard}>
-                  Admin Dashboard
-                </button>
-              )}
-            {teDhenat.rolet.includes("User") && (
-              <button class="button" onClick={handleShfaqMesazhet}>
-                Mesazhet e tua
-              </button>
-            )}
-          </div>
-          {shfaqPorosite && (
-            <PorositeUserit
-              setShfaqDetajet={() => setShfaqDetajet(true)}
-              setNumriFatures={(e) => setNumriFatures(e)}
-              setShfaqPorosite={() => setShfaqPorosite(false)}
-              idUseri={
-                teDhenat && teDhenat.perdoruesi && teDhenat.perdoruesi.userId
-              }
-            />
-          )}
-          {shfaqMesazhet && (
-            <MesazhetUserit
-              setShfaqMesazhet={() => setShfaqMesazhet(false)}
-              idUseri={
-                teDhenat && teDhenat.perdoruesi && teDhenat.perdoruesi.userId
-              }
-            />
-          )}
-          {shfaqMesazhin && <Mesazhi
-            setShfaqMesazhin={setShfaqMesazhin}
-            pershkrimi={pershkrimiMesazhit}
-            tipi={tipiMesazhit}
-          />}
         </div>
       )}
-
-      {shfaqAdmin && (
-        <AdminDashboard setShfaqAdmin={() => setShfaqAdmin(false)} />
-      )}
-      {shfaqDetajet && (
-        <PagesaMeSukses
-          handleMbyll={() => {
-            setShfaqDetajet(false);
-            setShfaqPorosite(true);
-          }}
-          nrFatures={nrFatures}
-        />
-      )}
-      {!mbyllPerditesoTeDhenat &&
-        (
-          <PerditesoTeDhenat
-            setMbyllPerditesoTeDhenat={() => setMbyllPerditesoTeDhenat(true)}
-            perditeso={() => setPerditeso(Date.now())}
-            setShfaqMesazhin={() => setShfaqMesazhin(true)}
-            pershkrimi={setPershkrimiMesazhit}
-            tipi={setTipiMesazhit}
-          />
-        )}
     </div>
   );
 };
