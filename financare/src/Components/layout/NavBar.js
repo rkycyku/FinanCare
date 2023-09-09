@@ -132,14 +132,14 @@ function NavBar(props) {
         });
     });
   }
-  
+
 
   return (
-    <MDBNavbar expand='lg' light style={{ backgroundColor: '#009879'}}>
+    <MDBNavbar expand='lg' light style={{ backgroundColor: '#009879' }}>
       <MDBContainer fluid>
         <MDBNavbarBrand href='/'>
           <img
-            src={`${process.env.PUBLIC_URL}/img/web/${teDhenatBiznesit.logo}`}
+            src={`${process.env.PUBLIC_URL}/img/web/d144a4e21cb54a7fb9c5a21d4eebdd50.svg`}
             height='30'
             alt=''
             loading='lazy'
@@ -154,10 +154,10 @@ function NavBar(props) {
           <MDBIcon icon='bars' fas />
         </MDBNavbarToggler>
         <MDBCollapse navbar show={showNav}>
-          <MDBNavbarNav className='d-flex mr-auto mb-2' >
-          <MDBNavbarItem>
+          <MDBNavbarNav className='d-flex mr-auto' >
+            <MDBNavbarItem>
               <MDBNavbarLink active aria-current='page' href='#'>
-              <Link to='/Statistika'>Statistikat e Dyqanit</Link>
+                <Link to='/Statistika'>Statistikat e Dyqanit</Link>
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBDropdown >
@@ -168,13 +168,13 @@ function NavBar(props) {
               </MDBDropdownMenu>
             </MDBDropdown>
             <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page' href='#'>
-              
+              <MDBNavbarLink active aria-current='page'>
+
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page' href='#'>
-              <Link to='/Porosite'>Porosite</Link>
+              <MDBNavbarLink active aria-current='page'>
+                <Link to='/Porosite'>Porosite</Link>
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBDropdown >
@@ -194,12 +194,12 @@ function NavBar(props) {
               </MDBDropdownMenu>
             </MDBDropdown>
             <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page' href='#'>
-              <Link to='/KodiZbritjes'>Kodet e Zbritjev</Link>
+              <MDBNavbarLink active aria-current='page'>
+                <Link to='/KodiZbritjes'>Kodet e Zbritjev</Link>
               </MDBNavbarLink>
             </MDBNavbarItem>
             <MDBNavbarItem >
-              <MDBNavbarLink active aria-current='page' href='#'><Link to='/KalkulimiIMallit'>Kalkulimi i Mallit</Link></MDBNavbarLink>
+              <MDBNavbarLink active aria-current='page'><Link to='/KalkulimiIMallit'>Kalkulimi i Mallit</Link></MDBNavbarLink>
             </MDBNavbarItem>
 
             <MDBNavbarNav right={showNav ? false : true} fullWidth={false} className='mb-2 mb-lg-0'>

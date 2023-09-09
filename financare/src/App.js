@@ -7,18 +7,18 @@ import SignUp from './Pages/SignUp';
 import { useEffect } from "react";
 import Aos from 'aos';
 import "aos/dist/aos.css";
-import Statistika from './Components/Dashboard/Statistika';
-import TeDhenatEBiznesit from './Components/TeDhenatBiznesit/TeDhenatEBiznesit';
-import TabelaEPorosive from './Components/Porosite/TabelaEPorosive';
-import ProductTables from './Components/produktet/ProductTables';
-import TabelaEKategorive from './Components/produktet/kategorit/TabelaEKategorive';
-import TabelaEKompanive from './Components/produktet/kompanit/TabelaEKompanive';
-import ZbritjetEProduktit from './Components/produktet/Zbritjet/ZbritjetEProduktit';
-import TabelaEPerdoruesve from './Components/users/TabelaEPerdoruesve';
-import Rolet from './Components/users/Rolet/Rolet';
-import KodiZbritjes from './Components/kodiZbritjes/KodiZbritjes';
-import KalkulimiIMallit from './Components/kalkulimi/KalkulimiIMallit';
-import PerditesoTeDhenat from './Components/Dashboard/PerditesoTeDhenat';
+import Statistika from './Pages/Statistika';
+import TeDhenatEBiznesit from './Pages/TeDhenatEBiznesit';
+import TabelaEPorosive from './Pages/TabelaEPorosive';
+import ProductTables from './Pages/ProductTables';
+import TabelaEKategorive from './Pages/TabelaEKategorive';
+import TabelaEKompanive from './Pages/TabelaEKompanive';
+import ZbritjetEProduktit from './Pages/ZbritjetEProduktit';
+import TabelaEPerdoruesve from './Pages/TabelaEPerdoruesve';
+import Rolet from './Pages/Rolet';
+import KodiZbritjes from './Pages/KodiZbritjes';
+import KalkulimiIMallit from './Pages/KalkulimiIMallit';
+import PerditesoTeDhenat from './Pages/PerditesoTeDhenat';
 
 function App() {
 

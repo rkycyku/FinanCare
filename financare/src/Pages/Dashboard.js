@@ -11,7 +11,7 @@ import MesazhetUserit from "../Components/Dashboard/MesazhetUserit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Mesazhi from "../Components/layout/Mesazhi";
-import PerditesoTeDhenat from "../Components/Dashboard/PerditesoTeDhenat";
+import PerditesoTeDhenat from "./PerditesoTeDhenat";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
@@ -124,78 +124,78 @@ const Dashboard = () => {
 
 
   return (
-    <div className="dashboard">
+    <>
       <Helmet>
         <title>Dashboard | Tech Store</title>
       </Helmet>
       <NavBar />
 
-
-      {loading ? (
-        <div className="Loader">
-          <TailSpin
-            height="80"
-            width="80"
-            color="#009879"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
-      ) : (
-        <div class="containerDashboard">
-          <h3 class="titulliPershkrim">
-            Miresevini {teDhenat.perdoruesi.emri}
-          </h3>
-          <h4 className="info">Te dhenat personale:</h4>
-          <table>
-            <tr>
-              <td>
-                <strong>Emri:</strong>
-              </td>
-              <td>{teDhenat.perdoruesi.emri}</td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Mbiemri:</strong>
-              </td>
-              <td>{teDhenat.perdoruesi.mbiemri}</td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Username:</strong>
-              </td>
-              <td>{teDhenat.perdoruesi.username}</td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Email:</strong>
-              </td>
-              <td>{teDhenat.perdoruesi.email}</td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Numri Kontaktit:</strong>
-              </td>
-              <td>{teDhenat.perdoruesi.teDhenatPerdoruesit.nrKontaktit}</td>
-            </tr>
-            <tr>
-              <td>
-                <strong>Adresa: </strong>
-              </td>
-              <td>
-                {teDhenat.perdoruesi.teDhenatPerdoruesit.adresa},{" "}
-                {teDhenat.perdoruesi.teDhenatPerdoruesit.qyteti},{" "}
-                {teDhenat.perdoruesi.teDhenatPerdoruesit.shteti}{" "}
-                {teDhenat.perdoruesi.teDhenatPerdoruesit.zipKodi}
-              </td>
-            </tr>
-          </table>
-        </div>
-      )}
-    </div>
+      <div className="dashboard">
+        {loading ? (
+          <div className="Loader">
+            <TailSpin
+              height="80"
+              width="80"
+              color="#009879"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </div>
+        ) : (
+          <div class="containerDashboard">
+            <h3 class="titulliPershkrim">
+            Te dhenat personale
+            </h3>
+            <table>
+              <tr>
+                <td>
+                  <strong>Emri:</strong>
+                </td>
+                <td>{teDhenat.perdoruesi.emri}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Mbiemri:</strong>
+                </td>
+                <td>{teDhenat.perdoruesi.mbiemri}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Username:</strong>
+                </td>
+                <td>{teDhenat.perdoruesi.username}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Email:</strong>
+                </td>
+                <td>{teDhenat.perdoruesi.email}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Numri Kontaktit:</strong>
+                </td>
+                <td>{teDhenat.perdoruesi.teDhenatPerdoruesit.nrKontaktit}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Adresa: </strong>
+                </td>
+                <td>
+                  {teDhenat.perdoruesi.teDhenatPerdoruesit.adresa},{" "}
+                  {teDhenat.perdoruesi.teDhenatPerdoruesit.qyteti},{" "}
+                  {teDhenat.perdoruesi.teDhenatPerdoruesit.shteti}{" "}
+                  {teDhenat.perdoruesi.teDhenatPerdoruesit.zipKodi}
+                </td>
+              </tr>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

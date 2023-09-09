@@ -88,55 +88,58 @@ const LogIn = () => {
 
 
   return (
-    <div className="logIn">
+    <>
       <Helmet>
-        <title>Log In | Tech Store</title>
+        <title>Dashboard | Tech Store</title>
       </Helmet>
       <NavBar />
-      {shfaqMesazhin && <Mesazhi
-        setShfaqMesazhin={setShfaqMesazhin}
-        pershkrimi={pershkrimiMesazhit}
-        tipi={tipiMesazhit}
-      />}
-      <MDBContainer fluid >
-        <MDBRow className="d-flex justify-content-center align-items-center h-100">
-          <MDBCol col="12">
-            <MDBCard
-              className="bg-white my-5 mx-auto"
-              style={{ border: "none", boxShadow: "0 0 20px #ddd", borderRadius: "2rem", maxWidth: "500px" }}
-            >
-              <MDBCardBody className="p-5 w-100 d-flex flex-column">
-                <Form.Text className="formTitle">Log In</Form.Text>
-                <p className="text-white-20 mb-4 p-text">
-                  Please enter your email and password!
-                </p>
 
-                <MDBInput
-                  wrapperClass="mb-4 w-100"
-                  label="Email address"
-                  id="formControlEmailAddress"
-                  type="email"
-                  size="lg"
-                  onChange={(e) => vendosEmail(e.target.value)}
-                />
-                <MDBInput
-                  wrapperClass="mb-4 w-100"
-                  label="Password"
-                  id="formControlPassword"
-                  type="password"
-                  size="lg"
-                  onChange={(e) => vendosPasswordin(e.target.value)}
-                />
-                <Link to="/SignUp" className="text-white-20 mb-4 p-text">Don't have an Account?</Link>
-                <button class="btn btn-primary btn-lg" role="button" onClick={handleLogIn}>Login</button>
+      <div className="logIn">
+        {shfaqMesazhin && <Mesazhi
+          setShfaqMesazhin={setShfaqMesazhin}
+          pershkrimi={pershkrimiMesazhit}
+          tipi={tipiMesazhit}
+        />}
+        <MDBContainer fluid >
+          <MDBRow className="d-flex justify-content-center align-items-center h-100">
+            <MDBCol col="12">
+              <MDBCard
+                className="bg-white my-5 mx-auto"
+                style={{ border: "none", boxShadow: "0 0 20px #ddd", borderRadius: "2rem", maxWidth: "500px" }}
+              >
+                <MDBCardBody className="p-5 w-100 d-flex flex-column">
+                  <Form.Text className="formTitle">Log In</Form.Text>
+                  <p className="text-white-20 mb-4 p-text">
+                    Please enter your email and password!
+                  </p>
+
+                  <MDBInput
+                    wrapperClass="mb-4 w-100"
+                    label="Email address"
+                    id="formControlEmailAddress"
+                    type="email"
+                    size="lg"
+                    onChange={(e) => vendosEmail(e.target.value)}
+                  />
+                  <MDBInput
+                    wrapperClass="mb-4 w-100"
+                    label="Password"
+                    id="formControlPassword"
+                    type="password"
+                    size="lg"
+                    onChange={(e) => vendosPasswordin(e.target.value)}
+                  />
+                  <Link to="/SignUp" className="text-white-20 mb-4 p-text">Don't have an Account?</Link>
+                  <button class="btn btn-primary btn-lg" role="button" onClick={handleLogIn}>Login</button>
 
 
-              </MDBCardBody>
-            </MDBCard>
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
-    </div>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
+      </div>
+    </>
   );
 };
 

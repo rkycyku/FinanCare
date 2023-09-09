@@ -7,8 +7,42 @@
 }
 
 .ripple-wave {
-  display: none; /* Hide the ripple element */
+  display: none; 
 }
+
+.nav-link a{
+  color: white;
+}
+
+.btn{
+  background-color: #009879;
+  border: #009879;
+}
+
+.btn-primary{
+  --bs-btn-active-bg:#10bb9; 
+}
+
+.btn a{
+  color: white;
+}
+
+.btn:hover{
+  background-color: #10bb99;
+}
+
+.dropdown-menu{
+  --bs-dropdown-link-active-bg: #10bb99;
+}
+
+.dropdown-menu:hover{
+  --bs-dropdown-link-hover-bg: #10bb99;
+}
+
+.dropdown-menu a:hover{
+  color: white;
+}
+
 
 .imgFshij {
   width: 50%;

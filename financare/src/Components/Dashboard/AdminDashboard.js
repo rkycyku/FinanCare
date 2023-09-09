@@ -5,18 +5,18 @@ import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import { NavDropdown } from 'react-bootstrap';
 import "./Styles/AdminDashboard.css";
-import ProductTables from '../produktet/ProductTables';
+import ProductTables from '../../Pages/ProductTables';
 import { useState, useEffect } from 'react';
 import Mesazhet from '../mesazhet/Mesazhet';
-import TabelaEPerdoruesve from '../users/TabelaEPerdoruesve';
-import KodiZbritjes from '../kodiZbritjes/KodiZbritjes';
-import KalkulimiIMallit from '../kalkulimi/KalkulimiIMallit';
+import TabelaEPerdoruesve from '../../Pages/TabelaEPerdoruesve';
+import KodiZbritjes from '../../Pages/KodiZbritjes';
+import KalkulimiIMallit from '../../Pages/KalkulimiIMallit';
 import jwtDecode from 'jwt-decode';
-import Statistika from './Statistika';
+import Statistika from '../../Pages/Statistika';
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TeDhenatEBiznesit from '../TeDhenatBiznesit/TeDhenatEBiznesit';
-import TabelaEPorosive from '../Porosite/TabelaEPorosive';
+import TeDhenatEBiznesit from '../../Pages/TeDhenatEBiznesit';
+import TabelaEPorosive from '../../Pages/TabelaEPorosive';
 
 const AdminDashboard = (props) => {
   const [eshteAdmin, setEshteAdmin] = useState(false);
