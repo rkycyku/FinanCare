@@ -19,6 +19,9 @@ import Rolet from './Pages/Rolet';
 import KodiZbritjes from './Pages/KodiZbritjes';
 import KalkulimiIMallit from './Pages/KalkulimiIMallit';
 import PerditesoTeDhenat from './Pages/PerditesoTeDhenat';
+import KrijoPorosine from './Pages/KrijoPorosine';
+import PartneriBleres from './Pages/PartneriBleres';
+import PartneriFurnitor from './Pages/PartneriFurnitor';
 
 function App() {
 
@@ -49,6 +52,9 @@ function App() {
         <Route path='/KodiZbritjes' element={<KodiZbritjes />} />
         <Route path='/KalkulimiIMallit' element={<KalkulimiIMallit />} />
         <Route path='/PerditesoTeDhenat' element={<PerditesoTeDhenat />} />
+        <Route path='/KrijoPorosine' element={<KrijoPorosine />} />
+        <Route path='/PartneriBleres' element={<PartneriBleres />}/>
+        <Route path='/PartneriFurnitor' element={<PartneriFurnitor />}/>
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>

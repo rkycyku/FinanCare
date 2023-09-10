@@ -135,7 +135,7 @@ function NavBar(props) {
 
 
   return (
-    <MDBNavbar expand='lg' light style={{ backgroundColor: '#009879' }}>
+    <MDBNavbar sticky expand='lg' light style={{ backgroundColor: '#009879' }}>
       <MDBContainer fluid>
         <MDBNavbarBrand href='/'>
           <img
@@ -155,53 +155,91 @@ function NavBar(props) {
         </MDBNavbarToggler>
         <MDBCollapse navbar show={showNav}>
           <MDBNavbarNav className='d-flex mr-auto' >
-            <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page' href='#'>
-                <Link to='/Statistika'>Statistikat e Dyqanit</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-            <MDBDropdown >
-              <MDBDropdownToggle>Te Dhenat</MDBDropdownToggle>
-              <MDBDropdownMenu>
-                <MDBDropdownItem link><Link to='/PerditesoTeDhenat'>Perditeso Te Dhenat</Link></MDBDropdownItem>
-                <MDBDropdownItem link><Link to='/TeDhenatEBiznesit'>Te Dhenat e Biznesit</Link></MDBDropdownItem>
-              </MDBDropdownMenu>
-            </MDBDropdown>
-            <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page'>
-
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-            <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page'>
-                <Link to='/Porosite'>Porosite</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-            <MDBDropdown >
-              <MDBDropdownToggle>Produktet</MDBDropdownToggle>
-              <MDBDropdownMenu>
-                <MDBDropdownItem link><Link to='/Produktet'>Produktet</Link></MDBDropdownItem>
-                <MDBDropdownItem link><Link to='/Kategorite'>Kategorite</Link></MDBDropdownItem>
-                <MDBDropdownItem link><Link to='/Kompanite'>Kompanit</Link></MDBDropdownItem>
-                <MDBDropdownItem link><Link to='/ZbritjetEProduktit'>Zbritjet e Produkteve</Link></MDBDropdownItem>
-              </MDBDropdownMenu>
-            </MDBDropdown>
-            <MDBDropdown >
-              <MDBDropdownToggle>Stafi</MDBDropdownToggle>
-              <MDBDropdownMenu>
-                <MDBDropdownItem link><Link to='/Stafi'>Perdoruesit</Link></MDBDropdownItem>
-                <MDBDropdownItem link><Link to='/Rolet'>Rolet</Link></MDBDropdownItem>
-              </MDBDropdownMenu>
-            </MDBDropdown>
-            <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page'>
-                <Link to='/KodiZbritjes'>Kodet e Zbritjev</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-            <MDBNavbarItem >
-              <MDBNavbarLink active aria-current='page'><Link to='/KalkulimiIMallit'>Kalkulimi i Mallit</Link></MDBNavbarLink>
-            </MDBNavbarItem>
-
+            {token &&
+              <>
+                <MDBDropdown >
+                  <MDBDropdownToggle>Materiali</MDBDropdownToggle>
+                  <MDBDropdownMenu>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Artikujt</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <Link to='/Produktet'><MDBDropdownItem link>Lista e Produkteve</MDBDropdownItem></Link>
+                        <Link to='/Kategorite'><MDBDropdownItem link>Kategorite</MDBDropdownItem></Link>
+                        <Link to='/Kompanite'><MDBDropdownItem link>Kompanit</MDBDropdownItem></Link>
+                        <MDBDropdownItem divider />
+                        <MDBDropdown dropright group>
+                          <MDBDropdownToggle>Zbritjet</MDBDropdownToggle>
+                          <MDBDropdownMenu>
+                            <Link to='/ZbritjetEProduktit'> <MDBDropdownItem link>Zbritjet e Produkteve</MDBDropdownItem></Link>
+                            <Link to='/KodiZbritjes'><MDBDropdownItem link>Kodet e Zbritjev</MDBDropdownItem></Link>
+                          </MDBDropdownMenu>
+                        </MDBDropdown>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Hyrjet</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <Link to='/KalkulimiIMallit'><MDBDropdownItem link>Kalkulimi i Mallit</MDBDropdownItem></Link>
+                        <Link to='#'><MDBDropdownItem link>Kthim i Mallit te Shitur #</MDBDropdownItem></Link>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Shitjet</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <MDBDropdown dropright group>
+                          <MDBDropdownToggle>Porosite</MDBDropdownToggle>
+                          <MDBDropdownMenu>
+                            <Link to='/Porosite'><MDBDropdownItem link>Lista e Porosive</MDBDropdownItem></Link>
+                            <Link to='/KrijoPorosine'><MDBDropdownItem link>Krijo Porosine</MDBDropdownItem></Link>
+                          </MDBDropdownMenu>
+                        </MDBDropdown>
+                        <Link to='/Statistika'><MDBDropdownItem link>Statistikat e Dyqanit</MDBDropdownItem></Link>
+                        <Link to='#'><MDBDropdownItem link>Asgjesimi i Stokut #</MDBDropdownItem></Link>
+                        <Link to='#'><MDBDropdownItem link>Kthimi i Mallit te blere #</MDBDropdownItem></Link>
+                        <Link to='#'><MDBDropdownItem link>POS #</MDBDropdownItem></Link>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                  </MDBDropdownMenu>
+                </MDBDropdown>
+                <MDBDropdown >
+                  <MDBDropdownToggle>Gjenerale</MDBDropdownToggle>
+                  <MDBDropdownMenu>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Te Dhenat</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <Link to='/PerditesoTeDhenat'><MDBDropdownItem link>Perditeso Te Dhenat</MDBDropdownItem></Link>
+                        <MDBDropdownItem link><Link to='/TeDhenatEBiznesit'>Te Dhenat e Biznesit</Link></MDBDropdownItem>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Stafi</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <Link to='/Stafi'><MDBDropdownItem link>Perdoruesit</MDBDropdownItem></Link>
+                        <Link to='/Rolet'><MDBDropdownItem link>Rolet</MDBDropdownItem></Link>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                    <MDBDropdown dropright group>
+                      <MDBDropdownToggle>Partneret</MDBDropdownToggle>
+                      <MDBDropdownMenu>
+                        <MDBDropdown dropright group>
+                          <MDBDropdownToggle>Partneri Bleres</MDBDropdownToggle>
+                          <MDBDropdownMenu>
+                            <Link to='/PartneriBleres'><MDBDropdownItem link>Lista e Partnereve Bleres</MDBDropdownItem></Link>
+                            <Link to='#'><MDBDropdownItem link>Shtoni Partnerin Bleres</MDBDropdownItem></Link>
+                          </MDBDropdownMenu>
+                        </MDBDropdown>
+                        <MDBDropdown dropright group>
+                          <MDBDropdownToggle>Partneri Furnitor</MDBDropdownToggle>
+                          <MDBDropdownMenu>
+                            <Link to='/PartneriFurnitor'><MDBDropdownItem link>Lista e Partnereve Furnitor</MDBDropdownItem></Link>
+                            <Link to='#'><MDBDropdownItem link>Shtoni Partnerin Furnitor </MDBDropdownItem></Link>
+                          </MDBDropdownMenu>
+                        </MDBDropdown>
+                      </MDBDropdownMenu>
+                    </MDBDropdown>
+                  </MDBDropdownMenu>
+                </MDBDropdown>
+              </>}
             <MDBNavbarNav right={showNav ? false : true} fullWidth={false} className='mb-2 mb-lg-0'>
               {token &&
                 <>

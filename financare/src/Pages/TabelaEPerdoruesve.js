@@ -102,7 +102,8 @@ function TabelaEPerdoruesve() {
                             Lista e Perdoruesve
                         </h1>
 
-                        <MDBBtn className="mb-3 Butoni"><Link to={"/Rolet"} >Menaxho Rolet <FontAwesomeIcon icon={faInfoCircle} /></Link></MDBBtn>
+                        <Link to={"/Rolet"} ><MDBBtn className="mb-3 Butoni">Menaxho Rolet <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
+                        <Link to={"/Signup"} ><MDBBtn className="mb-3 Butoni">Krijoni nje Llogari <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
 
                         <MDBTable align="middle">
                             <MDBTableHead>

@@ -43,6 +43,17 @@
   color: white;
 }
 
+.btn-group .btn{
+  background-color: white;
+  color: #212529;
+  margin-left: 0.2em;
+}
+
+.btn-group .btn:hover{
+  background-color: #10bb99;
+  color: white;
+}
+
 
 .imgFshij {
   width: 50%;

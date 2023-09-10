@@ -371,9 +371,7 @@ function PerditesoTeDhenat(props) {
                 ) :
                     (<>
                         <h1 className="titulliPerditeso">Perditesimi i Te Dhenave</h1>
-                        <div className="PerditesoTeDhenatContainer">
-                            
-                            <MDBBtn><Link to={"/Dashboard"}>Mbyll <FontAwesomeIcon icon={faX} /></Link></MDBBtn>
+                        <div className="PerditesoTeDhenatContainer mb-4">
 
                             <h1 className="title">Te Dhenat Personale</h1>
                             <MDBRow tag="form" className='g-3'>

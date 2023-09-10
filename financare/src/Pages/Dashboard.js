@@ -182,6 +182,12 @@ const Dashboard = () => {
               </tr>
               <tr>
                 <td>
+                  <strong>Pozita: </strong>
+                </td>
+                <td>{teDhenat.rolet.join(', ')}</td>
+              </tr>
+              <tr>
+                <td>
                   <strong>Adresa: </strong>
                 </td>
                 <td>

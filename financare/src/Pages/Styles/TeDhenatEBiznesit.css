@@ -1,5 +1,11 @@
 .TeDhenatContainer{
-  margin: 2em;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.containerDashboardP {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .logo img{

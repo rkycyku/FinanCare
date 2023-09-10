@@ -11,6 +11,8 @@ import {
     MDBCol,
     MDBInput,
     MDBBtn,
+    MDBRadio,
+    MDBBtnGroup
 } from 'mdb-react-ui-kit';
 
 function TeDhenatEBiznesit(props) {
@@ -84,14 +86,12 @@ function TeDhenatEBiznesit(props) {
                     .then(async (response) => {
                         axios.put("https://localhost:7285/api/TeDhenatBiznesit/perditesoTeDhenat", {
                             "emriIbiznesit": formValue.emriBiznesit,
-                            "shkurtesaEmritBiznesit": formValue.shkurtesaEmrit,
                             "nui": formValue.nui,
                             "nf": formValue.nf,
                             "nrtvsh": formValue.nrtvsh,
                             "adresa": formValue.adresa,
                             "nrKontaktit": formValue.nrKontaktit,
-                            "email": formValue.email,
-                            "logo": response.data
+                            "email": formValue.email
                         }, authentikimi)
                         setPerditeso(Date.now());
 
@@ -103,14 +103,12 @@ function TeDhenatEBiznesit(props) {
         } else {
             await axios.put("https://localhost:7285/api/TeDhenatBiznesit/perditesoTeDhenat", {
                 "emriIbiznesit": formValue.emriBiznesit,
-                "shkurtesaEmritBiznesit": formValue.shkurtesaEmrit,
                 "nui": formValue.nui,
                 "nf": formValue.nf,
                 "nrtvsh": formValue.nrtvsh,
                 "adresa": formValue.adresa,
                 "nrKontaktit": formValue.nrKontaktit,
                 "email": formValue.email,
-                "logo": teDhenatBiznesit.logo
             }, authentikimi)
             setPerditeso(Date.now());
 
@@ -123,7 +121,6 @@ function TeDhenatEBiznesit(props) {
             setFormValue({
                 ...formValue,
                 emriBiznesit: teDhenatBiznesit.emriIbiznesit,
-                shkurtesaEmrit: teDhenatBiznesit.shkurtesaEmritBiznesit,
                 nui: teDhenatBiznesit.nui,
                 nf: teDhenatBiznesit.nf,
                 nrtvsh: teDhenatBiznesit.nrtvsh,
@@ -163,7 +160,7 @@ function TeDhenatEBiznesit(props) {
                 ) :
                     (
                         <div className="TeDhenatContainer mb-4">
-                            <h1 className="titulliPerditeso">Te Dhenat e Biznesit</h1>
+                            <h1 className="titulliPerditeso mb-4">Shto Partnerin Furnitor</h1>
 
                             <MDBRow tag="form" className='g-3'>
 
@@ -175,18 +172,6 @@ function TeDhenatEBiznesit(props) {
                                         id='validationCustom01'
                                         required
                                         label='Emri i Biznesit'
-                                        disabled={!edito}
-                                    />
-                                </MDBCol>
-                                <MDBCol md="6">
-                                    <MDBInput
-                                        value={formValue.shkurtesaEmrit ?? ''}
-                                        name='shkurtesaEmrit'
-                                        onChange={onChange}
-                                        id='validationCustom02'
-                                        required
-                                        label='Shkurtesa e emrit: Sherben per Faturen'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -197,7 +182,6 @@ function TeDhenatEBiznesit(props) {
                                         id='validationCustom03'
                                         required
                                         label='Numri Unik Identifikues: NUI'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -206,9 +190,7 @@ function TeDhenatEBiznesit(props) {
                                         name='nf'
                                         onChange={onChange}
                                         id='validationCustom03'
-                                        required
                                         label='Numri Fiskal: NF / NRF'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -217,9 +199,7 @@ function TeDhenatEBiznesit(props) {
                                         name='nrtvsh'
                                         onChange={onChange}
                                         id='validationCustom03'
-                                        required
                                         label='Numri TVSH: NRTVSH'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -228,9 +208,7 @@ function TeDhenatEBiznesit(props) {
                                         name='email'
                                         onChange={onChange}
                                         id='validationCustom02'
-                                        required
                                         label='Email'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -241,7 +219,6 @@ function TeDhenatEBiznesit(props) {
                                         id='validationCustom03'
                                         required
                                         label='Adresa'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -250,39 +227,13 @@ function TeDhenatEBiznesit(props) {
                                         name='nrKontaktit'
                                         onChange={onChange}
                                         id='validationCustom05'
-                                        required
                                         label='Numri i Kontaktit'
-                                        disabled={!edito}
-                                    />
-                                </MDBCol>
-                                <MDBCol md="4" style={{ margin: '1em' }}>
-                                    {teDhenatBiznesit && (teDhenatBiznesit.logo === null || teDhenatBiznesit.logo === "" || teDhenatBiznesit.logo === "PaLogo.png") ?
-                                        <div className="logo">
-                                            <img src={`${process.env.PUBLIC_URL}/img/web/PaLogo.png`} alt="" />
-                                        </div> :
-                                        <div className="logo">
-                                            <img src={`${process.env.PUBLIC_URL}/img/web/${teDhenatBiznesit.logo}`} alt="" />
-                                        </div>
-                                    }
-                                </MDBCol>
-                                <MDBCol md="4" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                    <MDBInput
-                                        type="file"
-                                        name="image"
-                                        onChange={handleFotoChange}
-                                        id="validationCustom04"
-                                        label='Logo, Mos te jete ngjyre te bardhe!'
-                                        disabled={!edito}
                                     />
                                 </MDBCol>
                                 <div className='col-12'>
-                                    {!edito &&
-                                        <button className="btn btn-primary btn-small" role="button" onClick={handleEdito}>Ndrysho te dhenat</button>
-                                    }
-
-                                    {edito &&
-                                        <button className="btn btn-primary btn-small" role="button" onClick={handleRuaj}>Ruaj</button>
-                                    }
+                                    <MDBBtn>
+                                        Shto Partnerin
+                                    </MDBBtn>
                                 </div>
                             </MDBRow>
                         </div>

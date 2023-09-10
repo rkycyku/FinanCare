@@ -4,12 +4,14 @@ import NavBar from "../Components/layout/NavBar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/esm/Button";
 import "./Styles/SignUp.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Col from "react-bootstrap/Col";
 import { Row } from "react-bootstrap";
 import Mesazhi from "../Components/layout/Mesazhi";
 import { Link } from "react-router-dom";
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 
 const SignUp = () => {
@@ -24,6 +26,9 @@ const SignUp = () => {
   const [shteti, setShteti] = useState("");
   const [zipKodi, setZipKodi] = useState("");
 
+  const [shfaqRolet, setShfaqRolet] = useState([]);
+  const [roletSelektim, setRoletSelektim] = useState([]);
+
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
@@ -34,6 +39,26 @@ const SignUp = () => {
     headers: {
       Authorization: `Bearer ${getToken}`,
     },
+  };
+
+  useEffect(() => {
+    const vendosRolet = async () => {
+      try {
+        const rolet = await axios.get(`https://localhost:7285/api/Authenticate/shfaqRolet`, authentikimi);
+        setShfaqRolet(rolet.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    vendosRolet();
+  }, []);
+
+  const getToggleButtonStyle = (selected) => {
+    return {
+      backgroundColor: selected ? "#009879" : "white",
+      color: selected ? "white" : "black"
+    };
   };
 
   const handleChange = (setState) => (event) => {
@@ -117,7 +142,7 @@ const SignUp = () => {
       </Helmet>
       <NavBar />
 
-      <div className="sign-up">
+      <div className="sign-up mb-4">
         {shfaqMesazhin && <Mesazhi
           setShfaqMesazhin={setShfaqMesazhin}
           pershkrimi={pershkrimiMesazhit}
@@ -228,6 +253,26 @@ const SignUp = () => {
                 value={zipKodi}
                 onChange={handleChange(setZipKodi)}
               />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Aksesi</Form.Label>
+              <br />
+              <ToggleButtonGroup type="checkbox" value={roletSelektim} onChange={handleChange}>
+                {shfaqRolet && shfaqRolet.map(roli => (
+                  <ToggleButton
+                    id={roli.id}
+                    value={roli.name}
+                    disabled={roli.name === "User"}
+                    key={roli.id}
+                    style={getToggleButtonStyle(roletSelektim.includes(roli.name))}
+                  >
+                    {roli.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+
+
             </Form.Group>
           </Row>
           <div style={{ display: "flex", flexDirection: "column", width: "30%" }}>

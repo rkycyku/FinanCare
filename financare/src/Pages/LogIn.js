@@ -101,8 +101,6 @@ const LogIn = () => {
           tipi={tipiMesazhit}
         />}
         <MDBContainer fluid >
-          <MDBRow className="d-flex justify-content-center align-items-center h-100">
-            <MDBCol col="12">
               <MDBCard
                 className="bg-white my-5 mx-auto"
                 style={{ border: "none", boxShadow: "0 0 20px #ddd", borderRadius: "2rem", maxWidth: "500px" }}
@@ -135,8 +133,6 @@ const LogIn = () => {
 
                 </MDBCardBody>
               </MDBCard>
-            </MDBCol>
-          </MDBRow>
         </MDBContainer>
       </div>
     </>
