@@ -1,15 +1,15 @@
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../../../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import "./Styles/DizajniPergjithshem.css";
+import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoKategori from "../Components/produktet/kategorit/ShtoKategori";
-import Mesazhi from "../Components/layout/Mesazhi";
+import ShtoKategori from "../../../Components/produktet/kategorit/ShtoKategori";
+import Mesazhi from "../../../Components/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import EditoKategorin from "../Components/produktet/kategorit/EditoKategorin";
-import LargoKategorin from "../Components/produktet/kategorit/LargoKategorin";
+import EditoKategorin from "../../../Components/produktet/kategorit/EditoKategorin";
+import LargoKategorin from "../../../Components/produktet/kategorit/LargoKategorin";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";

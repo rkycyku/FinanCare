@@ -1,7 +1,7 @@
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../../../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
-import "./Styles/Statistika.css";
-import "./Styles/DizajniPergjithshem.css";
+import "../../Styles/Statistika.css";
+import "../../Styles/DizajniPergjithshem.css";
 import Card from 'react-bootstrap/Card';
 import axios from "axios";
 import { useState, useEffect } from "react";

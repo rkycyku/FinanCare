@@ -1,27 +1,29 @@
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../../../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import "./Styles/DizajniPergjithshem.css";
+import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoRolin from "../Components/users/Rolet/ShtoRolin";
-import Mesazhi from "../Components/layout/Mesazhi";
+import ShtoKompanit from "../../../Components/produktet/kompanit/ShtoKompanit";
+import Mesazhi from "../../../Components/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import LargoRolin from "../Components/users/Rolet/LargoRolin";
+import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
+import EditoKompanin from "../../../Components/produktet/kompanit/EditoKompanin";
+import LargoKompanin from "../../../Components/produktet/kompanit/LargoKompanin";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
 function TabelaEKompanive(props) {
-    const [rolet, setRolet] = useState([]);
+    const [kompanit, setKompanit] = useState([]);
     const [perditeso, setPerditeso] = useState('');
     const [shto, setShto] = useState(false);
+    const [edito, setEdito] = useState(false);
     const [fshij, setFshij] = useState(false);
     const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
     const [tipiMesazhit, setTipiMesazhit] = useState("");
     const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
-    const [emriRolit, setEmriRolit] = useState(0);
+    const [id, setId] = useState(0);
     const [loading, setLoading] = useState(false);
 
     const getToken = localStorage.getItem("token");
@@ -33,11 +35,11 @@ function TabelaEKompanive(props) {
     };
 
     useEffect(() => {
-        const vendosRolet = async () => {
+        const shfaqKompanit = async () => {
             try {
                 setLoading(true);
-                const roli = await axios.get("https://localhost:7285/api/Authenticate/shfaqRolet", authentikimi);
-                setRolet(roli.data);
+                const kompania = await axios.get("https://localhost:7285/api/Kompania/shfaqKompanit", authentikimi);
+                setKompanit(kompania.data);
                 setLoading(false);
             } catch (err) {
                 console.log(err);
@@ -45,7 +47,7 @@ function TabelaEKompanive(props) {
             }
         };
 
-        vendosRolet();
+        shfaqKompanit();
     }, [perditeso]);
 
     const handleClose = () => {
@@ -53,9 +55,15 @@ function TabelaEKompanive(props) {
     }
     const handleShow = () => setShto(true);
 
-    const handleFshij = (emri) => {
+    const handleEdito = (id) => {
+        setEdito(true)
+        setId(id)
+    };
+    const handleEditoMbyll = () => setEdito(false);
+
+    const handleFshij = (id) => {
         setFshij(true)
-        setEmriRolit(emri)
+        setId(id)
     };
     const handleFshijMbyll = () => setFshij(false);
 
@@ -66,9 +74,8 @@ function TabelaEKompanive(props) {
             </Helmet>
             <NavBar />
 
-
             <div className="containerDashboardP">
-                {shto && <ShtoRolin
+                {shto && <ShtoKompanit
                     shfaq={handleShow}
                     largo={handleClose}
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
@@ -81,9 +88,17 @@ function TabelaEKompanive(props) {
                     pershkrimi={pershkrimiMesazhit}
                     tipi={tipiMesazhit}
                 />}
-                {fshij && <LargoRolin
+                {edito && <EditoKompanin
+                    largo={handleEditoMbyll}
+                    id={id}
+                    shfaqmesazhin={() => setShfaqMesazhin(true)}
+                    perditesoTeDhenat={() => setPerditeso(Date.now())}
+                    setTipiMesazhit={setTipiMesazhit}
+                    setPershkrimiMesazhit={setPershkrimiMesazhit}
+                />}
+                {fshij && <LargoKompanin
                     largo={handleFshijMbyll}
-                    emriRolit={emriRolit}
+                    id={id}
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
                     perditesoTeDhenat={() => setPerditeso(Date.now())}
                     setTipiMesazhit={setTipiMesazhit}
@@ -104,27 +119,36 @@ function TabelaEKompanive(props) {
                     </div>
                 ) : (<>
                     <h1 className="title">
-                        Lista e Roleve ne Sistem
+                        Lista e Kompanive Partnere
                     </h1>
 
-                    <MDBBtn className="Butoni"><Link to="/Stafi">Mbyll Rolet <FontAwesomeIcon icon={faClose} /></Link></MDBBtn>
-                    <MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shto Rolin <FontAwesomeIcon icon={faPlus} /></MDBBtn>
+                    <Link to="/Produktet"><MDBBtn className="Butoni">Mbyll Partnerin <FontAwesomeIcon icon={faClose} /></MDBBtn></Link>
+                    <Link to='/ShtoPartnerin'><MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shtoni Partnerin <FontAwesomeIcon icon={faPlus} /></MDBBtn></Link>
 
-                    <MDBTable>
+                    <MDBTable align="middle">
                         <MDBTableHead>
                             <tr>
-                                <th scope="col">Roli</th>
-                                <th scope="col">Totali Perdorueseve ne kete Rol</th>
+                                <th scope="col">Emri i Kompanis</th>
+                                <th scope="col">Logo</th>
+                                <th scope="col">Adresa</th>
                                 <th scope="col">Funksione</th>
                             </tr>
                         </MDBTableHead>
                         <MDBTableBody>
-                            {rolet.map((r) => (
-                                <tr key={r.id}>
-                                    <td>{r.name}</td>
-                                    <td >{r.totaliPerdoruesve !== null ? r.totaliPerdoruesve : "Nuk Ka asnje perdorues ne kete role"}</td>
+                            {kompanit.map((k) => (
+                                <tr key={k.kompaniaId}>
+                                    <td>{k.emriKompanis}</td>
                                     <td >
-                                        <Button variant="danger" onClick={() => handleFshij(r.name)}><FontAwesomeIcon icon={faBan} /></Button>
+                                        <img
+                                            src={`${process.env.PUBLIC_URL}/img/slider/sliderIcons/${k.logo}`}
+                                            width="50"
+                                            alt=""
+                                        />
+                                    </td>
+                                    <td >{k.adresa !== null && k.adresa.trim() !== '' ? k.adresa : "Nuk Ka Adrese"}</td>
+                                    <td >
+                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.kompaniaId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                        <Button variant="danger" onClick={() => handleFshij(k.kompaniaId)}><FontAwesomeIcon icon={faBan} /></Button>
                                     </td>
                                 </tr>
                             ))}

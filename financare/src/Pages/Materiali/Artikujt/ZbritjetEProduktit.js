@@ -1,15 +1,15 @@
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../../../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import "./Styles/DizajniPergjithshem.css";
+import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ProduktiNeZbritje from "../Components/produktet/Zbritjet/ProduktiNeZbritje";
+import ProduktiNeZbritje from "../../../Components/produktet/Zbritjet/ProduktiNeZbritje";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
-import Mesazhi from "../Components/layout/Mesazhi";
-import FshijZbritjen from '../Components/produktet/Zbritjet/FshijZbritjen';
+import Mesazhi from "../../../Components/layout/Mesazhi";
+import FshijZbritjen from '../../../Components/produktet/Zbritjet/FshijZbritjen';
 import { Link } from "react-router-dom";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
@@ -124,13 +124,15 @@ function ZbritjetEProduktit(props) {
 
                     <MDBTable align="middle">
                         <MDBTableHead>
-                            <th scope="col">Nr. Zbritjes</th>
-                            <th scope="col">ID dhe Emri Produktit</th>
-                            <th scope="col">Qmim pa Zbritje</th>
-                            <th scope="col">Qmimi me Zbritje</th>
-                            <th scope="col">Data e Zbritjes</th>
-                            <th scope="col">Data e Skadimit</th>
-                            <th scope="col">Funksione</th>
+                            <tr>
+                                <th scope="col">Nr. Zbritjes</th>
+                                <th scope="col">ID dhe Emri Produktit</th>
+                                <th scope="col">Qmim pa Zbritje</th>
+                                <th scope="col">Qmimi me Zbritje</th>
+                                <th scope="col">Data e Zbritjes</th>
+                                <th scope="col">Data e Skadimit</th>
+                                <th scope="col">Funksione</th>
+                            </tr>
                         </MDBTableHead>
 
                         <MDBTableBody>

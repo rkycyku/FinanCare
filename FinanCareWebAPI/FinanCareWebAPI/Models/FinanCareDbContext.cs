@@ -61,6 +61,11 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.LlojiPageses)
                 .HasMaxLength(6)
                 .HasDefaultValueSql("('Cash')");
+            entity.Property(e => e.LlojiKalkulimit)
+                .HasMaxLength(20)
+                .HasDefaultValue("('HYRJE')");
+            entity.Property(e => e.NrFatures)
+                .HasMaxLength(40);
             entity.Property(e => e.StafiId).HasColumnName("stafiID");
             entity.Property(e => e.StatusiPageses)
                 .HasMaxLength(15)

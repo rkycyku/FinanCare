@@ -31,7 +31,12 @@ namespace WebAPI.Controllers
                     x.Tvsh,
                     x.DataRegjistrimit,
                     x.StafiId,
-                    x.Stafi.Username
+                    x.Stafi.Username,
+                    x.NrFatures,
+                    x.IdpartneriNavigation.EmriBiznesit,
+                    x.LlojiKalkulimit,
+                    x.LlojiPageses,
+                    x.StatusiPageses
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -50,7 +55,12 @@ namespace WebAPI.Controllers
                     x.Tvsh,
                     x.DataRegjistrimit,
                     x.StafiId,
-                    x.Stafi.Username
+                    x.Stafi.Username,
+                    x.NrFatures,
+                    x.IdpartneriNavigation.EmriBiznesit,
+                    x.LlojiKalkulimit,
+                    x.LlojiPageses,
+                    x.StatusiPageses
                 }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
 
             return Ok(regjistrimet);
@@ -128,6 +138,16 @@ namespace WebAPI.Controllers
             }
 
             return NoContent();
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("getNumriFaturesMeRradhe")]
+        public async Task<IActionResult> getNumriFaturesMeRradhe()
+        {
+            var nrFatures = await _context.KalkulimiImallits.CountAsync();
+
+            return Ok(nrFatures);
         }
     }
 }

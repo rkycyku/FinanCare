@@ -7,19 +7,20 @@ import SignUp from './Pages/SignUp';
 import { useEffect } from "react";
 import Aos from 'aos';
 import "aos/dist/aos.css";
-import Statistika from './Pages/Statistika';
-import TeDhenatEBiznesit from './Pages/TeDhenatEBiznesit';
-import TabelaEPorosive from './Pages/TabelaEPorosive';
-import ProductTables from './Pages/ProductTables';
-import NjesiaMatese from './Pages/NjesiaMatese';
-import TabelaEPartnereve from './Pages/TabelaEPartnereve';
-import ZbritjetEProduktit from './Pages/ZbritjetEProduktit';
-import TabelaEPerdoruesve from './Pages/TabelaEPerdoruesve';
-import Rolet from './Pages/Rolet';
-import KalkulimiIMallit from './Pages/KalkulimiIMallit';
-import PerditesoTeDhenat from './Pages/PerditesoTeDhenat';
-import KrijoPorosine from './Pages/KrijoPorosine';
-import ShtoPartnerin from './Pages/ShtoPartnerin';
+import Statistika from './Pages/Materiali/Shitjet/Statistika';
+import TeDhenatEBiznesit from './Pages/Gjenerale/TeDhenat/TeDhenatEBiznesit';
+import TabelaEPorosive from './Pages/Materiali/Shitjet/Porosite/TabelaEPorosive';
+import ListaEProdukteve from './Pages/Materiali/Artikujt/ListaEProdukteve';
+import NjesiaMatese from './Pages/Materiali/Artikujt/NjesiaMatese'
+import TabelaEPartnereve from './Pages/Gjenerale/Partneret/TabelaEPartnereve';
+import ZbritjetEProduktit from './Pages/Materiali/Artikujt/ZbritjetEProduktit';
+import TabelaEPerdoruesve from './Pages/Gjenerale/Stafi/TabelaEPerdoruesve';
+import Rolet from './Pages/Gjenerale/Stafi/Rolet';
+import KalkulimiIMallit from './Pages/Materiali/Hyrjet/KalkulimiIMallit';
+import PerditesoTeDhenat from './Pages/Gjenerale/TeDhenat/PerditesoTeDhenat';
+import KrijoPorosine from './Pages/Materiali/Shitjet/Porosite/KrijoPorosine';
+import ShtoPartnerin from './Pages/Gjenerale/Partneret/ShtoPartnerin';
+import TeDhenatFatures from './Components/kalkulimi/TeDhenatFatures';
 
 function App() {
 
@@ -41,7 +42,7 @@ function App() {
         <Route path='/Statistika' element={<Statistika />} />
         <Route path='/TeDhenatEBiznesit' element={<TeDhenatEBiznesit />} />
         <Route path='/Porosite' element={<TabelaEPorosive />} />
-        <Route path='/Produktet' element={<ProductTables />} />
+        <Route path='/Produktet' element={<ListaEProdukteve />} />
         <Route path='/NjesiaMatese' element={<NjesiaMatese />} />
         <Route path='/TabelaEPartnereve' element={<TabelaEPartnereve />} />
         <Route path='/ZbritjetEProduktit' element={<ZbritjetEProduktit />} />
@@ -51,6 +52,7 @@ function App() {
         <Route path='/PerditesoTeDhenat' element={<PerditesoTeDhenat />} />
         <Route path='/KrijoPorosine' element={<KrijoPorosine />} />
         <Route path='/ShtoPartnerin' element={<ShtoPartnerin />}/>
+        <Route path='/teDhenatFatures' element={<TeDhenatFatures />}/>
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>

@@ -8,7 +8,7 @@ import { TailSpin } from "react-loader-spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Mesazhi from "../Components/layout/Mesazhi";
-import PerditesoTeDhenat from "./PerditesoTeDhenat";
+import PerditesoTeDhenat from "./Gjenerale/TeDhenat/PerditesoTeDhenat";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);

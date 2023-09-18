@@ -1,13 +1,13 @@
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../../../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import "./Styles/DizajniPergjithshem.css";
+import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import RegjistroFaturen from "../Components/kalkulimi/RegjistroFaturen";
+import RegjistroFaturen from "../../../Components/kalkulimi/RegjistroFaturen";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faPlus } from '@fortawesome/free-solid-svg-icons'
-import TeDhenatKalkulimit from "../Components/kalkulimi/TeDhenatKalkulimit";
+import TeDhenatKalkulimit from "../../../Components/kalkulimi/TeDhenatKalkulimit";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
