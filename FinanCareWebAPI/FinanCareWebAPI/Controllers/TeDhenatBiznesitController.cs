@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Data.Entity;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -11,9 +11,9 @@ namespace WebAPI.Controllers
     [Route("/api/[controller]")]
     public class TeDhenatBiznesitController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public TeDhenatBiznesitController(TechStoreDbContext context)
+        public TeDhenatBiznesitController(FinanCareDbContext context)
         {
             _context = context;
         }

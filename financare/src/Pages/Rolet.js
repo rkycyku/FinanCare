@@ -1,7 +1,7 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/Rolet.module.css';
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import ShtoRolin from "../Components/users/Rolet/ShtoRolin";
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
 import LargoRolin from "../Components/users/Rolet/LargoRolin";
 import { TailSpin } from 'react-loader-spinner';
-import { MDBBtn } from "mdb-react-ui-kit";
+import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
 function TabelaEKompanive(props) {
@@ -67,7 +67,7 @@ function TabelaEKompanive(props) {
             <NavBar />
 
 
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
                 {shto && <ShtoRolin
                     shfaq={handleShow}
                     largo={handleClose}
@@ -110,23 +110,26 @@ function TabelaEKompanive(props) {
                     <MDBBtn className="Butoni"><Link to="/Stafi">Mbyll Rolet <FontAwesomeIcon icon={faClose} /></Link></MDBBtn>
                     <MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shto Rolin <FontAwesomeIcon icon={faPlus} /></MDBBtn>
 
-                    <table style={{ whiteSpace: "unset", }}>
-                        <tr>
-                            <th>Roli</th>
-                            <th>Totali Perdorueseve ne kete Rol</th>
-                            <th>Funksione</th>
-                        </tr>
-
-                        {rolet.map((r) => (
-                            <tr key={r.id}>
-                                <td>{r.name}</td>
-                                <td >{r.totaliPerdoruesve !== null ? r.totaliPerdoruesve : "Nuk Ka asnje perdorues ne kete role"}</td>
-                                <td >
-                                    <Button variant="danger" onClick={() => handleFshij(r.name)}><FontAwesomeIcon icon={faBan} /></Button>
-                                </td>
+                    <MDBTable>
+                        <MDBTableHead>
+                            <tr>
+                                <th scope="col">Roli</th>
+                                <th scope="col">Totali Perdorueseve ne kete Rol</th>
+                                <th scope="col">Funksione</th>
                             </tr>
-                        ))}
-                    </table>
+                        </MDBTableHead>
+                        <MDBTableBody>
+                            {rolet.map((r) => (
+                                <tr key={r.id}>
+                                    <td>{r.name}</td>
+                                    <td >{r.totaliPerdoruesve !== null ? r.totaliPerdoruesve : "Nuk Ka asnje perdorues ne kete role"}</td>
+                                    <td >
+                                        <Button variant="danger" onClick={() => handleFshij(r.name)}><FontAwesomeIcon icon={faBan} /></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </MDBTableBody>
+                    </MDBTable>
                 </>
                 )}
             </div >

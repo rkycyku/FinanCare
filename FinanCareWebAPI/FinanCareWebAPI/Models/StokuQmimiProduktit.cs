@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAPI.Models;
+namespace FinanCareWebAPI.Models;
 
 public partial class StokuQmimiProduktit
 {
@@ -17,5 +17,5 @@ public partial class StokuQmimiProduktit
 
     public DateTime? DataPerditsimit { get; set; }
 
-    public virtual Produkti? Produkti { get; set; }
+    public virtual Produkti Produkti { get; set; } = null!;
 }

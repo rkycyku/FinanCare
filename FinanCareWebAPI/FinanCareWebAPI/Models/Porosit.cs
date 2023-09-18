@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAPI.Models;
+namespace FinanCareWebAPI.Models;
 
 public partial class Porosit
 {
@@ -13,12 +13,25 @@ public partial class Porosit
 
     public string? StatusiPorosis { get; set; }
 
-    public int? IdKlienti { get; set; }
+    public int? Idpartneri { get; set; }
 
-    public decimal? Zbritja { get; set; }
     public int? TotaliProdukteve { get; set; }
 
-    public virtual Perdoruesi? IdKlientiNavigation { get; set; }
+    public int? Idstafi { get; set; }
+
+    public int? Rabati { get; set; }
+
+    public int? ExtraRabati { get; set; }
+
+    public int? ExtraRabati2 { get; set; }
+
+    public string? LlojiPageses { get; set; }
+
+    public string? Pagesa { get; set; }
+
+    public virtual Partneri? IdpartneriNavigation { get; set; }
+
+    public virtual Perdoruesi? IdstafiNavigation { get; set; }
 
     public virtual ICollection<TeDhenatEporosi> TeDhenatEporosis { get; } = new List<TeDhenatEporosi>();
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAPI.Models;
+namespace FinanCareWebAPI.Models;
 
-public partial class TeDhenatRegjistrimit
+public partial class TeDhenatKalkulimit
 {
     public int Id { get; set; }
 
@@ -19,5 +19,5 @@ public partial class TeDhenatRegjistrimit
 
     public virtual Produkti? IdProduktitNavigation { get; set; }
 
-    public virtual RegjistrimiStokut? IdRegjistrimitNavigation { get; set; }
+    public virtual KalkulimiImallit? IdRegjistrimitNavigation { get; set; }
 }

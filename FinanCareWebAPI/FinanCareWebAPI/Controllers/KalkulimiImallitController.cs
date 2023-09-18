@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("api/[controller]")]
-    public class RegjistrimiStokutController : Controller
+    public class KalkulimiImallitController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public RegjistrimiStokutController(TechStoreDbContext context)
+        public KalkulimiImallitController(FinanCareDbContext context)
         {
             _context = context;
         }
@@ -22,14 +22,13 @@ namespace WebAPI.Controllers
         [Route("shfaqRegjistrimet")]
         public async Task<IActionResult> Get()
         {
-            var regjistrimet = await _context.RegjistrimiStokuts
+            var regjistrimet = await _context.KalkulimiImallits
                 .OrderByDescending(x => x.IdRegjistrimit)
                 .Select(x => new
                 {
                     x.IdRegjistrimit,
-                    x.ShumaTotaleRegjistrimit,
-                    x.ShumaTotaleBlerese,
-                    x.TotaliProdukteveRegjistruara,
+                    x.TotaliPaTvsh,
+                    x.Tvsh,
                     x.DataRegjistrimit,
                     x.StafiId,
                     x.Stafi.Username
@@ -43,13 +42,12 @@ namespace WebAPI.Controllers
         [Route("shfaqRegjistrimetNgaID")]
         public async Task<IActionResult> GetRegjistrimin(int id)
         {
-            var regjistrimet = await _context.RegjistrimiStokuts
+            var regjistrimet = await _context.KalkulimiImallits
                 .Select(x => new
                 {
                     x.IdRegjistrimit,
-                    x.ShumaTotaleRegjistrimit,
-                    x.ShumaTotaleBlerese,
-                    x.TotaliProdukteveRegjistruara,
+                    x.TotaliPaTvsh,
+                    x.Tvsh,
                     x.DataRegjistrimit,
                     x.StafiId,
                     x.Stafi.Username
@@ -63,7 +61,7 @@ namespace WebAPI.Controllers
         [Route("shfaqTeDhenatKalkulimit")]
         public async Task<IActionResult> Get(int idRegjistrimit)
         {
-            var teDhenat = await _context.TeDhenatRegjistrimits
+            var teDhenat = await _context.TeDhenatKalkulimits
                 .Where(x => x.IdRegjistrimit == idRegjistrimit)
                 .Select(x => new
                 {
@@ -82,9 +80,9 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPost]
         [Route("ruajKalkulimin")]
-        public async Task<IActionResult> Post(RegjistrimiStokut regjistrimet)
+        public async Task<IActionResult> Post(KalkulimiImallit regjistrimet)
         {
-            await _context.RegjistrimiStokuts.AddAsync(regjistrimet);
+            await _context.KalkulimiImallits.AddAsync(regjistrimet);
             await _context.SaveChangesAsync(); 
 
             return CreatedAtAction("Get", regjistrimet.IdRegjistrimit, regjistrimet);
@@ -93,9 +91,9 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPost]
         [Route("ruajKalkulimin/teDhenat")]
-        public async Task<IActionResult> Post(TeDhenatRegjistrimit teDhenat)
+        public async Task<IActionResult> Post(TeDhenatKalkulimit teDhenat)
         {
-            await _context.TeDhenatRegjistrimits.AddAsync(teDhenat);
+            await _context.TeDhenatKalkulimits.AddAsync(teDhenat);
             await _context.SaveChangesAsync();
 
             return Ok();

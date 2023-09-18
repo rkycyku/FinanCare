@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -10,9 +10,9 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class StatistikatController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public StatistikatController(TechStoreDbContext context)
+        public StatistikatController(FinanCareDbContext context)
         {
             _context = context;
         }
@@ -147,11 +147,10 @@ namespace WebAPI.Controllers
                     {
                         e.ProduktiId,
                         e.EmriProduktit,
-                        e.FotoProduktit,
                         e.StokuQmimiProduktit.SasiaNeStok,
                         e.StokuQmimiProduktit.QmimiBleres,
                         e.StokuQmimiProduktit.QmimiProduktit,
-                        e.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit,
+                        e.ZbritjaQmimitProduktit.Rabati,
                     },
                     TotaliPorosive = e.TeDhenatEporosis.Sum(q => q.SasiaPorositur),
                     TotaliBlerjeve = e.TeDhenatEporosis.Sum(q => q.QmimiTotal),

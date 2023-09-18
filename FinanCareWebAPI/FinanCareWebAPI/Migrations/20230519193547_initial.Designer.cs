@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 #nullable disable
 
 namespace WebAPI.Migrations
 {
-    [DbContext(typeof(TechStoreDbContext))]
+    [DbContext(typeof(FinanCareDbContext))]
     [Migration("20230519193547_initial")]
     partial class initial
     {

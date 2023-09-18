@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import classes from './Styles/TabelaEKompanive.module.css';
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Mesazhi from "../Components/layout/Mesazhi";
@@ -259,7 +259,7 @@ function RegjistroFaturen(props) {
                 <title>Dashboard | Tech Store</title>
             </Helmet>
             <NavBar />
-            <div className={classes.containerDashboardP}>
+            <div className=".containerDashboardP">
                 {shfaqMesazhin && <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}
                     pershkrimi={pershkrimiMesazhit}
@@ -316,7 +316,7 @@ function RegjistroFaturen(props) {
                         Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
                     </Button>
                     <Container fluid>
-                        <Row>
+                        <Row >
                             <Col>
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="idDheEmri">

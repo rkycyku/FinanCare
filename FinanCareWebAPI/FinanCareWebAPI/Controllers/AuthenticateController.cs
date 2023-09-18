@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebAPI.Auth;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
@@ -18,14 +18,14 @@ namespace WebAPI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AuthenticateController(
             UserManager<IdentityUser> userManager,
            RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
-            TechStoreDbContext context)
+            FinanCareDbContext context)
         {
             _userManager = userManager; 
             _roleManager = roleManager;

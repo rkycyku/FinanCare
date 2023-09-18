@@ -12,9 +12,9 @@ import EditoProduktin from "../Components/produktet/EditoProduktin";
 import Modal from "react-bootstrap/Modal";
 import { TailSpin } from 'react-loader-spinner';
 import ZbritjetEProduktit from "./ZbritjetEProduktit";
-import TabelaEKategorive from "./TabelaEKategorive";
-import TabelaEKompanive from "./TabelaEKompanive";
-import { MDBBtn } from "mdb-react-ui-kit";
+import TabelaEKategorive from "./NjesiaMatese";
+import TabelaEKompanive from "./TabelaEPartnereve";
+import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
 const ProductTables = () => {
@@ -199,24 +199,24 @@ const ProductTables = () => {
           <Button className="mb-3 Butoni" onClick={handleShow}>
             Shto Produktin <FontAwesomeIcon icon={faPlus} />
           </Button>
-          <MDBBtn className="Butoni"><Link to="/ZbritjetEProduktit">Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} /></Link></MDBBtn>
-          <MDBBtn className="Butoni"><Link to="/Kompanite">Kompanit <FontAwesomeIcon icon={faInfoCircle} /></Link></MDBBtn>
-          <MDBBtn className="Butoni"><Link to="/Kategorite">Kategorite <FontAwesomeIcon icon={faInfoCircle} /></Link></MDBBtn>
-          <table className="tableBig">
-            <thead>
+          <Link to="/ZbritjetEProduktit"><MDBBtn className="Butoni">Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
+          <Link to="/TabelaEPartnereve"><MDBBtn className="Butoni">Partneret <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
+          <Link to="/NjesiaMatese"><MDBBtn className="Butoni">Njesia Matese <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
+          <MDBTable>
+            <MDBTableHead>
               <tr>
-                <th>Emri i Produktit</th>
-                <th>Pershkrimi</th>
-                <th>Foto e Produktit</th>
-                <th>Kompania</th>
-                <th>Kategoria</th>
-                <th>Qmimi i Produktit</th>
-                <th>Sasia ne Stok</th>
-                <th>Funksione</th>
+                <th scope="col">Emri i Produktit</th>
+                <th scope="col">Pershkrimi</th>
+                <th scope="col">Foto e Produktit</th>
+                <th scope="col">Kompania</th>
+                <th scope="col">Kategoria</th>
+                <th scope="col">Qmimi i Produktit</th>
+                <th scope="col">Sasia ne Stok</th>
+                <th scope="col">Funksione</th>
               </tr>
-            </thead>
+            </MDBTableHead>
 
-            <tbody>
+            <MDBTableBody>
               {produkti.map((p) => {
                 return (
                   <tr key={p.produktiId}>
@@ -252,8 +252,8 @@ const ProductTables = () => {
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
+            </MDBTableBody>
+          </MDBTable>
         </>
         }
       </div>

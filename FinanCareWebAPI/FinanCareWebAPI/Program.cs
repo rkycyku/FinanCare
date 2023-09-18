@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +31,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
-builder.Services.AddDbContext<TechStoreDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
+builder.Services.AddDbContext<FinanCareDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
@@ -68,7 +68,7 @@ builder.Services.AddCors(opt =>
 });
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-        .AddEntityFrameworkStores<TechStoreDbContext>()
+        .AddEntityFrameworkStores<FinanCareDbContext>()
         .AddDefaultTokenProviders();
 
 builder.Services.AddSwaggerGen(c => {

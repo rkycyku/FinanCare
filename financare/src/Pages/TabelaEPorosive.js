@@ -1,7 +1,8 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/TabelaEPorosive.module.css';
+import "./Styles/TabelaEPorosive.css";
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Mesazhi from "../Components/layout/Mesazhi";
@@ -11,7 +12,7 @@ import PerditesoStatusinPorosis from "../Components/Porosite/PerditesoStatusinPo
 import { TailSpin } from 'react-loader-spinner';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-
+import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
 function TabelaEPorosive() {
     const [porosite, setPorosite] = useState([]);
@@ -73,7 +74,7 @@ function TabelaEPorosive() {
             </Helmet>
             <NavBar />
 
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
                 {shfaqMesazhin && <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}
                     pershkrimi={pershkrimiMesazhit}
@@ -113,8 +114,8 @@ function TabelaEPorosive() {
 
                     {shfaqPorosite &&
                         <>
-                            <div className={classes.DataPerFiltrim}>
-                                <div className={classes.datat}>
+                            <div className="DataPerFiltrim">
+                                <div className="datat">
                                     <p>Data Fillimit:</p>
                                     <DatePicker selected={dataFillestare} onChange={date => setDataFillestare(date)} dateFormat="dd/MM/yyyy" maxDate={dataFundit} />
                                 </div>
@@ -122,54 +123,57 @@ function TabelaEPorosive() {
                                     <p>Data Mbarimit:</p>
                                     <DatePicker selected={dataFundit} onChange={date => setDataFundit(date)} dateFormat="dd/MM/yyyy" />
                                 </div>
-                                <div className={classes.datat}>
+                                <div className="datat">
                                     <p>Reseto:</p>
                                     <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => { setDataFillestare(null); setDataFundit(null) }}>Shfaq Te Gjitha porosite</Button>
                                 </div>
                             </div>
-                            <table className="tableBig">
-                                <tr>
-                                    <th>ID Porosia</th>
-                                    <th>Klienti</th>
-                                    <th>Totali Produkteve</th>
-                                    <th>Totali €</th>
-                                    <th>Totali pa TVSH €</th>
-                                    <th>TVSH €</th>
-                                    <th>Zbritja €</th>
-                                    <th>Data e Porosise</th>
-                                    <th>Statusi Porosis</th>
-                                    <th>Funksione</th>
-                                </tr>
-
-                                {porosite
-                                    .filter((p) => {
-                                        if (!dataFillestare || !dataFundit) {
-                                            return true;
-                                        } else {
-                                            const dataPorosise = new Date(p.dataPorosis);
-                                            return dataPorosise >= dataFillestare && dataPorosise <= dataFundit;
-                                        }
-                                    })
-                                    .map((p) => (
-                                        <tr key={p.idPorosia}>
-                                            <td>{p.idPorosia}</td>
-                                            <td>{p.idKlienti} - {p.emri} {p.mbiemri}</td>
-                                            <td>{p.totaliProdukteve}</td>
-                                            <td>{parseFloat(p.totaliPorosis).toFixed(2)} €</td>
-                                            <td>{parseFloat(p.totaliPorosis - (p.totaliPorosis * 0.152542)).toFixed(2)} €</td>
-                                            <td>{parseFloat((p.totaliPorosis * 0.152542)).toFixed(2)} €</td>
-                                            <td>{parseFloat(p.zbritja).toFixed(2)} €</td>
-                                            <td>{new Date(p.dataPorosis).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</td>
-                                            <td>{p.statusiPorosis}</td>
-                                            <td>
-                                                <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleShfaqFaturen(p.idPorosia)}><FontAwesomeIcon icon={faInfoCircle} /></Button>
-                                                {p.statusiPorosis !== "E Pranuar nga Klienti" &&
-                                                    <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(p.idPorosia)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                                }
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </table>
+                            <MDBTable align='middle'>
+                                <MDBTableHead>
+                                    <tr>
+                                        <th>ID Porosia</th>
+                                        <th>Klienti</th>
+                                        <th>Totali Produkteve</th>
+                                        <th>Totali €</th>
+                                        <th>Totali pa TVSH €</th>
+                                        <th>TVSH €</th>
+                                        <th>Zbritja €</th>
+                                        <th>Data e Porosise</th>
+                                        <th>Statusi Porosis</th>
+                                        <th>Funksione</th>
+                                    </tr>
+                                </MDBTableHead>
+                                <MDBTableBody>
+                                    {porosite
+                                        .filter((p) => {
+                                            if (!dataFillestare || !dataFundit) {
+                                                return true;
+                                            } else {
+                                                const dataPorosise = new Date(p.dataPorosis);
+                                                return dataPorosise >= dataFillestare && dataPorosise <= dataFundit;
+                                            }
+                                        })
+                                        .map((p) => (
+                                            <tr key={p.idPorosia}>
+                                                <td>{p.idPorosia}</td>
+                                                <td>{p.idKlienti} - {p.emri} {p.mbiemri}</td>
+                                                <td>{p.totaliProdukteve}</td>
+                                                <td>{parseFloat(p.totaliPorosis).toFixed(2)} €</td>
+                                                <td>{parseFloat(p.totaliPorosis - (p.totaliPorosis * 0.152542)).toFixed(2)} €</td>
+                                                <td>{parseFloat((p.totaliPorosis * 0.152542)).toFixed(2)} €</td>
+                                                <td>{parseFloat(p.zbritja).toFixed(2)} €</td>
+                                                <td>{new Date(p.dataPorosis).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</td>
+                                                <td>{p.statusiPorosis}</td>
+                                                <td>
+                                                    <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleShfaqFaturen(p.idPorosia)}><FontAwesomeIcon icon={faInfoCircle} /></Button>
+                                                    {p.statusiPorosis !== "E Pranuar nga Klienti" &&
+                                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(p.idPorosia)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </MDBTableBody>
+                            </MDBTable>
                         </>
                     }
                 </>

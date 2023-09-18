@@ -1,21 +1,21 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/TabelaEKategorive.module.css';
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoKategori from "../Components/produktet/kategorit/ShtoKategori";
+import ShtoKompanit from "../Components/produktet/kompanit/ShtoKompanit";
 import Mesazhi from "../Components/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import EditoKategorin from "../Components/produktet/kategorit/EditoKategorin";
-import LargoKategorin from "../Components/produktet/kategorit/LargoKategorin";
+import EditoKompanin from "../Components/produktet/kompanit/EditoKompanin";
+import LargoKompanin from "../Components/produktet/kompanit/LargoKompanin";
 import { TailSpin } from 'react-loader-spinner';
-import { MDBBtn } from "mdb-react-ui-kit";
+import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
-function TabelaEKategorive(props) {
-    const [kategorit, setKategorit] = useState([]);
+function TabelaEKompanive(props) {
+    const [kompanit, setKompanit] = useState([]);
     const [perditeso, setPerditeso] = useState('');
     const [shto, setShto] = useState(false);
     const [edito, setEdito] = useState(false);
@@ -35,11 +35,11 @@ function TabelaEKategorive(props) {
     };
 
     useEffect(() => {
-        const shfaqKateogrit = async () => {
+        const shfaqKompanit = async () => {
             try {
                 setLoading(true);
-                const kategoria = await axios.get("https://localhost:7285/api/Kategoria/shfaqKategorit", authentikimi);
-                setKategorit(kategoria.data);
+                const kompania = await axios.get("https://localhost:7285/api/Kompania/shfaqKompanit", authentikimi);
+                setKompanit(kompania.data);
                 setLoading(false);
             } catch (err) {
                 console.log(err);
@@ -47,7 +47,7 @@ function TabelaEKategorive(props) {
             }
         };
 
-        shfaqKateogrit();
+        shfaqKompanit();
     }, [perditeso]);
 
     const handleClose = () => {
@@ -74,8 +74,8 @@ function TabelaEKategorive(props) {
             </Helmet>
             <NavBar />
 
-            <div className={classes.containerDashboardP}>
-                {shto && <ShtoKategori
+            <div className="containerDashboardP">
+                {shto && <ShtoKompanit
                     shfaq={handleShow}
                     largo={handleClose}
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
@@ -88,7 +88,7 @@ function TabelaEKategorive(props) {
                     pershkrimi={pershkrimiMesazhit}
                     tipi={tipiMesazhit}
                 />}
-                {edito && <EditoKategorin
+                {edito && <EditoKompanin
                     largo={handleEditoMbyll}
                     id={id}
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
@@ -96,7 +96,7 @@ function TabelaEKategorive(props) {
                     setTipiMesazhit={setTipiMesazhit}
                     setPershkrimiMesazhit={setPershkrimiMesazhit}
                 />}
-                {fshij && <LargoKategorin
+                {fshij && <LargoKompanin
                     largo={handleFshijMbyll}
                     id={id}
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
@@ -119,33 +119,39 @@ function TabelaEKategorive(props) {
                     </div>
                 ) : (<>
                     <h1 className="title">
-                        Lista e Kategorive te Produkteve
+                        Lista e Kompanive Partnere
                     </h1>
 
-                    <MDBBtn className="Butoni"><Link to="/Produktet">Mbyll Kategorite <FontAwesomeIcon icon={faClose} /></Link></MDBBtn>
-                    <MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shto Kategori <FontAwesomeIcon icon={faPlus} /></MDBBtn>
+                    <Link to="/Produktet"><MDBBtn className="Butoni">Mbyll Partnerin <FontAwesomeIcon icon={faClose} /></MDBBtn></Link>
+                    <Link to='/ShtoPartnerin'><MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shtoni Partnerin <FontAwesomeIcon icon={faPlus} /></MDBBtn></Link>
 
-
-                    <table className="tableBig">
-                        <tr>
-                            <th>ID Kategorise</th>
-                            <th>Emri Kategoris</th>
-                            <th>Pershkrimi Kategoris</th>
-                            <th>Funksione</th>
-                        </tr>
-
-                        {kategorit.map((k) => (
-                            <tr key={k.kategoriaId}>
-                                <td>{k.kategoriaId}</td>
-                                <td>{k.llojiKategoris}</td>
-                                <td >{k.pershkrimiKategoris !== null && k.pershkrimiKategoris.trim() !== '' ? k.pershkrimiKategoris : "Nuk Ka Pershkrim"}</td>
-                                <td >
-                                    <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.kategoriaId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                    <Button variant="danger" onClick={() => handleFshij(k.kategoriaId)}><FontAwesomeIcon icon={faBan} /></Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </table>
+                    <MDBTable align="middle">
+                        <MDBTableHead>
+                            <th scope="col">Emri i Kompanis</th>
+                            <th scope="col">Logo</th>
+                            <th scope="col">Adresa</th>
+                            <th scope="col">Funksione</th>
+                        </MDBTableHead>
+                        <MDBTableBody>
+                            {kompanit.map((k) => (
+                                <tr key={k.kompaniaId}>
+                                    <td>{k.emriKompanis}</td>
+                                    <td >
+                                        <img
+                                            src={`${process.env.PUBLIC_URL}/img/slider/sliderIcons/${k.logo}`}
+                                            width="50"
+                                            alt=""
+                                        />
+                                    </td>
+                                    <td >{k.adresa !== null && k.adresa.trim() !== '' ? k.adresa : "Nuk Ka Adrese"}</td>
+                                    <td >
+                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.kompaniaId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                        <Button variant="danger" onClick={() => handleFshij(k.kompaniaId)}><FontAwesomeIcon icon={faBan} /></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </MDBTableBody>
+                    </MDBTable>
                 </>
                 )}
             </div >
@@ -153,4 +159,4 @@ function TabelaEKategorive(props) {
     );
 };
 
-export default TabelaEKategorive;
+export default TabelaEKompanive;

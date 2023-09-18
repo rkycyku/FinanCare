@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -10,9 +10,9 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ZbritjaQmimitProduktitController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public ZbritjaQmimitProduktitController(TechStoreDbContext context)
+        public ZbritjaQmimitProduktitController(FinanCareDbContext context)
         {
             _context = context;
         }
@@ -23,13 +23,12 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> get()
         {
             var prodMeZbritje = await _context.Produktis
-                .Where(x => x.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit != null)
+                .Where(x => x.ZbritjaQmimitProduktit.Rabati != null)
                 .Select(x => new
                 {
                     x.EmriProduktit,
                     x.ZbritjaQmimitProduktit.ProduktiId,
-                    x.ZbritjaQmimitProduktit.QmimiPaZbritjeProduktit,
-                    x.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit,
+                    x.ZbritjaQmimitProduktit.Rabati,
                     x.ZbritjaQmimitProduktit.DataZbritjes,
                     x.ZbritjaQmimitProduktit.DataSkadimit
                 }).ToListAsync();

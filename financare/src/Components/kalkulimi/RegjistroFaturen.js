@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import classes from '../kodiZbritjes/Styles/TabelaEKompanive.module.css';
+import classes from '../../Pages/Styles/DizajniPergjithshem.css';
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Mesazhi from "../layout/Mesazhi";

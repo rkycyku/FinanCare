@@ -11,17 +11,15 @@ import Statistika from './Pages/Statistika';
 import TeDhenatEBiznesit from './Pages/TeDhenatEBiznesit';
 import TabelaEPorosive from './Pages/TabelaEPorosive';
 import ProductTables from './Pages/ProductTables';
-import TabelaEKategorive from './Pages/TabelaEKategorive';
-import TabelaEKompanive from './Pages/TabelaEKompanive';
+import NjesiaMatese from './Pages/NjesiaMatese';
+import TabelaEPartnereve from './Pages/TabelaEPartnereve';
 import ZbritjetEProduktit from './Pages/ZbritjetEProduktit';
 import TabelaEPerdoruesve from './Pages/TabelaEPerdoruesve';
 import Rolet from './Pages/Rolet';
-import KodiZbritjes from './Pages/KodiZbritjes';
 import KalkulimiIMallit from './Pages/KalkulimiIMallit';
 import PerditesoTeDhenat from './Pages/PerditesoTeDhenat';
 import KrijoPorosine from './Pages/KrijoPorosine';
-import PartneriBleres from './Pages/PartneriBleres';
-import PartneriFurnitor from './Pages/PartneriFurnitor';
+import ShtoPartnerin from './Pages/ShtoPartnerin';
 
 function App() {
 
@@ -44,17 +42,15 @@ function App() {
         <Route path='/TeDhenatEBiznesit' element={<TeDhenatEBiznesit />} />
         <Route path='/Porosite' element={<TabelaEPorosive />} />
         <Route path='/Produktet' element={<ProductTables />} />
-        <Route path='/Kategorite' element={<TabelaEKategorive />} />
-        <Route path='/Kompanite' element={<TabelaEKompanive />} />
+        <Route path='/NjesiaMatese' element={<NjesiaMatese />} />
+        <Route path='/TabelaEPartnereve' element={<TabelaEPartnereve />} />
         <Route path='/ZbritjetEProduktit' element={<ZbritjetEProduktit />} />
         <Route path='/Stafi' element={<TabelaEPerdoruesve />} />
         <Route path='/Rolet' element={<Rolet />} />
-        <Route path='/KodiZbritjes' element={<KodiZbritjes />} />
         <Route path='/KalkulimiIMallit' element={<KalkulimiIMallit />} />
         <Route path='/PerditesoTeDhenat' element={<PerditesoTeDhenat />} />
         <Route path='/KrijoPorosine' element={<KrijoPorosine />} />
-        <Route path='/PartneriBleres' element={<PartneriBleres />}/>
-        <Route path='/PartneriFurnitor' element={<PartneriFurnitor />}/>
+        <Route path='/ShtoPartnerin' element={<ShtoPartnerin />}/>
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>

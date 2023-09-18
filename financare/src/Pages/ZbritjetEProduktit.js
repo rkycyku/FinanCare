@@ -1,7 +1,7 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/TabelaEKompanive.module.css';
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import ProduktiNeZbritje from "../Components/produktet/Zbritjet/ProduktiNeZbritje";
@@ -11,7 +11,7 @@ import { TailSpin } from 'react-loader-spinner';
 import Mesazhi from "../Components/layout/Mesazhi";
 import FshijZbritjen from '../Components/produktet/Zbritjet/FshijZbritjen';
 import { Link } from "react-router-dom";
-import { MDBBtn } from "mdb-react-ui-kit";
+import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
 function ZbritjetEProduktit(props) {
     const [zbritjet, setZbritjet] = useState([]);
@@ -78,7 +78,7 @@ function ZbritjetEProduktit(props) {
                 <title>Dashboard | Tech Store</title>
             </Helmet>
             <NavBar />
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
 
                 {shfaqMesazhin &&
                     <Mesazhi
@@ -122,31 +122,33 @@ function ZbritjetEProduktit(props) {
                     <MDBBtn className="Butoni"><Link to="/Produktet">Mbyll Zbritjet <FontAwesomeIcon icon={faClose} /></Link></MDBBtn>
                     <MDBBtn className="mb-3 Butoni" onClick={() => setShtoZbritjen(true)}>Shto Zbritjen <FontAwesomeIcon icon={faPlus} /></MDBBtn>
 
-                    <table className="tableBig">
-                        <tr>
-                            <th>Nr. Zbritjes</th>
-                            <th>ID dhe Emri Produktit</th>
-                            <th>Qmim pa Zbritje</th>
-                            <th>Qmimi me Zbritje</th>
-                            <th>Data e Zbritjes</th>
-                            <th>Data e Skadimit</th>
-                            <th>Funksione</th>
-                        </tr>
+                    <MDBTable align="middle">
+                        <MDBTableHead>
+                            <th scope="col">Nr. Zbritjes</th>
+                            <th scope="col">ID dhe Emri Produktit</th>
+                            <th scope="col">Qmim pa Zbritje</th>
+                            <th scope="col">Qmimi me Zbritje</th>
+                            <th scope="col">Data e Zbritjes</th>
+                            <th scope="col">Data e Skadimit</th>
+                            <th scope="col">Funksione</th>
+                        </MDBTableHead>
 
-                        {zbritjet.map((z, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{z.produktiId + " - " + z.emriProduktit}</td>
-                                <td>{parseFloat(z.qmimiPaZbritjeProduktit).toFixed(2)} €</td>
-                                <td >{parseFloat(z.qmimiMeZbritjeProduktit).toFixed(2)} € </td>
-                                <td >{new Date(z.dataZbritjes).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
-                                <td >{new Date(z.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
-                                <td >
-                                    <Button style={{ marginRight: "0.5em" }} variant="danger" onClick={() => handleFshij(z.produktiId)}><FontAwesomeIcon icon={faClose} /></Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </table>
+                        <MDBTableBody>
+                            {zbritjet.map((z, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{z.produktiId + " - " + z.emriProduktit}</td>
+                                    <td>{parseFloat(z.qmimiPaZbritjeProduktit).toFixed(2)} €</td>
+                                    <td >{parseFloat(z.qmimiMeZbritjeProduktit).toFixed(2)} € </td>
+                                    <td >{new Date(z.dataZbritjes).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
+                                    <td >{new Date(z.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
+                                    <td >
+                                        <Button style={{ marginRight: "0.5em" }} variant="danger" onClick={() => handleFshij(z.produktiId)}><FontAwesomeIcon icon={faClose} /></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </MDBTableBody>
+                    </MDBTable>
                 </>
                 )
                 }

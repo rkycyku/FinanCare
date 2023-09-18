@@ -2,10 +2,15 @@ table {
   width: 100%;
 }
 
+.title{
+  margin-top: 0.3em;
+}
+
 .containerDashboardP {
   width: 80%;
   margin: 0 auto;
 }
+
 .containerDashboardP tr th {
   margin-top: 3em;
   background-color: #009879;
@@ -25,31 +30,4 @@ table {
 
 .containerDashboardP h1{
   text-align: center;
-}
-
-.cardStatisitkat{
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  margin: 1em;
-  gap: 1em;
-}
-
-.KartaStatistikave{
-  width: 17.5rem;
-}
-
-.TekstiStatistika{
-  font-weight: bold;
-  font-size: 25pt;
-}
-
-@media (max-width: 767px) {
-  .KartaStatistikave{
-    width: 30rem;
-  }
-
-  .cardStatisitkat{
-    flex-wrap: wrap;
-  }
 }

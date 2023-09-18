@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace TechStoreWebAPI.Controllers
 {
@@ -10,9 +10,9 @@ namespace TechStoreWebAPI.Controllers
     [Route("api/[controller]")]
     public class PorosiaController : ControllerBase
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public PorosiaController(TechStoreDbContext context)
+        public PorosiaController(FinanCareDbContext context)
         {
             _context = context;
         }
@@ -23,19 +23,20 @@ namespace TechStoreWebAPI.Controllers
         public async Task<IActionResult> Get()
         {
             var porosit = await _context.Porosits
-                .Include(p => p.IdKlientiNavigation)
-                    .ThenInclude(t => t.TeDhenatPerdoruesit)
+                .Include(p => p.IdpartneriNavigation)
                 .Select(p => new 
                 {
                     p.IdPorosia,
                     p.TotaliPorosis,
                     p.DataPorosis,
                     p.StatusiPorosis,
-                    p.IdKlienti,
-                    p.Zbritja,
+                    p.Idpartneri,
+                    p.Rabati,
+                    p.ExtraRabati,
+                    p.ExtraRabati2,
                     p.TotaliProdukteve,
-                    p.IdKlientiNavigation.Emri,
-                    p.IdKlientiNavigation.Mbiemri,
+                    p.IdpartneriNavigation.EmriBiznesit,
+                    p.IdpartneriNavigation.Nui,
                 })
                 .OrderByDescending(p => p.IdPorosia)
                 .ToListAsync();
@@ -46,10 +47,10 @@ namespace TechStoreWebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher, User")]
         [HttpGet]
         [Route("shfaqPorositeUserit")]
-        public async Task<IActionResult> GetPorositUseritget(int idPerdoruesi)
+        public async Task<IActionResult> GetPorositUseritget(int Idpartneri)
         {
             List<Porosit> porosit = await _context.Porosits
-                .Where(p=> p.IdKlienti == idPerdoruesi)
+                .Where(p=> p.Idpartneri == Idpartneri)
                 .OrderByDescending(p => p.IdPorosia)
                 .ToListAsync();
 
@@ -64,8 +65,7 @@ namespace TechStoreWebAPI.Controllers
             var porosit = await _context.Porosits
                 .Include(p => p.TeDhenatEporosis)
                     .ThenInclude(t => t.IdProduktiNavigation)
-                .Include(p => p.IdKlientiNavigation)
-                    .ThenInclude(t => t.TeDhenatPerdoruesit)
+                .Include(p => p.IdpartneriNavigation)
                 .Where(x => x.IdPorosia == nrFatures)
                 .Select(p => new
                 {
@@ -73,24 +73,25 @@ namespace TechStoreWebAPI.Controllers
                     p.TotaliPorosis,
                     p.DataPorosis,
                     p.StatusiPorosis,
-                    p.IdKlienti,
-                    p.Zbritja,
+                    p.Idpartneri,
+                    p.Rabati,
+                    p.ExtraRabati,
+                    p.ExtraRabati2,
                     p.TotaliProdukteve,
-                    p.IdKlientiNavigation.Emri,
-                    p.IdKlientiNavigation.Mbiemri,
-                    p.IdKlientiNavigation.Email,
-                    p.IdKlientiNavigation.TeDhenatPerdoruesit.NrKontaktit,
-                    p.IdKlientiNavigation.TeDhenatPerdoruesit.Adresa,
-                    p.IdKlientiNavigation.TeDhenatPerdoruesit.Qyteti,
-                    p.IdKlientiNavigation.TeDhenatPerdoruesit.Shteti,
-                    p.IdKlientiNavigation.TeDhenatPerdoruesit.ZipKodi,
+                    p.IdpartneriNavigation.EmriBiznesit,
+                    p.IdpartneriNavigation.Nui,
+                    p.IdpartneriNavigation.Email,
+                    p.IdpartneriNavigation.Nrf,
+                    p.IdpartneriNavigation.Adresa,
+                    p.IdpartneriNavigation.LlojiPartnerit,
+                    p.IdpartneriNavigation.NrKontaktit,
+                    p.IdpartneriNavigation.Tvsh,
                     TeDhenatEporosis = p.TeDhenatEporosis.Select(t => new
                     {
                         t.QmimiTotal,
                         t.QmimiProduktit,
                         t.SasiaPorositur,
                         t.IdProduktiNavigation.EmriProduktit,
-                        t.IdProduktiNavigation.FotoProduktit,
                     }),
                 })
                 .FirstOrDefaultAsync();

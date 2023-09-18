@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
-import AdminDashboard from "../Components/Dashboard/AdminDashboard";
 import "./Styles/Dashboard.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
-import PorositeUserit from "../Components/Dashboard/PorositeUserit";
-import MesazhetUserit from "../Components/Dashboard/MesazhetUserit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Mesazhi from "../Components/layout/Mesazhi";

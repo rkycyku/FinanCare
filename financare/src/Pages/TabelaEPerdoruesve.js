@@ -1,7 +1,8 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/TabelaEPerdoruesve.module.css';
+import "./Styles/TabelaEPerdoruesve.css";
+import "./Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Mesazhi from "../Components/layout/Mesazhi";
 import { TailSpin } from 'react-loader-spinner';
@@ -60,7 +61,7 @@ function TabelaEPerdoruesve() {
                 <title>Dashboard | Tech Store</title>
             </Helmet>
             <NavBar />
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
 
                 {mbyllRolet == false &&
                     <Rolet

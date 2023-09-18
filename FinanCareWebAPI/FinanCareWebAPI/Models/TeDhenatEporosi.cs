@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAPI.Models;
+namespace FinanCareWebAPI.Models;
 
 public partial class TeDhenatEporosi
 {
@@ -14,10 +14,10 @@ public partial class TeDhenatEporosi
     public int? IdPorosia { get; set; }
 
     public int? IdProdukti { get; set; }
+
     public decimal? QmimiProduktit { get; set; }
 
     public virtual Porosit? IdPorosiaNavigation { get; set; }
 
     public virtual Produkti? IdProduktiNavigation { get; set; }
-
 }

@@ -1,7 +1,8 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from './Styles/TeDhenatEBiznesit.css';
+import "./Styles/DizajniPergjithshem.css";
+import "./Styles/TeDhenatEBiznesit.css";
 import axios from "axios";
 import Mesazhi from "../Components/layout/Mesazhi";
 import { TailSpin } from 'react-loader-spinner';
@@ -15,6 +16,12 @@ import {
     MDBBtnGroup
 } from 'mdb-react-ui-kit';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faClose } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+
+import { Form, Col } from "react-bootstrap";
+
 function TeDhenatEBiznesit(props) {
     const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
     const [perditeso, setPerditeso] = useState('');
@@ -24,6 +31,11 @@ function TeDhenatEBiznesit(props) {
     const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
     const [loading, setLoading] = useState(false);
     const [foto, setFoto] = useState(null);
+
+    const [shteti, setShteti] = useState("");
+    const handleShtetiChange = (event) => {
+        setShteti(event.target.value);
+    };
 
     const [formValue, setFormValue] = useState({
         emriBiznesit: "",
@@ -138,7 +150,7 @@ function TeDhenatEBiznesit(props) {
             </Helmet>
             <NavBar />
 
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
                 {shfaqMesazhin && <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}
                     pershkrimi={pershkrimiMesazhit}
@@ -160,7 +172,7 @@ function TeDhenatEBiznesit(props) {
                 ) :
                     (
                         <div className="TeDhenatContainer mb-4">
-                            <h1 className="titulliPerditeso mb-4">Shto Partnerin Bleres</h1>
+                            <h1 className="titulliPerditeso mb-4">Shto Partnerin</h1>
 
                             <MDBRow tag="form" className='g-3'>
 
@@ -171,7 +183,7 @@ function TeDhenatEBiznesit(props) {
                                         onChange={onChange}
                                         id='validationCustom01'
                                         required
-                                        label='Emri i Biznesit'
+                                        label={<span>Emri i Biznesit<span style={{ color: "red" }}>*</span></span>}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -181,7 +193,7 @@ function TeDhenatEBiznesit(props) {
                                         onChange={onChange}
                                         id='validationCustom03'
                                         required
-                                        label='Numri Unik Identifikues: NUI'
+                                        label={<span>Numri Unik Identifikues: NUI<span style={{ color: "red" }}>*</span></span>}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -218,7 +230,7 @@ function TeDhenatEBiznesit(props) {
                                         onChange={onChange}
                                         id='validationCustom03'
                                         required
-                                        label='Adresa'
+                                        label={<span>Adresa<span style={{ color: "red" }}>*</span></span>}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -230,12 +242,21 @@ function TeDhenatEBiznesit(props) {
                                         label='Numri i Kontaktit'
                                     />
                                 </MDBCol>
-                                <div className='col-12'>
-                                    <MDBBtn>
-                                        Shto Partnerin
-                                    </MDBBtn>
-                                </div>
+                                <Form.Group as={Col} className="p-0" controlId="formGridState">
+                                    <Form.Select value={setShteti} onChange={handleShtetiChange}>
+                                        <option hidden disabled>Zgjedhni Llojin e Partnerit</option>
+                                        <option>Bleres</option>
+                                        <option>Furnitore</option>
+                                    </Form.Select>
+                                    <Form.Label>{<span>Lloji i Partnerit<span style={{ color: "red" }}>*</span></span>}</Form.Label>
+                                </Form.Group>
                             </MDBRow>
+                            <div>
+                                <MDBBtn>
+                                    Shto Partnerin <FontAwesomeIcon icon={faPlus} />
+                                </MDBBtn>
+                                <Link to="/TabelaEPartnereve"><MDBBtn className="Butoni">Anulo <FontAwesomeIcon icon={faClose} /></MDBBtn></Link>
+                            </div>
                         </div>
                     )
                 }

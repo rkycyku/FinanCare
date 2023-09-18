@@ -164,16 +164,9 @@ function NavBar(props) {
                       <MDBDropdownToggle>Artikujt</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/Produktet'><MDBDropdownItem link>Lista e Produkteve</MDBDropdownItem></Link>
-                        <Link to='/Kategorite'><MDBDropdownItem link>Kategorite</MDBDropdownItem></Link>
-                        <Link to='/Kompanite'><MDBDropdownItem link>Kompanit</MDBDropdownItem></Link>
+                        <Link to='/NjesiaMatese'><MDBDropdownItem link>Njesia Matese</MDBDropdownItem></Link>
                         <MDBDropdownItem divider />
-                        <MDBDropdown dropright group>
-                          <MDBDropdownToggle>Zbritjet</MDBDropdownToggle>
-                          <MDBDropdownMenu>
-                            <Link to='/ZbritjetEProduktit'> <MDBDropdownItem link>Zbritjet e Produkteve</MDBDropdownItem></Link>
-                            <Link to='/KodiZbritjes'><MDBDropdownItem link>Kodet e Zbritjev</MDBDropdownItem></Link>
-                          </MDBDropdownMenu>
-                        </MDBDropdown>
+                        <Link to='/ZbritjetEProduktit'> <MDBDropdownItem link>Zbritjet e Produkteve</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
                     <MDBDropdown dropright group>
@@ -221,20 +214,8 @@ function NavBar(props) {
                     <MDBDropdown dropright group>
                       <MDBDropdownToggle>Partneret</MDBDropdownToggle>
                       <MDBDropdownMenu>
-                        <MDBDropdown dropright group>
-                          <MDBDropdownToggle>Partneri Bleres</MDBDropdownToggle>
-                          <MDBDropdownMenu>
-                            <Link to='/PartneriBleres'><MDBDropdownItem link>Lista e Partnereve Bleres</MDBDropdownItem></Link>
-                            <Link to='#'><MDBDropdownItem link>Shtoni Partnerin Bleres</MDBDropdownItem></Link>
-                          </MDBDropdownMenu>
-                        </MDBDropdown>
-                        <MDBDropdown dropright group>
-                          <MDBDropdownToggle>Partneri Furnitor</MDBDropdownToggle>
-                          <MDBDropdownMenu>
-                            <Link to='/PartneriFurnitor'><MDBDropdownItem link>Lista e Partnereve Furnitor</MDBDropdownItem></Link>
-                            <Link to='#'><MDBDropdownItem link>Shtoni Partnerin Furnitor </MDBDropdownItem></Link>
-                          </MDBDropdownMenu>
-                        </MDBDropdown>
+                        <Link to='/TabelaEPartnereve'><MDBDropdownItem link>Lista e Partnereve</MDBDropdownItem></Link>
+                        <Link to='/ShtoPartnerin'><MDBDropdownItem link>Shtoni Partnerin</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
                   </MDBDropdownMenu>

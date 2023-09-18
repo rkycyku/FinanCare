@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -12,11 +12,11 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class PerdoruesiController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
         public PerdoruesiController(
-            TechStoreDbContext context, 
+            FinanCareDbContext context, 
             UserManager<IdentityUser> userManager)
         {
             _context = context;

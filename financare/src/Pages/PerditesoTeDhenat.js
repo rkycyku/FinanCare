@@ -1,7 +1,8 @@
 import NavBar from "../Components/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
-import classes from '../Components/Dashboard/Styles/AdminDashboard.css';
+import "./Styles/DizajniPergjithshem.css";
+import "./Styles/PerditesoTeDhenat.css";
 import axios from "axios";
 import Mesazhi from "../Components/layout/Mesazhi";
 import { TailSpin } from 'react-loader-spinner';
@@ -348,7 +349,7 @@ function PerditesoTeDhenat(props) {
             </Helmet>
             <NavBar />
 
-            <div className={classes.containerDashboardP}>
+            <div className="containerDashboardP">
 
                 {shfaqMesazhin && <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}

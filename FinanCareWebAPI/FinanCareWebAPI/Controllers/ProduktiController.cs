@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using WebAPI.Models;
+using FinanCareWebAPI.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TechStoreWebAPI.Controllers
@@ -12,9 +12,9 @@ namespace TechStoreWebAPI.Controllers
     [Route("api/[controller]")]
     public class ProduktiController : Controller
     {
-        private readonly TechStoreDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-        public ProduktiController(TechStoreDbContext context)
+        public ProduktiController(FinanCareDbContext context)
         {
             _context = context;
         }
@@ -31,16 +31,14 @@ namespace TechStoreWebAPI.Controllers
                .Select(x => new {
                    x.ProduktiId,
                    x.EmriProduktit,
-                   x.Pershkrimi,
-                   x.FotoProduktit,
-                   x.KategoriaId,
-                   x.Kategoria.LlojiKategoris,
-                   x.KompaniaId,
-                   x.Kompania.EmriKompanis,
+                   x.Idpartneri,
+                   x.IdnjesiaMatese,
+                   x.Barkodi,
+                   x.KodiProduktit,
                    x.StokuQmimiProduktit.SasiaNeStok,
                    x.StokuQmimiProduktit.QmimiProduktit,
                    x.StokuQmimiProduktit.QmimiBleres,
-                   x.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit
+                   x.ZbritjaQmimitProduktit.Rabati
                })
                .ToListAsync();
 
@@ -59,16 +57,14 @@ namespace TechStoreWebAPI.Controllers
                .Select(x => new {
                    x.ProduktiId,
                    x.EmriProduktit,
-                   x.Pershkrimi,
-                   x.FotoProduktit,
-                   x.KategoriaId,
-                   x.Kategoria.LlojiKategoris,
-                   x.KompaniaId,
-                   x.Kompania.EmriKompanis,
+                   x.Idpartneri,
+                   x.IdnjesiaMatese,
+                   x.Barkodi,
+                   x.KodiProduktit,
                    x.StokuQmimiProduktit.SasiaNeStok,
                    x.StokuQmimiProduktit.QmimiProduktit,
                    x.StokuQmimiProduktit.QmimiBleres,
-                   x.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit
+                   x.ZbritjaQmimitProduktit.Rabati
                })
                .ToListAsync();
 
@@ -80,23 +76,23 @@ namespace TechStoreWebAPI.Controllers
         public async Task<ActionResult> GetById(int id)
         {
             var produkti = await _context.Produktis
-                .Include(p => p.Kompania)
-                .Include(p => p.Kategoria)
+                .Include(p => p.Partneri)
+                .Include(p => p.NjesiaMatese)
                 .Include(p => p.StokuQmimiProduktit)
                 .Where(p => p.ProduktiId == id)
                 .Select(p => new {
                     p.ProduktiId,
                     p.EmriProduktit,
-                    p.Pershkrimi,
-                    p.FotoProduktit,
-                    p.KompaniaId,
-                    p.Kompania.EmriKompanis,
-                    p.KategoriaId,
-                    p.Kategoria.LlojiKategoris,
+                    p.Idpartneri,
+                    p.Partneri.EmriBiznesit,
+                    p.IdnjesiaMatese,
+                    p.NjesiaMatese.NjesiaMatese1,
+                    p.Barkodi,
+                    p.KodiProduktit,
                     p.StokuQmimiProduktit.SasiaNeStok,
-                    p.StokuQmimiProduktit.QmimiBleres,
                     p.StokuQmimiProduktit.QmimiProduktit,
-                    p.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit
+                    p.StokuQmimiProduktit.QmimiBleres,
+                    p.ZbritjaQmimitProduktit.Rabati,
                 })
                 .FirstOrDefaultAsync();
 
@@ -106,28 +102,6 @@ namespace TechStoreWebAPI.Controllers
             }
 
             return Ok(produkti);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("15ProduktetMeTeFundit")]
-        public async Task<IActionResult> Get15Produkte()
-        {
-            var Kthe15TeFundit = await _context.Produktis
-                .OrderByDescending(x => x.ProduktiId)
-                .Take(15)
-                .Select(x => new {
-                    x.ProduktiId,
-                    x.EmriProduktit,
-                    x.FotoProduktit,
-                    x.StokuQmimiProduktit.SasiaNeStok,
-                    x.StokuQmimiProduktit.QmimiBleres,
-                    x.StokuQmimiProduktit.QmimiProduktit,
-                    x.ZbritjaQmimitProduktit.QmimiMeZbritjeProduktit
-                })
-                .ToListAsync();
-
-            return Ok(Kthe15TeFundit);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -166,24 +140,24 @@ namespace TechStoreWebAPI.Controllers
                 produkti.EmriProduktit = p.EmriProduktit;
             }
 
-            if (!p.FotoProduktit.IsNullOrEmpty())
+            if (p.IdnjesiaMatese != null)
             {
-                produkti.FotoProduktit = p.FotoProduktit;
+                produkti.IdnjesiaMatese = p.IdnjesiaMatese;
             }
 
-            if (p.KategoriaId != null)
+            if (p.Idpartneri != null)
             {
-                produkti.KategoriaId = p.KategoriaId;
+                produkti.Idpartneri = p.Idpartneri;
             }
 
-            if (p.KompaniaId != null)
+            if (p.Barkodi != null)
             {
-                produkti.KompaniaId = p.KompaniaId;
+                produkti.Barkodi = p.Barkodi;
             }
 
-            if (p.Pershkrimi != null)
+            if(p.KodiProduktit != null)
             {
-                produkti.Pershkrimi = p.Pershkrimi;
+                produkti.KodiProduktit = p.KodiProduktit;
             }
 
             if (p.StokuQmimiProduktit != null)
@@ -204,8 +178,6 @@ namespace TechStoreWebAPI.Controllers
                 }
             }
 
-            
-
             _context.Produktis.Update(produkti);
             _context.StokuQmimiProduktits.Update(stokuQmimi);
             await _context.SaveChangesAsync();
@@ -221,16 +193,6 @@ namespace TechStoreWebAPI.Controllers
 
             if (produkti == null)
                 return BadRequest("Invalid id");
-
-            if (!produkti.FotoProduktit.Equals("ProduktPaFoto.png"))
-            {
-                var fotoVjeter = Path.Combine("..", "..", "techstore", "public", "img", "products", produkti.FotoProduktit);
-
-                if (System.IO.File.Exists(fotoVjeter))
-                {
-                    System.IO.File.Delete(fotoVjeter);
-                }
-            }
 
             _context.Produktis.Remove(produkti);
             await _context.SaveChangesAsync();
