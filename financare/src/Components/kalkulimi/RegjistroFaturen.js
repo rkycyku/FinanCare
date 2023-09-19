@@ -166,23 +166,20 @@ function RegjistroFaturen(props) {
 
     async function handleMbyllFature() {
         try {
-            await axios.post('https://localhost:7285/api/RegjistrimiStokut/RuajKalkulimin', {
-                totaliProdukteveRegjistruara: totProdukteve,
-                shumaTotaleRegjistrimit: totFaturesShitese,
-                shumaTotaleBlerese: totFaturesBlerese,
-                stafiId: teDhenat.perdoruesi.userId
-            }, authentikimi).then(async (response) => {
+            if (produktetNeKalkulim.length === 0) {
+                props.setPerditeso(Date.now());
+                props.mbyllPerkohesisht();
+            } else {
 
                 for (let produkti of produktetNeKalkulim) {
-                    await axios.post('https://localhost:7285/api/RegjistrimiStokut/ruajKalkulimin/teDhenat', {
-                        idRegjistrimit: response.data.idRegjistrimit,
+                    await axios.post('https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/teDhenat', {
+                        idRegjistrimit: props.nrRendorKalkulimit,
                         idProduktit: produkti.produktiId,
                         sasiaStokut: produkti.sasia,
                         qmimiBleres: produkti.qmimiBleres,
-                        qmimiShites: produkti.qmimiShites,
+                        qmimiShites: produkti.qmimiShites
                     }, authentikimi);
-                    await axios.put(`https://localhost:7285/api/RegjistrimiStokut/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.produktiId}`, {
-                        produktiId: produkti.produktiId,
+                    await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.produktiId}`, {
                         qmimiBleres: produkti.qmimiBleres,
                         qmimiProduktit: produkti.qmimiShites,
                         sasiaNeStok: produkti.sasia
@@ -190,10 +187,8 @@ function RegjistroFaturen(props) {
                 }
 
                 props.setPerditeso(Date.now());
-                props.setMbyllFaturen();
-            })
-
-
+                props.mbyllKalkulimin();
+            }
         } catch (error) {
             console.error(error);
         }

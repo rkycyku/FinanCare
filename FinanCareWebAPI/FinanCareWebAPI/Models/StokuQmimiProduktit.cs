@@ -7,7 +7,7 @@ public partial class StokuQmimiProduktit
 {
     public int ProduktiId { get; set; }
 
-    public int? SasiaNeStok { get; set; }
+    public decimal? SasiaNeStok { get; set; }
 
     public decimal? QmimiBleres { get; set; }
 
@@ -17,5 +17,5 @@ public partial class StokuQmimiProduktit
 
     public DateTime? DataPerditsimit { get; set; }
 
-    public virtual Produkti Produkti { get; set; } = null!;
+    public virtual Produkti? Produkti { get; set; }
 }

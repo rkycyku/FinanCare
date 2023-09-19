@@ -19,11 +19,11 @@ public partial class Porosit
 
     public int? Idstafi { get; set; }
 
-    public int? Rabati { get; set; }
+    public decimal? Rabati { get; set; }
 
-    public int? ExtraRabati { get; set; }
+    public decimal? ExtraRabati { get; set; }
 
-    public int? ExtraRabati2 { get; set; }
+    public decimal? ExtraRabati2 { get; set; }
 
     public string? LlojiPageses { get; set; }
 

@@ -26,4 +26,6 @@ public partial class Partneri
     public virtual ICollection<KalkulimiImallit> KalkulimiImallits { get; } = new List<KalkulimiImallit>();
 
     public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();
+
+    public virtual ICollection<Produkti> Produktis { get; } = new List<Produkti>();
 }

@@ -11,7 +11,7 @@ public partial class TeDhenatKalkulimit
 
     public int? IdProduktit { get; set; }
 
-    public int? SasiaStokut { get; set; }
+    public decimal? SasiaStokut { get; set; }
 
     public decimal? QmimiBleres { get; set; }
 

@@ -17,6 +17,10 @@ public partial class Produkti
 
     public string? KodiProduktit { get; set; }
 
+    public virtual NjesiaMatese? IdnjesiaMateseNavigation { get; set; }
+
+    public virtual Partneri? IdpartneriNavigation { get; set; }
+
     public virtual StokuQmimiProduktit? StokuQmimiProduktit { get; set; }
 
     public virtual ICollection<TeDhenatEporosi> TeDhenatEporosis { get; } = new List<TeDhenatEporosi>();
@@ -25,7 +29,4 @@ public partial class Produkti
 
     public virtual ZbritjaQmimitProduktit? ZbritjaQmimitProduktit { get; set; }
     
-    public virtual NjesiaMatese? NjesiaMatese { get; set; }
-
-    public virtual Partneri? Partneri { get; set; }
 }

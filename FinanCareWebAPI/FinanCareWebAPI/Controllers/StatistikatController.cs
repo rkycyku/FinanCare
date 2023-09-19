@@ -153,7 +153,7 @@ namespace WebAPI.Controllers
                         e.ZbritjaQmimitProduktit.Rabati,
                     },
                     TotaliPorosive = e.TeDhenatEporosis.Sum(q => q.SasiaPorositur),
-                    TotaliBlerjeve = e.TeDhenatEporosis.Sum(q => q.QmimiTotal),
+                    TotaliBlerjeve = e.TeDhenatEporosis.Sum(q => q.Rabati),
                 })
                 .OrderByDescending(g => g.TotaliPorosive)
                 .ThenByDescending(g => g.TotaliBlerjeve)

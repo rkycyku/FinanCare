@@ -88,7 +88,7 @@ namespace TechStoreWebAPI.Controllers
                     p.IdpartneriNavigation.Tvsh,
                     TeDhenatEporosis = p.TeDhenatEporosis.Select(t => new
                     {
-                        t.QmimiTotal,
+                        t.Rabati,
                         t.QmimiProduktit,
                         t.SasiaPorositur,
                         t.IdProduktiNavigation.EmriProduktit,

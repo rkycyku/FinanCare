@@ -25,6 +25,8 @@ public partial class KalkulimiImallit
 
     public string? NrFatures { get; set; }
 
+    public string? StatusiKalkulimit { get; set; }
+
     public virtual Partneri? IdpartneriNavigation { get; set; }
 
     public virtual Perdoruesi? Stafi { get; set; }

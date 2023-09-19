@@ -36,7 +36,8 @@ namespace WebAPI.Controllers
                     x.IdpartneriNavigation.EmriBiznesit,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
-                    x.StatusiPageses
+                    x.StatusiPageses,
+                    x.StatusiKalkulimit
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -60,7 +61,8 @@ namespace WebAPI.Controllers
                     x.IdpartneriNavigation.EmriBiznesit,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
-                    x.StatusiPageses
+                    x.StatusiPageses,
+                    x.StatusiKalkulimit
                 }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
 
             return Ok(regjistrimet);
@@ -137,7 +139,32 @@ namespace WebAPI.Controllers
                 throw;
             }
 
-            return NoContent();
+            return Ok(produkti);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
+        public async Task<IActionResult> Put(int id)
+        {
+            var kalkulimi = await _context.KalkulimiImallits.FindAsync(id);
+            if (kalkulimi == null)
+            {
+                return NotFound();
+            }
+
+            kalkulimi.StatusiKalkulimit = "true";
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(kalkulimi);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]

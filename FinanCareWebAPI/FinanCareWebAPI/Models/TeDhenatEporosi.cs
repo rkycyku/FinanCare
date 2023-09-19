@@ -7,7 +7,7 @@ public partial class TeDhenatEporosi
 {
     public int IdDetajet { get; set; }
 
-    public decimal? QmimiTotal { get; set; }
+    public decimal? Rabati { get; set; }
 
     public int? SasiaPorositur { get; set; }
 

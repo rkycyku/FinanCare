@@ -76,17 +76,17 @@ namespace TechStoreWebAPI.Controllers
         public async Task<ActionResult> GetById(int id)
         {
             var produkti = await _context.Produktis
-                .Include(p => p.Partneri)
-                .Include(p => p.NjesiaMatese)
+                .Include(p => p.IdpartneriNavigation)
+                .Include(p => p.IdnjesiaMateseNavigation)
                 .Include(p => p.StokuQmimiProduktit)
                 .Where(p => p.ProduktiId == id)
                 .Select(p => new {
                     p.ProduktiId,
                     p.EmriProduktit,
                     p.Idpartneri,
-                    p.Partneri.EmriBiznesit,
+                    p.IdpartneriNavigation.EmriBiznesit,
                     p.IdnjesiaMatese,
-                    p.NjesiaMatese.NjesiaMatese1,
+                    p.IdnjesiaMateseNavigation.NjesiaMatese1,
                     p.Barkodi,
                     p.KodiProduktit,
                     p.StokuQmimiProduktit.SasiaNeStok,

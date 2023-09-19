@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FinanCareWebAPI.Models;
 
-public partial class FinanCareDbContext : IdentityDbContext
+public partial class FinanCareDbContextCopy : IdentityDbContext
 {
-    public FinanCareDbContext()
+    public FinanCareDbContextCopy()
     {
     }
 
-    public FinanCareDbContext(DbContextOptions<FinanCareDbContext> options)
+    public FinanCareDbContextCopy(DbContextOptions<FinanCareDbContext> options)
         : base(options)
     {
     }
@@ -40,6 +40,7 @@ public partial class FinanCareDbContext : IdentityDbContext
     public virtual DbSet<TeDhenatPerdoruesit> TeDhenatPerdoruesits { get; set; }
 
     public virtual DbSet<ZbritjaQmimitProduktit> ZbritjaQmimitProduktits { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -57,21 +58,21 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasColumnType("datetime")
                 .HasColumnName("dataRegjistrimit");
             entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
-            entity.Property(e => e.LlojiKalkulimit)
-                .HasMaxLength(20)
-                .HasDefaultValueSql("('HYRJE')");
             entity.Property(e => e.LlojiPageses)
                 .HasMaxLength(6)
                 .HasDefaultValueSql("('Cash')");
-            entity.Property(e => e.NrFatures).HasMaxLength(40);
+            entity.Property(e => e.LlojiKalkulimit)
+                .HasMaxLength(20)
+                .HasDefaultValue("('HYRJE')");
+            entity.Property(e => e.NrFatures)
+                .HasMaxLength(40);
             entity.Property(e => e.StafiId).HasColumnName("stafiID");
-            entity.Property(e => e.StatusiKalkulimit)
-                .HasMaxLength(7)
-                .HasDefaultValueSql("('false')")
-                .HasColumnName("statusiKalkulimit");
             entity.Property(e => e.StatusiPageses)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("('E Paguar')");
+            entity.Property(e => e.StatusiKalkulimit)
+                .HasMaxLength(7)
+                .HasDefaultValue("('false')");
             entity.Property(e => e.TotaliPaTvsh)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("TotaliPaTVSH");
@@ -170,8 +171,6 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date")
                 .HasColumnName("dataPorosis");
-            entity.Property(e => e.ExtraRabati).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.ExtraRabati2).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
             entity.Property(e => e.Idstafi).HasColumnName("IDStafi");
             entity.Property(e => e.LlojiPageses)
@@ -180,7 +179,6 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.Pagesa)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("('Pa Paguar')");
-            entity.Property(e => e.Rabati).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.StatusiPorosis)
                 .HasMaxLength(30)
                 .IsUnicode(false)
@@ -222,16 +220,6 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.IdnjesiaMatese).HasColumnName("IDNjesiaMatese");
             entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
             entity.Property(e => e.KodiProduktit).HasMaxLength(20);
-
-            entity.HasOne(d => d.IdnjesiaMateseNavigation).WithMany(p => p.Produktis)
-                .HasForeignKey(d => d.IdnjesiaMatese)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Produkti_NjesiaMatese");
-
-            entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.Produktis)
-                .HasForeignKey(d => d.Idpartneri)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Produkti_Partneri");
         });
 
         modelBuilder.Entity<StokuQmimiProduktit>(entity =>
@@ -261,7 +249,6 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasColumnName("qmimiProduktit");
             entity.Property(e => e.SasiaNeStok)
                 .HasDefaultValueSql("((0))")
-                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("sasiaNeStok");
 
             entity.HasOne(d => d.Produkti).WithOne(p => p.StokuQmimiProduktit).HasForeignKey<StokuQmimiProduktit>(d => d.ProduktiId);
@@ -309,9 +296,6 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.QmimiProduktit)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("qmimiProduktit");
-            entity.Property(e => e.Rabati)
-                .HasColumnType("decimal(5, 2)")
-                .HasColumnName("rabati");
             entity.Property(e => e.SasiaPorositur).HasColumnName("sasiaPorositur");
 
             entity.HasOne(d => d.IdPorosiaNavigation).WithMany(p => p.TeDhenatEporosis)
@@ -344,9 +328,7 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.QmimiShites)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("qmimiShites");
-            entity.Property(e => e.SasiaStokut)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("sasiaStokut");
+            entity.Property(e => e.SasiaStokut).HasColumnName("sasiaStokut");
 
             entity.HasOne(d => d.IdProduktitNavigation).WithMany(p => p.TeDhenatKalkulimits)
                 .HasForeignKey(d => d.IdProduktit)
@@ -361,13 +343,11 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<TeDhenatPerdoruesit>(entity =>
         {
-            entity.HasKey(e => e.UserId);
-
+            entity
+                .HasKey(e => e.UserId)
+                .HasName("PK_TeDhenatPerdoruesit");
             entity.ToTable("TeDhenatPerdoruesit");
 
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("userID");
             entity.Property(e => e.Adresa)
                 .HasMaxLength(40)
                 .IsUnicode(false)
@@ -384,6 +364,7 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("shteti");
+            entity.Property(e => e.UserId).HasColumnName("userID");
             entity.Property(e => e.ZipKodi).HasColumnName("zipKodi");
 
             entity.HasOne(d => d.User).WithOne(p => p.TeDhenatPerdoruesit)
@@ -408,7 +389,6 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("dataZbritjes");
-            entity.Property(e => e.Rabati).HasColumnType("decimal(5, 2)");
 
             entity.HasOne(d => d.Produkti).WithOne(p => p.ZbritjaQmimitProduktit).HasForeignKey<ZbritjaQmimitProduktit>(d => d.ProduktiId);
         });

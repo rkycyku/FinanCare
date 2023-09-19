@@ -11,7 +11,7 @@ public partial class ZbritjaQmimitProduktit
 
     public DateTime? DataSkadimit { get; set; }
 
-    public int? Rabati { get; set; }
+    public decimal? Rabati { get; set; }
 
     public virtual Produkti Produkti { get; set; } = null!;
 }
