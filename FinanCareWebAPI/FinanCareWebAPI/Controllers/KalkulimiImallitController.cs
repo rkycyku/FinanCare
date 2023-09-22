@@ -43,6 +43,34 @@ namespace WebAPI.Controllers
             return Ok(regjistrimet);
         }
 
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("shfaqRegjistrimetSipasStatusit")]
+        public async Task<IActionResult> GetByStatusi(string statusi)
+        {
+            var regjistrimet = await _context.KalkulimiImallits
+                .Where(x => x.StatusiKalkulimit == statusi)
+                .OrderByDescending(x => x.IdRegjistrimit)
+                .Select(x => new
+                {
+                    x.IdRegjistrimit,
+                    x.TotaliPaTvsh,
+                    x.Tvsh,
+                    x.DataRegjistrimit,
+                    x.StafiId,
+                    x.Stafi.Username,
+                    x.NrFatures,
+                    x.IdpartneriNavigation.EmriBiznesit,
+                    x.LlojiKalkulimit,
+                    x.LlojiPageses,
+                    x.StatusiPageses,
+                    x.StatusiKalkulimit
+                }).ToListAsync();
+
+            return Ok(regjistrimet);
+        }
+
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("shfaqRegjistrimetNgaID")]
@@ -227,7 +255,10 @@ namespace WebAPI.Controllers
         [Route("getNumriFaturesMeRradhe")]
         public async Task<IActionResult> GetNumriFaturesMeRradhe()
         {
-            var nrFatures = await _context.KalkulimiImallits.CountAsync();
+            var nrFatures = await _context.KalkulimiImallits
+            .OrderByDescending(x => x.IdRegjistrimit)
+            .Take(1) // Take only one record (the second latest)
+            .Select(x => x.IdRegjistrimit).ToListAsync();
 
             return Ok(nrFatures);
         }
@@ -250,7 +281,6 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -274,11 +304,6 @@ namespace WebAPI.Controllers
             })
             .SingleOrDefaultAsync(); // Use SingleOrDefaultAsync to retrieve one record
 
-            if (secondLatestTeDhenat == null)
-            {
-                return NotFound(); // Handle case where no second latest record is found
-            }
-
 
             var produktiNeKalkulim = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
 
@@ -292,8 +317,19 @@ namespace WebAPI.Controllers
 
             produkti.SasiaNeStok -= produktiNeKalkulim.SasiaStokut;
             produkti.DataPerditsimit = DateTime.Now;
-            produkti.QmimiProduktit = secondLatestTeDhenat.QmimiShites;
-            produkti.QmimiBleres = secondLatestTeDhenat.QmimiBleres;
+            
+            if (secondLatestTeDhenat == null )
+            {
+                produkti.QmimiProduktit = 0;
+
+                produkti.QmimiBleres = 0;
+            }
+            else
+            {
+                produkti.QmimiProduktit = secondLatestTeDhenat.QmimiShites;
+                produkti.QmimiBleres = secondLatestTeDhenat.QmimiBleres;
+            }
+
             if (produkti.DataKrijimit == null)
             {
                 produkti.DataKrijimit = produkti.DataKrijimit;

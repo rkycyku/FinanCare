@@ -18,7 +18,18 @@ function PerditesoStatusinKalk(props) {
 
   const [perditeso, setPerditeso] = useState("");
   const [produktet, setProduktet] = useState([]);
-  const [kontrolloProduktin, setKontrolloProduktin] = useState(false);
+  const [hapKalkulimin, setHapKalkulimin] = useState(false);
+  const [fshijKalkulimin, setFshijKalkulimin] = useState(false);
+
+  const [statusiIFiltrimit, setStatusiIFiltrimit] = useState([]);
+
+  const getToken = localStorage.getItem("token");
+
+  const authentikimi = {
+    headers: {
+      Authorization: `Bearer ${getToken}`,
+    },
+  };
 
   useEffect(() => {
     const vendosProduktet = async () => {
@@ -36,14 +47,6 @@ function PerditesoStatusinKalk(props) {
     vendosProduktet();
   }, [perditeso]);
 
-  const getToken = localStorage.getItem("token");
-
-  const authentikimi = {
-    headers: {
-      Authorization: `Bearer ${getToken}`,
-    },
-  };
-
   useEffect(() => {
     const shfaqKalkulimet = async () => {
       try {
@@ -55,58 +58,110 @@ function PerditesoStatusinKalk(props) {
     };
 
     shfaqKalkulimet();
-  }, [perditeso]);
+  }, [perditeso, hapKalkulimin, fshijKalkulimin]);
+
+  useEffect(() => {
+    const shfaqKalkulimet = async () => {
+      try {
+        const kalkulimet = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
+        setKalkulimetEFiltruara(kalkulimet.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    shfaqKalkulimet();
+  }, [hapKalkulimin, fshijKalkulimin, statusiIFiltrimit]);
 
   async function ndryshoStatusinKalkulimit() {
     try {
       await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrKalkulimit}&statusi=false`
         , {}, authentikimi).then(() => {
-          setKontrolloProduktin(false);
+
           setPerditeso(Date.now());
+
+
+          filtroKalkulimet("hapKalkulimet")
+          setHapKalkulimin(false);
         })
 
       await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${nrKalkulimit}`
         , authentikimi).then(async (teDhenat) => {
-          console.log(teDhenat);
-
           for (let p of teDhenat.data) {
             await axios.get(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin/perditesoStokunQmimin?idKalkulimi=${p.idRegjistrimit}&idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}`, authentikimi);
           }
         });
+
+      filtroKalkulimet("hapKalkulimet")
     } catch (error) {
       console.error(error)
     }
   }
 
-  async function fshijKalkulimin(){
+  async function fshijKalkuliminFunksioni() {
+    try {
+      await axios.delete(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin?idKalkulimi=${nrKalkulimit}`
+        , authentikimi).then(() => {
+          setPerditeso(Date.now());
 
+          filtroKalkulimet("fshijKalkulimet")
+        })
+
+
+      setFshijKalkulimin(false);
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  function detajetRiKonfrimitKalkulimit(emriBiznesit, nrFatures, nrKalkulimit, dataFatures, llojiFatures) {
+  function detajetRiKonfrimitKalkulimit(emriBiznesit, nrFatures, nrKalkulimit, dataFatures, llojiFatures, funksioni) {
     setEmriBiznesit(emriBiznesit);
     setNrFatures(nrFatures);
     setNrKalkulimit(nrKalkulimit);
     setDataFatures(dataFatures);
     setLlojiFatures(llojiFatures);
 
-    setKontrolloProduktin(true);
+    setPerditeso(Date.now());
+
+    if (funksioni === "hapKalkulimin") {
+
+      setPerditeso(Date.now());
+      setHapKalkulimin(true);
+    }
+
+    if (funksioni === "fshijKalkulimin") {
+
+      setPerditeso(Date.now());
+      setFshijKalkulimin(true);
+    }
+
+
+    setPerditeso(Date.now());
   }
 
   function filtroKalkulimet(lloji) {
+    setPerditeso(Date.now());
+
     if (lloji === "hapKalkulimet") {
-      const filteredKalkulimet = kalkulimet.filter((k) => k.statusiKalkulimit === "true");
-      setKalkulimetEFiltruara(filteredKalkulimet);
+
+      setPerditeso(Date.now());
+
+      setStatusiIFiltrimit("true");
+
+      setPerditeso(Date.now());
     }
     if (lloji === "fshijKalkulimet") {
-      const filteredKalkulimet = kalkulimet.filter((k) => k.statusiKalkulimit === "false");
-      setKalkulimetEFiltruara(filteredKalkulimet);
+
+      setPerditeso(Date.now());
+      setStatusiIFiltrimit("false");
+      setPerditeso(Date.now());
     }
   }
 
   return (
     <>
-      {kontrolloProduktin &&
-        <Modal show={kontrolloProduktin} style={{ marginTop: "7em" }} onHide={() => setKontrolloProduktin(false)}>
+      {hapKalkulimin &&
+        <Modal show={hapKalkulimin} style={{ marginTop: "7em" }} onHide={() => setHapKalkulimin(false)}>
           <Modal.Header closeButton>
             <Modal.Title as="h5">Konfirmo Hapjen e Kalkulimit</Modal.Title>
           </Modal.Header>
@@ -136,7 +191,7 @@ function PerditesoStatusinKalk(props) {
             </span>
           </Modal.Body>
           <Modal.Footer>
-            <Button size="sm" variant="secondary" onClick={() => setKontrolloProduktin(false)}>
+            <Button size="sm" variant="secondary" onClick={() => setHapKalkulimin(false)}>
               Anulo <FontAwesomeIcon icon={faXmark} />
             </Button>
             <Button
@@ -148,10 +203,53 @@ function PerditesoStatusinKalk(props) {
           </Modal.Footer>
         </Modal>
       }
+      {fshijKalkulimin &&
+        <Modal show={fshijKalkulimin} style={{ marginTop: "7em" }} onHide={() => setFshijKalkulimin(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title as="h5">Konfirmo Fshrijen e Kalkulimit</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <strong style={{ fontSize: "10pt" }}>
+              A jeni te sigurt qe deshironi ta fshini kete kalkulim?
+            </strong>
+            <hr />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Nr. Kalkulimit:</strong> {nrKalkulimit}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Partneri:</strong> {emriBiznesit}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Nr. Fatures:</strong> {nrFatures}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Data Fatures: </strong>{new Date(dataFatures).toLocaleDateString('en-GB', { dateStyle: 'short' })}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Lloji Fatures:</strong> {llojiFatures}
+            </span>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button size="sm" variant="secondary" onClick={() => setFshijKalkulimin(false)}>
+              Anulo <FontAwesomeIcon icon={faXmark} />
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => { fshijKalkuliminFunksioni(); setPerditeso(Date.now()) }}
+            >
+              Konfirmo <FontAwesomeIcon icon={faCheck} />
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      }
       <Modal size="lg" style={{ marginTop: "3em" }} show={props.show} onHide={props.hide}>
         <Modal.Header closeButton>
           <Modal.Title>{kalkulimetEFiltruara.length === 0 ? "Lista e Kalkulimeve" :
-            kalkulimet.filter((k) => k.statusiKalkulimit === "true").length === kalkulimetEFiltruara.length ?
+            statusiIFiltrimit === "true" ?
               "Lista e Kalkulimeve te Mbyllura" : "Lista e Kalkulimeve te Hapura"}
           </Modal.Title>
         </Modal.Header>
@@ -213,13 +311,13 @@ function PerditesoStatusinKalk(props) {
                   <td>{k.llojiKalkulimit}</td>
                   <td >
                     {
-                      kalkulimet.filter((k) => k.statusiKalkulimit === "true").length === kalkulimetEFiltruara.length ?
+                      statusiIFiltrimit === "true" ?
                         <Button
                           style={{ marginRight: "0.5em" }}
                           variant="success"
                           size="sm"
                           onClick={() => {
-                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit)
+                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit, "hapKalkulimin")
                           }}
                         >
                           <FontAwesomeIcon icon={faPenToSquare} /></Button>
@@ -229,7 +327,7 @@ function PerditesoStatusinKalk(props) {
                           variant="success"
                           size="sm"
                           onClick={() => {
-                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit)
+                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit, "fshijKalkulimin")
                           }}
                         >
                           <FontAwesomeIcon icon={faXmark} /></Button>

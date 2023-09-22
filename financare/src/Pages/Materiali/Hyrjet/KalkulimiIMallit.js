@@ -125,7 +125,7 @@ function KalkulimiIMallit(props) {
         const vendosNrFaturesMeRradhe = async () => {
             try {
                 const nrFat = await axios.get(`https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe`, authentikimi);
-                setNrRendorKalkulimit(nrFat.data);
+                setNrRendorKalkulimit(parseInt(nrFat.data));
             } catch (err) {
                 console.log(err);
             }
@@ -156,6 +156,7 @@ function KalkulimiIMallit(props) {
 
                 if (response.status === 200 || response.status === 201) {
                     setPerditeso(Date.now());
+                    setIdKalkulimitEdit(response.data.idRegjistrimit);
                     setRegjistroKalkulimin(true);
                 }
                 else {
@@ -260,7 +261,7 @@ function KalkulimiIMallit(props) {
                                             <Form.Control
                                                 id="nrRendorKalkulimit"
                                                 type="number"
-                                                value={nrRendorKalkulimit + 1}
+                                                value={nrRendorKalkulimit? nrRendorKalkulimit + 1 : 1}
                                                 disabled
                                             />
                                         </Form.Group>
