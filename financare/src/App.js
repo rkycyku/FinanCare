@@ -20,7 +20,6 @@ import KalkulimiIMallit from './Pages/Materiali/Hyrjet/KalkulimiIMallit';
 import PerditesoTeDhenat from './Pages/Gjenerale/TeDhenat/PerditesoTeDhenat';
 import KrijoPorosine from './Pages/Materiali/Shitjet/Porosite/KrijoPorosine';
 import ShtoPartnerin from './Pages/Gjenerale/Partneret/ShtoPartnerin';
-import TeDhenatFatures from './Components/kalkulimi/TeDhenatFatures';
 
 function App() {
 
@@ -52,7 +51,6 @@ function App() {
         <Route path='/PerditesoTeDhenat' element={<PerditesoTeDhenat />} />
         <Route path='/KrijoPorosine' element={<KrijoPorosine />} />
         <Route path='/ShtoPartnerin' element={<ShtoPartnerin />}/>
-        <Route path='/teDhenatFatures' element={<TeDhenatFatures />}/>
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>

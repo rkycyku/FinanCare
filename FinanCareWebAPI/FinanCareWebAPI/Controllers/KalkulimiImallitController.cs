@@ -71,12 +71,13 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("shfaqTeDhenatKalkulimit")]
-        public async Task<IActionResult> Get(int idRegjistrimit)
+        public async Task<IActionResult> GetRegjistrimi(int idRegjistrimit)
         {
             var teDhenat = await _context.TeDhenatKalkulimits
                 .Where(x => x.IdRegjistrimit == idRegjistrimit)
                 .Select(x => new
                 {
+                    x.Id,
                     x.IdRegjistrimit,
                     x.IdProduktit,
                     x.IdProduktitNavigation.EmriProduktit,
@@ -112,6 +113,49 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
+        [HttpDelete]
+        [Route("ruajKalkulimin/FshijTeDhenat")]
+        public async Task<IActionResult> Delete(int idTeDhenat)
+        {
+            var produkti = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idTeDhenat);
+
+            if (produkti == null)
+                return BadRequest("Invalid id");
+
+            _context.TeDhenatKalkulimits.Remove(produkti);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("ruajKalkulimin/PerditesoTeDhenat")]
+        public async Task<IActionResult> Put(int id, [FromBody] TeDhenatKalkulimit teDhenat)
+        {
+            var produkti = await _context.TeDhenatKalkulimits.FindAsync(id);
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaStokut = teDhenat.SasiaStokut;
+            produkti.QmimiBleres = teDhenat.QmimiBleres;
+            produkti.QmimiShites = teDhenat.QmimiShites;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(produkti);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
         [HttpPut]
         [Route("ruajKalkulimin/perditesoStokunQmimin")]
         public async Task<IActionResult> Put(int id, [FromBody] StokuQmimiProduktit stoku)
@@ -143,9 +187,20 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("ruajKalkulimin/getKalkulimi")]
+        public async Task<IActionResult> GetKalkulimi(int idKalkulimit)
+        {
+            var kalkulimi = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idKalkulimit);
+
+            return Ok(kalkulimi);
+        }
+
+
+        [Authorize(Roles = "Admin, Menaxher")]
         [HttpPut]
         [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
-        public async Task<IActionResult> Put(int id)
+        public async Task<IActionResult> Put(int id, string statusi)
         {
             var kalkulimi = await _context.KalkulimiImallits.FindAsync(id);
             if (kalkulimi == null)
@@ -153,7 +208,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            kalkulimi.StatusiKalkulimit = "true";
+            kalkulimi.StatusiKalkulimit = statusi;
 
             try
             {
@@ -170,11 +225,98 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("getNumriFaturesMeRradhe")]
-        public async Task<IActionResult> getNumriFaturesMeRradhe()
+        public async Task<IActionResult> GetNumriFaturesMeRradhe()
         {
             var nrFatures = await _context.KalkulimiImallits.CountAsync();
 
             return Ok(nrFatures);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpDelete]
+        [Route("fshijKalkulimin")]
+        public async Task<IActionResult> fshijKalkulimin(int idKalkulimi)
+        {
+            var kalkulimi = await _context.KalkulimiImallits.FirstOrDefaultAsync(x => x.IdRegjistrimit == idKalkulimi);
+            var teDhenatKalkulimit = await _context.TeDhenatKalkulimits.Where(x => x.IdRegjistrimit == idKalkulimi).ToListAsync();
+
+            foreach (var teDhenat in teDhenatKalkulimit)
+            {
+                _context.TeDhenatKalkulimits.Remove(teDhenat);
+            }
+
+            _context.KalkulimiImallits.Remove(kalkulimi);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("fshijKalkulimin/perditesoStokunQmimin")]
+        public async Task<IActionResult> fshijKalkuliminPerditesoStokun(int idKalkulimi, int idProdukti, int idTeDhenatKalkulimit)
+        {
+            var secondLatestTeDhenat = await _context.TeDhenatKalkulimits
+            .Where(x => x.IdProduktit == idProdukti && x.IdRegjistrimit != idKalkulimi && x.IdRegjistrimitNavigation.StatusiKalkulimit == "true")
+            .OrderByDescending(x => x.Id)
+            .Take(1) // Take only one record (the second latest)
+            .Select(x => new
+            {
+                x.Id,
+                x.IdRegjistrimit,
+                x.IdProduktit,
+                x.IdProduktitNavigation.EmriProduktit,
+                x.SasiaStokut,
+                x.QmimiBleres,
+                x.QmimiShites
+            })
+            .SingleOrDefaultAsync(); // Use SingleOrDefaultAsync to retrieve one record
+
+            if (secondLatestTeDhenat == null)
+            {
+                return NotFound(); // Handle case where no second latest record is found
+            }
+
+
+            var produktiNeKalkulim = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
+
+
+            var produkti = await _context.StokuQmimiProduktits.FindAsync(idProdukti);
+
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaNeStok -= produktiNeKalkulim.SasiaStokut;
+            produkti.DataPerditsimit = DateTime.Now;
+            produkti.QmimiProduktit = secondLatestTeDhenat.QmimiShites;
+            produkti.QmimiBleres = secondLatestTeDhenat.QmimiBleres;
+            if (produkti.DataKrijimit == null)
+            {
+                produkti.DataKrijimit = produkti.DataKrijimit;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            var result = new
+            {
+                SecondLatestTeDhenat = secondLatestTeDhenat,
+                ProduktiNeKalkulim = produktiNeKalkulim,
+                Produkti = produkti
+            };
+
+            return Ok(result); // Return both details
+
         }
     }
 }

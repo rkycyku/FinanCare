@@ -26,7 +26,7 @@ function TeDhenatKalkulimit(props) {
             try {
                 setLoading(true);
                 const produktet = await axios.get(
-                    `https://localhost:7285/api/RegjistrimiStokut/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.id}`, authentikimi
+                    `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.id}`, authentikimi
                 );
                 setProduktet(produktet.data);
                 setLoading(false);
@@ -44,10 +44,12 @@ function TeDhenatKalkulimit(props) {
             try {
                 setLoading(true);
                 const teDhenat = await axios.get(
-                    `https://localhost:7285/api/RegjistrimiStokut/shfaqRegjistrimetNgaID?id=${props.id}`, authentikimi
+                    `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.id}`, authentikimi
                 );
                 setTeDhenatFat(teDhenat.data);
                 setLoading(false);
+
+                console.log(teDhenat.data)
             }
             catch (err) {
                 console.log(err);
@@ -100,19 +102,22 @@ function TeDhenatKalkulimit(props) {
                     </Row>
                     <Row>
                         <Col className={classes.mobileResponsive}>
-                            <h4>Totali Produkteve: {teDhenatFat.totaliProdukteveRegjistruara}</h4>
-                            <h4>Totali Fatures: {parseFloat(teDhenatFat.shumaTotaleRegjistrimit).toFixed(2)} €</h4>
-                            <h4>Profiti: {(teDhenatFat.shumaTotaleRegjistrimit - teDhenatFat.shumaTotaleBlerese).toFixed(2)} €</h4>
-                            <p>Profiti: Qmimi Bleres - Qmimi Shites (Perfshihet TVSH)</p>
+                            <h4>Partneri: {teDhenatFat.emriBiznesit}</h4>
+                            <h4>Nr. Fatures: {teDhenatFat.nrFatures}</h4>
+                            <h4>Data Fatures: {new Date(teDhenatFat.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</h4>
+                            <h4>Totali: {parseFloat(teDhenatFat.totaliPaTvsh + teDhenatFat.tvsh).toFixed(2)} €</h4>
                         </Col>
                         <Col className={classes.mobileResponsive}>
-                            <p><strong>Qmimi Bleres Pa TVSH:</strong> {(teDhenatFat.shumaTotaleBlerese - teDhenatFat.shumaTotaleBlerese * 0.152542).toFixed(2)} €</p>
-                            <p><strong>Qmimi Bleres - TVSH-ja:</strong> {(teDhenatFat.shumaTotaleBlerese * 0.152542).toFixed(2)} €</p>
-                            <h5><strong>Qmimi Bleres: </strong> {parseFloat(teDhenatFat.shumaTotaleBlerese).toFixed(2)} €</h5>
+                            <p><strong>Totali Pa TVSH:</strong> {parseFloat(teDhenatFat.totaliPaTvsh).toFixed(2)} €</p>
+                            <p><strong>TVSH-ja:</strong> {parseFloat(teDhenatFat.tvsh).toFixed(2)} €</p>
+                            <p><strong>Pagesa behet me:</strong> {teDhenatFat.llojiPageses}</p>
+                            <p><strong>Statusi i Pageses:</strong> {teDhenatFat.statusiPageses}</p>
                         </Col>
                         <Col className={classes.mobileResponsive}>
                             <p><strong>Personi Pergjegjes:</strong> {teDhenatFat.stafiId + " - " + teDhenatFat.username}</p>
-                            <p><strong>Data Regjistrimit:</strong> {new Date(teDhenatFat.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</p>
+                            <p><strong>Nr. Kalkulimit: </strong>{teDhenatFat.idRegjistrimit}</p>
+                            <p><strong>Lloji Fatures:</strong> {teDhenatFat.llojiKalkulimit}</p>
+                            <p><strong>Statusi i kalkulimit:</strong> {teDhenatFat.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur"}</p>
                         </Col>
                     </Row>
                     <Table striped bordered hover>

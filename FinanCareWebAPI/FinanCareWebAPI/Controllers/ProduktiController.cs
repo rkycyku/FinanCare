@@ -54,17 +54,19 @@ namespace TechStoreWebAPI.Controllers
             var Produkti = await _context.Produktis
                .OrderBy(x => x.StokuQmimiProduktit.SasiaNeStok)
                .ThenByDescending(x => x.ProduktiId)
-               .Select(x => new {
-                   x.ProduktiId,
-                   x.EmriProduktit,
-                   x.Idpartneri,
-                   x.IdnjesiaMatese,
-                   x.Barkodi,
-                   x.KodiProduktit,
-                   x.StokuQmimiProduktit.SasiaNeStok,
-                   x.StokuQmimiProduktit.QmimiProduktit,
-                   x.StokuQmimiProduktit.QmimiBleres,
-                   x.ZbritjaQmimitProduktit.Rabati
+               .Select(p => new {
+                   p.ProduktiId,
+                   p.EmriProduktit,
+                   p.Idpartneri,
+                   p.IdpartneriNavigation.EmriBiznesit,
+                   p.IdnjesiaMatese,
+                   p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                   p.Barkodi,
+                   p.KodiProduktit,
+                   p.StokuQmimiProduktit.SasiaNeStok,
+                   p.StokuQmimiProduktit.QmimiProduktit,
+                   p.StokuQmimiProduktit.QmimiBleres,
+                   p.ZbritjaQmimitProduktit.Rabati,
                })
                .ToListAsync();
 

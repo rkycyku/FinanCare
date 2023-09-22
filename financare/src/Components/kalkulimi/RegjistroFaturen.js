@@ -4,7 +4,7 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Mesazhi from "../layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faXmark, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faXmark, faPenToSquare, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
 import { Table, Form, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
@@ -23,17 +23,23 @@ function RegjistroFaturen(props) {
     const [sasia, setSasia] = useState("");
     const [qmimiBleres, setQmimiBleres] = useState("");
     const [qmimiShites, setQmimiShites] = useState("");
+    const [njesiaMatese, setNjesiaMatese] = useState("Cope");
     const [totProdukteve, setTotProdukteve] = useState(0);
+    const [totStokut, setTotStokut] = useState(0);
     const [totFaturesShitese, setTotFaturesShitese] = useState(0);
     const [totFaturesBlerese, setTotFaturesBlerese] = useState(0);
+    const [mazhaFitimit, setMazhaFitimit] = useState(0);
     const [sasiaNeStok, setSasiaNeStok] = useState(0);
     const [qmimiB, setQmimiB] = useState(0);
     const [qmimiSH, setQmimiSH] = useState(0);
+
+    const [idTeDhenatKalk, setIdTeDhenatKalk] = useState(0);
 
     const [edito, setEdito] = useState(false);
     const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
 
     const [teDhenat, setTeDhenat] = useState([]);
+    const [teDhenatFatures, setTeDhenatFatures] = useState([]);
 
 
     const navigate = useNavigate();
@@ -70,13 +76,37 @@ function RegjistroFaturen(props) {
     }, [perditeso]);
 
     useEffect(() => {
+        if (props.idKalkulimitEdit != 0) {
+            const vendosTeDhenat = async () => {
+                try {
+                    const teDhenatKalkulimit = await axios.get(
+                        `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.idKalkulimitEdit}`, authentikimi
+                    );
+
+                    const teDhenatFatures = await axios.get(
+                        `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`, authentikimi
+                    );
+
+                    setproduktetNeKalkulim(teDhenatKalkulimit.data);
+                    setTeDhenatFatures(teDhenatFatures.data);
+                } catch (err) {
+                    console.log(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            vendosTeDhenat();
+        }
+    }, [perditeso, produktiID]);
+
+    useEffect(() => {
         const vendosProduktet = async () => {
             try {
                 const produktet = await axios.get(
                     `https://localhost:7285/api/Produkti/ProduktetPerKalkulim`, authentikimi
                 );
                 setProduktet(produktet.data);
-
             } catch (err) {
                 console.log(err);
             }
@@ -85,7 +115,7 @@ function RegjistroFaturen(props) {
         vendosProduktet();
     }, [perditeso]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         if (produktiID === 0 ||
             sasia <= 0 ||
             qmimiShites <= 0 ||
@@ -96,15 +126,16 @@ function RegjistroFaturen(props) {
             setShfaqMesazhin(true);
         } else {
             event.preventDefault();
-            const produkti = {
-                emriProduktit: emriProduktit,
-                produktiId: produktiID,
-                sasia: sasia,
+
+            await axios.post('https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/teDhenat', {
+                idRegjistrimit: props.nrRendorKalkulimit,
+                idProduktit: produktiID,
+                sasiaStokut: sasia,
                 qmimiBleres: qmimiBleres,
                 qmimiShites: qmimiShites,
-            };
-            setproduktetNeKalkulim([...produktetNeKalkulim, produkti]);
-            updateTotals([...produktetNeKalkulim, produkti]);
+            }, authentikimi).then(() => {
+                setPerditeso(Date.now());
+            });
 
             setProduktiID(0);
             setQmimiBleres("");
@@ -113,10 +144,11 @@ function RegjistroFaturen(props) {
             setSasiaNeStok(0);
             setQmimiB(0);
             setQmimiSH(0);
+            setPerditeso(Date.now());
         }
     };
 
-    const handleProduktiChange = (value, text, sasia, qmimiB, qmimiSH) => {
+    const handleProduktiChange = (value, text, sasia, qmimiB, qmimiSH, njesiaMatese) => {
         const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.produktiId === value);
 
         if (kontrolloProduktin.length > 0) {
@@ -130,32 +162,30 @@ function RegjistroFaturen(props) {
             setSasiaNeStok(sasia);
             setQmimiB(qmimiB);
             setQmimiSH(qmimiSH);
+            setNjesiaMatese(njesiaMatese);
         }
     };
 
-    const updateTotals = (newproduktetNeKalkulim) => {
-        let totalProdkteve = 0;
+    useEffect(() => {
+        let totalProdukteve = 0;
         let totalFaturesShitese = 0;
         let totalFaturesBlerese = 0;
-        newproduktetNeKalkulim.forEach((produkti) => {
-            totalProdkteve += 1;
-            totalFaturesShitese += produkti.sasia * produkti.qmimiShites;
-            totalFaturesBlerese += produkti.sasia * produkti.qmimiBleres;
+        let totalStokut = 0;
+        let totalMazhaFitimit = 0;
+        produktetNeKalkulim.forEach((produkti) => {
+            totalProdukteve += 1;
+            totalStokut += produkti.sasiaStokut;
+            totalFaturesShitese += produkti.sasiaStokut * produkti.qmimiShites;
+            totalFaturesBlerese += produkti.sasiaStokut * produkti.qmimiBleres;
+            totalMazhaFitimit += (((produkti.sasiaStokut * produkti.qmimiShites) * (1 - ((18 / 100) / (1 + (18 / 100)))))
+                - (produkti.sasiaStokut * produkti.qmimiBleres)) / (produkti.sasiaStokut * produkti.qmimiBleres) * 100
         });
-        setTotProdukteve(totalProdkteve);
+        setTotProdukteve(totalProdukteve);
         setTotFaturesShitese(totalFaturesShitese);
         setTotFaturesBlerese(totalFaturesBlerese);
-    };
-
-    const handleSave = () => {
-        if (totFaturesShitese > 0) {
-            handleMbyllFature();
-            props.setMbyllFaturen();
-        }
-        else {
-            props.setMbyllFaturen();
-        }
-    }
+        setTotStokut(totalStokut);
+        setMazhaFitimit(totalMazhaFitimit);
+    }, [produktetNeKalkulim]);
 
     const ndrroField = (e, tjetra) => {
         if (e.key === 'Enter') {
@@ -172,21 +202,14 @@ function RegjistroFaturen(props) {
             } else {
 
                 for (let produkti of produktetNeKalkulim) {
-                    await axios.post('https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/teDhenat', {
-                        idRegjistrimit: props.nrRendorKalkulimit,
-                        idProduktit: produkti.produktiId,
-                        sasiaStokut: produkti.sasia,
-                        qmimiBleres: produkti.qmimiBleres,
-                        qmimiShites: produkti.qmimiShites
-                    }, authentikimi);
-                    await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.produktiId}`, {
+                    await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.idProduktit}`, {
                         qmimiBleres: produkti.qmimiBleres,
                         qmimiProduktit: produkti.qmimiShites,
-                        sasiaNeStok: produkti.sasia
+                        sasiaNeStok: produkti.sasiaStokut
                     }, authentikimi);
                 }
 
-                props.setPerditeso(Date.now());
+                props.setPerditeso();
                 props.mbyllKalkulimin();
             }
         } catch (error) {
@@ -194,24 +217,28 @@ function RegjistroFaturen(props) {
         }
     }
 
-    function handleFshij(id) {
-        const eReja = produktetNeKalkulim.filter((item) => item.produktiId !== id);
-
-        setproduktetNeKalkulim(eReja);
+    async function handleFshij(id) {
+        await axios.delete(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`, authentikimi)
+            .then(() => {
+                setPerditeso(Date.now);
+            });
     }
 
-    function handleEdit(id) {
-        setEdito(true);
-        const produkti = produktetNeKalkulim.filter((item) => item.produktiId === id);
+    async function handleEdit(id) {
+        const produkti = await axios.get(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`, authentikimi)
+            .then((p) => {
+                setPerditeso(Date.now);
 
-        setProduktiID(produkti[0].produktiId);
-        setemriProduktit(produkti[0].emriProduktit);
-        setSasia(produkti[0].sasia);
-        setQmimiBleres(produkti[0].qmimiBleres);
-        setQmimiShites(produkti[0].qmimiShites);
+                setEdito(true);
+                setProduktiID(p.data.idProduktit);
+                setemriProduktit(p.data.emriProduktit);
+                setSasia(p.data.sasiaStokut);
+                setQmimiBleres(p.data.qmimiBleres);
+                setQmimiShites(p.data.qmimiShites);
+            })
     }
 
-    function handleEdito(id) {
+    async function handleEdito(id) {
         if (produktiID === 0 ||
             sasia <= 0 ||
             qmimiShites <= 0 ||
@@ -220,17 +247,13 @@ function RegjistroFaturen(props) {
             setTipiMesazhit("danger");
             setShfaqMesazhin(true);
         } else {
-            const eReja = produktetNeKalkulim.filter((item) => item.produktiId !== id);
-
-            const produkti = {
-                emriProduktit: emriProduktit,
-                produktiId: produktiID,
-                sasia: sasia,
+            await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`, {
                 qmimiBleres: qmimiBleres,
                 qmimiShites: qmimiShites,
-            };
-            setproduktetNeKalkulim([...eReja, produkti]);
-            updateTotals([...eReja, produkti]);
+                sasiaStokut: sasia
+            }, authentikimi).then(() => {
+                setPerditeso(Date.now());
+            });
 
             setProduktiID(0);
             setQmimiBleres("");
@@ -243,7 +266,10 @@ function RegjistroFaturen(props) {
         }
     }
 
-
+    function KthehuTekFaturat() {
+        props.setPerditeso();
+        props.mbyllPerkohesisht();
+    }
 
     return (
         <div className={classes.containerDashboardP}>
@@ -296,12 +322,6 @@ function RegjistroFaturen(props) {
                     Kalkulimi i Mallit
                 </h1>
 
-                <Button
-                    className="mb-3 Butoni"
-                    onClick={() => setKonfirmoMbylljenFatures(true)}
-                >
-                    Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
-                </Button>
                 <Container fluid>
                     <Row>
                         <Col>
@@ -318,7 +338,8 @@ function RegjistroFaturen(props) {
                                                 e.target.options[e.target.selectedIndex].text,
                                                 e.target.options[e.target.selectedIndex].getAttribute('sasiaNeStok'),
                                                 e.target.options[e.target.selectedIndex].getAttribute('qmimiBleres'),
-                                                e.target.options[e.target.selectedIndex].getAttribute('qmimiShites')
+                                                e.target.options[e.target.selectedIndex].getAttribute('qmimiShites'),
+                                                e.target.options[e.target.selectedIndex].getAttribute('njesiaMatese')
                                             )
                                         }
                                         onKeyDown={(e) => { ndrroField(e, "sasia") }}
@@ -333,6 +354,7 @@ function RegjistroFaturen(props) {
                                                     sasiaNeStok={item.sasiaNeStok}
                                                     qmimiBleres={item.qmimiBleres}
                                                     qmimiShites={item.qmimiProduktit}
+                                                    njesiaMatese={item.njesiaMatese1}
                                                 >
                                                     {item.produktiId + " - " + item.emriProduktit}
                                                 </option>
@@ -341,10 +363,11 @@ function RegjistroFaturen(props) {
                                     </select>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Sasia</Form.Label>
+                                    <Form.Label>Sasia - {njesiaMatese}</Form.Label>
                                     <Form.Control
                                         id="sasia"
                                         type="number"
+                                        placeholder={"0.00 " + njesiaMatese}
                                         value={sasia}
                                         onChange={(e) => {
                                             setSasia(e.target.value);
@@ -353,35 +376,42 @@ function RegjistroFaturen(props) {
                                     />
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Qmimi Bleres</Form.Label>
+                                    <Form.Label>Qmimi Bleres €</Form.Label>
                                     <Form.Control
                                         id="qmimiBleres"
                                         type="number"
                                         value={qmimiBleres}
+                                        placeholder="0.00 €"
                                         onChange={(e) => {
-                                            setQmimiBleres(e.target.value);
+                                            const qmimbleres = parseFloat(e.target.value); 
+                                            setQmimiBleres(qmimbleres); 
+                                            const qmimishites = qmimbleres + qmimbleres * 0.18; 
+                                            setQmimiShites(qmimishites.toFixed(2)); 
                                         }}
                                         onKeyDown={(e) => { ndrroField(e, "qmimiShites") }}
                                     />
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Qmimi Shites</Form.Label>
+                                    <Form.Label>Qmimi Shites €</Form.Label>
                                     <Form.Control
                                         id="qmimiShites"
                                         type="number"
                                         value={qmimiShites}
+                                        placeholder="0.00 €"
                                         onChange={(e) => {
-                                            setQmimiShites(e.target.value);
+                                            const qmimishites = parseFloat(e.target.value); 
+                                            setQmimiShites(qmimishites); 
                                         }}
                                     />
                                 </Form.Group>
+
                                 <br />
                                 <div style={{ display: "flex", gap: "0.3em" }}>
                                     <Button variant="success" type="submit" disabled={edito}>
                                         Shto Produktin <FontAwesomeIcon icon={faPlus} />
                                     </Button>
                                     {edito &&
-                                        <Button variant="warning" onClick={() => handleEdito(produktiID)}>
+                                        <Button variant="warning" onClick={() => handleEdito(idTeDhenatKalk)}>
                                             Edito Produktin <FontAwesomeIcon icon={faPenToSquare} />
                                         </Button>}
                                 </div>
@@ -393,42 +423,96 @@ function RegjistroFaturen(props) {
                             <p><strong>Sasia aktuale ne Stok:</strong> {sasiaNeStok} copë</p>
                         </Col>
                         <Col>
-                            <h4>Totali Produkteve: {totProdukteve}</h4>
-                            <h4>Totali Fatures: {totFaturesShitese.toFixed(2)} €</h4>
+                            <Row>
+                                <h5><strong>Nr. Kalkulimit:</strong> {teDhenatFatures.idRegjistrimit}</h5>
+                                <h5><strong>Partneri:</strong> {teDhenatFatures.emriBiznesit}</h5>
+                                <h5><strong>Nr. Fat:</strong> {teDhenatFatures.nrFatures}</h5>
+                                <h5><strong>Totali Fatures pa TVSH:</strong> {parseFloat(teDhenatFatures.totaliPaTvsh).toFixed(2)} €</h5>
+                                <h5><strong>TVSH:</strong> {parseFloat(teDhenatFatures.tvsh).toFixed(2)}  €</h5>
+                                <h5><strong>Totali Fatures:</strong> {parseFloat(teDhenatFatures.totaliPaTvsh + teDhenatFatures.tvsh).toFixed(2)} €</h5>
+
+                                <hr />
+                                <Col>
+                                    <Button
+                                        className="mb-3 Butoni"
+                                        onClick={() => setKonfirmoMbylljenFatures(true)}
+                                    >
+                                        Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
+                                    </Button>
+                                    <Button
+                                        className="mb-3 Butoni"
+                                        onClick={() => KthehuTekFaturat()}
+                                    >
+                                        <FontAwesomeIcon icon={faArrowLeft} />  Kthehu Mbrapa
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <h1 className="title">Tabela e Produkteve te Fatures</h1>
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                                <th>Nr. Rendore</th>
-                                <th>ID dhe Emri</th>
+                                <th>Nr. Rendor</th>
+                                <th>Emri Produktit</th>
                                 <th>Sasia</th>
                                 <th>Qmimi Bleres</th>
                                 <th>Qmimi Shites</th>
                                 <th>Totali Bleres</th>
                                 <th>Totali Shites</th>
+                                <th>Mazha</th>
                                 <th>Funksione</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {produktetNeKalkulim.map((produkti, index) => (
+                            {produktetNeKalkulim.map((p, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{produkti.emriProduktit}</td>
-                                    <td>{produkti.sasia}</td>
-                                    <td>{parseFloat(produkti.qmimiBleres).toFixed(2)} €</td>
-                                    <td>{parseFloat(produkti.qmimiShites).toFixed(2)} €</td>
-                                    <td>{(produkti.sasia * produkti.qmimiBleres).toFixed(2)} €</td>
-                                    <td>{(produkti.sasia * produkti.qmimiShites).toFixed(2)} €</td>
+                                    <td>{p.emriProduktit}</td>
+                                    <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
+                                    <td>{parseFloat(p.qmimiBleres).toFixed(2)} €</td>
+                                    <td>{parseFloat(p.qmimiShites).toFixed(2)} €</td>
+                                    <td>{parseFloat(p.sasiaStokut * p.qmimiBleres).toFixed(2)} €</td>
+                                    <td>{parseFloat(p.sasiaStokut * p.qmimiShites).toFixed(2)} €</td>
+                                    <td>
+                                        {parseFloat(
+                                            (((p.sasiaStokut * p.qmimiShites) * (1 - ((18 / 100) / (1 + (18 / 100))))) - (p.sasiaStokut * p.qmimiBleres)) / (p.sasiaStokut * p.qmimiBleres) * 100
+                                        ).toFixed(2)} %
+                                    </td>
+
                                     <td>
                                         <div style={{ display: "flex", gap: "0.3em" }}>
-                                            <Button size="sm" variant="danger" onClick={() => handleFshij(produkti.produktiId)}><FontAwesomeIcon icon={faXmark} /></Button>
-                                            <Button size="sm" variant="warning" onClick={() => handleEdit(produkti.produktiId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                            <Button size="sm" variant="danger" onClick={() => handleFshij(p.id)}><FontAwesomeIcon icon={faXmark} /></Button>
+                                            <Button size="sm" onClick={() => {
+                                                handleEdit(p.id);
+                                                setIdTeDhenatKalk(p.id);
+                                            }}><FontAwesomeIcon icon={faPenToSquare} /></Button>
                                         </div>
                                     </td>
                                 </tr>
                             ))}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>{totProdukteve}</td>
+                                <td>-</td>
+                                <td>{parseFloat(totStokut).toFixed(2)}</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>{parseFloat(totFaturesBlerese).toFixed(2)} €</td>
+                                <td>{parseFloat(totFaturesShitese).toFixed(2)} €</td>
+                                <td>{parseFloat(mazhaFitimit).toFixed(2)} %</td>
+                                <td>-</td>
+                            </tr>
                         </tbody>
                     </Table>
                 </Container>

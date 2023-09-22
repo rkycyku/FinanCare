@@ -1,24 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+import { Modal, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
 
 function PerditesoStatusinKalk(props) {
-  const [produkti, setProdukti] = useState([]);
-  const [foto, setFoto] = useState(null);
-  const [kompanit, setKompanit] = useState([]);
-  const [kategoria, setKategoria] = useState([]);
+  const [kalkulimet, setKalkulimet] = useState([]);
+  const [kalkulimetEFiltruara, setKalkulimetEFiltruara] = useState([]);
+
+  const [emriBiznesit, setEmriBiznesit] = useState("");
+  const [nrFatures, setNrFatures] = useState("");
+  const [nrKalkulimit, setNrKalkulimit] = useState("");
+  const [dataFatures, setDataFatures] = useState("");
+  const [llojiFatures, setLlojiFatures] = useState("");
 
   const [perditeso, setPerditeso] = useState("");
   const [produktet, setProduktet] = useState([]);
   const [kontrolloProduktin, setKontrolloProduktin] = useState(false);
-  const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
-  const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
 
   useEffect(() => {
     const vendosProduktet = async () => {
@@ -45,272 +45,215 @@ function PerditesoStatusinKalk(props) {
   };
 
   useEffect(() => {
-    const shfaqProduktet = async () => {
+    const shfaqKalkulimet = async () => {
       try {
-        const produkti = await axios.get(`https://localhost:7285/api/Produkti/` + props.id, authentikimi);
-        setProdukti(produkti.data);
-
+        const kalkulimet = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet`, authentikimi);
+        setKalkulimet(kalkulimet.data);
       } catch (err) {
         console.log(err);
       }
     };
-    Promise.all([
-      fetch("https://localhost:7285/api/Kompania/shfaqKompanit"),
-      fetch("https://localhost:7285/api/Kategoria/shfaqKategorit"),
-    ])
-      .then(([resKompanit, resKategorit]) =>
-        Promise.all([resKompanit.json(), resKategorit.json()])
-      )
-      .then(([dataKomapit, dataKategorit]) => {
-        setKompanit(dataKomapit);
-        setKategoria(dataKategorit);
-      });
 
-    shfaqProduktet();
-  }, []);
+    shfaqKalkulimet();
+  }, [perditeso]);
 
-  const handleEmriPChange = (value) => {
-    setProdukti((prev) => ({ ...prev, emriProduktit: value }));
-  };
-  const handlePershkrimiChange = (value) => {
-    setProdukti((prev) => ({ ...prev, pershkrimi: value }));
-  };
-
-  const handleQmimiPChange = (value) => {
-    setProdukti((prev) => ({ ...prev, qmimiProduktit: value }));
-  };
-  const handleFotoChange = (event) => {
-    setFoto(event.target.files[0]);
-  };
-
-  const handleKompaniaChange = (value) => {
-    setProdukti((prev) => ({ ...prev, kompaniaId: value }));
-  };
-
-
-  const handleKategoriaChange = (value) => {
-    setProdukti((prev) => ({ ...prev, kategoriaId: value }));
-  };
-
-  function isNullOrEmpty(value) {
-    return value === null || value === "" || value === undefined;
-  }
-
-  async function handleSubmit() {
-    if (foto) {
-      const formData = new FormData();
-      formData.append('foto', foto);
-
-      try {
-        await axios.post(`https://localhost:7285/api/VendosFotot/EditoProduktin?fotoVjeterProduktit=${produkti.fotoProduktit}`, formData, authentikimi)
-          .then(async (response) => {
-            await axios.put(`https://localhost:7285/api/Produkti/` + props.id, {
-              emriProduktit: produkti.emriProduktit,
-              kategoriaId: produkti.kategoriaId,
-              kompaniaId: produkti.kompaniaId,
-              pershkrimi: produkti.pershkrimi,
-              fotoProduktit: response.data
-            }, authentikimi)
-              .then(x => {
-
-                props.setTipiMesazhit("success");
-                props.setPershkrimiMesazhit("Produkti u Perditesua me sukses!")
-                props.perditesoTeDhenat();
-                props.hide();
-                props.shfaqmesazhin();
-              })
-              .catch(error => {
-                console.error('Error saving the product:', error);
-                props.setTipiMesazhit("danger");
-                props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te produktit!")
-                props.perditesoTeDhenat();
-                props.shfaqmesazhin();
-              });
-          })
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      await axios.put(`https://localhost:7285/api/Produkti/` + props.id, {
-        emriProduktit: produkti.emriProduktit,
-        kategoriaId: produkti.kategoriaId,
-        kompaniaId: produkti.kompaniaId,
-        pershkrimi: produkti.pershkrimi,
-        fotoProduktit: produkti.fotoProduktit
-      }, authentikimi)
-        .then(x => {
-
-          props.setTipiMesazhit("success");
-          props.setPershkrimiMesazhit("Produkti u Perditesua me sukses!")
-          props.perditesoTeDhenat();
-          props.hide();
-          props.shfaqmesazhin();
+  async function ndryshoStatusinKalkulimit() {
+    try {
+      await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrKalkulimit}&statusi=false`
+        , {}, authentikimi).then(() => {
+          setKontrolloProduktin(false);
+          setPerditeso(Date.now());
         })
-        .catch(error => {
-          console.error('Error saving the product:', error);
-          props.setTipiMesazhit("danger");
-          props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te produktit!")
-          props.perditesoTeDhenat();
-          props.shfaqmesazhin();
+
+      await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${nrKalkulimit}`
+        , authentikimi).then(async (teDhenat) => {
+          console.log(teDhenat);
+
+          for (let p of teDhenat.data) {
+            await axios.get(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin/perditesoStokunQmimin?idKalkulimi=${p.idRegjistrimit}&idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}`, authentikimi);
+          }
         });
+    } catch (error) {
+      console.error(error)
     }
   }
 
-  const handleKontrolli = () => {
-    if (
-      isNullOrEmpty(produkti.emriProduktit) ||
-      isNullOrEmpty(produkti.kompaniaId) ||
-      isNullOrEmpty(produkti.kategoriaId)
-    ) {
-      setFushatEZbrazura(true);
-    } else {
-      if (konfirmoProduktin == false && produktet.filter((item) => item.emriProduktit === produkti.emriProduktit).length !== 0) {
-        setKontrolloProduktin(true);
-      }
-      else {
-        handleSubmit();
-      }
+  async function fshijKalkulimin(){
+
+  }
+
+  function detajetRiKonfrimitKalkulimit(emriBiznesit, nrFatures, nrKalkulimit, dataFatures, llojiFatures) {
+    setEmriBiznesit(emriBiznesit);
+    setNrFatures(nrFatures);
+    setNrKalkulimit(nrKalkulimit);
+    setDataFatures(dataFatures);
+    setLlojiFatures(llojiFatures);
+
+    setKontrolloProduktin(true);
+  }
+
+  function filtroKalkulimet(lloji) {
+    if (lloji === "hapKalkulimet") {
+      const filteredKalkulimet = kalkulimet.filter((k) => k.statusiKalkulimit === "true");
+      setKalkulimetEFiltruara(filteredKalkulimet);
+    }
+    if (lloji === "fshijKalkulimet") {
+      const filteredKalkulimet = kalkulimet.filter((k) => k.statusiKalkulimit === "false");
+      setKalkulimetEFiltruara(filteredKalkulimet);
     }
   }
 
   return (
     <>
-      {fushatEZbrazura &&
-        <Modal size="sm" show={fushatEZbrazura} onHide={() => setFushatEZbrazura(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title style={{ color: "red" }} as="h6">Ndodhi nje gabim</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <strong style={{ fontSize: "10pt" }}>Ju lutemi plotesoni te gjitha fushat me <span style={{ color: "red" }}>*</span></strong>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button size="sm" onClick={() => setFushatEZbrazura(false)} variant="secondary">
-              Mbylle <FontAwesomeIcon icon={faXmark} />
-            </Button >
-          </Modal.Footer>
-
-        </Modal>
-      }
       {kontrolloProduktin &&
-        <Modal size="sm" show={kontrolloProduktin} onHide={() => setKontrolloProduktin(false)}>
+        <Modal show={kontrolloProduktin} style={{ marginTop: "7em" }} onHide={() => setKontrolloProduktin(false)}>
           <Modal.Header closeButton>
-            <Modal.Title as="h6">Konfirmo vendosjen</Modal.Title>
+            <Modal.Title as="h5">Konfirmo Hapjen e Kalkulimit</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <strong style={{ fontSize: "10pt" }}>
+              A jeni te sigurt qe deshironi ta hapni kete kalkulim?
+            </strong>
+            <hr />
             <span style={{ fontSize: "10pt" }}>
-              Nje produkt me te njejtin emer ekziston ne sistem!
+              <strong>Nr. Kalkulimit:</strong> {nrKalkulimit}
             </span>
             <br />
-            <strong style={{ fontSize: "10pt" }}>
-              A jeni te sigurt qe deshironi te vazhdoni?
-            </strong>
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Partneri:</strong> {emriBiznesit}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Nr. Fatures:</strong> {nrFatures}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Data Fatures: </strong>{new Date(dataFatures).toLocaleDateString('en-GB', { dateStyle: 'short' })}
+            </span>
+            <br />
+            <span style={{ fontSize: "10pt" }}>
+              <strong>Lloji Fatures:</strong> {llojiFatures}
+            </span>
           </Modal.Body>
           <Modal.Footer>
             <Button size="sm" variant="secondary" onClick={() => setKontrolloProduktin(false)}>
-              Korrigjo <FontAwesomeIcon icon={faXmark} />
+              Anulo <FontAwesomeIcon icon={faXmark} />
             </Button>
             <Button
               size="sm"
-              variant="warning"
-              onClick={() => { handleSubmit(); }}
+              onClick={() => { ndryshoStatusinKalkulimit(); }}
             >
-              Vazhdoni
+              Konfirmo <FontAwesomeIcon icon={faCheck} />
             </Button>
           </Modal.Footer>
         </Modal>
       }
-      <Modal className="modalEditShto" style={{ marginTop: "3em" }} show={props.show} onHide={props.hide}>
+      <Modal size="lg" style={{ marginTop: "3em" }} show={props.show} onHide={props.hide}>
         <Modal.Header closeButton>
-          <Modal.Title>Edito Produktin</Modal.Title>
+          <Modal.Title>{kalkulimetEFiltruara.length === 0 ? "Lista e Kalkulimeve" :
+            kalkulimet.filter((k) => k.statusiKalkulimit === "true").length === kalkulimetEFiltruara.length ?
+              "Lista e Kalkulimeve te Mbyllura" : "Lista e Kalkulimeve te Hapura"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Emri Produktit<span style={{ color: "red" }}>*</span></Form.Label>
-              <Form.Control
-                onChange={(e) => handleEmriPChange(e.target.value)}
-                value={produkti.emriProduktit}
-                type="text"
-                placeholder="Emri Produktit"
-                autoFocus
-              />
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label>Pershkrimi Produktit</Form.Label>
-                <Form.Control
-                  onChange={(e) => handlePershkrimiChange(e.target.value)}
-                  value={produkti.pershkrimi}
-                  as="textarea"
-                  placeholder="Pershkrimi Produktit"
-                  autoFocus
-                />
-              </Form.Group>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Foto Produktit</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                placeholder="Foto e Produktit"
-                onChange={handleFotoChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Kompania<span style={{ color: "red" }}>*</span></Form.Label>
-              <select
-                placeholder="Kompania e Produktit"
-                className="form-select"
-                value={produkti.kompaniaId}
-                onChange={(e) => handleKompaniaChange(e.target.value)}
-              >
-                <option selected disabled hidden>
-                  {produkti.emriKompanis}
-                </option>
-                {kompanit.map((item) => {
-                  return (
-                    <option key={item.kompaniaId} value={item.kompaniaId}>
-                      {item.emriKompanis}
-                    </option>
-                  );
-                })}
-              </select>
-            </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Kategoria<span style={{ color: "red" }}>*</span></Form.Label>
-              <select
-                placeholder="Kategoria e Produktit"
-                className="form-select"
-                value={produkti.kategoriaID}
-                onChange={(e) => handleKategoriaChange(e.target.value)}
-              >
-                <option selected disabled hidden>
-                  {produkti.llojiKategoris}
-                </option>
-                {kategoria.map((item) => {
-                  return (
-                    <option key={item.kategoriaId} value={item.kategoriaId}>
-                      {item.llojiKategoris}
-                    </option>
-                  );
-                })}
-              </select>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={props.hide}>
-            Anulo <FontAwesomeIcon icon={faXmark} />
-          </Button>
           <Button
-            style={{ backgroundColor: "#009879", border: "none" }}
-            onClick={handleKontrolli}
-          >
-            Edito Produktin <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            style={{ marginRight: "0.5em" }}
+            variant="success"
+            size="sm"
+            onClick={() => {
+              filtroKalkulimet("hapKalkulimet");
+            }}
+          >Hap Kalkulimet <FontAwesomeIcon icon={faPenToSquare} /></Button>
+          <Button
+            style={{ marginRight: "0.5em" }}
+            variant="success"
+            size="sm"
+            onClick={() => {
+              filtroKalkulimet("fshijKalkulimet");
+            }}
+          >Fshij Kalkulimet <FontAwesomeIcon icon={faPenToSquare} /></Button>
+          <Button
+            style={{ marginRight: "0.5em" }}
+            variant="success"
+            size="sm"
+            onClick={() => {
+              setKalkulimetEFiltruara([])
+            }}
+          >Te gjitha Kalkulimet <FontAwesomeIcon icon={faPenToSquare} /></Button>
+          <MDBTable small>
+            <MDBTableHead>
+              <tr>
+                {kalkulimetEFiltruara.length > 0 &&
+                  <th scope="col">Nr. Kalkulimit</th>}
+                {kalkulimetEFiltruara.length === 0 &&
+                  <th scope="col">Nr.</th>
+                }
+                <th scope="col">Nr. Fatures</th>
+                <th scope="col">Partneri</th>
+                <th scope="col">Totali Pa TVSH €</th>
+                <th scope="col">TVSH €</th>
+                <th scope="col">Data e Fatures</th>
+                <th scope="col">Lloji Fatures</th>
+                {kalkulimetEFiltruara.length === 0 &&
+                  <th scope="col">Statusi</th>
+                }
+                {kalkulimetEFiltruara.length > 0 &&
+                  < th scope="col" > Funksione</th>}
+              </tr>
+            </MDBTableHead>
+            <MDBTableBody>
+              {kalkulimetEFiltruara && kalkulimetEFiltruara.map((k) => (
+                <tr key={k.idRegjistrimit}>
+                  <td>{k.idRegjistrimit}</td>
+                  <td>{k.nrFatures}</td>
+                  <td>{k.emriBiznesit}</td>
+                  <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                  <td>{k.tvsh.toFixed(2)} €</td>
+                  <td >{new Date(k.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
+                  <td>{k.llojiKalkulimit}</td>
+                  <td >
+                    {
+                      kalkulimet.filter((k) => k.statusiKalkulimit === "true").length === kalkulimetEFiltruara.length ?
+                        <Button
+                          style={{ marginRight: "0.5em" }}
+                          variant="success"
+                          size="sm"
+                          onClick={() => {
+                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit)
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faPenToSquare} /></Button>
+                        :
+                        <Button
+                          style={{ marginRight: "0.5em" }}
+                          variant="success"
+                          size="sm"
+                          onClick={() => {
+                            detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit)
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faXmark} /></Button>
+                    }
+
+                  </td>
+                </tr>
+              ))}
+              {kalkulimetEFiltruara.length === 0 && kalkulimet.map((k) => (
+                <tr key={k.idRegjistrimit}>
+                  <td>{k.idRegjistrimit}</td>
+                  <td>{k.nrFatures}</td>
+                  <td>{k.emriBiznesit}</td>
+                  <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                  <td>{k.tvsh.toFixed(2)} €</td>
+                  <td >{new Date(k.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
+                  <td>{k.llojiKalkulimit}</td>
+                  <td>{k.statusiKalkulimit === "true" ? "M" : "H"}</td>
+                </tr>
+              ))}
+            </MDBTableBody>
+          </MDBTable>
+        </Modal.Body>
+      </Modal >
     </>
   )
 }
