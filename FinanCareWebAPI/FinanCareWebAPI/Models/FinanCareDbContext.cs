@@ -222,6 +222,13 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.IdnjesiaMatese).HasColumnName("IDNjesiaMatese");
             entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
             entity.Property(e => e.KodiProduktit).HasMaxLength(20);
+            entity.Property(e => e.LlojiTVSH)
+                .HasColumnName("LlojiTVSH")
+                .HasDefaultValue(18);
+            entity.Property(e => e.SasiaShumices)
+                .HasDefaultValueSql("((1))")
+                .HasColumnType("decimal(8, 2)")
+                .HasColumnName("sasiaShumices");
 
             entity.HasOne(d => d.IdnjesiaMateseNavigation).WithMany(p => p.Produktis)
                 .HasForeignKey(d => d.IdnjesiaMatese)
@@ -263,6 +270,10 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("sasiaNeStok");
+            entity.Property(e => e.QmimiMeShumic)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("qmimiMeShumic");
 
             entity.HasOne(d => d.Produkti).WithOne(p => p.StokuQmimiProduktit).HasForeignKey<StokuQmimiProduktit>(d => d.ProduktiId);
         });
@@ -347,6 +358,9 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.SasiaStokut)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("sasiaStokut");
+            entity.Property(e => e.QmimiShitesMeShumic)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("qmimiShitesMeShumic");
 
             entity.HasOne(d => d.IdProduktitNavigation).WithMany(p => p.TeDhenatKalkulimits)
                 .HasForeignKey(d => d.IdProduktit)

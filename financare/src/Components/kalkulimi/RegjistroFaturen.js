@@ -10,6 +10,8 @@ import { Table, Form, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 
+import Select from 'react-select';
+
 function RegjistroFaturen(props) {
     const [perditeso, setPerditeso] = useState('');
     const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
@@ -17,12 +19,13 @@ function RegjistroFaturen(props) {
     const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
     const [loading, setLoading] = useState(false);
     const [produktetNeKalkulim, setproduktetNeKalkulim] = useState([]);
-    const [emriProduktit, setemriProduktit] = useState('');
+    const [emriProduktit, setEmriProduktit] = useState("");
     const [produktiID, setProduktiID] = useState(0);
     const [produktet, setProduktet] = useState([]);
     const [sasia, setSasia] = useState("");
     const [qmimiBleres, setQmimiBleres] = useState("");
     const [qmimiShites, setQmimiShites] = useState("");
+    const [qmimiShitesMeShumic, setQmimiShitesMeShumic] = useState("");
     const [njesiaMatese, setNjesiaMatese] = useState("Cope");
     const [totProdukteve, setTotProdukteve] = useState(0);
     const [totStokut, setTotStokut] = useState(0);
@@ -32,15 +35,23 @@ function RegjistroFaturen(props) {
     const [sasiaNeStok, setSasiaNeStok] = useState(0);
     const [qmimiB, setQmimiB] = useState(0);
     const [qmimiSH, setQmimiSH] = useState(0);
+    const [llojiTVSH, setLlojiTVSH] = useState(0);
+    const [qmimiSH2, setQmimiSH2] = useState(0);
 
     const [idTeDhenatKalk, setIdTeDhenatKalk] = useState(0);
 
     const [edito, setEdito] = useState(false);
     const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
+    const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
 
     const [teDhenat, setTeDhenat] = useState([]);
     const [teDhenatFatures, setTeDhenatFatures] = useState([]);
 
+    const [konifirmoProduktinLista, setKonifirmoProduktinLista] = useState([]);
+
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [searchValue, setSearchValue] = useState('');
+    const [filteredProduktet, setFilteredProduktet] = useState(produktet);
 
     const navigate = useNavigate();
 
@@ -115,6 +126,102 @@ function RegjistroFaturen(props) {
         vendosProduktet();
     }, [perditeso]);
 
+    useEffect(() => {
+        let totalProdukteve = 0;
+        let totalFaturesShitese = 0;
+        let totalFaturesBlerese = 0;
+        let totalStokut = 0;
+        let totalMazhaFitimit = 0;
+        produktetNeKalkulim.forEach((produkti) => {
+            totalProdukteve += 1;
+            totalStokut += produkti.sasiaStokut;
+            totalFaturesShitese += produkti.sasiaStokut * produkti.qmimiShites;
+            totalFaturesBlerese += produkti.sasiaStokut * produkti.qmimiBleres;
+            totalMazhaFitimit += (((produkti.sasiaStokut * produkti.qmimiShites) * (1 - ((produkti.llojiTVSH / 100) / (1 + (produkti.llojiTVSH / 100)))))
+                - (produkti.sasiaStokut * produkti.qmimiBleres)) / (produkti.sasiaStokut * produkti.qmimiBleres) * 100
+        });
+        setTotProdukteve(totalProdukteve);
+        setTotFaturesShitese(totalFaturesShitese);
+        setTotFaturesBlerese(totalFaturesBlerese);
+        setTotStokut(totalStokut);
+        setMazhaFitimit(totalMazhaFitimit);
+    }, [produktetNeKalkulim]);
+
+    const handleProduktiChange = (selectedOption) => {
+
+        const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.idProduktit === selectedOption.value);
+        if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
+            setKonfirmoProduktin(true);
+
+            setKonifirmoProduktinLista([
+                {
+                    produktiID: selectedOption.idProduktit,
+                    emriProduktit: selectedOption.emriProduktit,
+                    qmimiBleresIVjeter: selectedOption.qmimiBleres,
+                    qmimiShitesIVjeter: selectedOption.qmimiShites,
+                    qmimiShitesMeShumicIVjeter: selectedOption.qmimiMeShumic,
+                    sasiaNeStokEVjeter: selectedOption.sasiaNeStok,
+                    sasiaNeStok: sasiaNeStok,
+                    qmimiBleres: qmimiBleres,
+                    qmimiShites: qmimiShites,
+                    njesiaMatese: selectedOption.njesiaMatese,
+                    llojiTVSH: selectedOption.llojiTVSH,
+                    qmimiShitesMeShumic: qmimiShitesMeShumic
+                }
+            ]);
+        } else {
+            setProduktiID(selectedOption?.idProduktit ?? konifirmoProduktinLista[0].produktiID);
+            setEmriProduktit(selectedOption?.emriProduktit ?? konifirmoProduktinLista[0].emriProduktit);
+            setSasiaNeStok(selectedOption?.llojiTVSH ?? konifirmoProduktinLista[0].sasiaNeStok);
+            setQmimiSH(selectedOption?.qmimiShites ?? konifirmoProduktinLista[0].qmimiShitesIVjeter);
+            setQmimiB(selectedOption?.qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleresIVjeter);
+            setNjesiaMatese(selectedOption?.njesiaMatese ?? konifirmoProduktinLista[0].njesiaMatese);
+            setLlojiTVSH(selectedOption?.llojiTVSH ?? konifirmoProduktinLista[0].llojiTVSH);
+            setQmimiSH2(selectedOption?.qmimiMeShumic ?? konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter);
+            setQmimiBleres(qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleres);
+            setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
+            setQmimiShites(qmimiShites ?? konifirmoProduktinLista[0].qmimiShites);
+            setQmimiShitesMeShumic(qmimiShitesMeShumic ?? konifirmoProduktinLista[0].qmimiShitesMeShumic);
+
+            setKonfirmoProduktin(false);
+        }
+    };
+
+    const handleSearchChange = (inputValue) => {
+        setSearchValue(inputValue);
+
+        const filteredItems = produktet.filter((item) =>
+            item.emriProduktit.toLowerCase().includes(inputValue.toLowerCase()) ||
+            item.barkodi.toLowerCase().includes(inputValue.toLowerCase()) ||
+            item.kodiProduktit.toLowerCase().includes(inputValue.toLowerCase())
+        );
+
+        console.log(produktet)
+        console.log(filteredItems)
+        setFilteredProduktet(filteredItems);
+    };
+
+    const options = filteredProduktet.map((item) => ({
+        key: item.produktiId,
+        value: item.produktiId,
+        label: item.produktiId + " - " + item.emriProduktit,
+        idProduktit: item.produktiId,
+        emriProduktit: item.emriProduktit,
+        sasiaNeStok: item.sasiaNeStok,
+        qmimiBleres: item.qmimiBleres,
+        qmimiShites: item.qmimiProduktit,
+        njesiaMatese: item.njesiaMatese1,
+        qmimiMeShumic: item.qmimiMeShumic,
+        llojiTVSH: item.llojiTVSH
+    }));
+
+    const customStyles = {
+        control: (provided) => ({
+            ...provided,
+            width: 300, 
+        }),
+    };
+
     const handleSubmit = async (event) => {
         if (produktiID === 0 ||
             sasia <= 0 ||
@@ -133,6 +240,7 @@ function RegjistroFaturen(props) {
                 sasiaStokut: sasia,
                 qmimiBleres: qmimiBleres,
                 qmimiShites: qmimiShites,
+                qmimiShitesMeShumic: qmimiShitesMeShumic
             }, authentikimi).then(() => {
                 setPerditeso(Date.now());
             });
@@ -141,51 +249,14 @@ function RegjistroFaturen(props) {
             setQmimiBleres("");
             setSasia("");
             setQmimiShites("");
+            setQmimiShitesMeShumic("");
             setSasiaNeStok(0);
             setQmimiB(0);
             setQmimiSH(0);
+            setQmimiSH2(0);
             setPerditeso(Date.now());
         }
     };
-
-    const handleProduktiChange = (value, text, sasia, qmimiB, qmimiSH, njesiaMatese) => {
-        const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.produktiId === value);
-
-        if (kontrolloProduktin.length > 0) {
-            setPershkrimiMesazhit("Produkti eshte shtuar nje here! Ju keni mundesi ta editoni ate");
-            setTipiMesazhit("danger");
-            setShfaqMesazhin(true);
-            setProduktiID(0);
-        } else {
-            setProduktiID(value);
-            setemriProduktit(text);
-            setSasiaNeStok(sasia);
-            setQmimiB(qmimiB);
-            setQmimiSH(qmimiSH);
-            setNjesiaMatese(njesiaMatese);
-        }
-    };
-
-    useEffect(() => {
-        let totalProdukteve = 0;
-        let totalFaturesShitese = 0;
-        let totalFaturesBlerese = 0;
-        let totalStokut = 0;
-        let totalMazhaFitimit = 0;
-        produktetNeKalkulim.forEach((produkti) => {
-            totalProdukteve += 1;
-            totalStokut += produkti.sasiaStokut;
-            totalFaturesShitese += produkti.sasiaStokut * produkti.qmimiShites;
-            totalFaturesBlerese += produkti.sasiaStokut * produkti.qmimiBleres;
-            totalMazhaFitimit += (((produkti.sasiaStokut * produkti.qmimiShites) * (1 - ((18 / 100) / (1 + (18 / 100)))))
-                - (produkti.sasiaStokut * produkti.qmimiBleres)) / (produkti.sasiaStokut * produkti.qmimiBleres) * 100
-        });
-        setTotProdukteve(totalProdukteve);
-        setTotFaturesShitese(totalFaturesShitese);
-        setTotFaturesBlerese(totalFaturesBlerese);
-        setTotStokut(totalStokut);
-        setMazhaFitimit(totalMazhaFitimit);
-    }, [produktetNeKalkulim]);
 
     const ndrroField = (e, tjetra) => {
         if (e.key === 'Enter') {
@@ -202,10 +273,12 @@ function RegjistroFaturen(props) {
             } else {
 
                 for (let produkti of produktetNeKalkulim) {
+                    console.log(produkti)
                     await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.idProduktit}`, {
                         qmimiBleres: produkti.qmimiBleres,
                         qmimiProduktit: produkti.qmimiShites,
-                        sasiaNeStok: produkti.sasiaStokut
+                        sasiaNeStok: produkti.sasiaStokut,
+                        qmimiMeShumic: produkti.qmimiShitesMeShumic
                     }, authentikimi);
                 }
 
@@ -227,14 +300,16 @@ function RegjistroFaturen(props) {
     async function handleEdit(id) {
         const produkti = await axios.get(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`, authentikimi)
             .then((p) => {
+                console.log(p.data)
                 setPerditeso(Date.now);
 
                 setEdito(true);
-                setProduktiID(p.data.idProduktit);
-                setemriProduktit(p.data.emriProduktit);
-                setSasia(p.data.sasiaStokut);
-                setQmimiBleres(p.data.qmimiBleres);
-                setQmimiShites(p.data.qmimiShites);
+                setProduktiID(p.data[0].idProduktit);
+                setEmriProduktit(p.data[0].emriProduktit);
+                setSasia(p.data[0].sasiaStokut);
+                setQmimiBleres(p.data[0].qmimiBleres);
+                setQmimiShites(p.data[0].qmimiShites);
+                setQmimiShitesMeShumic(p.data[0].qmimiShitesMeShumic);
             })
     }
 
@@ -250,7 +325,8 @@ function RegjistroFaturen(props) {
             await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`, {
                 qmimiBleres: qmimiBleres,
                 qmimiShites: qmimiShites,
-                sasiaStokut: sasia
+                sasiaStokut: sasia,
+                qmimiShitesMeShumic: qmimiShitesMeShumic
             }, authentikimi).then(() => {
                 setPerditeso(Date.now());
             });
@@ -259,9 +335,11 @@ function RegjistroFaturen(props) {
             setQmimiBleres("");
             setSasia("");
             setQmimiShites("");
+            setQmimiShitesMeShumic("");
             setSasiaNeStok(0);
             setQmimiB(0);
             setQmimiSH(0);
+            setQmimiSH2(0);
             setEdito(false);
         }
     }
@@ -304,6 +382,33 @@ function RegjistroFaturen(props) {
                     </Modal.Footer>
                 </Modal>
             }
+            {konfirmoProduktin &&
+                <Modal show={konfirmoProduktin} onHide={() => setKonfirmoProduktin(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title as="h6">Konfirmo Prodouktin</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <strong style={{ fontSize: "10pt" }}>
+                            Ky produkt eshte shtuar nje her!
+                            A jeni te sigurt qe deshironi ta shtoni prap?
+                        </strong>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={() => setKonfirmoProduktin(false)}
+                        >
+                            Jo <FontAwesomeIcon icon={faPenToSquare} />
+                        </Button>
+                        <Button
+                            variant="warning"
+                            onClick={() => handleProduktiChange({value: konifirmoProduktinLista[0].produktiID})}
+                        >
+                            Po <FontAwesomeIcon icon={faPlus} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            }
             {loading ? (
                 <div className="Loader">
                     <TailSpin
@@ -328,39 +433,16 @@ function RegjistroFaturen(props) {
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group controlId="idDheEmri">
                                     <Form.Label>Produkti</Form.Label>
-                                    <select
-                                        placeholder="Produkti"
-                                        className="form-select"
-                                        value={produktiID ? produktiID : 0}
-                                        disabled={edito}
-                                        onChange={(e) =>
-                                            handleProduktiChange(e.target.value,
-                                                e.target.options[e.target.selectedIndex].text,
-                                                e.target.options[e.target.selectedIndex].getAttribute('sasiaNeStok'),
-                                                e.target.options[e.target.selectedIndex].getAttribute('qmimiBleres'),
-                                                e.target.options[e.target.selectedIndex].getAttribute('qmimiShites'),
-                                                e.target.options[e.target.selectedIndex].getAttribute('njesiaMatese')
-                                            )
-                                        }
-                                        onKeyDown={(e) => { ndrroField(e, "sasia") }}
-                                    >
-                                        <option defaultValue value={0} key={0} disabled>
-                                            Zgjedhni Produktin
-                                        </option>
-                                        {produktet.map((item) => {
-                                            return (
-                                                <option key={item.produktiId}
-                                                    value={item.produktiId}
-                                                    sasiaNeStok={item.sasiaNeStok}
-                                                    qmimiBleres={item.qmimiBleres}
-                                                    qmimiShites={item.qmimiProduktit}
-                                                    njesiaMatese={item.njesiaMatese1}
-                                                >
-                                                    {item.produktiId + " - " + item.emriProduktit}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
+                                    <Select
+                                        options={options}
+                                        value={selectedOption}
+                                        styles={customStyles}
+                                        isSearchable
+                                        onInputChange={handleSearchChange}
+                                        onChange={handleProduktiChange}
+                                        placeholder={emriProduktit ? (produktiID + " - " + emriProduktit) : "Zgjedhni Produktin"}
+                                        isDisabled={edito}
+                                    />
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>Sasia - {njesiaMatese}</Form.Label>
@@ -376,31 +458,47 @@ function RegjistroFaturen(props) {
                                     />
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Qmimi Bleres €</Form.Label>
+                                    <Form.Label>Qmimi Bleres + TVSH €</Form.Label>
                                     <Form.Control
                                         id="qmimiBleres"
                                         type="number"
                                         value={qmimiBleres}
                                         placeholder="0.00 €"
                                         onChange={(e) => {
-                                            const qmimbleres = parseFloat(e.target.value); 
-                                            setQmimiBleres(qmimbleres); 
-                                            const qmimishites = qmimbleres + qmimbleres * 0.18; 
-                                            setQmimiShites(qmimishites.toFixed(2)); 
+                                            const qmimbleres = parseFloat(e.target.value);
+                                            setQmimiBleres(qmimbleres);
+                                            const qmimishites = qmimbleres + qmimbleres * ((llojiTVSH) / 100);
+                                            setQmimiShites(qmimishites.toFixed(2));
+                                            setQmimiShitesMeShumic(qmimishites.toFixed(2));
                                         }}
                                         onKeyDown={(e) => { ndrroField(e, "qmimiShites") }}
                                     />
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Qmimi Shites €</Form.Label>
+                                    <Form.Label>Qmimi Shites me Pakic + TVSH €</Form.Label>
                                     <Form.Control
                                         id="qmimiShites"
                                         type="number"
                                         value={qmimiShites}
                                         placeholder="0.00 €"
                                         onChange={(e) => {
-                                            const qmimishites = parseFloat(e.target.value); 
-                                            setQmimiShites(qmimishites); 
+                                            const qmimishites = parseFloat(e.target.value);
+                                            setQmimiShites(qmimishites);
+                                        }}
+                                        
+                                        onKeyDown={(e) => { ndrroField(e, "qmimiShitesMeShumic") }}
+                                    />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Qmimi Shites me Shumic + TVSH €</Form.Label>
+                                    <Form.Control
+                                        id="qmimiShitesMeShumic"
+                                        type="number"
+                                        value={qmimiShitesMeShumic}
+                                        placeholder="0.00 €"
+                                        onChange={(e) => {
+                                            const qmimishitesmeshumic = parseFloat(e.target.value);
+                                            setQmimiShitesMeShumic(qmimishitesmeshumic);
                                         }}
                                     />
                                 </Form.Group>
@@ -418,9 +516,10 @@ function RegjistroFaturen(props) {
                             </Form>
                         </Col>
                         <Col>
-                            <p><strong>Qmimi Bleres:</strong> {parseFloat(qmimiB).toFixed(2)} €</p>
-                            <p><strong>Qmimi Shites:</strong> {parseFloat(qmimiSH).toFixed(2)} €</p>
-                            <p><strong>Sasia aktuale ne Stok:</strong> {sasiaNeStok} copë</p>
+                            <p><strong>Sasia aktuale ne Stok:</strong> {sasiaNeStok} {njesiaMatese}</p>
+                            <p><strong>Qmimi Bleres me Shumic + TVSH:</strong> {parseFloat(qmimiB).toFixed(2)} €</p>
+                            <p><strong>Qmimi Shites me Pakic + TVSH:</strong> {parseFloat(qmimiSH).toFixed(2)} €</p>
+                            <p><strong>Qmimi Shites me Shumic + TVSH:</strong> {parseFloat(qmimiSH2).toFixed(2)} €</p>
                         </Col>
                         <Col>
                             <Row>
@@ -456,8 +555,9 @@ function RegjistroFaturen(props) {
                                 <th>Nr. Rendor</th>
                                 <th>Emri Produktit</th>
                                 <th>Sasia</th>
-                                <th>Qmimi Bleres</th>
-                                <th>Qmimi Shites</th>
+                                <th>Qmimi Bleres + TVSH</th>
+                                <th>Qmimi Shites me Pakic + TVSH</th>
+                                <th>Qmimi Shites me Shumic+ TVSH</th>
                                 <th>Totali Bleres</th>
                                 <th>Totali Shites</th>
                                 <th>Mazha</th>
@@ -472,11 +572,12 @@ function RegjistroFaturen(props) {
                                     <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
                                     <td>{parseFloat(p.qmimiBleres).toFixed(2)} €</td>
                                     <td>{parseFloat(p.qmimiShites).toFixed(2)} €</td>
+                                    <td>{parseFloat(p.qmimiShitesMeShumic).toFixed(2)} €</td>
                                     <td>{parseFloat(p.sasiaStokut * p.qmimiBleres).toFixed(2)} €</td>
                                     <td>{parseFloat(p.sasiaStokut * p.qmimiShites).toFixed(2)} €</td>
                                     <td>
                                         {parseFloat(
-                                            (((p.sasiaStokut * p.qmimiShites) * (1 - ((18 / 100) / (1 + (18 / 100))))) - (p.sasiaStokut * p.qmimiBleres)) / (p.sasiaStokut * p.qmimiBleres) * 100
+                                            (((p.sasiaStokut * p.qmimiShites) * (1 - ((p.llojiTVSH / 100) / (1 + (p.llojiTVSH / 100))))) - (p.sasiaStokut * p.qmimiBleres)) / (p.sasiaStokut * p.qmimiBleres) * 100
                                         ).toFixed(2)} %
                                     </td>
 
@@ -501,11 +602,13 @@ function RegjistroFaturen(props) {
                                 <td></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>{totProdukteve}</td>
                                 <td>-</td>
                                 <td>{parseFloat(totStokut).toFixed(2)}</td>
+                                <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
                                 <td>{parseFloat(totFaturesBlerese).toFixed(2)} €</td>
@@ -517,7 +620,8 @@ function RegjistroFaturen(props) {
                     </Table>
                 </Container>
             </>
-            )}
+            )
+            }
         </div >
     );
 };

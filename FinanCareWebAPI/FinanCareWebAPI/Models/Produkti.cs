@@ -17,6 +17,10 @@ public partial class Produkti
 
     public string? KodiProduktit { get; set; }
 
+    public int? LlojiTVSH { get; set; }
+    
+    public decimal? SasiaShumices { get; set; }
+
     public virtual NjesiaMatese? IdnjesiaMateseNavigation { get; set; }
 
     public virtual Partneri? IdpartneriNavigation { get; set; }

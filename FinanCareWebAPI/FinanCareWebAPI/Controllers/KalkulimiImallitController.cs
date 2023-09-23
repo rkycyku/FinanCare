@@ -111,7 +111,9 @@ namespace WebAPI.Controllers
                     x.IdProduktitNavigation.EmriProduktit,
                     x.SasiaStokut,
                     x.QmimiBleres,
-                    x.QmimiShites
+                    x.QmimiShites,
+                    x.QmimiShitesMeShumic,
+                    x.IdProduktitNavigation.LlojiTVSH
                 })
                .ToListAsync();
 
@@ -170,6 +172,7 @@ namespace WebAPI.Controllers
             produkti.SasiaStokut = teDhenat.SasiaStokut;
             produkti.QmimiBleres = teDhenat.QmimiBleres;
             produkti.QmimiShites = teDhenat.QmimiShites;
+            produkti.QmimiShitesMeShumic = teDhenat.QmimiShitesMeShumic;
 
             try
             {
@@ -198,6 +201,8 @@ namespace WebAPI.Controllers
             produkti.DataPerditsimit = DateTime.Now;
             produkti.QmimiProduktit = stoku.QmimiProduktit;
             produkti.QmimiBleres = stoku.QmimiBleres;
+            produkti.QmimiMeShumic = stoku.QmimiMeShumic;
+
             if(stoku.DataKrijimit == null) {
                 produkti.DataKrijimit = produkti.DataKrijimit;
             }
@@ -219,7 +224,22 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/getKalkulimi")]
         public async Task<IActionResult> GetKalkulimi(int idKalkulimit)
         {
-            var kalkulimi = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idKalkulimit);
+            var kalkulimi = await _context.TeDhenatKalkulimits
+                .Where(x => x.Id == idKalkulimit)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.IdRegjistrimit,
+                    x.IdProduktit,
+                    x.IdProduktitNavigation.EmriProduktit,
+                    x.SasiaStokut,
+                    x.QmimiBleres,
+                    x.QmimiShites,
+                    x.QmimiShitesMeShumic,
+                    x.IdProduktitNavigation.LlojiTVSH
+                })
+               .ToListAsync();
+            ;
 
             return Ok(kalkulimi);
         }
@@ -257,7 +277,7 @@ namespace WebAPI.Controllers
         {
             var nrFatures = await _context.KalkulimiImallits
             .OrderByDescending(x => x.IdRegjistrimit)
-            .Take(1) // Take only one record (the second latest)
+            .Take(1)
             .Select(x => x.IdRegjistrimit).ToListAsync();
 
             return Ok(nrFatures);
@@ -300,7 +320,8 @@ namespace WebAPI.Controllers
                 x.IdProduktitNavigation.EmriProduktit,
                 x.SasiaStokut,
                 x.QmimiBleres,
-                x.QmimiShites
+                x.QmimiShites,
+                x.QmimiShitesMeShumic
             })
             .SingleOrDefaultAsync(); // Use SingleOrDefaultAsync to retrieve one record
 
@@ -321,13 +342,14 @@ namespace WebAPI.Controllers
             if (secondLatestTeDhenat == null )
             {
                 produkti.QmimiProduktit = 0;
-
                 produkti.QmimiBleres = 0;
+                produkti.QmimiMeShumic = 0;
             }
             else
             {
                 produkti.QmimiProduktit = secondLatestTeDhenat.QmimiShites;
                 produkti.QmimiBleres = secondLatestTeDhenat.QmimiBleres;
+                produkti.QmimiMeShumic = secondLatestTeDhenat.QmimiShitesMeShumic;
             }
 
             if (produkti.DataKrijimit == null)

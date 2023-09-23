@@ -35,9 +35,11 @@ namespace TechStoreWebAPI.Controllers
                    x.IdnjesiaMatese,
                    x.Barkodi,
                    x.KodiProduktit,
+                   x.LlojiTVSH,
                    x.StokuQmimiProduktit.SasiaNeStok,
                    x.StokuQmimiProduktit.QmimiProduktit,
                    x.StokuQmimiProduktit.QmimiBleres,
+                   x.StokuQmimiProduktit.QmimiMeShumic,
                    x.ZbritjaQmimitProduktit.Rabati
                })
                .ToListAsync();
@@ -63,9 +65,11 @@ namespace TechStoreWebAPI.Controllers
                    p.IdnjesiaMateseNavigation.NjesiaMatese1,
                    p.Barkodi,
                    p.KodiProduktit,
+                   p.LlojiTVSH,
                    p.StokuQmimiProduktit.SasiaNeStok,
                    p.StokuQmimiProduktit.QmimiProduktit,
                    p.StokuQmimiProduktit.QmimiBleres,
+                   p.StokuQmimiProduktit.QmimiMeShumic,
                    p.ZbritjaQmimitProduktit.Rabati,
                })
                .ToListAsync();
@@ -91,9 +95,11 @@ namespace TechStoreWebAPI.Controllers
                     p.IdnjesiaMateseNavigation.NjesiaMatese1,
                     p.Barkodi,
                     p.KodiProduktit,
+                    p.LlojiTVSH,
                     p.StokuQmimiProduktit.SasiaNeStok,
                     p.StokuQmimiProduktit.QmimiProduktit,
                     p.StokuQmimiProduktit.QmimiBleres,
+                    p.StokuQmimiProduktit.QmimiMeShumic,
                     p.ZbritjaQmimitProduktit.Rabati,
                 })
                 .FirstOrDefaultAsync();
@@ -162,6 +168,16 @@ namespace TechStoreWebAPI.Controllers
                 produkti.KodiProduktit = p.KodiProduktit;
             }
 
+            if(p.LlojiTVSH != null)
+            {
+                produkti.LlojiTVSH = p.LlojiTVSH;
+            }
+
+            if(p.SasiaShumices != null)
+            {
+                produkti.SasiaShumices = p.SasiaShumices;
+            }
+
             if (p.StokuQmimiProduktit != null)
             {
                 if (p.StokuQmimiProduktit.QmimiProduktit != null)
@@ -177,6 +193,11 @@ namespace TechStoreWebAPI.Controllers
                 if (p.StokuQmimiProduktit.SasiaNeStok != null)
                 {
                     stokuQmimi.SasiaNeStok = p.StokuQmimiProduktit.SasiaNeStok;
+                }
+
+                if (p.StokuQmimiProduktit.QmimiMeShumic != null)
+                {
+                    stokuQmimi.QmimiMeShumic = p.StokuQmimiProduktit.QmimiMeShumic;
                 }
             }
 

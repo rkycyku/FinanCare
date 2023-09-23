@@ -77,10 +77,6 @@ function PerditesoStatusinKalk(props) {
     try {
       await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrKalkulimit}&statusi=false`
         , {}, authentikimi).then(() => {
-
-          setPerditeso(Date.now());
-
-
           filtroKalkulimet("hapKalkulimet")
           setHapKalkulimin(false);
         })
@@ -102,8 +98,6 @@ function PerditesoStatusinKalk(props) {
     try {
       await axios.delete(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin?idKalkulimi=${nrKalkulimit}`
         , authentikimi).then(() => {
-          setPerditeso(Date.now());
-
           filtroKalkulimet("fshijKalkulimet")
         })
 
@@ -124,37 +118,22 @@ function PerditesoStatusinKalk(props) {
     setPerditeso(Date.now());
 
     if (funksioni === "hapKalkulimin") {
-
-      setPerditeso(Date.now());
       setHapKalkulimin(true);
     }
 
     if (funksioni === "fshijKalkulimin") {
-
-      setPerditeso(Date.now());
       setFshijKalkulimin(true);
     }
-
-
-    setPerditeso(Date.now());
   }
 
   function filtroKalkulimet(lloji) {
     setPerditeso(Date.now());
 
     if (lloji === "hapKalkulimet") {
-
-      setPerditeso(Date.now());
-
       setStatusiIFiltrimit("true");
-
-      setPerditeso(Date.now());
     }
     if (lloji === "fshijKalkulimet") {
-
-      setPerditeso(Date.now());
       setStatusiIFiltrimit("false");
-      setPerditeso(Date.now());
     }
   }
 
