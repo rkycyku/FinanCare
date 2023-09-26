@@ -2,7 +2,7 @@ table {
   width: 100%;
 }
 
-.title{
+.title {
   margin-top: 0.3em;
 }
 
@@ -28,6 +28,14 @@ table {
   border-bottom: 1px solid #dddddd;
 }
 
-.containerDashboardP h1{
+.containerDashboardP h1 {
   text-align: center;
+}
+
+.searchBoxi {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
 }

@@ -222,5 +222,22 @@ namespace TechStoreWebAPI.Controllers
 
             return NoContent();
         }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetKodiProduktitPerRegjistrim")]
+        public async Task<IActionResult> GetKodiProduktitPerRegjistrim(int idPartneri)
+        {
+            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == idPartneri);
+
+            var totaliProdukteveNgaPartneri = await _context.Produktis.Where(x => x.Idpartneri == idPartneri).CountAsync();
+
+            // Use string interpolation to format kodiProduktit with leading zeros
+            var kodiProduktit = $"{partneri.ShkurtesaPartnerit.ToUpper()}{totaliProdukteveNgaPartneri + 1:D4}";
+
+            return Ok(kodiProduktit);
+        }
+
     }
 }

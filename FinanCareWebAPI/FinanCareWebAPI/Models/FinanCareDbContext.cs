@@ -125,6 +125,9 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.Tvsh)
                 .HasMaxLength(12)
                 .HasColumnName("TVSH");
+            entity.Property(e => e.ShkurtesaPartnerit)
+                .HasMaxLength(10)
+                .HasColumnName("ShkurtesaPartnerit");
         });
 
         modelBuilder.Entity<Perdoruesi>(entity =>

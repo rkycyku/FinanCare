@@ -23,6 +23,8 @@ public partial class Partneri
 
     public string? LlojiPartnerit { get; set; }
 
+    public string? ShkurtesaPartnerit { get; set; }
+
     public virtual ICollection<KalkulimiImallit> KalkulimiImallits { get; } = new List<KalkulimiImallit>();
 
     public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();

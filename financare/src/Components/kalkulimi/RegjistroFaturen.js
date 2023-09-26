@@ -9,8 +9,8 @@ import { TailSpin } from 'react-loader-spinner';
 import { Table, Form, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import useKeyboardNavigation from "../../Context/useKeyboardNavigation";
 
-import Select from 'react-select';
 
 function RegjistroFaturen(props) {
     const [perditeso, setPerditeso] = useState('');
@@ -52,6 +52,12 @@ function RegjistroFaturen(props) {
     const [selectedOption, setSelectedOption] = useState(null);
     const [searchValue, setSearchValue] = useState('');
     const [filteredProduktet, setFilteredProduktet] = useState(produktet);
+    const [inputValue, setInputValue] = useState('');
+    const [filteredItems, setFilteredItems] = useState(produktet);
+    const [selectedItem, setSelectedItem] = useState(null); // To store the selected item
+    const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
+
+
 
     const navigate = useNavigate();
 
@@ -149,33 +155,39 @@ function RegjistroFaturen(props) {
 
     const handleProduktiChange = (selectedOption) => {
 
-        const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.idProduktit === selectedOption.value);
+        const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.idProduktit === selectedOption.produktiId);
+
+        console.log(selectedOption);
+        console.log(produktetNeKalkulim);
+        console.log(konifirmoProduktinLista);
         if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
             setKonfirmoProduktin(true);
 
             setKonifirmoProduktinLista([
                 {
-                    produktiID: selectedOption.idProduktit,
+                    produktiID: selectedOption.produktiId,
                     emriProduktit: selectedOption.emriProduktit,
                     qmimiBleresIVjeter: selectedOption.qmimiBleres,
-                    qmimiShitesIVjeter: selectedOption.qmimiShites,
+                    qmimiShitesIVjeter: selectedOption.qmimiProduktit,
                     qmimiShitesMeShumicIVjeter: selectedOption.qmimiMeShumic,
                     sasiaNeStokEVjeter: selectedOption.sasiaNeStok,
                     sasiaNeStok: sasiaNeStok,
                     qmimiBleres: qmimiBleres,
                     qmimiShites: qmimiShites,
-                    njesiaMatese: selectedOption.njesiaMatese,
+                    njesiaMatese: selectedOption.njesiaMatese1,
                     llojiTVSH: selectedOption.llojiTVSH,
-                    qmimiShitesMeShumic: qmimiShitesMeShumic
+                    qmimiShitesMeShumic: qmimiShitesMeShumic,
+                    barkodi: selectedOption.barkodi,
+                    kodiProduktit: selectedOption.kodiProduktit,
                 }
             ]);
         } else {
-            setProduktiID(selectedOption?.idProduktit ?? konifirmoProduktinLista[0].produktiID);
+            setProduktiID(selectedOption?.produktiId ?? konifirmoProduktinLista[0].produktiID);
             setEmriProduktit(selectedOption?.emriProduktit ?? konifirmoProduktinLista[0].emriProduktit);
             setSasiaNeStok(selectedOption?.llojiTVSH ?? konifirmoProduktinLista[0].sasiaNeStok);
-            setQmimiSH(selectedOption?.qmimiShites ?? konifirmoProduktinLista[0].qmimiShitesIVjeter);
+            setQmimiSH(selectedOption?.qmimiProduktit ?? konifirmoProduktinLista[0].qmimiShitesIVjeter);
             setQmimiB(selectedOption?.qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleresIVjeter);
-            setNjesiaMatese(selectedOption?.njesiaMatese ?? konifirmoProduktinLista[0].njesiaMatese);
+            setNjesiaMatese(selectedOption?.njesiaMatese1 ?? konifirmoProduktinLista[0].njesiaMatese);
             setLlojiTVSH(selectedOption?.llojiTVSH ?? konifirmoProduktinLista[0].llojiTVSH);
             setQmimiSH2(selectedOption?.qmimiMeShumic ?? konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter);
             setQmimiBleres(qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleres);
@@ -183,43 +195,20 @@ function RegjistroFaturen(props) {
             setQmimiShites(qmimiShites ?? konifirmoProduktinLista[0].qmimiShites);
             setQmimiShitesMeShumic(qmimiShitesMeShumic ?? konifirmoProduktinLista[0].qmimiShitesMeShumic);
 
+
+            setFilteredItems([]);
+            setInputValue(
+                `${selectedOption?.emriProduktit ? selectedOption.emriProduktit + " - " : ""}` +
+                `${selectedOption?.kodiProduktit ? selectedOption.kodiProduktit + " - " : ""}` +
+                `${selectedOption?.barkodi ? selectedOption.barkodi : ""}` ||
+                `${konifirmoProduktinLista[0]?.emriProduktit ? konifirmoProduktinLista[0].emriProduktit + " - " : ""}` +
+                `${konifirmoProduktinLista[0]?.kodiProduktit ? konifirmoProduktinLista[0].kodiProduktit + " - " : ""}` +
+                `${konifirmoProduktinLista[0]?.barkodi ? konifirmoProduktinLista[0].barkodi : ""}`
+            );
+
+
             setKonfirmoProduktin(false);
         }
-    };
-
-    const handleSearchChange = (inputValue) => {
-        setSearchValue(inputValue);
-
-        const filteredItems = produktet.filter((item) =>
-            item.emriProduktit.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.barkodi.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.kodiProduktit.toLowerCase().includes(inputValue.toLowerCase())
-        );
-
-        console.log(produktet)
-        console.log(filteredItems)
-        setFilteredProduktet(filteredItems);
-    };
-
-    const options = filteredProduktet.map((item) => ({
-        key: item.produktiId,
-        value: item.produktiId,
-        label: item.produktiId + " - " + item.emriProduktit,
-        idProduktit: item.produktiId,
-        emriProduktit: item.emriProduktit,
-        sasiaNeStok: item.sasiaNeStok,
-        qmimiBleres: item.qmimiBleres,
-        qmimiShites: item.qmimiProduktit,
-        njesiaMatese: item.njesiaMatese1,
-        qmimiMeShumic: item.qmimiMeShumic,
-        llojiTVSH: item.llojiTVSH
-    }));
-
-    const customStyles = {
-        control: (provided) => ({
-            ...provided,
-            width: 300, 
-        }),
     };
 
     const handleSubmit = async (event) => {
@@ -297,7 +286,7 @@ function RegjistroFaturen(props) {
             });
     }
 
-    async function handleEdit(id) {
+    async function handleEdit(id, index) {
         const produkti = await axios.get(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`, authentikimi)
             .then((p) => {
                 console.log(p.data)
@@ -305,6 +294,7 @@ function RegjistroFaturen(props) {
 
                 setEdito(true);
                 setProduktiID(p.data[0].idProduktit);
+                setInputValue(index + 1 + " - " + p.data[0].emriProduktit)
                 setEmriProduktit(p.data[0].emriProduktit);
                 setSasia(p.data[0].sasiaStokut);
                 setQmimiBleres(p.data[0].qmimiBleres);
@@ -336,6 +326,7 @@ function RegjistroFaturen(props) {
             setSasia("");
             setQmimiShites("");
             setQmimiShitesMeShumic("");
+            setInputValue("")
             setSasiaNeStok(0);
             setQmimiB(0);
             setQmimiSH(0);
@@ -348,6 +339,34 @@ function RegjistroFaturen(props) {
         props.setPerditeso();
         props.mbyllPerkohesisht();
     }
+
+    const handleInputKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent form submission
+            // Optionally, you can perform an action when Enter is pressed
+            // For example, you can select the item if it's highlighted
+            if (filteredItems.length > 0) {
+                handleProduktiChange(filteredItems[selectedIndex]);
+            }
+
+            ndrroField(e, "sasia")
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const value = e.target.value.toLowerCase();
+        setInputValue(value);
+
+        const filtered = produktet.filter((item) =>
+            item.emriProduktit.toLowerCase().includes(value) ||
+            item.barkodi.toLowerCase().includes(value) ||
+            item.kodiProduktit.toLowerCase().includes(value)
+        );
+
+        setFilteredItems(filtered);
+    };
+
+
 
     return (
         <div className={classes.containerDashboardP}>
@@ -402,7 +421,7 @@ function RegjistroFaturen(props) {
                         </Button>
                         <Button
                             variant="warning"
-                            onClick={() => handleProduktiChange({value: konifirmoProduktinLista[0].produktiID})}
+                            onClick={() => handleProduktiChange(konifirmoProduktinLista[0].produktiID)}
                         >
                             Po <FontAwesomeIcon icon={faPlus} />
                         </Button>
@@ -433,16 +452,29 @@ function RegjistroFaturen(props) {
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group controlId="idDheEmri">
                                     <Form.Label>Produkti</Form.Label>
-                                    <Select
-                                        options={options}
-                                        value={selectedOption}
-                                        styles={customStyles}
-                                        isSearchable
-                                        onInputChange={handleSearchChange}
-                                        onChange={handleProduktiChange}
-                                        placeholder={emriProduktit ? (produktiID + " - " + emriProduktit) : "Zgjedhni Produktin"}
-                                        isDisabled={edito}
+                                    <Form.Control
+                                        id={produktiID}
+                                        type="text"
+                                        className="form-control styled-input" // Add 'styled-input' class
+                                        placeholder="Search"
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                        onKeyDown={handleInputKeyDown}
                                     />
+
+                                    <div className="container" style={{ position: 'relative' }}>
+                                        <ul className="list-group mt-2 searchBoxi">
+                                            {filteredItems.map((item, index) => (
+                                                <li
+                                                    key={item.produktiId}
+                                                    className={`list-group-item${selectedIndex === index ? ' active' : ''}`} // Add 'active' class to selected item
+                                                    onClick={() => handleProduktiChange(item)} // Handle click event
+                                                >
+                                                    {item.emriProduktit}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>Sasia - {njesiaMatese}</Form.Label>
@@ -485,7 +517,7 @@ function RegjistroFaturen(props) {
                                             const qmimishites = parseFloat(e.target.value);
                                             setQmimiShites(qmimishites);
                                         }}
-                                        
+
                                         onKeyDown={(e) => { ndrroField(e, "qmimiShitesMeShumic") }}
                                     />
                                 </Form.Group>
@@ -585,7 +617,7 @@ function RegjistroFaturen(props) {
                                         <div style={{ display: "flex", gap: "0.3em" }}>
                                             <Button size="sm" variant="danger" onClick={() => handleFshij(p.id)}><FontAwesomeIcon icon={faXmark} /></Button>
                                             <Button size="sm" onClick={() => {
-                                                handleEdit(p.id);
+                                                handleEdit(p.id, index);
                                                 setIdTeDhenatKalk(p.id);
                                             }}><FontAwesomeIcon icon={faPenToSquare} /></Button>
                                         </div>
