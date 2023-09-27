@@ -4,18 +4,17 @@ import { useEffect, useState } from "react";
 import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoKompanit from "../../../Components/produktet/kompanit/ShtoKompanit";
 import Mesazhi from "../../../Components/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import EditoKompanin from "../../../Components/produktet/kompanit/EditoKompanin";
-import LargoKompanin from "../../../Components/produktet/kompanit/LargoKompanin";
+import EditoKompanin from "../../../Components/Partneri/EditoPartnerin";
+import LargoKompanin from "../../../Components/Partneri/LargoPartnerin";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
 function TabelaEKompanive(props) {
-    const [kompanit, setKompanit] = useState([]);
+    const [partneret, setPartneret] = useState([]);
     const [perditeso, setPerditeso] = useState('');
     const [shto, setShto] = useState(false);
     const [edito, setEdito] = useState(false);
@@ -35,11 +34,11 @@ function TabelaEKompanive(props) {
     };
 
     useEffect(() => {
-        const shfaqKompanit = async () => {
+        const shfaqPartneret = async () => {
             try {
                 setLoading(true);
-                const kompania = await axios.get("https://localhost:7285/api/Kompania/shfaqKompanit", authentikimi);
-                setKompanit(kompania.data);
+                const partneri = await axios.get("https://localhost:7285/api/Partneri/shfaqPartneret", authentikimi);
+                setPartneret(partneri.data);
                 setLoading(false);
             } catch (err) {
                 console.log(err);
@@ -47,13 +46,8 @@ function TabelaEKompanive(props) {
             }
         };
 
-        shfaqKompanit();
+        shfaqPartneret();
     }, [perditeso]);
-
-    const handleClose = () => {
-        setShto(false);
-    }
-    const handleShow = () => setShto(true);
 
     const handleEdito = (id) => {
         setEdito(true)
@@ -75,14 +69,6 @@ function TabelaEKompanive(props) {
             <NavBar />
 
             <div className="containerDashboardP">
-                {shto && <ShtoKompanit
-                    shfaq={handleShow}
-                    largo={handleClose}
-                    shfaqmesazhin={() => setShfaqMesazhin(true)}
-                    perditesoTeDhenat={() => setPerditeso(Date.now())}
-                    setTipiMesazhit={setTipiMesazhit}
-                    setPershkrimiMesazhit={setPershkrimiMesazhit}
-                />}
                 {shfaqMesazhin && <Mesazhi
                     setShfaqMesazhin={setShfaqMesazhin}
                     pershkrimi={pershkrimiMesazhit}
@@ -128,27 +114,29 @@ function TabelaEKompanive(props) {
                     <MDBTable align="middle">
                         <MDBTableHead>
                             <tr>
-                                <th scope="col">Emri i Kompanis</th>
-                                <th scope="col">Logo</th>
+                                <th scope="col">Emri i Partnerit</th>
+                                <th scope="col">Shkurtesa</th>
+                                <th scope="col">NUI / NF / NRTVSH</th>
+                                <th scope="col">NR. Kontaktit</th>
+                                <th scope="col">Email</th>
                                 <th scope="col">Adresa</th>
+                                <th scope="col">Lloji Partnerit</th>
                                 <th scope="col">Funksione</th>
                             </tr>
                         </MDBTableHead>
                         <MDBTableBody>
-                            {kompanit.map((k) => (
-                                <tr key={k.kompaniaId}>
-                                    <td>{k.emriKompanis}</td>
+                            {partneret.map((p) => (
+                                <tr key={p.idpartneri}>
+                                    <td>{p.emriBiznesit}</td>
+                                    <td>{p.shkurtesaPartnerit}</td>
+                                    <td>{p.nui + " / " + p.nrf + " / " + p.tvsh}</td>
+                                    <td>{p.nrKontaktit}</td>
+                                    <td>{p.email}</td>
+                                    <td>{p.adresa !== null && p.adresa.trim() !== '' ? p.adresa : "Nuk Ka Adrese"}</td>
+                                    <td>{p.llojiPartnerit}</td>
                                     <td >
-                                        <img
-                                            src={`${process.env.PUBLIC_URL}/img/slider/sliderIcons/${k.logo}`}
-                                            width="50"
-                                            alt=""
-                                        />
-                                    </td>
-                                    <td >{k.adresa !== null && k.adresa.trim() !== '' ? k.adresa : "Nuk Ka Adrese"}</td>
-                                    <td >
-                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.kompaniaId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                        <Button variant="danger" onClick={() => handleFshij(k.kompaniaId)}><FontAwesomeIcon icon={faBan} /></Button>
+                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(p.idpartneri)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                        <Button variant="danger" onClick={() => handleFshij(p.idpartneri)}><FontAwesomeIcon icon={faBan} /></Button>
                                     </td>
                                 </tr>
                             ))}

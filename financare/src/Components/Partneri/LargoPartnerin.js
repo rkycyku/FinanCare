@@ -15,16 +15,16 @@ function LargoKompanin(props) {
 
     async function handleSubmit() {
         try {
-            await axios.delete(`https://localhost:7285/api/Kompania/fshijKompanin?id=${props.id}`, authentikimi);
+            await axios.delete(`https://localhost:7285/api/Partneri/fshijPartnerin?id=${props.id}`, authentikimi);
             props.setTipiMesazhit("success");
-            props.setPershkrimiMesazhit("Kompania u fshi me sukses!")
+            props.setPershkrimiMesazhit("Partneri u fshi me sukses!")
             props.perditesoTeDhenat();
             props.largo();
             props.shfaqmesazhin();
         } catch (error) {
             console.error(error);
             props.setTipiMesazhit("danger");
-            props.setPershkrimiMesazhit("Ndodhi nje gabim gjate fshirjes se kompanis!")
+            props.setPershkrimiMesazhit("Ndodhi nje gabim gjate fshirjes se partnerit!")
             props.perditesoTeDhenat();
             props.shfaqmesazhin();
         }
@@ -33,10 +33,10 @@ function LargoKompanin(props) {
     return (
         <Modal show={true} onHide={() => props.largo()}>
             <Modal.Header closeButton>
-                <Modal.Title style={{ color: "red" }}>Largo Kompanin</Modal.Title>
+                <Modal.Title style={{ color: "red" }}>Largo Partnerin</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <h6 >A jeni te sigurt qe deshironi ta fshini kete kompani?</h6>
+                <h6 >A jeni te sigurt qe deshironi ta fshini kete partner?</h6>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => props.largo()}>
@@ -46,7 +46,7 @@ function LargoKompanin(props) {
                     variant="danger"
                     onClick={handleSubmit}
                 >
-                    Largo Kompanin <FontAwesomeIcon icon={faBan} />
+                    Largo Partnerin <FontAwesomeIcon icon={faBan} />
                 </Button>
             </Modal.Footer>
         </Modal>

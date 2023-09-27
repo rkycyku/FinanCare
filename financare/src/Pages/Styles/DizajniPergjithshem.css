@@ -6,8 +6,27 @@ table {
   margin-top: 0.3em;
 }
 
+.mdb-tooltip {
+  background-color: transparent !important;
+  border: none !important; 
+  box-shadow: none !important; 
+  padding: 0 !important; 
+  margin: 0 !important; 
+  font-size: inherit !important; 
+  line-height: inherit !important; 
+}
+
+.mdb-tooltip-content {
+  background-color: transparent !important; 
+  color: inherit !important; 
+  font-size: inherit !important; 
+  line-height: inherit !important; 
+}
+
+
+
 .containerDashboardP {
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
 }
 

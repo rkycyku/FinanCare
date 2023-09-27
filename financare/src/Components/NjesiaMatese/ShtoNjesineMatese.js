@@ -6,31 +6,14 @@ import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-function ShtoKompanit(props) {
-    const [llojiKategoris, setLlojiKategoris] = useState("");
-    const [pershkrimiKategoris, setPershkrimiKategoris] = useState("");
+function ShtoNjesineMatese(props) {
+    const [njesiaMatese, setNjesiaMatese] = useState("");
 
     const [perditeso, setPerditeso] = useState("");
-    const [kategorite, setKateogrite] = useState([]);
-    const [kontrolloKategorine, setKontrolloKategorine] = useState(false);
-    const [konfirmoKategorine, setKonfirmoKategorine] = useState(false);
+    const [njesiteMatese, setNjesiteMatese] = useState([]);
+    const [kontrolloNjesineMatese, setKontrolloNjesineMatese] = useState(false);
+    const [konfirmoNjesineMatese, setKonfirmoNjesineMatese] = useState(false);
     const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
-
-    useEffect(() => {
-        const vendosKategorite = async () => {
-            try {
-                const kategorite = await axios.get(
-                    `https://localhost:7285/api/Kategoria/shfaqKategorit`, authentikimi
-                );
-                setKateogrite(kategorite.data);
-
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        vendosKategorite();
-    }, [perditeso]);
 
     const getToken = localStorage.getItem("token");
 
@@ -39,13 +22,26 @@ function ShtoKompanit(props) {
             Authorization: `Bearer ${getToken}`,
         },
     };
+    
+    useEffect(() => {
+        const vendosNjesiteMatese = async () => {
+            try {
+                const njesiteMatese = await axios.get(
+                    `https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese`, authentikimi
+                );
+                setNjesiteMatese(njesiteMatese.data);
+                console.log(njesiteMatese.data)
 
-    const handleEmriChange = (value) => {
-        setLlojiKategoris(value);
-    };
+            } catch (err) {
+                console.log(err);
+            }
+        };
 
-    const handlePershkrimiChange = (value) => {
-        setPershkrimiKategoris(value);
+        vendosNjesiteMatese();
+    }, [perditeso]);
+
+    const handleNjesiaMateseChange = (value) => {
+        setNjesiaMatese(value);
     };
 
     function isNullOrEmpty(value) {
@@ -53,12 +49,10 @@ function ShtoKompanit(props) {
     }
 
     function handleSubmit() {
-        axios.post('https://localhost:7285/api/Kategoria/shtoKategorin', {
-            llojiKategoris: llojiKategoris,
-            pershkrimiKategoris: pershkrimiKategoris
+        axios.post('https://localhost:7285/api/NjesiaMatese/shtoNjesineMatese', {
+            njesiaMatese1: njesiaMatese,
         }, authentikimi)
             .then((response) => {
-
                 props.setTipiMesazhit("success");
                 props.setPershkrimiMesazhit("Kategoria u insertua me sukses!")
                 props.perditesoTeDhenat();
@@ -72,13 +66,12 @@ function ShtoKompanit(props) {
 
     const handleKontrolli = () => {
         if (
-            isNullOrEmpty(llojiKategoris)
+            isNullOrEmpty(njesiaMatese)
         ) {
             setFushatEZbrazura(true);
         } else {
-
-            if (konfirmoKategorine == false && kategorite.filter((item) => item.llojiKategoris === llojiKategoris).length !== 0) {
-                setKontrolloKategorine(true);
+            if (konfirmoNjesineMatese == false && njesiteMatese.filter((item) => item.njesiaMatese === njesiaMatese).length !== 0) {
+                setKontrolloNjesineMatese(true);
             }
             else {
                 handleSubmit();
@@ -104,14 +97,14 @@ function ShtoKompanit(props) {
 
                 </Modal>
             }
-            {kontrolloKategorine &&
-                <Modal size="sm" show={kontrolloKategorine} onHide={() => setKontrolloKategorine(false)}>
+            {kontrolloNjesineMatese &&
+                <Modal size="sm" show={kontrolloNjesineMatese} onHide={() => setKontrolloNjesineMatese(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title as="h6">Konfirmo vendosjen</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <span style={{ fontSize: "10pt" }}>
-                            Nje kategori me te njejtin emer ekziston ne sistem!
+                            Kjo Njesi Matese ekziston ne sistem!
                         </span>
                         <br />
                         <strong style={{ fontSize: "10pt" }}>
@@ -119,7 +112,7 @@ function ShtoKompanit(props) {
                         </strong>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button size="sm" variant="secondary" onClick={() => setKontrolloKategorine(false)}>
+                        <Button size="sm" variant="secondary" onClick={() => setKontrolloNjesineMatese(false)}>
                             Korrigjo <FontAwesomeIcon icon={faXmark} />
                         </Button>
                         <Button
@@ -141,23 +134,11 @@ function ShtoKompanit(props) {
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Label>Lloji Kategoris<span style={{ color: "red" }}>*</span></Form.Label>
                             <Form.Control
-                                onChange={(e) => handleEmriChange(e.target.value)}
-                                value={llojiKategoris}
+                                onChange={(e) => handleNjesiaMateseChange(e.target.value)}
+                                value={njesiaMatese}
                                 type="text"
                                 placeholder="Lloji Kategoris"
                                 autoFocus
-                            />
-                        </Form.Group>
-                        <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlTextarea1"
-                        >
-                            <Form.Label>Pershkrimi Kategoris</Form.Label>
-                            <Form.Control
-                                onChange={(e) => handlePershkrimiChange(e.target.value)}
-                                value={pershkrimiKategoris}
-                                type="text"
-                                placeholder="Pershkrimi Kategoris"
                             />
                         </Form.Group>
                     </Form>
@@ -170,7 +151,7 @@ function ShtoKompanit(props) {
                         className="Butoni"
                         onClick={handleKontrolli}
                     >
-                        Shto Kategorine <FontAwesomeIcon icon={faPlus} />
+                        Shto Njesine Matese <FontAwesomeIcon icon={faPlus} />
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -178,4 +159,4 @@ function ShtoKompanit(props) {
     )
 }
 
-export default ShtoKompanit;
+export default ShtoNjesineMatese;

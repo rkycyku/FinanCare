@@ -6,30 +6,14 @@ import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 
-function EditoKompanin(props) {
-    const [kategoria, setKategoria] = useState([]);
+function EditoNjesineMatese(props) {
+    const [njesiaMatese, setNjesiaMatese] = useState("");
 
     const [perditeso, setPerditeso] = useState("");
-    const [kategorite, setKateogrite] = useState([]);
-    const [kontrolloKategorine, setKontrolloKategorine] = useState(false);
-    const [konfirmoKategorine, setKonfirmoKategorine] = useState(false);
+    const [njesiteMatese, setNjesiteMatese] = useState([]);
+    const [kontrolloNjesineMatese, setKontrolloNjesineMatese] = useState(false);
+    const [konfirmoNjesineMatese, setKonfirmoNjesineMatese] = useState(false);
     const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
-
-    useEffect(() => {
-        const vendosKategorite = async () => {
-            try {
-                const kategorite = await axios.get(
-                    `https://localhost:7285/api/Kategoria/shfaqKategorit`, authentikimi
-                );
-                setKateogrite(kategorite.data);
-
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        vendosKategorite();
-    }, [perditeso]);
 
     const getToken = localStorage.getItem("token");
 
@@ -40,25 +24,38 @@ function EditoKompanin(props) {
     };
 
     useEffect(() => {
-        const ShfaqKategorine = async () => {
+        const vendosNjesiteMatese = async () => {
             try {
-                const kategoria = await axios.get(`https://localhost:7285/api/Kategoria/shfaqKategorinSipasIDs?id=${props.id}`, authentikimi);
-                setKategoria(kategoria.data);
+                const njesiteMatese = await axios.get(
+                    `https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese`, authentikimi
+                );
+                setNjesiteMatese(njesiteMatese.data);
+                console.log(njesiteMatese.data)
 
             } catch (err) {
                 console.log(err);
             }
         };
 
-        ShfaqKategorine();
+        vendosNjesiteMatese();
+    }, [perditeso]);
+
+    useEffect(() => {
+        const shfaqNjesineMatese = async () => {
+            try {
+                const njesiaMatese = await axios.get(`https://localhost:7285/api/NjesiaMatese/shfaqNjesineMateseSipasIDs?id=${props.id}`, authentikimi);
+                setNjesiaMatese(njesiaMatese.data);
+
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        shfaqNjesineMatese();
     }, []);
 
-    const handleEmriChange = (value) => {
-        setKategoria((prev) => ({ ...prev, llojiKategoris: value }));
-    };
-
-    const handlePershkrimiChange = (value) => {
-        setKategoria((prev) => ({ ...prev, pershkrimiKategoris: value }));
+    const handleNjesiaMateseChange = (value) => {
+        setNjesiaMatese((prev) => ({ ...prev, njesiaMatese1: value }));
     };
 
     function isNullOrEmpty(value) {
@@ -66,19 +63,18 @@ function EditoKompanin(props) {
     }
 
     function handleSubmit() {
-        axios.put(`https://localhost:7285/api/Kategoria/perditesoKategorin?id=${kategoria.kategoriaId}`, kategoria, authentikimi)
+        axios.put(`https://localhost:7285/api/NjesiaMatese/perditesoNjesineMatese?id=${njesiaMatese.idnjesiaMatese}`, njesiaMatese, authentikimi)
             .then(x => {
-
                 props.setTipiMesazhit("success");
-                props.setPershkrimiMesazhit("Kategoria u Perditesua me sukses!")
+                props.setPershkrimiMesazhit("Njesia Matese u Perditesua me sukses!")
                 props.perditesoTeDhenat();
                 props.largo();
                 props.shfaqmesazhin();
             })
             .catch(error => {
-                console.error('Error saving kategoria:', error);
+                console.error('Error saving njesia matese:', error);
                 props.setTipiMesazhit("danger");
-                props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te kategorise!")
+                props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te njesise matese!")
                 props.perditesoTeDhenat();
                 props.shfaqmesazhin();
             });
@@ -86,13 +82,13 @@ function EditoKompanin(props) {
 
     const handleKontrolli = () => {
         if (
-            isNullOrEmpty(kategoria.llojiKategoris)
+            isNullOrEmpty(njesiaMatese.njesiaMatese1)
         ) {
             setFushatEZbrazura(true);
         } else {
 
-            if (konfirmoKategorine == false && kategorite.filter((item) => item.llojiKategoris === kategoria.llojiKategoris).length !== 0) {
-                setKontrolloKategorine(true);
+            if (konfirmoNjesineMatese == false && njesiteMatese.filter((item) => item.njesiaMatese === njesiaMatese.njesiaMatese1).length !== 0) {
+                setKontrolloNjesineMatese(true);
             }
             else {
                 handleSubmit();
@@ -118,14 +114,14 @@ function EditoKompanin(props) {
 
                 </Modal>
             }
-            {kontrolloKategorine &&
-                <Modal size="sm" show={kontrolloKategorine} onHide={() => setKontrolloKategorine(false)}>
+            {kontrolloNjesineMatese &&
+                <Modal size="sm" show={kontrolloNjesineMatese} onHide={() => setKontrolloNjesineMatese(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title as="h6">Konfirmo Perditesimin</Modal.Title>
+                        <Modal.Title as="h6">Konfirmo vendosjen</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <span style={{ fontSize: "10pt" }}>
-                            Nje kategori me te njejtin emer ekziston ne sistem!
+                            Kjo Njesi Matese ekziston ne sistem!
                         </span>
                         <br />
                         <strong style={{ fontSize: "10pt" }}>
@@ -133,7 +129,7 @@ function EditoKompanin(props) {
                         </strong>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button size="sm" variant="secondary" onClick={() => setKontrolloKategorine(false)}>
+                        <Button size="sm" variant="secondary" onClick={() => setKontrolloNjesineMatese(false)}>
                             Korrigjo <FontAwesomeIcon icon={faXmark} />
                         </Button>
                         <Button
@@ -148,34 +144,25 @@ function EditoKompanin(props) {
             }
             <Modal className="modalEditShto" show={true} onHide={() => props.largo()}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Edito Kategorine</Modal.Title>
+                    <Modal.Title>Edito Njesine Matese</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>ID Kategorise</Form.Label>
+                            <Form.Label>ID Njesia Matese</Form.Label>
                             <Form.Control
-                                value={kategoria.kategoriaId}
+                                value={njesiaMatese.idnjesiaMatese}
                                 disabled
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>Lloji Kategorise<span style={{ color: "red" }}>*</span></Form.Label>
+                            <Form.Label>NjesiaMatese<span style={{ color: "red" }}>*</span></Form.Label>
                             <Form.Control
-                                onChange={(e) => handleEmriChange(e.target.value)}
-                                value={kategoria.llojiKategoris}
+                                onChange={(e) => handleNjesiaMateseChange(e.target.value)}
+                                value={njesiaMatese.njesiaMatese1}
                                 type="text"
-                                placeholder="Lloji Kategorise"
+                                placeholder="Njesia Matese"
                                 autoFocus
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>Pershkrimi Kategorise</Form.Label>
-                            <Form.Control
-                                onChange={(e) => handlePershkrimiChange(e.target.value)}
-                                value={kategoria.pershkrimiKategoris}
-                                type="text"
-                                placeholder="Pershkrimi Kategorise"
                             />
                         </Form.Group>
                     </Form>
@@ -188,7 +175,7 @@ function EditoKompanin(props) {
                         className="Butoni"
                         onClick={handleKontrolli}
                     >
-                        Edito Kategorine <FontAwesomeIcon icon={faPenToSquare} />
+                        Edito Njesine Matese <FontAwesomeIcon icon={faPenToSquare} />
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -196,4 +183,4 @@ function EditoKompanin(props) {
     )
 }
 
-export default EditoKompanin;
+export default EditoNjesineMatese;

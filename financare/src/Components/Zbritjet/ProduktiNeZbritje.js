@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import Mesazhi from "../../layout/Mesazhi";
+import Mesazhi from "../layout/Mesazhi";
 
 function ProduktiNeZbritje(props) {
   const [produkti, setProdukti] = useState("");

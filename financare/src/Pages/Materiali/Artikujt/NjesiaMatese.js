@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoKategori from "../../../Components/produktet/kategorit/ShtoKategori";
+import ShtoKategori from "../../../Components/NjesiaMatese/ShtoNjesineMatese";
 import Mesazhi from "../../../Components/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import EditoKategorin from "../../../Components/produktet/kategorit/EditoKategorin";
-import LargoKategorin from "../../../Components/produktet/kategorit/LargoKategorin";
+import EditoKategorin from "../../../Components/NjesiaMatese/EditoNjesineMatese";
+import LargoKategorin from "../../../Components/NjesiaMatese/LargoNjesineMatese";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 
 function TabelaEKategorive(props) {
-    const [kategorit, setKategorit] = useState([]);
+    const [njesiteMatese, setNjesiteMatese] = useState([]);
     const [perditeso, setPerditeso] = useState('');
     const [shto, setShto] = useState(false);
     const [edito, setEdito] = useState(false);
@@ -35,11 +35,11 @@ function TabelaEKategorive(props) {
     };
 
     useEffect(() => {
-        const shfaqKateogrit = async () => {
+        const shfaqNjesiteMatese = async () => {
             try {
                 setLoading(true);
-                const kategoria = await axios.get("https://localhost:7285/api/Kategoria/shfaqKategorit", authentikimi);
-                setKategorit(kategoria.data);
+                const njesiaMatese = await axios.get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese", authentikimi);
+                setNjesiteMatese(njesiaMatese.data);
                 setLoading(false);
             } catch (err) {
                 console.log(err);
@@ -47,7 +47,7 @@ function TabelaEKategorive(props) {
             }
         };
 
-        shfaqKateogrit();
+        shfaqNjesiteMatese();
     }, [perditeso]);
 
     const handleClose = () => {
@@ -129,22 +129,22 @@ function TabelaEKategorive(props) {
                     <MDBTable>
                         <MDBTableHead>
                             <tr>
-                                <th scope="col">ID Kategorise</th>
-                                <th scope="col">Emri Kategoris</th>
-                                <th scope="col">Pershkrimi Kategoris</th>
+                                <th scope="col">ID e Njesis Matese</th>
+                                <th scope="col">Njesia Matese</th>
+                                <th scope="col">Totali Produkteve</th>
                                 <th scope="col">Funksione</th>
                             </tr>
                         </MDBTableHead>
 
                         <MDBTableBody>
-                            {kategorit.map((k) => (
-                                <tr key={k.kategoriaId}>
-                                    <td>{k.kategoriaId}</td>
-                                    <td>{k.llojiKategoris}</td>
-                                    <td >{k.pershkrimiKategoris !== null && k.pershkrimiKategoris.trim() !== '' ? k.pershkrimiKategoris : "Nuk Ka Pershkrim"}</td>
+                            {njesiteMatese.map((k) => (
+                                <tr key={k.idNjesiaMatese}>
+                                    <td>{k.idNjesiaMatese}</td>
+                                    <td>{k.njesiaMatese}</td>
+                                    <td>{k.totaliProdukteve}</td>
                                     <td >
-                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.kategoriaId)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                        <Button variant="danger" onClick={() => handleFshij(k.kategoriaId)}><FontAwesomeIcon icon={faBan} /></Button>
+                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.idNjesiaMatese)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                        <Button variant="danger" onClick={() => handleFshij(k.idNjesiaMatese)}><FontAwesomeIcon icon={faBan} /></Button>
                                     </td>
                                 </tr>
                             ))}

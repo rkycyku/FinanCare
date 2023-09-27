@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-function LargoKompanin(props) {
+function LargoNjesineMatese(props) {
     const getToken = localStorage.getItem("token");
 
     const authentikimi = {
@@ -15,16 +15,16 @@ function LargoKompanin(props) {
 
     async function handleSubmit() {
         try {
-            await axios.delete(`https://localhost:7285/api/Kategoria/fshijKategorin?id=${props.id}`, authentikimi);
+            await axios.delete(`https://localhost:7285/api/NjesiaMatese/fshijNjesineMatese?id=${props.id}`, authentikimi);
             props.setTipiMesazhit("success");
-            props.setPershkrimiMesazhit("Kategoria u fshi me sukses!")
+            props.setPershkrimiMesazhit("Njesia matese u fshi me sukses!")
             props.perditesoTeDhenat();
             props.largo();
             props.shfaqmesazhin();
         } catch (error) {
             console.error(error);
             props.setTipiMesazhit("danger");
-            props.setPershkrimiMesazhit("Ndodhi nje gabim gjate fshirjes se kategorise!")
+            props.setPershkrimiMesazhit("Ndodhi nje gabim gjate fshirjes se njesise matese!")
             props.perditesoTeDhenat();
             props.shfaqmesazhin();
         }
@@ -33,10 +33,10 @@ function LargoKompanin(props) {
     return (
         <Modal show={true} onHide={() => props.largo()}>
             <Modal.Header closeButton>
-                <Modal.Title style={{ color: "red" }}>Largo Kategorine</Modal.Title>
+                <Modal.Title style={{ color: "red" }}>Largo Njesine Matese</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <h6 >A jeni te sigurt qe deshironi ta fshini kete kategori?</h6>
+                <h6 >A jeni te sigurt qe deshironi ta fshini kete njesi matese?</h6>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => props.largo()}>
@@ -46,11 +46,11 @@ function LargoKompanin(props) {
                     variant="danger"
                     onClick={handleSubmit}
                 >
-                    Largo Kategorine <FontAwesomeIcon icon={faBan} />
+                    Largo Njesine Matese <FontAwesomeIcon icon={faBan} />
                 </Button>
             </Modal.Footer>
         </Modal>
     )
 }
 
-export default LargoKompanin;
+export default LargoNjesineMatese;

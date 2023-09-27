@@ -11,31 +11,31 @@ namespace FinanCareWebAPI.Controllers
     [Route("api/[controller]")]
     public class PartneriController : Controller
     {
-            private readonly FinanCareDbContext _context;
+        private readonly FinanCareDbContext _context;
 
-            public PartneriController(FinanCareDbContext context)
+        public PartneriController(FinanCareDbContext context)
+        {
+            _context = context;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("shfaqPartnerinSipasIDs")]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
             {
-                _context = context;
+                var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+
+                return Ok(partneri);
             }
-
-            [AllowAnonymous]
-            [HttpGet]
-            [Route("shfaqPartnerinSipasIDs")]
-            public async Task<IActionResult> Get(int id)
+            catch (Exception ex)
             {
-                try
-                {
-                    var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
-
-                    return Ok(partneri);
-                }
-                catch (Exception ex)
-                {
 
                 return BadRequest("Partneri nuk egziston");
                 throw new Exception(ex.Message);
             }
-            }
+        }
 
         [AllowAnonymous]
         [HttpGet]
@@ -44,7 +44,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneris.Where(x=> x.LlojiPartnerit == llojiPartnerit).ToListAsync();
+                var partneri = await _context.Partneris.Where(x => x.LlojiPartnerit == llojiPartnerit).ToListAsync();
 
                 return Ok(partneri);
             }
@@ -55,74 +55,98 @@ namespace FinanCareWebAPI.Controllers
         }
 
         [AllowAnonymous]
-            [HttpGet]
-            [Route("shfaqPartneret")]
-            public async Task<IActionResult> Get()
+        [HttpGet]
+        [Route("shfaqPartneret")]
+        public async Task<IActionResult> Get()
+        {
+            try
             {
-                try
-                {
                 var partneret = await _context.Partneris.ToArrayAsync();
 
-                    return Ok(partneret);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+                return Ok(partneret);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("perditesoPartnerin")]
+        public async Task<IActionResult> Put(int id, [FromBody] Partneri k)
+        {
+            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+            if (id < 0)
+            {
+                return BadRequest("Partneri nuk egziston");
             }
 
-            [Authorize(Roles = "Admin, Menaxher")]
-            [HttpPut]
-            [Route("perditesoPartnerin")]
-            public async Task<IActionResult> Put(int id, [FromBody] Partneri k)
+            if (!k.EmriBiznesit.IsNullOrEmpty())
             {
-                var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
-                if (id < 0)
-                {
-                    return BadRequest("Partneri nuk egziston");
-                }
-
-                if (!k.EmriBiznesit.IsNullOrEmpty())
-                {
                 partneri.EmriBiznesit = k.EmriBiznesit;
-                }
-                if (!k.Nui.IsNullOrEmpty())
-                {
+            }
+            if (!k.Nui.IsNullOrEmpty())
+            {
                 partneri.Nui = k.Nui;
-                }
+            }
+            if (!k.Nrf.IsNullOrEmpty())
+            {
+                partneri.Nrf = k.Nrf;
+            }
+            if (!k.Tvsh.IsNullOrEmpty())
+            {
+                partneri.Tvsh = k.Tvsh;
+            }
+            if (!k.Email.IsNullOrEmpty())
+            {
+                partneri.Email = k.Email;
+            }
             if (!k.Adresa.IsNullOrEmpty())
             {
                 partneri.Adresa = k.Adresa;
             }
+            if (!k.NrKontaktit.IsNullOrEmpty())
+            {
+                partneri.NrKontaktit = k.NrKontaktit;
+            }
+            if (!k.LlojiPartnerit.IsNullOrEmpty())
+            {
+                partneri.LlojiPartnerit = k.LlojiPartnerit;
+            }
+            if (!k.ShkurtesaPartnerit.IsNullOrEmpty())
+            {
+                partneri.ShkurtesaPartnerit = k.ShkurtesaPartnerit;
+            }
 
             _context.Partneris.Update(partneri);
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-                return Ok(partneri);
-            }
-
-            [Authorize(Roles = "Admin, Menaxher")]
-            [HttpPost]
-            [Route("shtoPartnerin")]
-            public async Task<IActionResult> Post(Partneri partneri)
-            {
-                await _context.Partneris.AddAsync(partneri);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction("Get", partneri.Idpartneri, partneri);
-            }
-
-            [Authorize(Roles = "Admin")]
-            [HttpDelete]
-            [Route("fshijPartnerin")]
-            public async Task<IActionResult> Delete(int id)
-            {
-                var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
-
-                _context.Partneris.Remove(partneri);
-                await _context.SaveChangesAsync();
-
-                return Ok("Partneri u fshi me sukses!");
-            }
+            return Ok(partneri);
         }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPost]
+        [Route("shtoPartnerin")]
+        public async Task<IActionResult> Post(Partneri partneri)
+        {
+            await _context.Partneris.AddAsync(partneri);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", partneri.Idpartneri, partneri);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        [Route("fshijPartnerin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+
+            _context.Partneris.Remove(partneri);
+            await _context.SaveChangesAsync();
+
+            return Ok("Partneri u fshi me sukses!");
+        }
+    }
 }

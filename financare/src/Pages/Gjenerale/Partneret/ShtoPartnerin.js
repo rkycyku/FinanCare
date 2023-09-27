@@ -27,9 +27,6 @@ function TeDhenatEBiznesit(props) {
     const [loading, setLoading] = useState(false);
 
     const [llojiPartnerit, setLlojiPartnerit] = useState("");
-    const handleLlojiPartneritChange = (event) => {
-        setLlojiPartnerit(event.target.value);
-    };
 
     const [formValue, setFormValue] = useState({
         emriBiznesit: "",
@@ -52,6 +49,10 @@ function TeDhenatEBiznesit(props) {
 
     const onChange = (e) => {
         setFormValue({ ...formValue, [e.target.name]: e.target.value });
+    };
+
+    const handleLlojiPartneritChange = (event) => {
+        setLlojiPartnerit(event.target.value);
     };
 
     async function handleShtoPartnerin() {
@@ -128,7 +129,7 @@ function TeDhenatEBiznesit(props) {
                                         onChange={onChange}
                                         id='validationCustom01'
                                         required
-                                        label={<span>Emri i Biznesit<span style={{ color: "red" }}>*</span></span>}
+                                        label={<span>Emri i Biznesit / Klientit / Parnerit<span style={{ color: "red" }}>*</span></span>}
                                     />
                                 </MDBCol>
                                 <MDBCol md="4">
@@ -199,9 +200,10 @@ function TeDhenatEBiznesit(props) {
                                 </MDBCol>
                                 <Form.Group as={Col} className="p-0" controlId="formGridState">
                                     <Form.Select value={llojiPartnerit} onChange={handleLlojiPartneritChange}>
-                                        <option hidden disabled>Zgjedhni Llojin e Partnerit</option>
-                                        <option value="Bleres">Bleres</option>
-                                        <option value="Furnitor">Furnitore</option>
+                                        <option hidden disabled value={0}>Zgjedhni Llojin e Partnerit</option>
+                                        <option value="B">Bleres</option>
+                                        <option value="F">Furnitore</option>
+                                        <option value="B/F">Bleres & Furnitore</option>
                                     </Form.Select>
                                     <Form.Label>{<span>Lloji i Partnerit<span style={{ color: "red" }}>*</span></span>}</Form.Label>
                                 </Form.Group>
