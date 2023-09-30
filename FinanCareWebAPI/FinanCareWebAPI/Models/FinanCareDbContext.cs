@@ -21,6 +21,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
     public virtual DbSet<NjesiaMatese> NjesiaMateses { get; set; }
 
+    public virtual DbSet<GrupiProduktit> GrupiProduktits { get; set; }
+
     public virtual DbSet<Partneri> Partneris { get; set; }
 
     public virtual DbSet<Perdoruesi> Perdoruesis { get; set; }
@@ -100,6 +102,18 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.NjesiaMatese1)
                 .HasMaxLength(30)
                 .HasColumnName("NjesiaMatese");
+        });
+
+        modelBuilder.Entity<GrupiProduktit>(entity =>
+        {
+            entity.HasKey(e => e.IDGrupiProduktit);
+
+            entity.ToTable("GrupiProduktit");
+
+            entity.Property(e => e.IDGrupiProduktit).HasColumnName("IDGrupiProduktit");
+            entity.Property(e => e.GrupiIProduktit)
+                .HasMaxLength(30)
+                .HasColumnName("GrupIProduktit");
         });
 
         modelBuilder.Entity<Partneri>(entity =>
@@ -217,6 +231,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.HasIndex(e => e.Idpartneri, "IX_Produkti_IDPartneri");
 
+            entity.HasIndex(e => e.IdgrupiProdukti, "IX_Produkti_IDGrupiProduktit");
+
             entity.Property(e => e.ProduktiId).HasColumnName("produktiID");
             entity.Property(e => e.Barkodi).HasMaxLength(30);
             entity.Property(e => e.EmriProduktit)
@@ -232,6 +248,7 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("((1))")
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("sasiaShumices");
+            entity.Property(e => e.IdgrupiProdukti).HasColumnName("IDGrupiProduktit");
 
             entity.HasOne(d => d.IdnjesiaMateseNavigation).WithMany(p => p.Produktis)
                 .HasForeignKey(d => d.IdnjesiaMatese)
@@ -242,6 +259,11 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasForeignKey(d => d.Idpartneri)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_Partneri");
+
+            entity.HasOne(d => d.IdgrupiProduktitNavigation).WithMany(p => p.Produktis)
+                .HasForeignKey(d => d.IdgrupiProdukti)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Produkti_GrupiProduktit");
         });
 
         modelBuilder.Entity<StokuQmimiProduktit>(entity =>

@@ -56,6 +56,23 @@ namespace FinanCareWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        [Route("shfaqPartneretFurntiore")]
+        public async Task<IActionResult> GetFurnitoret()
+        {
+            try
+            {
+                var partneri = await _context.Partneris.Where(x => x.LlojiPartnerit != "B").ToListAsync();
+
+                return Ok(partneri);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
         [Route("shfaqPartneret")]
         public async Task<IActionResult> Get()
         {

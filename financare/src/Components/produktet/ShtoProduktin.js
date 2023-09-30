@@ -6,37 +6,30 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faBan, faL } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
+import useKeyboardNavigation from "../../Context/useKeyboardNavigation";
+import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
+import { Col } from "react-bootstrap";
 
 const ShtoProduktin = (props) => {
-  const [emriP, setEmriP] = useState("");
-  const [emriK, setEmriK] = useState("");
-  const [pershkrimi, setPershkrimi] = useState("");
-  const [llojiK, setLlojiK] = useState("");
-  const [kompanit, setKompanit] = useState([]);
-  const [kategoria, setKategoria] = useState([]);
-  const [foto, setFoto] = useState(null);
   const [perditeso, setPerditeso] = useState("");
 
   const [produktet, setProduktet] = useState([]);
+  const [grupetEProduktev, setGrupetEProduktev] = useState([]);
+  const [partneret, setPartneret] = useState([]);
+  const [njesitMatese, setNjesitMatese] = useState([]);
   const [kontrolloProduktin, setKontrolloProduktin] = useState(false);
   const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
   const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
 
-  useEffect(() => {
-    const vendosProduktet = async () => {
-      try {
-        const produktet = await axios.get(
-          `https://localhost:7285/api/Produkti/Products`, authentikimi
-        );
-        setProduktet(produktet.data);
-
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    vendosProduktet();
-  }, [perditeso]);
+  const [inputGrupiProduktit, setInputGrupiProduktit] = useState('');
+  const [inputPartneri, setInputPartneri] = useState('');
+  const [inputNjesiaMatese, setInputNjesiaMatese] = useState('');
+  const [filtrimiGrupiProduktit, setFiltrimiGrupiProduktit] = useState(produktet);
+  const [filtrimiPartneri, setFiltrimiPartneri] = useState(partneret);
+  const [filtrimiNjesiaMatese, setFiltrimiNjesiaMatese] = useState(njesitMatese);
+  const grupiProduktitZgjedhur = useKeyboardNavigation(filtrimiGrupiProduktit);
+  const partneriZgjedhur = useKeyboardNavigation(filtrimiPartneri);
+  const njesiaMateseZgjedhur = useKeyboardNavigation(filtrimiNjesiaMatese);
 
   const getToken = localStorage.getItem("token");
 
@@ -46,84 +39,79 @@ const ShtoProduktin = (props) => {
     },
   };
 
-  const handleEmriPChange = (value) => {
-    setEmriP(value);
-  };
-
-  const handlePershkrimiChange = (value) => {
-    setPershkrimi(value);
-  };
-
-  const handleKompaniaChange = (value) => {
-    setEmriK(value);
-  };
-
-  const handleKategoriaChange = (value) => {
-    setLlojiK(value);
-  };
-
-  const handleFotoChange = (event) => {
-    setFoto(event.target.files[0]);
-  };
+  const [produkti, setProdukti] = useState({
+    emriProduktit: "",
+    idpartneri: 0,
+    idnjesiaMatese: 0,
+    barkodi: "",
+    kodiProduktit: "",
+    llojiTVSH: "",
+    idgrupiProdukti: 0,
+    sasiaShumices: "",
+  });
 
   useEffect(() => {
-    Promise.all([
-      fetch("https://localhost:7285/api/Kompania/shfaqKompanit"),
-      fetch("https://localhost:7285/api/Kategoria/shfaqKategorit"),
-    ])
-      .then(([resKompanit, resKategorit]) =>
-        Promise.all([resKompanit.json(), resKategorit.json()])
-      )
-      .then(([dataKomapit, dataKategorit]) => {
-        setKompanit(dataKomapit);
-        setKategoria(dataKategorit);
-      });
-  }, []);
+    const vendosTeDhenat = async () => {
+      try {
+        const produktet = await axios.get(
+          `https://localhost:7285/api/Produkti/Products`, authentikimi
+        );
+        const grupetEProduktev = await axios.get(
+          `https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit`, authentikimi
+        );
+        const partneret = await axios.get(
+          `https://localhost:7285/api/Partneri/shfaqPartneretFurntiore`, authentikimi
+        );
+        const njesitMatese = await axios.get(
+          `https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese`, authentikimi
+        );
+        setProduktet(produktet.data);
+        setGrupetEProduktev(grupetEProduktev.data);
+        setPartneret(partneret.data);
+        setNjesitMatese(njesitMatese.data);
 
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    vendosTeDhenat();
+  }, [perditeso]);
+
+  const onChange = (e) => {
+    setProdukti({ ...produkti, [e.target.name]: e.target.value });
+  };
+
+  const perditesoProduktin = (e, kat) => {
+    console.log(e);
+    if (kat === "GrupiProduktit") {
+      setProdukti({ ...produkti, idgrupiProdukti: e.idGrupiProduktit });
+      setInputGrupiProduktit(e.grupiIProduktit);
+      setFiltrimiGrupiProduktit([]);
+    }
+    if (kat === "Partneri") {
+      setProdukti({ ...produkti, idpartneri: e.idpartneri });
+      setInputPartneri(e.emriBiznesit);
+      setFiltrimiPartneri([]);
+
+      axios.get(`https://localhost:7285/api/Produkti/GetKodiProduktitPerRegjistrim?idPartneri=${e.idpartneri}`, authentikimi)
+        .then((response) => {
+          setProdukti({ ...produkti, kodiProduktit: response.data });
+        })
+    }
+    if (kat === "NjesiaMatese") {
+      setProdukti({ ...produkti, idnjesiaMatese: e.idNjesiaMatese });
+      setInputNjesiaMatese(e.njesiaMatese);
+      setFiltrimiNjesiaMatese([]);
+    }
+  };
 
   async function handleSubmit() {
-    if (foto) {
-      const formData = new FormData();
-      formData.append('foto', foto);
 
-      try {
-        await axios.post("https://localhost:7285/api/VendosFotot/ShtoProduktin", formData, authentikimi)
-          .then(async (response) => {
-            await axios
-              .post("https://localhost:7285/api/Produkti/shtoProdukt", {
-                emriProduktit: emriP,
-                pershkrimi: pershkrimi,
-                fotoProduktit: response.data,
-                kategoriaId: llojiK,
-                kompaniaId: emriK
-              }, authentikimi)
-              .then(async (response) => {
-
-                props.setTipiMesazhit("success");
-                props.setPershkrimiMesazhit("Produkti u insertua me sukses!");
-                props.perditesoTeDhenat();
-                props.hide();
-                props.shfaqmesazhin();
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          });
-      } catch (error) {
-        console.error(error);
-      }
-
-    } else {
+    try {
       await axios
-        .post("https://localhost:7285/api/Produkti/shtoProdukt", {
-          emriProduktit: emriP,
-          pershkrimi: pershkrimi,
-          fotoProduktit: "ProduktPaFoto.png",
-          kategoriaId: llojiK,
-          kompaniaId: emriK
-        }, authentikimi)
-        .then((response) => {
-
+        .post("https://localhost:7285/api/Produkti/shtoProdukt", produkti, authentikimi)
+        .then(() => {
           props.setTipiMesazhit("success");
           props.setPershkrimiMesazhit("Produkti u insertua me sukses!");
           props.perditesoTeDhenat();
@@ -131,8 +119,10 @@ const ShtoProduktin = (props) => {
           props.shfaqmesazhin();
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
+    } catch (err) {
+      console.error(err);
     }
 
   }
@@ -143,13 +133,11 @@ const ShtoProduktin = (props) => {
 
   const handleKontrolli = () => {
     if (
-      isNullOrEmpty(emriP) ||
-      isNullOrEmpty(emriK) ||
-      isNullOrEmpty(llojiK)
+      isNullOrEmpty(produkti.emriProduktit)
     ) {
       setFushatEZbrazura(true);
     } else {
-      if (konfirmoProduktin == false && produktet.filter((item) => item.emriProduktit === emriP).length !== 0) {
+      if (konfirmoProduktin == false && produktet.filter((item) => item.emriProduktit === produkti.emriProduktit).length !== 0) {
         setKontrolloProduktin(true);
       }
       else {
@@ -158,7 +146,78 @@ const ShtoProduktin = (props) => {
     }
 
   }
-  
+
+  const handleInputChange = (e, kat) => {
+    const tekstiPerFiltrim = e.target.value.toLowerCase();
+
+    if (kat === "GrupiProduktit") {
+      setInputGrupiProduktit(tekstiPerFiltrim);
+
+      const filtrimi = grupetEProduktev.filter((item) =>
+        item.grupiIProduktit.toLowerCase().includes(tekstiPerFiltrim)
+      );
+
+      setFiltrimiGrupiProduktit(filtrimi);
+    }
+    if (kat === "Partneri") {
+      setInputPartneri(tekstiPerFiltrim);
+
+      console.log(partneret)
+
+      const filtrimi = partneret.filter((item) =>
+        item.emriBiznesit.toLowerCase().includes(tekstiPerFiltrim)
+      );
+
+      setFiltrimiPartneri(filtrimi);
+    }
+    if (kat === "NjesiaMatese") {
+      setInputNjesiaMatese(tekstiPerFiltrim);
+
+      const filtrimi = njesitMatese.filter((item) =>
+        item.njesiaMatese.toLowerCase().includes(tekstiPerFiltrim)
+      );
+
+      setFiltrimiNjesiaMatese(filtrimi);
+    }
+
+  };
+
+  const handleInputKeyDown = (e, kat) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      if (kat === "GrupiProduktit") {
+        if (filtrimiGrupiProduktit.length > 0) {
+          perditesoProduktin(filtrimiGrupiProduktit[grupiProduktitZgjedhur], kat);
+        }
+
+        ndrroField(e, "partneri")
+      }
+      if (kat === "Partneri") {
+        if (filtrimiPartneri.length > 0) {
+          perditesoProduktin(filtrimiPartneri[partneriZgjedhur], kat);
+        }
+
+        ndrroField(e, "njesiaMatese")
+      }
+      if (kat === "NjesiaMatese") {
+        if (filtrimiNjesiaMatese.length > 0) {
+          perditesoProduktin(filtrimiNjesiaMatese[njesiaMateseZgjedhur], kat);
+        }
+
+        ndrroField(e, "llojiTVSH")
+      }
+    }
+  };
+
+  const ndrroField = (e, tjetra) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById(tjetra).focus();
+    }
+  }
+
+
   return (
     <>
       {fushatEZbrazura &&
@@ -205,85 +264,167 @@ const ShtoProduktin = (props) => {
           </Modal.Footer>
         </Modal>
       }
-      <Modal className="modalEditShto" show={props.show} onHide={props.hide}>
+      <Modal size="lg" className="modalEditShto" show={props.show} onHide={props.hide}>
         <Modal.Header closeButton>
           <Modal.Title>Shto Produkt</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Emri Produktit<span style={{ color: "red" }}>*</span></Form.Label>
-              <Form.Control
-                onChange={(e) => handleEmriPChange(e.target.value)}
-                value={emriP}
+          <MDBRow className='g-3'>
+            <MDBCol md="6" >
+              <MDBInput
+                onChange={onChange}
+                value={produkti.barkodi}
+                name="barkodi"
+                id="barkodi"
+                type="text"
+                placeholder="Barkodi"
+                autoFocus
+                onKeyDown={(e) => ndrroField(e, "emriProduktit")}
+                label={<span>Barkodi<span style={{ color: "red" }}>*</span></span>}
+                autoComplete={false}
+              />
+            </MDBCol>
+            <MDBCol md="6" >
+              <MDBInput
+                onChange={onChange}
+                value={produkti.emriProduktit}
+                name="emriProduktit"
+                id="emriProduktit"
                 type="text"
                 placeholder="Emri Produktit"
-                autoFocus
+                onKeyDown={(e) => ndrroField(e, "grupiproduktit")}
+                label={<span>Emri Produktit<span style={{ color: "red" }}>*</span></span>}
+                autoComplete={false}
               />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Pershkrimi Produktit</Form.Label>
+            </MDBCol>
+            <Form.Group as={Col} controlId="grupiproduktit" md="4" >
               <Form.Control
-                onChange={(e) => handlePershkrimiChange(e.target.value)}
-                value={pershkrimi}
-                as="textarea"
-                placeholder="Pershkrimi Produktit"
+                type="text"
+                name="grupiproduktit"
+                className="form-control styled-input"
+                placeholder="Grupi i Produktit"
+                value={inputGrupiProduktit}
+                onChange={(e) => handleInputChange(e, "GrupiProduktit")}
+                onKeyDown={(e) => handleInputKeyDown(e, "GrupiProduktit")}
+                autoComplete={false}
               />
+
+              <div className="container" style={{ position: 'relative' }}>
+                <ul className="list-group mt-2 searchBoxi">
+                  {filtrimiGrupiProduktit.map((item, index) => (
+                    <li
+                      key={item.idGrupiProduktit}
+                      className={`list-group-item${grupiProduktitZgjedhur === index ? ' active' : ''}`}
+                      onClick={() => perditesoProduktin(item, "GrupiProduktit")}
+                    >
+                      {item.grupiIProduktit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Form.Label>Grupi Produktit<span style={{ color: "red" }}>*</span></Form.Label>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Foto Produktit</Form.Label>
+
+            <Form.Group as={Col} controlId="partneri" md="4" >
               <Form.Control
-                type="file"
-                accept="image/*"
-                placeholder="Foto e Produktit"
-                onChange={handleFotoChange}
+                type="text"
+                className="form-control styled-input" // Add 'styled-input' class
+                placeholder="Partneri"
+                name="partneri"
+                value={inputPartneri}
+                onChange={(e) => handleInputChange(e, "Partneri")}
+                onKeyDown={(e) => handleInputKeyDown(e, "Partneri")}
+                autoComplete={false}
               />
+
+              <div className="container" style={{ position: 'relative' }}>
+                <ul className="list-group mt-2 searchBoxi">
+                  {filtrimiPartneri.map((item, index) => (
+                    <li
+                      key={item.idpartneri}
+                      className={`list-group-item${partneriZgjedhur === index ? ' active' : ''}`} // Add 'active' class to selected item
+                      onClick={() => perditesoProduktin(item, "Partneri")} // Handle click event
+                    >
+                      {item.emriBiznesit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Form.Label>Partneri<span style={{ color: "red" }}>*</span></Form.Label>
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Kompania<span style={{ color: "red" }}>*</span></Form.Label>
-              <select
-                placeholder="Kompania e Produktit"
-                className="form-select"
-                value={emriK}
-                onChange={(e) => handleKompaniaChange(e.target.value)}
+            <Form.Group as={Col} controlId="njesiaMatese" md="4" >
+              <Form.Control
+                type="text"
+                className="form-control styled-input" // Add 'styled-input' class
+                placeholder="Njesia Matese"
+                name="njesiaMatese"
+                value={inputNjesiaMatese}
+                onChange={(e) => handleInputChange(e, "NjesiaMatese")}
+                onKeyDown={(e) => handleInputKeyDown(e, "NjesiaMatese")}
+                autoComplete={false}
+              />
+
+              <div className="container" style={{ position: 'relative' }}>
+                <ul className="list-group mt-2 searchBoxi">
+                  {filtrimiNjesiaMatese.map((item, index) => (
+                    <li
+                      key={item.idNjesiaMatese}
+                      className={`list-group-item${njesiaMateseZgjedhur === index ? ' active' : ''}`} // Add 'active' class to selected item
+                      onClick={() => perditesoProduktin(item, "NjesiaMatese")} // Handle click event
+                    >
+                      {item.njesiaMatese}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Form.Label>Njesia Matese<span style={{ color: "red" }}>*</span></Form.Label>
+            </Form.Group>
+            <MDBCol md="4" >
+              <MDBInput
+                onChange={onChange}
+                value={produkti.llojiTVSH}
+                name="llojiTVSH"
+                id="llojiTVSH"
+                type="number"
+                placeholder="TVSH %"
+                onKeyDown={(e) => ndrroField(e, "sasiaShumices")}
+                label={<span>TVSH %<span style={{ color: "red" }}>*</span></span>}
+                autoComplete={false}
+              />
+            </MDBCol>
+            <MDBCol md="4" >
+              <MDBInput
+                onChange={onChange}
+                name="sasiaShumices"
+                id="sasiaShumices"
+                value={produkti.sasiaShumices}
+                type="text"
+                placeholder="Sasia e Shumices"
+                label={<span>Sasia e Shumices<span style={{ color: "red" }}>*</span></span>}
+                autoComplete={false}
+              />
+            </MDBCol>
+            <MDBCol md="4" id="kodiProduktit">
+              <MDBTooltip
+                placement="bottom"
+                title="Gjenerohet automatikisht pas zgjedhjes se partnerit"
+                wrapperClass="mdb-tooltip mdb-tooltip-content"
               >
-                <option defaultValue disabled value="">
-                  Kompania e Produktit
-                </option>
-                {kompanit.map((item) => {
-                  return (
-                    <option key={item.kompaniaId} value={item.kompaniaId}>{item.emriKompanis}</option>
-                  );
-                })}
-              </select>
-            </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Kategoria<span style={{ color: "red" }}>*</span></Form.Label>
-              <select
-                placeholder="Kategoria e Produktit"
-                className="form-select"
-                value={llojiK}
-                onChange={(e) => handleKategoriaChange(e.target.value)}
-              >
-                <option defaultValue disabled value="">
-                  Kategoria e Produktit
-                </option>
-                {kategoria.map((item) => {
-                  return (
-                    <option key={item.kategoriaId} value={item.kategoriaId}>
-                      {item.llojiKategoris}
-                    </option>
-                  );
-                })}
-              </select>
-            </Form.Group>
-          </Form>
+                <MDBInput
+                  onChange={onChange}
+                  value={produkti.kodiProduktit}
+                  name="kodiProduktit"
+                  type="text"
+                  placeholder="Kodi Produktit"
+                  onKeyDown={(e) => ndrroField(e, "llojiTVSH")}
+                  label={<span>Kodi Produktit<span style={{ color: "red" }}>*</span></span>}
+                  disabled
+                />
+              </MDBTooltip>
+            </MDBCol>
+          </MDBRow>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.hide}>

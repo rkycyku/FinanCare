@@ -26,21 +26,27 @@ namespace TechStoreWebAPI.Controllers
         {
 
             var Produkti = await _context.Produktis
-                .OrderByDescending(x => x.StokuQmimiProduktit.SasiaNeStok)
-                .ThenByDescending(x => x.ProduktiId)
-               .Select(x => new {
-                   x.ProduktiId,
-                   x.EmriProduktit,
-                   x.Idpartneri,
-                   x.IdnjesiaMatese,
-                   x.Barkodi,
-                   x.KodiProduktit,
-                   x.LlojiTVSH,
-                   x.StokuQmimiProduktit.SasiaNeStok,
-                   x.StokuQmimiProduktit.QmimiProduktit,
-                   x.StokuQmimiProduktit.QmimiBleres,
-                   x.StokuQmimiProduktit.QmimiMeShumic,
-                   x.ZbritjaQmimitProduktit.Rabati
+                .OrderByDescending(p => p.StokuQmimiProduktit.SasiaNeStok)
+                .ThenByDescending(p => p.ProduktiId)
+               .Select(p => new
+               {
+                   p.ProduktiId,
+                   p.EmriProduktit,
+                   p.Idpartneri,
+                   p.IdpartneriNavigation.EmriBiznesit,
+                   p.IdnjesiaMatese,
+                   p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                   p.Barkodi,
+                   p.KodiProduktit,
+                   p.LlojiTVSH,
+                   p.StokuQmimiProduktit.SasiaNeStok,
+                   p.StokuQmimiProduktit.QmimiProduktit,
+                   p.StokuQmimiProduktit.QmimiBleres,
+                   p.StokuQmimiProduktit.QmimiMeShumic,
+                   p.ZbritjaQmimitProduktit.Rabati,
+                   p.SasiaShumices,
+                   p.IdgrupiProdukti,
+                   p.IdgrupiProduktitNavigation.GrupiIProduktit,
                })
                .ToListAsync();
 
@@ -56,7 +62,8 @@ namespace TechStoreWebAPI.Controllers
             var Produkti = await _context.Produktis
                .OrderBy(x => x.StokuQmimiProduktit.SasiaNeStok)
                .ThenByDescending(x => x.ProduktiId)
-               .Select(p => new {
+               .Select(p => new
+               {
                    p.ProduktiId,
                    p.EmriProduktit,
                    p.Idpartneri,
@@ -71,6 +78,9 @@ namespace TechStoreWebAPI.Controllers
                    p.StokuQmimiProduktit.QmimiBleres,
                    p.StokuQmimiProduktit.QmimiMeShumic,
                    p.ZbritjaQmimitProduktit.Rabati,
+                   p.SasiaShumices,
+                   p.IdgrupiProdukti,
+                   p.IdgrupiProduktitNavigation.GrupiIProduktit,
                })
                .ToListAsync();
 
@@ -86,7 +96,8 @@ namespace TechStoreWebAPI.Controllers
                 .Include(p => p.IdnjesiaMateseNavigation)
                 .Include(p => p.StokuQmimiProduktit)
                 .Where(p => p.ProduktiId == id)
-                .Select(p => new {
+                .Select(p => new
+                {
                     p.ProduktiId,
                     p.EmriProduktit,
                     p.Idpartneri,
@@ -101,6 +112,9 @@ namespace TechStoreWebAPI.Controllers
                     p.StokuQmimiProduktit.QmimiBleres,
                     p.StokuQmimiProduktit.QmimiMeShumic,
                     p.ZbritjaQmimitProduktit.Rabati,
+                    p.SasiaShumices,
+                    p.IdgrupiProdukti,
+                    p.IdgrupiProduktitNavigation.GrupiIProduktit,
                 })
                 .FirstOrDefaultAsync();
 
@@ -163,19 +177,24 @@ namespace TechStoreWebAPI.Controllers
                 produkti.Barkodi = p.Barkodi;
             }
 
-            if(p.KodiProduktit != null)
+            if (p.KodiProduktit != null)
             {
                 produkti.KodiProduktit = p.KodiProduktit;
             }
 
-            if(p.LlojiTVSH != null)
+            if (p.LlojiTVSH != null)
             {
                 produkti.LlojiTVSH = p.LlojiTVSH;
             }
 
-            if(p.SasiaShumices != null)
+            if (p.SasiaShumices != null)
             {
                 produkti.SasiaShumices = p.SasiaShumices;
+            }
+
+            if (p.IdgrupiProdukti != null)
+            {
+                produkti.IdgrupiProdukti = p.IdgrupiProdukti;
             }
 
             if (p.StokuQmimiProduktit != null)
@@ -233,7 +252,6 @@ namespace TechStoreWebAPI.Controllers
 
             var totaliProdukteveNgaPartneri = await _context.Produktis.Where(x => x.Idpartneri == idPartneri).CountAsync();
 
-            // Use string interpolation to format kodiProduktit with leading zeros
             var kodiProduktit = $"{partneri.ShkurtesaPartnerit.ToUpper()}{totaliProdukteveNgaPartneri + 1:D4}";
 
             return Ok(kodiProduktit);

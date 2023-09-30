@@ -205,13 +205,15 @@ const ProductTables = () => {
           <MDBTable>
             <MDBTableHead>
               <tr>
+                <th scope="col">Barkodi / Kodi Produktit</th>
                 <th scope="col">Emri i Produktit</th>
-                <th scope="col">Pershkrimi</th>
-                <th scope="col">Foto e Produktit</th>
-                <th scope="col">Kompania</th>
-                <th scope="col">Kategoria</th>
-                <th scope="col">Qmimi i Produktit</th>
-                <th scope="col">Sasia ne Stok</th>
+                <th scope="col">Partneri</th>
+                <th scope="col">Njesia Matese</th>
+                <th scope="col">Grupi i Produktit</th>
+                <th scope="col">Lloji TVSH %</th>
+                <th scope="col">Qmimi i Produktit Me Pakic</th>
+                <th scope="col">Qmimi i Produktit Me Shumic</th>
+                <th scope="col">Sasia e Shumices</th>
                 <th scope="col">Funksione</th>
               </tr>
             </MDBTableHead>
@@ -220,20 +222,15 @@ const ProductTables = () => {
               {produkti.map((p) => {
                 return (
                   <tr key={p.produktiId}>
+                    <td>{p.barkodi} / {p.kodiProduktit}</td>
                     <td>{p.emriProduktit}</td>
-                    <td>{p.pershkrimi ? <FontAwesomeIcon icon={faCheck} color="green" /> : <FontAwesomeIcon icon={faXmark} color="red" />}</td>
-                    <td>
-                      <img
-                        src={`${process.env.PUBLIC_URL}/img/products/${p.fotoProduktit}`}
-                        width="50"
-                        alt=""
-                      />
-                    </td>
-
-                    <td>{p.emriKompanis}</td>
-                    <td>{p.llojiKategoris}</td>
+                    <td>{p.emriBiznesit}</td>
+                    <td>{p.njesiaMatese1}</td>
+                    <td>{p.grupiIProduktit}</td>
+                    <td>{p.llojiTVSH}</td>
                     <td>{(p.qmimiProduktit).toFixed(2)} €</td>
-                    <td>{p.sasiaNeStok}</td>
+                    <td>{(p.qmimiMeShumic).toFixed(2)} €</td>
+                    <td>{p.sasiaShumices}</td>
                     <td>
                       <Button
                         style={{ marginRight: "0.5em" }}

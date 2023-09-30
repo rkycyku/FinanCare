@@ -157,9 +157,6 @@ function RegjistroFaturen(props) {
 
         const kontrolloProduktin = produktetNeKalkulim.filter((item) => item.idProduktit === selectedOption.produktiId);
 
-        console.log(selectedOption);
-        console.log(produktetNeKalkulim);
-        console.log(konifirmoProduktinLista);
         if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
             setKonfirmoProduktin(true);
 
@@ -365,6 +362,8 @@ function RegjistroFaturen(props) {
 
         setFilteredItems(filtered);
     };
+
+    
 
 
 
