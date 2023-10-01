@@ -37,7 +37,8 @@ namespace WebAPI.Controllers
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
-                    x.StatusiKalkulimit
+                    x.StatusiKalkulimit,
+                    x.PershkrimShtese
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -65,7 +66,8 @@ namespace WebAPI.Controllers
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
-                    x.StatusiKalkulimit
+                    x.StatusiKalkulimit,
+                    x.PershkrimShtese
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -90,7 +92,8 @@ namespace WebAPI.Controllers
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
-                    x.StatusiKalkulimit
+                    x.StatusiKalkulimit,
+                    x.PershkrimShtese
                 }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
 
             return Ok(regjistrimet);
@@ -376,5 +379,68 @@ namespace WebAPI.Controllers
             return Ok(result); // Return both details
 
         }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("fshijAsgjesimin/perditesoStokunQmimin")]
+        public async Task<IActionResult> FshijAsgjesiminPerditesoStokun(int idProdukti, int idTeDhenatKalkulimit)
+        {
+            var produktiNeKalkulim = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
+
+
+            var produkti = await _context.StokuQmimiProduktits.FindAsync(idProdukti);
+
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaNeStok += produktiNeKalkulim.SasiaStokut;
+            produkti.DataPerditsimit = DateTime.Now;
+
+            _context.StokuQmimiProduktits.Update(produkti);
+            await _context.SaveChangesAsync();  //Me rregullu kthimn e mallit t shitur
+
+            var result = new
+            {
+                ProduktiNeKalkulim = produktiNeKalkulim,
+                Produkti = produkti
+            };
+
+            return Ok(result); // Return both details
+
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin")]
+        public async Task<IActionResult> AsgjesoStokunPerditesoStokunQmimin(int id, [FromBody] StokuQmimiProduktit stoku)
+        {
+            var produkti = await _context.StokuQmimiProduktits.FindAsync(id);
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaNeStok -= stoku.SasiaNeStok;
+            produkti.DataPerditsimit = DateTime.Now;
+
+            if (stoku.DataKrijimit == null)
+            {
+                produkti.DataKrijimit = produkti.DataKrijimit;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(produkti);
+        }
+
     }
 }

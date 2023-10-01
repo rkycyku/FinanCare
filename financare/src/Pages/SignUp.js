@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../Components/TeTjera/layout/NavBar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/esm/Button";
 import "./Styles/SignUp.css";
@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Col from "react-bootstrap/Col";
 import { Row } from "react-bootstrap";
-import Mesazhi from "../Components/layout/Mesazhi";
+import Mesazhi from "../Components/TeTjera/layout/Mesazhi";
 import { Link } from "react-router-dom";
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';

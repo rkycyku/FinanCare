@@ -1,10 +1,10 @@
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import "../../Styles/TeDhenatEBiznesit.css";
 import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
-import Mesazhi from "../../../Components/layout/Mesazhi";
+import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import { TailSpin } from 'react-loader-spinner';
 
 import {

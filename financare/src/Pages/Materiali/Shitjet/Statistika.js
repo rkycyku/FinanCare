@@ -1,4 +1,4 @@
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import "../../Styles/Statistika.css";
 import "../../Styles/DizajniPergjithshem.css";

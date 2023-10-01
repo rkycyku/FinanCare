@@ -80,6 +80,9 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.Tvsh)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("TVSH");
+            entity.Property(e => e.PershkrimShtese)
+                .HasColumnType("text")
+                .HasColumnName("pershkrimShtese");
 
             entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.KalkulimiImallits)
                 .HasForeignKey(d => d.Idpartneri)

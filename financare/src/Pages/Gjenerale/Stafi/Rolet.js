@@ -1,14 +1,14 @@
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ShtoRolin from "../../../Components/users/Rolet/ShtoRolin";
-import Mesazhi from "../../../Components/layout/Mesazhi";
+import ShtoRolin from "../../../Components/Gjenerale/Stafi/users/Rolet/ShtoRolin";
+import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
-import LargoRolin from "../../../Components/users/Rolet/LargoRolin";
+import LargoRolin from "../../../Components/Gjenerale/Stafi/users/Rolet/LargoRolin";
 import { TailSpin } from 'react-loader-spinner';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";

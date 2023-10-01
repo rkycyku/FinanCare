@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import classes from '../../Pages/Styles/DizajniPergjithshem.css';
+import classes from '../../../../Pages/Styles/DizajniPergjithshem.css';
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Mesazhi from "../layout/Mesazhi";
+import Mesazhi from "../../../TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark, faPenToSquare, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
 import { Table, Form, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import useKeyboardNavigation from "../../Context/useKeyboardNavigation";
+import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 
 
 function RegjistroFaturen(props) {
@@ -181,7 +181,7 @@ function RegjistroFaturen(props) {
         } else {
             setProduktiID(selectedOption?.produktiId ?? konifirmoProduktinLista[0].produktiID);
             setEmriProduktit(selectedOption?.emriProduktit ?? konifirmoProduktinLista[0].emriProduktit);
-            setSasiaNeStok(selectedOption?.llojiTVSH ?? konifirmoProduktinLista[0].sasiaNeStok);
+            setSasiaNeStok(selectedOption?.sasiaNeStok ?? konifirmoProduktinLista[0].sasiaNeStok);
             setQmimiSH(selectedOption?.qmimiProduktit ?? konifirmoProduktinLista[0].qmimiShitesIVjeter);
             setQmimiB(selectedOption?.qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleresIVjeter);
             setNjesiaMatese(selectedOption?.njesiaMatese1 ?? konifirmoProduktinLista[0].njesiaMatese);

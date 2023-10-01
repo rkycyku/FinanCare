@@ -1,14 +1,14 @@
-import NavBar from "../../../../Components/layout/NavBar";
+import NavBar from "../../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import "../../../Styles/TabelaEPorosive.css";
 import "../../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Mesazhi from "../../../../Components/layout/Mesazhi";
+import Mesazhi from "../../../../Components/TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
-import PerditesoStatusinPorosis from "../../../../Components/Porosite/PerditesoStatusinPorosis";
+import PerditesoStatusinPorosis from "../../../../Components/Materiali/Shitjet/Porosite/PerditesoStatusinPorosis";
 import { TailSpin } from 'react-loader-spinner';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";

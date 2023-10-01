@@ -21,7 +21,7 @@ import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import { faRightFromBracket, faRightToBracket, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
-import { useStateValue } from '../../Context/StateProvider';
+import { useStateValue } from '../../../Context/StateProvider';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -158,10 +158,10 @@ function NavBar(props) {
             {token &&
               <>
                 <MDBDropdown >
-                  <MDBDropdownToggle>Materiali</MDBDropdownToggle>
+                  <MDBDropdownToggle className='btnNav btnNav-primary'>Materiali</MDBDropdownToggle>
                   <MDBDropdownMenu>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Artikujt</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Artikujt</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/Produktet'><MDBDropdownItem link>Lista e Produkteve</MDBDropdownItem></Link>
                         <Link to='/NjesiaMatese'><MDBDropdownItem link>Njesia Matese</MDBDropdownItem></Link>
@@ -169,25 +169,25 @@ function NavBar(props) {
                         <Link to='/ZbritjetEProduktit'> <MDBDropdownItem link>Zbritjet e Produkteve</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Hyrjet</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Hyrjet</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/KalkulimiIMallit'><MDBDropdownItem link>Kalkulimi i Mallit</MDBDropdownItem></Link>
-                        <Link to='#'><MDBDropdownItem link>Kthim i Mallit te Shitur #</MDBDropdownItem></Link>
+                        <Link to='/KthimiMallitTeShitur'><MDBDropdownItem link>Kthim i Mallit te Shitur</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Shitjet</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Shitjet</MDBDropdownToggle>
                       <MDBDropdownMenu>
-                        <MDBDropdown dropright group>
-                          <MDBDropdownToggle>Porosite</MDBDropdownToggle>
+                        <MDBDropdown dropright group className='btnNav-group'>
+                          <MDBDropdownToggle className='btnNav btnNav-primary'>Porosite</MDBDropdownToggle>
                           <MDBDropdownMenu>
                             <Link to='/Porosite'><MDBDropdownItem link>Lista e Porosive</MDBDropdownItem></Link>
                             <Link to='/KrijoPorosine'><MDBDropdownItem link>Krijo Porosine</MDBDropdownItem></Link>
                           </MDBDropdownMenu>
                         </MDBDropdown>
                         <Link to='/Statistika'><MDBDropdownItem link>Statistikat e Dyqanit</MDBDropdownItem></Link>
-                        <Link to='#'><MDBDropdownItem link>Asgjesimi i Stokut #</MDBDropdownItem></Link>
+                        <Link to='/AsgjesimiIStokut'><MDBDropdownItem link>Asgjesimi i Stokut</MDBDropdownItem></Link>
                         <Link to='#'><MDBDropdownItem link>Kthimi i Mallit te blere #</MDBDropdownItem></Link>
                         <Link to='#'><MDBDropdownItem link>POS #</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
@@ -195,24 +195,24 @@ function NavBar(props) {
                   </MDBDropdownMenu>
                 </MDBDropdown>
                 <MDBDropdown >
-                  <MDBDropdownToggle>Gjenerale</MDBDropdownToggle>
+                  <MDBDropdownToggle className='btnNav btnNav-primary'>Gjenerale</MDBDropdownToggle>
                   <MDBDropdownMenu>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Te Dhenat</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Te Dhenat</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/PerditesoTeDhenat'><MDBDropdownItem link>Perditeso Te Dhenat</MDBDropdownItem></Link>
                         <MDBDropdownItem link><Link to='/TeDhenatEBiznesit'>Te Dhenat e Biznesit</Link></MDBDropdownItem>
                       </MDBDropdownMenu>
                     </MDBDropdown>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Stafi</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Stafi</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/Stafi'><MDBDropdownItem link>Perdoruesit</MDBDropdownItem></Link>
                         <Link to='/Rolet'><MDBDropdownItem link>Rolet</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
-                    <MDBDropdown dropright group>
-                      <MDBDropdownToggle>Partneret</MDBDropdownToggle>
+                    <MDBDropdown dropright group className='btnNav-group'>
+                      <MDBDropdownToggle className='btnNav btnNav-primary'>Partneret</MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to='/TabelaEPartnereve'><MDBDropdownItem link>Lista e Partnereve</MDBDropdownItem></Link>
                         <Link to='/ShtoPartnerin'><MDBDropdownItem link>Shtoni Partnerin</MDBDropdownItem></Link>

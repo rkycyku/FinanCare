@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../Components/layout/NavBar";
+import NavBar from "../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import "./Styles/Dashboard.css";
 import axios from "axios";
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import Mesazhi from "../Components/layout/Mesazhi";
+import Mesazhi from "../Components/TeTjera/layout/Mesazhi";
 import PerditesoTeDhenat from "./Gjenerale/TeDhenat/PerditesoTeDhenat";
 
 const Dashboard = () => {

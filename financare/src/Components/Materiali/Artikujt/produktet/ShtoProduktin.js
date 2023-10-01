@@ -6,7 +6,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faBan, faL } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
-import useKeyboardNavigation from "../../Context/useKeyboardNavigation";
+import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
 import { Col } from "react-bootstrap";
 

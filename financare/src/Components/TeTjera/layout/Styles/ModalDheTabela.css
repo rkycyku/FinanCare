@@ -7,53 +7,52 @@
 }
 
 .ripple-wave {
-  display: none; 
+  display: none;
 }
 
-.nav-link a{
+.nav-link a {
   color: white;
 }
 
-.btn{
+.btnNav {
   background-color: #009879;
   border: #009879;
 }
 
-.btn-primary{
-  --bs-btn-active-bg:#10bb9; 
+.btnNav-primary {
+  --bs-btn-active-bg: #10bb9;
 }
 
-.btn a{
+.btnNav a {
   color: white;
 }
 
-.btn:hover{
+.btnNav:hover {
   background-color: #10bb99;
 }
 
-.dropdown-menu{
+.dropdown-menu {
   --bs-dropdown-link-active-bg: #10bb99;
 }
 
-.dropdown-menu:hover{
+.dropdown-menu:hover {
   --bs-dropdown-link-hover-bg: #10bb99;
 }
 
-.dropdown-menu a:hover{
+.dropdown-menu a:hover {
   color: white;
 }
 
-.btn-group .btn{
+.btnNav-group .btnNav {
   background-color: white;
   color: #212529;
   margin-left: 0.2em;
 }
 
-.btn-group .btn:hover{
+.btnNav-group .btn:hover {
   background-color: #10bb99;
   color: white;
 }
-
 
 .imgFshij {
   width: 50%;
@@ -67,6 +66,11 @@
   border: none;
   float: right;
   margin-right: 1em;
+}
+
+.Butoni a {
+  text-decoration: none;
+  color: white;
 }
 
 .Butoni:hover {
@@ -84,6 +88,31 @@
   margin: 0 auto;
   margin-top: 10em;
   margin-bottom: 10em;
+}
+
+.toggleButtonGroupContainer {
+  max-height: 200px; /* Adjust the max height as needed */
+  overflow-y: auto;
+}
+
+/* Apply responsive styles for smaller screens */
+@media (max-width: 991.2px) {
+  .toggleButtonGroupContainer {
+    width: 100%; /* Set the width as needed for smaller screens */
+  }
+}
+
+/* Global CSS to set the border color for all ToggleButton components */
+.toggleButtonGroupContainer .btn-check {
+  border-color: white; /* Replace with your desired color code */
+}
+
+.toggleButtonGroupContainer .btn-check:checked + .btn,
+.toggleButtonGroupContainer .btn.active,
+.toggleButtonGroupContainer .btn.show,
+.toggleButtonGroupContainer .btn:first-child:active,
+.toggleButtonGroupContainer :not(.btn-check) + .btn:active {
+  border-color: #e9ecef; /* Replace with your desired color code */
 }
 
 .table {

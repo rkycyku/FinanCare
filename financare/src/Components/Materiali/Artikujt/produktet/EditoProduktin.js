@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
-import useKeyboardNavigation from "../../Context/useKeyboardNavigation";
+import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 
 function EditoProduktin(props) {
   const [produkti, setProdukti] = useState([]);
@@ -93,15 +93,15 @@ function EditoProduktin(props) {
       setFiltrimiGrupiProduktit([]);
     }
     if (kat === "Partneri") {
-
-      setProdukti({ ...produkti, idpartneri: e.idPartneri });
-      setInputPartneri(e.emriBiznesit);
-      setFiltrimiPartneri([]);
-
       axios.get(`https://localhost:7285/api/Produkti/GetKodiProduktitPerRegjistrim?idPartneri=${e.idpartneri}`, authentikimi)
         .then((response) => {
-          setProdukti({ ...produkti, kodiProduktit: response.data });
-          console.log(produkti)
+          setProdukti((prevProdukti) => ({
+            ...prevProdukti,
+            kodiProduktit: response.data,
+            idpartneri: e.idpartneri,
+          }));
+          setInputPartneri(e.emriBiznesit);
+          setFiltrimiPartneri([]);
         })
     }
     if (kat === "NjesiaMatese") {
@@ -335,7 +335,7 @@ function EditoProduktin(props) {
             <Form.Group as={Col} controlId="partneri" md="4" >
               <Form.Control
                 type="text"
-                className="form-control styled-input" 
+                className="form-control styled-input"
                 placeholder="Partneri"
                 name="partneri"
                 value={inputPartneri}

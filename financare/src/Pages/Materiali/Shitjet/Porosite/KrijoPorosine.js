@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Mesazhi from "../../../../Components/layout/Mesazhi";
+import Mesazhi from "../../../../Components/TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
@@ -10,7 +10,7 @@ import { Table, Form, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { Helmet } from "react-helmet";
-import NavBar from "../../../../Components/layout/NavBar";
+import NavBar from "../../../../Components/TeTjera/layout/NavBar";
 import { MDBBtn } from "mdb-react-ui-kit";
 
 function RegjistroFaturen(props) {

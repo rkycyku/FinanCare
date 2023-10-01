@@ -1,14 +1,14 @@
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import React, { useState, useEffect } from "react";
 import "../../Styles/ProductTables.css";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-import Mesazhi from "../../../Components/layout/Mesazhi";
-import ShtoProduktin from "../../../Components/produktet/ShtoProduktin";
+import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
+import ShtoProduktin from "../../../Components/Materiali/Artikujt/produktet/ShtoProduktin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan, faPenToSquare, faPlus, faXmark, faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import EditoProduktin from "../../../Components/produktet/EditoProduktin";
+import EditoProduktin from "../../../Components/Materiali/Artikujt/produktet/EditoProduktin";
 import Modal from "react-bootstrap/Modal";
 import { TailSpin } from 'react-loader-spinner';
 import ZbritjetEProduktit from "./ZbritjetEProduktit";

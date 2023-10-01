@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Dashboard from './Pages/Dashboard';
-import Fatura from './Components/Fatura/Fatura'
+import Fatura from './Components/TeTjera/Fatura/Fatura'
 import LogIn from './Pages/LogIn';
 import SignUp from './Pages/SignUp';
 import { useEffect } from "react";
@@ -20,6 +20,8 @@ import KalkulimiIMallit from './Pages/Materiali/Hyrjet/KalkulimiIMallit';
 import PerditesoTeDhenat from './Pages/Gjenerale/TeDhenat/PerditesoTeDhenat';
 import KrijoPorosine from './Pages/Materiali/Shitjet/Porosite/KrijoPorosine';
 import ShtoPartnerin from './Pages/Gjenerale/Partneret/ShtoPartnerin';
+import KthimiMallitTeShitur from './Pages/Materiali/Hyrjet/KthimiMallitTeShitur';
+import AsgjesimiIStokut from './Pages/Materiali/Shitjet/AsgjesimIStokut'
 
 function App() {
 
@@ -51,6 +53,8 @@ function App() {
         <Route path='/PerditesoTeDhenat' element={<PerditesoTeDhenat />} />
         <Route path='/KrijoPorosine' element={<KrijoPorosine />} />
         <Route path='/ShtoPartnerin' element={<ShtoPartnerin />}/>
+        <Route path='/KthimiMallitTeShitur' element={<KthimiMallitTeShitur />} />
+        <Route path='/AsgjesimiIStokut' element={<AsgjesimiIStokut />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>

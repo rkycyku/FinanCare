@@ -1,15 +1,15 @@
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import "../../Styles/DizajniPergjithshem.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import ProduktiNeZbritje from "../../../Components/Zbritjet/ProduktiNeZbritje";
+import ProduktiNeZbritje from "../../../Components/Materiali/Artikujt/Zbritjet/ProduktiNeZbritje";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
-import Mesazhi from "../../../Components/layout/Mesazhi";
-import FshijZbritjen from '../../../Components/Zbritjet/FshijZbritjen';
+import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
+import FshijZbritjen from '../../../Components/Materiali/Artikujt/Zbritjet/FshijZbritjen';
 import { Link } from "react-router-dom";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
@@ -93,6 +93,7 @@ function ZbritjetEProduktit(props) {
                     shfaqmesazhin={() => setShfaqMesazhin(true)}
                     setTipiMesazhit={setTipiMesazhit}
                     setPershkrimiMesazhit={setPershkrimiMesazhit}
+                    perditeso={() => setPerditeso(Date.now())}
                 />}
                 {shtoZbritjen && <ProduktiNeZbritje
                     mbyllZbritjen={() => setShtoZbritjen(false)}
@@ -127,8 +128,7 @@ function ZbritjetEProduktit(props) {
                             <tr>
                                 <th scope="col">Nr. Zbritjes</th>
                                 <th scope="col">ID dhe Emri Produktit</th>
-                                <th scope="col">Qmim pa Zbritje</th>
-                                <th scope="col">Qmimi me Zbritje</th>
+                                <th scope="col">Rabati</th>
                                 <th scope="col">Data e Zbritjes</th>
                                 <th scope="col">Data e Skadimit</th>
                                 <th scope="col">Funksione</th>
@@ -140,8 +140,7 @@ function ZbritjetEProduktit(props) {
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{z.produktiId + " - " + z.emriProduktit}</td>
-                                    <td>{parseFloat(z.qmimiPaZbritjeProduktit).toFixed(2)} €</td>
-                                    <td >{parseFloat(z.qmimiMeZbritjeProduktit).toFixed(2)} € </td>
+                                    <td >{parseFloat(z.rabati).toFixed(2)} % </td>
                                     <td >{new Date(z.dataZbritjes).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                                     <td >{new Date(z.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                                     <td >

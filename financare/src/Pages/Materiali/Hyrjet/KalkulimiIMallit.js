@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import '../../Styles/DizajniPergjithshem.css';
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Mesazhi from "../../../Components/layout/Mesazhi";
+import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark, faPenToSquare, faL } from '@fortawesome/free-solid-svg-icons'
 import { TailSpin } from 'react-loader-spinner';
@@ -11,11 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
-import RegjistroFaturen from "../../../Components/kalkulimi/RegjistroFaturen";
-import PerditesoStatusinKalk from "../../../Components/kalkulimi/PerditesoStatusinKalk";
-import TeDhenatKalkulimit from "../../../Components/kalkulimi/TeDhenatKalkulimit";
+import RegjistroFaturen from "../../../Components/Materiali/Hyrjet/kalkulimi/RegjistroFaturen";
+import PerditesoStatusinKalk from "../../../Components/Materiali/Hyrjet/kalkulimi/PerditesoStatusinKalk";
+import TeDhenatKalkulimit from "../../../Components/Materiali/Hyrjet/kalkulimi/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
-import NavBar from "../../../Components/layout/NavBar";
+import NavBar from "../../../Components/TeTjera/layout/NavBar";
 
 function KalkulimiIMallit(props) {
     const [perditeso, setPerditeso] = useState('');
@@ -109,7 +109,7 @@ function KalkulimiIMallit(props) {
         const vendosPartnerin = async () => {
             try {
                 const partneri = await axios.get(
-                    `https://localhost:7285/api/Partneri/shfaqPartneretSipasLlojit?llojiPartnerit=Furnitor`, authentikimi
+                    `https://localhost:7285/api/Partneri/shfaqPartneretFurntiore`, authentikimi
                 );
                 setPartneret(partneri.data);
 

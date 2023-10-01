@@ -5,13 +5,13 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import Mesazhi from "../layout/Mesazhi";
+import Mesazhi from "../../../TeTjera/layout/Mesazhi";
 
 function ProduktiNeZbritje(props) {
   const [produkti, setProdukti] = useState("");
   const [qmimiBleresProduktit, setQmimiBleresProduktit] = useState(0.00);
   const [qmimiShitesProduktit, setQmimiShitesProduktit] = useState(0.00);
-  const [qmimiZbritur, setQmimiZbritur] = useState(0.00);
+  const [rabati, setRabati] = useState(0.00);
   const [dataSkadimit, setDataSkadimit] = useState(new Date().toISOString().substring(0, 10));
   const [produktet, setProduktet] = useState([]);
   const [perditeso, setPerditeso] = useState("");
@@ -54,7 +54,7 @@ function ProduktiNeZbritje(props) {
           setQmimiBleresProduktit((response.data.qmimiBleres).toFixed(2));
           setQmimiShitesProduktit((response.data.qmimiProduktit).toFixed(2));
           if (response.data.qmimiMeZbritjeProduktit != null) {
-            setQmimiZbritur(response.data.qmimiMeZbritjeProduktit);
+            setRabati(response.data.qmimiMeZbritjeProduktit);
             setKaZbritje(true);
             setPershkrimiMesazhit("Ky produkt ka Zbritje!");
             setTipiMesazhit("danger");
@@ -72,26 +72,26 @@ function ProduktiNeZbritje(props) {
   const handleProduktiChange = (value) => {
     setProdukti(value);
     setKaZbritje(false);
-    setQmimiZbritur(0);
+    setRabati(0);
     const element = document.getElementById("dataSkadimit");
     element.focus();
   };
 
   const handleZbritja = (value) => {
-    const element = document.getElementById("qmimiZbritur");
+    const element = document.getElementById("rabati");
     if (value <= 0.01) {
-      setQmimiZbritur(0.01);
+      setRabati(0.01);
       setZbritjaNeRregull(false);
       element.focus();
-    } else if (value >= parseInt(qmimiShitesProduktit)) {
-      setQmimiZbritur(value);
-      setPershkrimiMesazhit("Qmimi i zbritur duhet te jete me i vogel se qmimi aktual!");
+    } else if (value >= 100) {
+      setRabati(value);
+      setPershkrimiMesazhit("Rabati duhet te jete me i vogel se 100%!");
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
       setZbritjaNeRregull(false);
       element.focus();
     } else {
-      setQmimiZbritur(value);
+      setRabati(value);
       setZbritjaNeRregull(true);
     }
   }
@@ -100,8 +100,7 @@ function ProduktiNeZbritje(props) {
     if (zbritjaNeRregull === true && kaZbritje === false) {
       axios.post('https://localhost:7285/api/ZbritjaQmimitProduktit/shtoZbritjenProduktit', {
         produktiId: produkti,
-        qmimiPaZbritjeProduktit: qmimiShitesProduktit,
-        qmimiMeZbritjeProduktit: qmimiZbritur,
+        rabati: rabati,
         dataSkadimit: dataSkadimit
       }, authentikimi)
         .then(() => {
@@ -120,7 +119,7 @@ function ProduktiNeZbritje(props) {
       setShfaqMesazhin(true);
     }
     else {
-      handleZbritja(qmimiZbritur);
+      handleZbritja(rabati);
     }
   }
   return (
@@ -201,20 +200,20 @@ function ProduktiNeZbritje(props) {
 
             <Form.Group
               className="mb-3"
-              controlId="qmimiZbritur"
+              controlId="rabati"
             >
-              <Form.Label>Qmimi me Zbritje</Form.Label>
+              <Form.Label>Rabati</Form.Label>
               <Form.Control
                 onChange={(e) =>
                   handleZbritja(e.target.value)
                 }
                 onFocus={(e) => e.target.select()}
-                value={qmimiZbritur}
-                type="text"
+                value={rabati}
+                type="number"
                 pattern="[0-9]+([,.][0-9]+)?"
-                placeholder="Qmimi me Zbritje"
-                min={1}
-                max={qmimiShitesProduktit - 0.01}
+                placeholder="Rabati"
+                min={0.01}
+                max={100}
                 disabled={kaZbritje}
               />
             </Form.Group>

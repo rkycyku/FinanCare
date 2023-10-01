@@ -13,5 +13,5 @@ public partial class ZbritjaQmimitProduktit
 
     public decimal? Rabati { get; set; }
 
-    public virtual Produkti Produkti { get; set; } = null!;
+    public virtual Produkti? Produkti { get; set; }
 }
