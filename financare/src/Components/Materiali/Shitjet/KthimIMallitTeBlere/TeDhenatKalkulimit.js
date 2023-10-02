@@ -31,6 +31,7 @@ function TeDhenatKalkulimit(props) {
         );
         setProduktet(produktet.data);
         setLoading(false);
+        console.log(produktet.data);
       } catch (err) {
         console.log(err);
         setLoading(false);
@@ -73,7 +74,7 @@ function TeDhenatKalkulimit(props) {
   };
 
   return (
-    <div className={classes.containerDashboardP}>
+    <div className="containerDashboardP" style={{ width: "100%" }}>
       {loading ? (
         <div className="Loader">
           <TailSpin
@@ -168,31 +169,70 @@ function TeDhenatKalkulimit(props) {
               <thead>
                 <tr>
                   <th>Nr. Rendore</th>
-                  <th>ID dhe Emri</th>
+                  <th>Kodi Produktit</th>
+                  <th>Barkodi</th>
+                  <th>Produkti</th>
                   <th>Sasia</th>
-                  <th>Qmimi Bleres</th>
-                  <th>Qmimi Shites</th>
-                  <th>Shuma Totale Blerese</th>
-                  <th>Shuma Totale Shitese</th>
+                  <th>Qmimi Bleres €</th>
+                  <th>Qmimi Bleres - TVSH €</th>
+                  <th>Rabati %</th>
+                  <th>Qmimi Bleres - Rabati €</th>
+                  <th>TVSH %</th>
+                  <th>TVSH €</th>
+                  <th>Shuma Totale - TVSH €</th>
+                  <th>Shuma Totale + TVSH €</th>
                 </tr>
               </thead>
               <tbody>
                 {produktet.map((produkti, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>
-                      {produkti.idProduktit + " - " + produkti.emriProduktit}
-                    </td>
+                    <td>{produkti.kodiProduktit}</td>
+                    <td>{produkti.barkodi}</td>
+                    <td>{produkti.emriProduktit}</td>
                     <td>{produkti.sasiaStokut}</td>
-                    <td>{parseFloat(produkti.qmimiBleres).toFixed(2)} €</td>
-                    <td>{parseFloat(produkti.qmimiShites).toFixed(2)} €</td>
+                    <td>{parseFloat(produkti.qmimiBleres).toFixed(2)}</td>
                     <td>
-                      {(produkti.sasiaStokut * produkti.qmimiBleres).toFixed(2)}{" "}
-                      €
+                      {parseFloat(
+                        produkti.qmimiBleres -
+                          (produkti.qmimiBleres * produkti.llojiTVSH) / 100
+                      ).toFixed(2)}
+                    </td>
+                    <td>{produkti.rabati}</td>
+                    <td>
+                      {parseFloat(
+                        produkti.qmimiBleres -
+                          produkti.qmimiBleres * (produkti.rabati / 100)
+                      ).toFixed(2)}
+                    </td>
+                    <td>{produkti.llojiTVSH}</td>
+                    <td>
+                      {parseFloat(
+                        (produkti.sasiaStokut *
+                          produkti.qmimiBleres *
+                          produkti.llojiTVSH) /
+                          100
+                      ).toFixed(2)}
                     </td>
                     <td>
-                      {(produkti.sasiaStokut * produkti.qmimiShites).toFixed(2)}{" "}
-                      €
+                      {parseFloat(
+                        produkti.sasiaStokut * produkti.qmimiBleres -
+                          (produkti.sasiaStokut *
+                            produkti.qmimiBleres *
+                            produkti.llojiTVSH) /
+                            100 -
+                          produkti.sasiaStokut *
+                            produkti.qmimiBleres *
+                            (produkti.rabati / 100)
+                      ).toFixed(2)}
+                    </td>
+                    <td>
+                      {parseFloat(
+                        produkti.sasiaStokut * produkti.qmimiBleres -
+                          produkti.sasiaStokut *
+                            produkti.qmimiBleres *
+                            (produkti.rabati / 100)
+                      ).toFixed(2)}
                     </td>
                   </tr>
                 ))}

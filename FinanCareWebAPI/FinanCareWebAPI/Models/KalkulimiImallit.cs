@@ -27,6 +27,7 @@ public partial class KalkulimiImallit
 
     public string? StatusiKalkulimit { get; set; }
     public string? PershkrimShtese { get; set; }    
+    public decimal? Rabati { get; set; }    
 
     public virtual Partneri? IdpartneriNavigation { get; set; }
 

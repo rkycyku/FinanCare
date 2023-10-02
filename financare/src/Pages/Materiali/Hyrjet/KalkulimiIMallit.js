@@ -73,7 +73,8 @@ function KalkulimiIMallit(props) {
             try {
                 setLoading(true);
                 const kalkulimi = await axios.get("https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet", authentikimi);
-                setKalkulimet(kalkulimi.data);
+                const kalkulimet = kalkulimi.data.filter((item) => item.llojiKalkulimit === "HYRJE")
+                setKalkulimet(kalkulimet);
                 setLoading(false);
             } catch (err) {
                 console.log(err);

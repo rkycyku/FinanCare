@@ -49,7 +49,7 @@ function RegjistroFaturen(props) {
 
   const [inputValue, setInputValue] = useState("");
   const [filteredItems, setFilteredItems] = useState(produktet);
-  const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
+  const selectedIndex = useKeyboardNavigation(filteredItems); 
 
   const navigate = useNavigate();
 

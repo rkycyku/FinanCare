@@ -83,6 +83,10 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.PershkrimShtese)
                 .HasColumnType("text")
                 .HasColumnName("pershkrimShtese");
+            entity.Property(e => e.Rabati)
+                .HasColumnType("decimal(18, 2)")
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("rabati");
 
             entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.KalkulimiImallits)
                 .HasForeignKey(d => d.Idpartneri)
@@ -389,6 +393,14 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.QmimiShitesMeShumic)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("qmimiShitesMeShumic");
+            entity.Property(e => e.Rabati)
+                .HasColumnType("decimal(5, 2)")
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("rabati");
+            entity.Property(e => e.LlojiTVSH)
+                .HasColumnType("int")
+                .HasDefaultValueSql("((18))")
+                .HasColumnName("llojiTVSH");
 
             entity.HasOne(d => d.IdProduktitNavigation).WithMany(p => p.TeDhenatKalkulimits)
                 .HasForeignKey(d => d.IdProduktit)

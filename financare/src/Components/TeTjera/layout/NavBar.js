@@ -188,7 +188,7 @@ function NavBar(props) {
                         </MDBDropdown>
                         <Link to='/Statistika'><MDBDropdownItem link>Statistikat e Dyqanit</MDBDropdownItem></Link>
                         <Link to='/AsgjesimiIStokut'><MDBDropdownItem link>Asgjesimi i Stokut</MDBDropdownItem></Link>
-                        <Link to='#'><MDBDropdownItem link>Kthimi i Mallit te blere #</MDBDropdownItem></Link>
+                        <Link to='/KthimIMallitTeBlere'><MDBDropdownItem link>Kthimi i Mallit te Blere </MDBDropdownItem></Link>
                         <Link to='#'><MDBDropdownItem link>POS #</MDBDropdownItem></Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>

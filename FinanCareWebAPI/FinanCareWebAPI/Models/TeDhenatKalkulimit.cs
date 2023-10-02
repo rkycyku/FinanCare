@@ -18,6 +18,8 @@ public partial class TeDhenatKalkulimit
     public decimal? QmimiShites { get; set; }
 
     public decimal? QmimiShitesMeShumic {get; set;}
+    public decimal? Rabati { get; set; }
+    public int? LlojiTVSH {  get; set; }
 
     public virtual Produkti? IdProduktitNavigation { get; set; }
 

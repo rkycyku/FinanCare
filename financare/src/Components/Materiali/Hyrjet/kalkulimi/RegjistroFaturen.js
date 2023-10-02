@@ -339,9 +339,7 @@ function RegjistroFaturen(props) {
 
     const handleInputKeyDown = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent form submission
-            // Optionally, you can perform an action when Enter is pressed
-            // For example, you can select the item if it's highlighted
+            e.preventDefault(); 
             if (filteredItems.length > 0) {
                 handleProduktiChange(filteredItems[selectedIndex]);
             }
@@ -459,6 +457,7 @@ function RegjistroFaturen(props) {
                                         value={inputValue}
                                         onChange={handleInputChange}
                                         onKeyDown={handleInputKeyDown}
+                                        onFocus={handleInputChange}
                                     />
 
                                     <div className="container" style={{ position: 'relative' }}>

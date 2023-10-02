@@ -86,7 +86,7 @@ function PerditesoStatusinKalk(props) {
       await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${nrKalkulimit}`
         , authentikimi).then(async (teDhenat) => {
           for (let p of teDhenat.data) {
-            await axios.get(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin/perditesoStokunQmimin?idKalkulimi=${p.idRegjistrimit}&idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}`, authentikimi);
+            await axios.get(`https://localhost:7285/api/KalkulimiImallit/hapAsgjesiminKthimin/perditesoStokunQmimin?idKalkulimi=${p.idRegjistrimit}&idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}&lloji=KMSH`, authentikimi);
           }
         });
 

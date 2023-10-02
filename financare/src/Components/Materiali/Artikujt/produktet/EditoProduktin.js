@@ -313,6 +313,7 @@ function EditoProduktin(props) {
                 value={inputGrupiProduktit}
                 onChange={(e) => handleInputChange(e, "GrupiProduktit")}
                 onKeyDown={(e) => handleInputKeyDown(e, "GrupiProduktit")}
+                onFocus={(e) => handleInputChange(e, "GrupiProduktit")}
                 autoComplete={false}
               />
 
@@ -341,6 +342,7 @@ function EditoProduktin(props) {
                 value={inputPartneri}
                 onChange={(e) => handleInputChange(e, "Partneri")}
                 onKeyDown={(e) => handleInputKeyDown(e, "Partneri")}
+                onFocus={(e) => handleInputChange(e, "Partneri")}
                 autoComplete={false}
               />
 
@@ -369,6 +371,7 @@ function EditoProduktin(props) {
                 value={inputNjesiaMatese}
                 onChange={(e) => handleInputChange(e, "NjesiaMatese")}
                 onKeyDown={(e) => handleInputKeyDown(e, "NjesiaMatese")}
+                onFocus={(e) => handleInputChange(e, "NjesiaMatese")}
                 autoComplete={false}
               />
 

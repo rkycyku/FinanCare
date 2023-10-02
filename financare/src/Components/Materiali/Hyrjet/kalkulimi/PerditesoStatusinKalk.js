@@ -50,8 +50,9 @@ function PerditesoStatusinKalk(props) {
   useEffect(() => {
     const shfaqKalkulimet = async () => {
       try {
-        const kalkulimet = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet`, authentikimi);
-        setKalkulimet(kalkulimet.data);
+        const kalkulimi = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet`, authentikimi);
+        const kalkulimet = kalkulimi.data.filter((item) => item.llojiKalkulimit === "HYRJE")
+        setKalkulimet(kalkulimet);
       } catch (err) {
         console.log(err);
       }

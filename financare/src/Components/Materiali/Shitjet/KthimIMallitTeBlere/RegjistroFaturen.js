@@ -27,9 +27,13 @@ function RegjistroFaturen(props) {
   const [produktiID, setProduktiID] = useState(0);
   const [produktet, setProduktet] = useState([]);
   const [sasia, setSasia] = useState("");
+  const [qmimiBleres, setQmimiBleres] = useState("");
+  const [rabati, setRabati] = useState("");
   const [njesiaMatese, setNjesiaMatese] = useState("Cope");
   const [totProdukteve, setTotProdukteve] = useState(0);
   const [totStokut, setTotStokut] = useState(0);
+  const [totQmimi, setTotQmimi] = useState(0);
+  const [totFat, setTotFat] = useState(0);
   const [sasiaNeStok, setSasiaNeStok] = useState(0);
   const [qmimiB, setQmimiB] = useState(0);
   const [qmimiSH, setQmimiSH] = useState(0);
@@ -130,12 +134,20 @@ function RegjistroFaturen(props) {
   useEffect(() => {
     let totalProdukteve = 0;
     let totalStokut = 0;
+    let totalQmimi = 0;
+    let totalFat = 0;
     produktetNeKalkulim.forEach((produkti) => {
       totalProdukteve += 1;
       totalStokut += produkti.sasiaStokut;
+      totalQmimi += produkti.sasiaStokut * produkti.qmimiBleres;
+      totalFat +=
+        produkti.sasiaStokut *
+        (produkti.qmimiBleres - produkti.qmimiBleres * (produkti.rabati / 100));
     });
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut);
+    setTotQmimi(totalQmimi);
+    setTotFat(totalFat);
   }, [produktetNeKalkulim]);
 
   const handleProduktiChange = (selectedOption) => {
@@ -154,11 +166,13 @@ function RegjistroFaturen(props) {
           qmimiShitesIVjeter: selectedOption.qmimiProduktit,
           qmimiShitesMeShumicIVjeter: selectedOption.qmimiMeShumic,
           sasiaNeStokEVjeter: selectedOption.sasiaNeStok,
+          qmimiBleres: qmimiBleres,
           sasiaNeStok: sasiaNeStok,
           njesiaMatese: selectedOption.njesiaMatese1,
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
+          rabati: rabati,
         },
       ]);
     } else {
@@ -188,6 +202,8 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter
       );
       setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
+      setRabati(rabati ?? konifirmoProduktinLista[0].rabati);
+      setQmimiBleres(qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleres);
 
       setFilteredItems([]);
       setInputValue(
@@ -224,7 +240,7 @@ function RegjistroFaturen(props) {
   };
 
   const handleSubmit = async (event) => {
-    if (produktiID === 0 || sasia <= 0) {
+    if (produktiID === 0 || sasia <= 0 || qmimiBleres <= 0) {
       event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
       setTipiMesazhit("danger");
@@ -239,9 +255,10 @@ function RegjistroFaturen(props) {
             idRegjistrimit: props.nrRendorKalkulimit,
             idProduktit: produktiID,
             sasiaStokut: sasia,
-            qmimiBleres: qmimiB,
+            qmimiBleres: qmimiBleres,
             qmimiShites: qmimiSH,
             qmimiShitesMeShumic: qmimiSH2,
+            rabati: rabati,
           },
           authentikimi
         )
@@ -250,11 +267,14 @@ function RegjistroFaturen(props) {
         });
 
       setProduktiID(0);
+      setInputValue("");
       setSasia("");
       setSasiaNeStok(0);
       setQmimiB(0);
       setQmimiSH(0);
       setQmimiSH2(0);
+      setRabati(0);
+      setQmimiBleres(0);
       setPerditeso(Date.now());
     }
   };
@@ -275,12 +295,9 @@ function RegjistroFaturen(props) {
         for (let produkti of produktetNeKalkulim) {
           console.log(produkti);
           await axios.put(
-            `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStokunQmimin?id=${produkti.idProduktit}`,
+            `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
             {
-              qmimiBleres: produkti.qmimiBleres,
-              qmimiProduktit: produkti.qmimiShites,
               sasiaNeStok: produkti.sasiaStokut,
-              qmimiMeShumic: produkti.qmimiShitesMeShumic,
             },
             authentikimi
           );
@@ -322,6 +339,8 @@ function RegjistroFaturen(props) {
         setQmimiB(p.data[0].qmimiBleres);
         setQmimiSH(p.data[0].qmimiShites);
         setQmimiSH2(p.data[0].qmimiShitesMeShumic);
+        setQmimiBleres(p.data[0].qmimiBleres);
+        setRabati(p.data[0].rabati);
       });
   }
 
@@ -335,10 +354,11 @@ function RegjistroFaturen(props) {
         .put(
           `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
           {
-            qmimiBleres: qmimiB,
+            qmimiBleres: qmimiBleres,
             qmimiShites: qmimiSH,
             sasiaStokut: sasia,
             qmimiShitesMeShumic: qmimiSH2,
+            rabati: rabati,
           },
           authentikimi
         )
@@ -353,6 +373,8 @@ function RegjistroFaturen(props) {
       setQmimiB(0);
       setQmimiSH(0);
       setQmimiSH2(0);
+      setQmimiBleres("");
+      setRabati("");
       setEdito(false);
     }
   }
@@ -469,7 +491,7 @@ function RegjistroFaturen(props) {
         </div>
       ) : (
         <>
-          <h1 className="title">Kalkulimi i Mallit</h1>
+          <h1 className="title">Kthimi i Mallit te Blere</h1>
 
           <Container fluid>
             <Row>
@@ -519,6 +541,33 @@ function RegjistroFaturen(props) {
                       }}
                     />
                   </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Qmimi Bleres €</Form.Label>
+                    <Form.Control
+                      id="qmimiBleres"
+                      type="number"
+                      placeholder={"0.00 €"}
+                      value={qmimiBleres}
+                      onChange={(e) => {
+                        setQmimiBleres(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        ndrroField(e, "rabati");
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Rabati %</Form.Label>
+                    <Form.Control
+                      id="rabati"
+                      type="number"
+                      placeholder={"0.00 %"}
+                      value={rabati}
+                      onChange={(e) => {
+                        setRabati(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
                   <br />
                   <div style={{ display: "flex", gap: "0.3em" }}>
                     <Button variant="success" type="submit" disabled={edito}>
@@ -552,21 +601,40 @@ function RegjistroFaturen(props) {
                   <strong>Qmimi Shites me Shumic + TVSH:</strong>{" "}
                   {parseFloat(qmimiSH2).toFixed(2)} €
                 </p>
-                <hr />
-                <Col>
-                  <Button
-                    className="mb-3 Butoni"
-                    onClick={() => setKonfirmoMbylljenFatures(true)}
-                  >
-                    Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
-                  </Button>
-                  <Button
-                    className="mb-3 Butoni"
-                    onClick={() => KthehuTekFaturat()}
-                  >
-                    <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
-                  </Button>
-                </Col>
+              </Col>
+              <Col>
+                <Row>
+                  <h5>
+                    <strong>Nr. Kalkulimit:</strong>{" "}
+                    {teDhenatFatures.idRegjistrimit}
+                  </h5>
+                  <h5>
+                    <strong>Partneri:</strong> {teDhenatFatures.emriBiznesit}
+                  </h5>
+                  <h5>
+                    <strong>Nr. Kthimit:</strong> {teDhenatFatures.nrFatures}
+                  </h5>
+                  <h5>
+                    <strong>Pershkrim Shtese:</strong>{" "}
+                    {teDhenatFatures.pershkrimShtese}
+                  </h5>
+
+                  <hr />
+                  <Col>
+                    <Button
+                      className="mb-3 Butoni"
+                      onClick={() => setKonfirmoMbylljenFatures(true)}
+                    >
+                      Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
+                    </Button>
+                    <Button
+                      className="mb-3 Butoni"
+                      onClick={() => KthehuTekFaturat()}
+                    >
+                      <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
+                    </Button>
+                  </Col>
+                </Row>
               </Col>
             </Row>
             <h1 className="title">Tabela e Produkteve te Fatures</h1>
@@ -576,6 +644,10 @@ function RegjistroFaturen(props) {
                   <th>Nr. Rendor</th>
                   <th>Emri Produktit</th>
                   <th>Sasia</th>
+                  <th>Qmimi Bleres</th>
+                  <th>Rabati</th>
+                  <th>Qmimi Bleres - Rabati</th>
+                  <th>Totali</th>
                   <th>Funksione</th>
                 </tr>
               </thead>
@@ -585,7 +657,21 @@ function RegjistroFaturen(props) {
                     <td>{index + 1}</td>
                     <td>{p.emriProduktit}</td>
                     <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
-
+                    <td>{parseFloat(p.qmimiBleres).toFixed(2)} €</td>
+                    <td>{parseFloat(p.rabati).toFixed(2)} %</td>
+                    <td>
+                      {parseFloat(
+                        p.qmimiBleres - p.qmimiBleres * (p.rabati / 100)
+                      ).toFixed(2)}{" "}
+                      €
+                    </td>
+                    <td>
+                      {parseFloat(
+                        p.sasiaStokut *
+                          (p.qmimiBleres - p.qmimiBleres * (p.rabati / 100))
+                      ).toFixed(2)}{" "}
+                      €
+                    </td>
                     <td>
                       <div style={{ display: "flex", gap: "0.3em" }}>
                         <Button
@@ -613,11 +699,19 @@ function RegjistroFaturen(props) {
                   <td></td>
                   <td></td>
                   <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>{totProdukteve}</td>
                   <td>-</td>
                   <td>{parseFloat(totStokut).toFixed(2)}</td>
+                  <td>{parseFloat(totQmimi).toFixed(2)} €</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>{parseFloat(totFat).toFixed(2)} €</td>
                   <td>-</td>
                 </tr>
               </tbody>

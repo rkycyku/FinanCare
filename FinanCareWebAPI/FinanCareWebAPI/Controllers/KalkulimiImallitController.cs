@@ -38,7 +38,8 @@ namespace WebAPI.Controllers
                     x.LlojiPageses,
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
-                    x.PershkrimShtese
+                    x.PershkrimShtese,
+                    x.Rabati
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -67,7 +68,8 @@ namespace WebAPI.Controllers
                     x.LlojiPageses,
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
-                    x.PershkrimShtese
+                    x.PershkrimShtese,
+                    x.Rabati
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -93,11 +95,66 @@ namespace WebAPI.Controllers
                     x.LlojiPageses,
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
-                    x.PershkrimShtese
+                    x.PershkrimShtese,
+                    x.Rabati
                 }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
 
-            return Ok(regjistrimet);
+            var totTVSH18 = await _context.TeDhenatKalkulimits.Include(x=>x.IdProduktitNavigation).Where(x => x.IdProduktitNavigation.LlojiTVSH == 18 && x.IdRegjistrimit == id).ToListAsync();
+            var totTVSH8 = await _context.TeDhenatKalkulimits.Include(x => x.IdProduktitNavigation).Where(x => x.IdProduktitNavigation.LlojiTVSH == 8 && x.IdRegjistrimit == id).ToListAsync();
+
+            decimal TotaliMeTVSH18 = 0;
+            decimal TotaliMeTVSH8 = 0;
+            decimal TotaliPaTVSH18 = 0;
+            decimal TotaliPaTVSH8 = 0;
+            decimal Rabati = 0;
+
+            foreach (var teDhenat in totTVSH18)
+            {
+                decimal rabati = teDhenat.Rabati ?? 0;
+                TotaliMeTVSH18 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                TotaliPaTVSH18 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * 18 / 100) - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+            }
+
+            foreach (var teDhenat in totTVSH8)
+            {
+                decimal rabati = teDhenat.Rabati ?? 0; 
+                TotaliMeTVSH8 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                TotaliPaTVSH8 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * 8 / 100) - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+            }
+
+
+            decimal TotaliPaTVSH = TotaliPaTVSH18 + TotaliPaTVSH8;
+            decimal TotaliMeTVSH = TotaliPaTVSH + (TotaliMeTVSH18 - TotaliPaTVSH18) + (TotaliMeTVSH8 - TotaliPaTVSH8);
+
+            return Ok(new
+            {
+                regjistrimet.DataRegjistrimit,
+                regjistrimet.EmriBiznesit,
+                regjistrimet.IdRegjistrimit,
+                regjistrimet.LlojiKalkulimit,
+                regjistrimet.LlojiPageses,
+                regjistrimet.NrFatures,
+                regjistrimet.PershkrimShtese,
+                regjistrimet.StafiId,
+                regjistrimet.StatusiKalkulimit,
+                regjistrimet.StatusiPageses,
+                regjistrimet.Username,
+                TotaliMeTVSH18,
+                TotaliMeTVSH8,
+                TotaliPaTVSH18,
+                TotaliPaTVSH8,
+                TotaliPaTVSH,
+                TotaliMeTVSH,
+                Rabati,
+                TVSH18 = TotaliMeTVSH18 - TotaliPaTVSH18,
+                TVSH8 = TotaliMeTVSH8 - TotaliPaTVSH8,
+                totTVSH18,
+                totTVSH8
+            });
         }
+
 
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
@@ -112,11 +169,14 @@ namespace WebAPI.Controllers
                     x.IdRegjistrimit,
                     x.IdProduktit,
                     x.IdProduktitNavigation.EmriProduktit,
+                    x.IdProduktitNavigation.Barkodi,
+                    x.IdProduktitNavigation.KodiProduktit,
                     x.SasiaStokut,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,
-                    x.IdProduktitNavigation.LlojiTVSH
+                    x.IdProduktitNavigation.LlojiTVSH,
+                    x.Rabati,
                 })
                .ToListAsync();
 
@@ -176,6 +236,8 @@ namespace WebAPI.Controllers
             produkti.QmimiBleres = teDhenat.QmimiBleres;
             produkti.QmimiShites = teDhenat.QmimiShites;
             produkti.QmimiShitesMeShumic = teDhenat.QmimiShitesMeShumic;
+            produkti.Rabati = teDhenat.Rabati;
+            produkti.LlojiTVSH = teDhenat.LlojiTVSH;
 
             try
             {
@@ -235,11 +297,14 @@ namespace WebAPI.Controllers
                     x.IdRegjistrimit,
                     x.IdProduktit,
                     x.IdProduktitNavigation.EmriProduktit,
+                    x.IdProduktitNavigation.Barkodi,
+                    x.IdProduktitNavigation.KodiProduktit,
                     x.SasiaStokut,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,
-                    x.IdProduktitNavigation.LlojiTVSH
+                    x.IdProduktitNavigation.LlojiTVSH,
+                    x.Rabati
                 })
                .ToListAsync();
             ;
@@ -324,7 +389,9 @@ namespace WebAPI.Controllers
                 x.SasiaStokut,
                 x.QmimiBleres,
                 x.QmimiShites,
-                x.QmimiShitesMeShumic
+                x.QmimiShitesMeShumic,
+                x.Rabati,
+                x.LlojiTVSH
             })
             .SingleOrDefaultAsync(); // Use SingleOrDefaultAsync to retrieve one record
 
@@ -382,8 +449,8 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
-        [Route("fshijAsgjesimin/perditesoStokunQmimin")]
-        public async Task<IActionResult> FshijAsgjesiminPerditesoStokun(int idProdukti, int idTeDhenatKalkulimit)
+        [Route("hapAsgjesiminKthimin/perditesoStokunQmimin")]
+        public async Task<IActionResult> FshijAsgjesiminPerditesoStokun(int idProdukti, int idTeDhenatKalkulimit, string lloji)
         {
             var produktiNeKalkulim = await _context.TeDhenatKalkulimits.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
 
@@ -395,11 +462,20 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            produkti.SasiaNeStok += produktiNeKalkulim.SasiaStokut;
-            produkti.DataPerditsimit = DateTime.Now;
+            if (lloji == "AS")
+            {
+                produkti.SasiaNeStok += produktiNeKalkulim.SasiaStokut;
+                produkti.DataPerditsimit = DateTime.Now;
+            }
+
+            if(lloji == "KMSH")
+            {
+                produkti.SasiaNeStok -= produktiNeKalkulim.SasiaStokut;
+                produkti.DataPerditsimit = DateTime.Now;
+            }
 
             _context.StokuQmimiProduktits.Update(produkti);
-            await _context.SaveChangesAsync();  //Me rregullu kthimn e mallit t shitur
+            await _context.SaveChangesAsync();  
 
             var result = new
             {
