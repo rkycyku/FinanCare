@@ -102,15 +102,15 @@ function TeDhenatKalkulimit(props) {
                     </Row>
                     <Row>
                         <Col className={classes.mobileResponsive}>
-                            <h4>Nr. Referencues: {teDhenatFat.nrFatures}</h4>
-                            <h4>Data Fatures: {new Date(teDhenatFat.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</h4>
+                            <h4>Nr. Referencues: {teDhenatFat && teDhenatFat.regjistrimet.nrFatures}</h4>
+                            <h4>Data Fatures: {new Date(teDhenatFat && teDhenatFat.regjistrimet.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</h4>
                             
                         </Col>
                         <Col className={classes.mobileResponsive}>
-                            <p><strong>Personi Pergjegjes:</strong> {teDhenatFat.stafiId + " - " + teDhenatFat.username}</p>
-                            <p><strong>Nr. Kalkulimit: </strong>{teDhenatFat.idRegjistrimit}</p>
-                            <p><strong>Lloji Fatures:</strong> {teDhenatFat.emriBiznesit}</p>
-                            <p><strong>Statusi i kalkulimit:</strong> {teDhenatFat.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur"}</p>
+                            <p><strong>Personi Pergjegjes:</strong> {teDhenatFat && teDhenatFat.regjistrimet.stafiId + " - " + teDhenatFat && teDhenatFat.regjistrimet.username}</p>
+                            <p><strong>Nr. Kalkulimit: </strong>{teDhenatFat && teDhenatFat.regjistrimet.idRegjistrimit}</p>
+                            <p><strong>Lloji Fatures:</strong> {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}</p>
+                            <p><strong>Statusi i kalkulimit:</strong> {teDhenatFat && teDhenatFat.regjistrimet.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur"}</p>
                         </Col>
                     </Row>
                     <Table striped bordered hover>

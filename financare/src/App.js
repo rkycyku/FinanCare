@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./Pages/Dashboard";
-import Fatura from "./Components/TeTjera/Fatura/Fatura";
+
 import LogIn from "./Pages/LogIn";
 import SignUp from "./Pages/SignUp";
 import { useEffect } from "react";
@@ -23,6 +23,8 @@ import ShtoPartnerin from "./Pages/Gjenerale/Partneret/ShtoPartnerin";
 import KthimiMallitTeShitur from "./Pages/Materiali/Hyrjet/KthimiMallitTeShitur";
 import AsgjesimiIStokut from "./Pages/Materiali/Shitjet/AsgjesimIStokut";
 import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
+
+import Fatura from "./Components/Materiali/Shitjet/KthimIMallitTeBlere/Fatura";
 
 function App() {
   useEffect(() => {

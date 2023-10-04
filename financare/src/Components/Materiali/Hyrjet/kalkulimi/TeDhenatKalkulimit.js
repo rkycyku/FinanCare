@@ -100,11 +100,11 @@ function TeDhenatKalkulimit(props) {
             </Row>
             <Row>
               <Col className={classes.mobileResponsive}>
-                <h4>Partneri: {teDhenatFat.emriBiznesit}</h4>
-                <h4>Nr. Fatures: {teDhenatFat.nrFatures}</h4>
+                <h4>Partneri: {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}</h4>
+                <h4>Nr. Fatures: {teDhenatFat && teDhenatFat.regjistrimet.nrFatures}</h4>
                 <h4>
                   Data Fatures:{" "}
-                  {new Date(teDhenatFat.dataRegjistrimit).toLocaleDateString(
+                  {new Date(teDhenatFat && teDhenatFat.regjistrimet.dataRegjistrimit).toLocaleDateString(
                     "en-GB",
                     { dateStyle: "short" }
                   )}
@@ -137,28 +137,28 @@ function TeDhenatKalkulimit(props) {
                   {parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
                 </p>
                 <p>
-                  <strong>Pagesa behet me:</strong> {teDhenatFat.llojiPageses}
+                  <strong>Pagesa behet me:</strong> {teDhenatFat && teDhenatFat.regjistrimet.llojiPageses}
                 </p>
                 <p>
                   <strong>Statusi i Pageses:</strong>{" "}
-                  {teDhenatFat.statusiPageses}
+                  {teDhenatFat && teDhenatFat.regjistrimet.statusiPageses}
                 </p>
               </Col>
               <Col className={classes.mobileResponsive}>
                 <p>
                   <strong>Personi Pergjegjes:</strong>{" "}
-                  {teDhenatFat.stafiId + " - " + teDhenatFat.username}
+                  {teDhenatFat && teDhenatFat.regjistrimet.stafiId + " - " + teDhenatFat && teDhenatFat.regjistrimet.username}
                 </p>
                 <p>
                   <strong>Nr. Kalkulimit: </strong>
-                  {teDhenatFat.idRegjistrimit}
+                  {teDhenatFat && teDhenatFat.regjistrimet.idRegjistrimit}
                 </p>
                 <p>
-                  <strong>Lloji Fatures:</strong> {teDhenatFat.llojiKalkulimit}
+                  <strong>Lloji Fatures:</strong> {teDhenatFat && teDhenatFat.regjistrimet.llojiKalkulimit}
                 </p>
                 <p>
                   <strong>Statusi i kalkulimit:</strong>{" "}
-                  {teDhenatFat.statusiKalkulimit === "true"
+                  {teDhenatFat && teDhenatFat.regjistrimet.statusiKalkulimit === "true"
                     ? "I Mbyllur"
                     : "I Hapur"}
                 </p>

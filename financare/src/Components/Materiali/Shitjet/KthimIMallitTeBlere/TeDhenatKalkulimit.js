@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function TeDhenatKalkulimit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -29,6 +30,11 @@ function TeDhenatKalkulimit(props) {
           `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.id}`,
           authentikimi
         );
+        const teDhenat = await axios.get(
+          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.id}`,
+          authentikimi
+        );
+        setTeDhenatFat(teDhenat.data);
         setProduktet(produktet.data);
         setLoading(false);
         console.log(produktet.data);
@@ -41,26 +47,6 @@ function TeDhenatKalkulimit(props) {
     vendosTeDhenat();
   }, [perditeso]);
 
-  useEffect(() => {
-    const shfaqTeDhenatFature = async () => {
-      try {
-        setLoading(true);
-        const teDhenat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.id}`,
-          authentikimi
-        );
-        setTeDhenatFat(teDhenat.data);
-        setLoading(false);
-
-        console.log(teDhenat.data);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-      }
-    };
-
-    shfaqTeDhenatFature();
-  }, [perditeso]);
 
   const handleSave = () => {
     props.setMbyllTeDhenat();
@@ -97,15 +83,20 @@ function TeDhenatKalkulimit(props) {
                 <Button className="mb-3 Butoni" onClick={handleSave}>
                   Mbyll Te Dhenat <FontAwesomeIcon icon={faPlus} />
                 </Button>
+                <Button className="mb-3 Butoni" >
+                  <Link to={`/Fatura/${props.id}`}>
+                  Fatura <FontAwesomeIcon icon={faPlus} />
+                  </Link>
+                </Button>
               </h1>
             </Row>
             <Row>
               <Col className={classes.mobileResponsive}>
-                <h4>Partneri: {teDhenatFat.emriBiznesit}</h4>
-                <h4>Nr. Fatures: {teDhenatFat.nrFatures}</h4>
+                <h4>Partneri: {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}</h4>
+                <h4>Nr. Fatures: {teDhenatFat && teDhenatFat.regjistrimet.nrFatures}</h4>
                 <h4>
                   Data Fatures:{" "}
-                  {new Date(teDhenatFat.dataRegjistrimit).toLocaleDateString(
+                  {new Date(teDhenatFat && teDhenatFat.regjistrimet.dataRegjistrimit).toLocaleDateString(
                     "en-GB",
                     { dateStyle: "short" }
                   )}
@@ -138,28 +129,28 @@ function TeDhenatKalkulimit(props) {
                   {parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
                 </p>
                 <p>
-                  <strong>Pagesa behet me:</strong> {teDhenatFat.llojiPageses}
+                  <strong>Pagesa behet me:</strong> {teDhenatFat && teDhenatFat.regjistrimet.llojiPageses}
                 </p>
                 <p>
                   <strong>Statusi i Pageses:</strong>{" "}
-                  {teDhenatFat.statusiPageses}
+                  {teDhenatFat && teDhenatFat.regjistrimet.statusiPageses}
                 </p>
               </Col>
               <Col className={classes.mobileResponsive}>
                 <p>
                   <strong>Personi Pergjegjes:</strong>{" "}
-                  {teDhenatFat.stafiId + " - " + teDhenatFat.username}
+                  {teDhenatFat && teDhenatFat.regjistrimet.stafiId + " - " + teDhenatFat && teDhenatFat.regjistrimet.username}
                 </p>
                 <p>
                   <strong>Nr. Kalkulimit: </strong>
-                  {teDhenatFat.idRegjistrimit}
+                  {teDhenatFat && teDhenatFat.regjistrimet.idRegjistrimit}
                 </p>
                 <p>
-                  <strong>Lloji Fatures:</strong> {teDhenatFat.llojiKalkulimit}
+                  <strong>Lloji Fatures:</strong> Kthim i Mallit te Blere
                 </p>
                 <p>
                   <strong>Statusi i kalkulimit:</strong>{" "}
-                  {teDhenatFat.statusiKalkulimit === "true"
+                  {teDhenatFat && teDhenatFat.regjistrimet.statusiKalkulimit === "true"
                     ? "I Mbyllur"
                     : "I Hapur"}
                 </p>
@@ -168,19 +159,17 @@ function TeDhenatKalkulimit(props) {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Nr. Rendore</th>
-                  <th>Kodi Produktit</th>
-                  <th>Barkodi</th>
-                  <th>Produkti</th>
+                  <th>Nr.</th>
+                  <th>Shifra</th>
+                  <th>Emertimi</th>
+                  <th>Njm</th>
                   <th>Sasia</th>
-                  <th>Qmimi Bleres €</th>
-                  <th>Qmimi Bleres - TVSH €</th>
+                  <th>Qmimi pa TVSH</th>
                   <th>Rabati %</th>
-                  <th>Qmimi Bleres - Rabati €</th>
-                  <th>TVSH %</th>
+                  <th>T %</th>
+                  <th>Qmimi me TVSH - Rab</th>
                   <th>TVSH €</th>
-                  <th>Shuma Totale - TVSH €</th>
-                  <th>Shuma Totale + TVSH €</th>
+                  <th>Shuma €</th>
                 </tr>
               </thead>
               <tbody>
@@ -188,43 +177,36 @@ function TeDhenatKalkulimit(props) {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{produkti.kodiProduktit}</td>
-                    <td>{produkti.barkodi}</td>
-                    <td>{produkti.emriProduktit}</td>
+                    <td>
+                      {produkti.emriProduktit} {produkti.barkodi}
+                    </td>
+                    <td>{produkti.njesiaMatese1}</td>
                     <td>{produkti.sasiaStokut}</td>
-                    <td>{parseFloat(produkti.qmimiBleres).toFixed(2)}</td>
                     <td>
                       {parseFloat(
                         produkti.qmimiBleres -
                           (produkti.qmimiBleres * produkti.llojiTVSH) / 100
-                      ).toFixed(2)}
+                      ).toFixed(3)}
                     </td>
                     <td>{produkti.rabati}</td>
+                    <td>{produkti.llojiTVSH}</td>
                     <td>
                       {parseFloat(
                         produkti.qmimiBleres -
                           produkti.qmimiBleres * (produkti.rabati / 100)
-                      ).toFixed(2)}
+                      ).toFixed(3)}
                     </td>
-                    <td>{produkti.llojiTVSH}</td>
                     <td>
                       {parseFloat(
                         (produkti.sasiaStokut *
-                          produkti.qmimiBleres *
-                          produkti.llojiTVSH) /
+                          (produkti.qmimiBleres -
+                            produkti.qmimiBleres * (produkti.rabati / 100)) *
+                          ((produkti.llojiTVSH /
+                            100 /
+                            (1 + produkti.llojiTVSH / 100)) *
+                            100)) /
                           100
-                      ).toFixed(2)}
-                    </td>
-                    <td>
-                      {parseFloat(
-                        produkti.sasiaStokut * produkti.qmimiBleres -
-                          (produkti.sasiaStokut *
-                            produkti.qmimiBleres *
-                            produkti.llojiTVSH) /
-                            100 -
-                          produkti.sasiaStokut *
-                            produkti.qmimiBleres *
-                            (produkti.rabati / 100)
-                      ).toFixed(2)}
+                      ).toFixed(3)}
                     </td>
                     <td>
                       {parseFloat(
@@ -232,7 +214,7 @@ function TeDhenatKalkulimit(props) {
                           produkti.sasiaStokut *
                             produkti.qmimiBleres *
                             (produkti.rabati / 100)
-                      ).toFixed(2)}
+                      ).toFixed(3)}
                     </td>
                   </tr>
                 ))}

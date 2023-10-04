@@ -91,6 +91,14 @@ namespace WebAPI.Controllers
                     x.Stafi.Username,
                     x.NrFatures,
                     x.IdpartneriNavigation.EmriBiznesit,
+                    x.IdpartneriNavigation.Adresa,
+                    x.IdpartneriNavigation.Nrf,
+                    x.IdpartneriNavigation.Nui,
+                    partneriTVSH = x.IdpartneriNavigation.Tvsh,
+                    x.IdpartneriNavigation.Idpartneri,
+                    x.IdpartneriNavigation.ShkurtesaPartnerit,
+                    x.IdpartneriNavigation.Email,
+                    x.IdpartneriNavigation.NrKontaktit,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
@@ -111,18 +119,27 @@ namespace WebAPI.Controllers
             foreach (var teDhenat in totTVSH18)
             {
                 decimal rabati = teDhenat.Rabati ?? 0;
-                TotaliMeTVSH18 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
-                TotaliPaTVSH18 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * 18 / 100) - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                decimal vatRate = 0.18m; // 18% VAT rate as a decimal
+                decimal totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                decimal vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+
+                TotaliMeTVSH18 += totalBeforeVAT;
+                TotaliPaTVSH18 += totalBeforeVAT - vatAmount;
                 Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
             }
 
             foreach (var teDhenat in totTVSH8)
             {
-                decimal rabati = teDhenat.Rabati ?? 0; 
-                TotaliMeTVSH8 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
-                TotaliPaTVSH8 += Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * 8 / 100) - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                decimal rabati = teDhenat.Rabati ?? 0;
+                decimal vatRate = 0.08m; // 8% VAT rate as a decimal
+                decimal totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                decimal vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+
+                TotaliMeTVSH8 += totalBeforeVAT;
+                TotaliPaTVSH8 += totalBeforeVAT - vatAmount;
                 Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
             }
+
 
 
             decimal TotaliPaTVSH = TotaliPaTVSH18 + TotaliPaTVSH8;
@@ -130,17 +147,7 @@ namespace WebAPI.Controllers
 
             return Ok(new
             {
-                regjistrimet.DataRegjistrimit,
-                regjistrimet.EmriBiznesit,
-                regjistrimet.IdRegjistrimit,
-                regjistrimet.LlojiKalkulimit,
-                regjistrimet.LlojiPageses,
-                regjistrimet.NrFatures,
-                regjistrimet.PershkrimShtese,
-                regjistrimet.StafiId,
-                regjistrimet.StatusiKalkulimit,
-                regjistrimet.StatusiPageses,
-                regjistrimet.Username,
+                regjistrimet,
                 TotaliMeTVSH18,
                 TotaliMeTVSH8,
                 TotaliPaTVSH18,
@@ -177,6 +184,7 @@ namespace WebAPI.Controllers
                     x.QmimiShitesMeShumic,
                     x.IdProduktitNavigation.LlojiTVSH,
                     x.Rabati,
+                    x.IdProduktitNavigation.IdnjesiaMateseNavigation.NjesiaMatese1
                 })
                .ToListAsync();
 
