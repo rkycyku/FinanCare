@@ -24,8 +24,6 @@ import KthimiMallitTeShitur from "./Pages/Materiali/Hyrjet/KthimiMallitTeShitur"
 import AsgjesimiIStokut from "./Pages/Materiali/Shitjet/AsgjesimIStokut";
 import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
 
-import Fatura from "./Components/Materiali/Shitjet/KthimIMallitTeBlere/Fatura";
-
 function App() {
   useEffect(() => {
     Aos.init(
@@ -64,7 +62,6 @@ function App() {
         <Route path="/AsgjesimiIStokut" element={<AsgjesimiIStokut />} />
         <Route path="/KthimIMallitTeBlere" element={<KthimIMallitTeBlere />} />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/Fatura/:nrFatures" element={<Fatura />} />
       </Routes>
     </div>
   );
