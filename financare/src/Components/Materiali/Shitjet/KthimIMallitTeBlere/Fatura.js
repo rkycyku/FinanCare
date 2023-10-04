@@ -12,7 +12,7 @@ function Fatura(props) {
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
   const [teDhenat, setTeDhenat] = useState([]);
 
-  const [meShumeSe25, setMeShumeSe25] = useState(false);
+  const [meShumeSe23, setMeShumeSe23] = useState(false);
 
   const [produktet, setProduktet] = useState([]);
   const [teDhenatFat, setteDhenatFat] = useState("");
@@ -79,8 +79,8 @@ function Fatura(props) {
           setteDhenatFat(teDhenat.data);
           setProduktet(produktet.data);
 
-          if (produktet.data.length > 25) {
-            setMeShumeSe25(true);
+          if (produktet.data.length > 23) {
+            setMeShumeSe23(true);
           }
 
           setVendosFature(true);
@@ -178,13 +178,10 @@ function Fatura(props) {
             );
             leftHeight -= pageHeight;
             position -= 841.89;
-            if (leftHeight > 0) {
-              pdf.addPage();
-            }
           }
         }
 
-        if (meShumeSe25) {
+        if (meShumeSe23) {
           html2canvas(PjesaNenshkrimeveRef, { useCORS: true })
             .then((PjesaNenshkrimeveCanvas) => {
               var PjesaNenshkrimeveWidth = PjesaNenshkrimeveCanvas.width;
@@ -299,32 +296,34 @@ function Fatura(props) {
           </div>
 
           <div className="data">
-            <span id="nrFatures">
-              <Barkodi value={barkodi} />
-            </span>
-            <br />
-            <br />
-            <p></p>
-            <p>
-              <strong>
-                {teDhenatFat && teDhenatFat.regjistrimet.idpartneri} -{" "}
-                {teDhenatFat && teDhenatFat.regjistrimet.shkurtesaPartnerit} /{" "}
-                {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
-              </strong>
-            </p>
-            <p>
-              <strong>NUI: </strong>
-              {teDhenatFat && teDhenatFat.regjistrimet.nui} /{" "}
-              <strong>NF: </strong>
-              {teDhenatFat && teDhenatFat.regjistrimet.nrf} /{" "}
-              <strong>TVSH: </strong>
-              {teDhenatFat && teDhenatFat.regjistrimet.partneriTVSH}
-            </p>
-            <p>{teDhenatFat && teDhenatFat.regjistrimet.adresa}</p>
-            <p>
-              {teDhenatFat && teDhenatFat.regjistrimet.nrKontaktit} -{" "}
-              {teDhenatFat && teDhenatFat.regjistrimet.email}
-            </p>
+            <div className="barkodi">
+              <h1>KREDIT NOTE</h1>
+              <span id="nrFatures">
+                <Barkodi value={barkodi} />
+              </span>
+            </div>
+            <div className="teDhenatEKlientit">
+              <p>
+                <strong>
+                  {teDhenatFat && teDhenatFat.regjistrimet.idpartneri} -{" "}
+                  {teDhenatFat && teDhenatFat.regjistrimet.shkurtesaPartnerit} /{" "}
+                  {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                </strong>
+              </p>
+              <p>
+                <strong>NUI: </strong>
+                {teDhenatFat && teDhenatFat.regjistrimet.nui} /{" "}
+                <strong>NF: </strong>
+                {teDhenatFat && teDhenatFat.regjistrimet.nrf} /{" "}
+                <strong>TVSH: </strong>
+                {teDhenatFat && teDhenatFat.regjistrimet.partneriTVSH}
+              </p>
+              <p>{teDhenatFat && teDhenatFat.regjistrimet.adresa}</p>
+              <p>
+                {teDhenatFat && teDhenatFat.regjistrimet.nrKontaktit} -{" "}
+                {teDhenatFat && teDhenatFat.regjistrimet.email}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -337,8 +336,6 @@ function Fatura(props) {
             backgroundColor: "black",
           }}
         />
-        <br />
-        <br />
 
         <h1 style={{ textAlign: "center", fontSize: "24pt" }}>
           Detajet e Porosis
@@ -358,7 +355,7 @@ function Fatura(props) {
               <th>TVSH €</th>
               <th>Shuma €</th>
             </tr>
-            {produktet.map((produkti, index) => (
+            {produktet.slice(0, 23).map((produkti, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{produkti.kodiProduktit}</td>
@@ -406,83 +403,90 @@ function Fatura(props) {
           </table>
         </div>
         <hr></hr>
+        {!meShumeSe23 && (
+          <>
+            <div className="header">
+              <div className="teDhenatKompanis">
+                <p>
+                  Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
+                  <strong>{barkodi}</strong>
+                </p>
+                <p>
+                  Referenti Juaj:{" "}
+                  {teDhenatFat && teDhenatFat.regjistrimet.username}
+                </p>
+              </div>
 
-        <div className="header">
-          <div className="teDhenatKompanis">
-            <p>
-              Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
-              <strong>{barkodi}</strong>
-            </p>
-            <p>
-              Referenti Juaj: {teDhenatFat && teDhenatFat.regjistrimet.username}
-            </p>
-          </div>
+              <div className="data">
+                <p>
+                  <strong>Nentotali: </strong>
+                  {teDhenatFat &&
+                    parseFloat(
+                      teDhenatFat.totaliMeTVSH + teDhenatFat.rabati
+                    ).toFixed(2)}{" "}
+                  €
+                </p>
+                <p>
+                  <strong>Rabati: </strong>-{" "}
+                  {teDhenatFat && parseFloat(teDhenatFat.rabati).toFixed(2)} €
+                </p>
+                <p>
+                  <strong>Totali Pa TVSH: </strong>
+                  {teDhenatFat &&
+                    parseFloat(teDhenatFat.totaliPaTVSH).toFixed(2)}{" "}
+                  €
+                </p>
+                <p>
+                  <strong>TVSH 8%: </strong>
+                  {teDhenatFat && parseFloat(teDhenatFat.tvsH8).toFixed(2)} €
+                </p>
+                <p>
+                  <strong>TVSH 18%: </strong>
+                  {teDhenatFat && parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
+                </p>
+                <p>
+                  <strong style={{ fontSize: "18pt" }}>Qmimi Total: </strong>
 
-          <div className="data">
-            <p>
-              <strong>Nentotali: </strong>
-              {teDhenatFat &&
-                parseFloat(
-                  teDhenatFat.totaliMeTVSH + teDhenatFat.rabati
-                ).toFixed(2)}{" "}
-              €
-            </p>
-            <p>
-              <strong>Rabati: </strong>-{" "}
-              {teDhenatFat && parseFloat(teDhenatFat.rabati).toFixed(2)} €
-            </p>
-            <p>
-              <strong>Totali Pa TVSH: </strong>
-              {teDhenatFat && parseFloat(teDhenatFat.totaliPaTVSH).toFixed(2)} €
-            </p>
-            <p>
-              <strong>TVSH 8%: </strong>
-              {teDhenatFat && parseFloat(teDhenatFat.tvsH8).toFixed(2)} €
-            </p>
-            <p>
-              <strong>TVSH 18%: </strong>
-              {teDhenatFat && parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
-            </p>
-            <p>
-              <strong style={{ fontSize: "18pt" }}>Qmimi Total: </strong>
+                  <strong style={{ fontSize: "18pt" }}>
+                    {teDhenatFat &&
+                      parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)}{" "}
+                    €
+                  </strong>
+                </p>
+              </div>
+            </div>
 
-              <strong style={{ fontSize: "18pt" }}>
-                {teDhenatFat && parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)}{" "}
-                €
-              </strong>
-            </p>
-          </div>
-        </div>
-
-        <br />
-        <hr
-          style={{
-            height: "2px",
-            borderWidth: "0",
-            color: "gray",
-            backgroundColor: "black",
-          }}
-        />
-        <div className="nenshkrimet">
-          <div className="nenshkrimi">
-            <span>
-              _________________________________________________________________
-            </span>
-            <span>(Emri, Mbiemri, Nenshkrimi & Vula)</span>
-            <span>(Personi Përgjegjës)</span>
-          </div>
-          <div className="nenshkrimi">
-            <span>
-              _________________________________________________________________
-            </span>
-            <span>(Emri, Mbiemri, Nenshkrimi)</span>
-            <span>(Klienti)</span>
-          </div>
-        </div>
-        <br />
+            <br />
+            <hr
+              style={{
+                height: "2px",
+                borderWidth: "0",
+                color: "gray",
+                backgroundColor: "black",
+              }}
+            />
+            <div className="nenshkrimet">
+              <div className="nenshkrimi">
+                <span>
+                  _________________________________________________________________
+                </span>
+                <span>(Emri, Mbiemri, Nenshkrimi & Vula)</span>
+                <span>(Personi Përgjegjës)</span>
+              </div>
+              <div className="nenshkrimi">
+                <span>
+                  _________________________________________________________________
+                </span>
+                <span>(Emri, Mbiemri, Nenshkrimi)</span>
+                <span>(Klienti)</span>
+              </div>
+            </div>
+            <br />
+          </>
+        )}
       </div>
 
-      {meShumeSe25 && (
+      {meShumeSe23 && (
         <div className="PjesaNenshkrimeve">
           <div className="header">
             <div className="teDhenatKompanis">
@@ -514,34 +518,176 @@ function Fatura(props) {
             </div>
 
             <div className="data">
-              <span id="nrFatures">
-                <Barkodi value={barkodi} />
-              </span>
-              <br />
-              <br />
-              <p></p>
+              <div className="barkodi">
+                <h1>KREDIT NOTE</h1>
+                <span id="nrFatures">
+                  <Barkodi value={barkodi} />
+                </span>
+              </div>
+              <div className="teDhenatEKlientit">
+                <p>
+                  <strong>
+                    {teDhenatFat && teDhenatFat.regjistrimet.idpartneri} -{" "}
+                    {teDhenatFat && teDhenatFat.regjistrimet.shkurtesaPartnerit}{" "}
+                    / {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                  </strong>
+                </p>
+                <p>
+                  <strong>NUI: </strong>
+                  {teDhenatFat && teDhenatFat.regjistrimet.nui} /{" "}
+                  <strong>NF: </strong>
+                  {teDhenatFat && teDhenatFat.regjistrimet.nrf} /{" "}
+                  <strong>TVSH: </strong>
+                  {teDhenatFat && teDhenatFat.regjistrimet.partneriTVSH}
+                </p>
+                <p>{teDhenatFat && teDhenatFat.regjistrimet.adresa}</p>
+                <p>
+                  {teDhenatFat && teDhenatFat.regjistrimet.nrKontaktit} -{" "}
+                  {teDhenatFat && teDhenatFat.regjistrimet.email}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <hr
+            style={{
+              height: "2px",
+              borderWidth: "0",
+              color: "gray",
+              backgroundColor: "black",
+            }}
+          />
+          <br />
+          <br />
+
+          <h1 style={{ textAlign: "center", fontSize: "24pt" }}>
+            Detajet e Porosis
+          </h1>
+          <div className="tabelaETeDhenaveProduktit">
+            <table>
+              <tr>
+                <th>Nr.</th>
+                <th>Shifra</th>
+                <th>Emertimi</th>
+                <th>Njm</th>
+                <th>Sasia</th>
+                <th>Qmimi pa TVSH</th>
+                <th>Rabati %</th>
+                <th>T %</th>
+                <th>Qmimi me TVSH - Rab</th>
+                <th>TVSH €</th>
+                <th>Shuma €</th>
+              </tr>
+              {produktet.slice(23, 46).map((produkti, index) => (
+                <tr key={index + 23}>
+                  <td>{index + 23}</td>
+                  <td>{produkti.kodiProduktit}</td>
+                  <td>
+                    {produkti.emriProduktit} {produkti.barkodi}
+                  </td>
+                  <td>{produkti.njesiaMatese1}</td>
+                  <td>{produkti.sasiaStokut}</td>
+                  <td>
+                    {parseFloat(
+                      produkti.qmimiBleres -
+                        (produkti.qmimiBleres * produkti.llojiTVSH) / 100
+                    ).toFixed(3)}
+                  </td>
+                  <td>{produkti.rabati}</td>
+                  <td>{produkti.llojiTVSH}</td>
+                  <td>
+                    {parseFloat(
+                      produkti.qmimiBleres -
+                        produkti.qmimiBleres * (produkti.rabati / 100)
+                    ).toFixed(3)}
+                  </td>
+                  <td>
+                    {parseFloat(
+                      (produkti.sasiaStokut *
+                        (produkti.qmimiBleres -
+                          produkti.qmimiBleres * (produkti.rabati / 100)) *
+                        ((produkti.llojiTVSH /
+                          100 /
+                          (1 + produkti.llojiTVSH / 100)) *
+                          100)) /
+                        100
+                    ).toFixed(3)}
+                  </td>
+                  <td>
+                    {parseFloat(
+                      produkti.sasiaStokut * produkti.qmimiBleres -
+                        produkti.sasiaStokut *
+                          produkti.qmimiBleres *
+                          (produkti.rabati / 100)
+                    ).toFixed(3)}
+                  </td>
+                </tr>
+              ))}
+            </table>
+          </div>
+          <hr></hr>
+
+          <div className="header">
+            <div className="teDhenatKompanis">
               <p>
-                <strong>
-                  {teDhenatFat && teDhenatFat.regjistrimet.idpartneri} -{" "}
-                  {teDhenatFat && teDhenatFat.regjistrimet.shkurtesaPartnerit} /{" "}
-                  {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
+                <strong>{barkodi}</strong>
+              </p>
+              <p>
+                Referenti Juaj:{" "}
+                {teDhenatFat && teDhenatFat.regjistrimet.username}
+              </p>
+            </div>
+
+            <div className="data">
+              <p>
+                <strong>Nentotali: </strong>
+                {teDhenatFat &&
+                  parseFloat(
+                    teDhenatFat.totaliMeTVSH + teDhenatFat.rabati
+                  ).toFixed(2)}{" "}
+                €
+              </p>
+              <p>
+                <strong>Rabati: </strong>-{" "}
+                {teDhenatFat && parseFloat(teDhenatFat.rabati).toFixed(2)} €
+              </p>
+              <p>
+                <strong>Totali Pa TVSH: </strong>
+                {teDhenatFat &&
+                  parseFloat(teDhenatFat.totaliPaTVSH).toFixed(2)}{" "}
+                €
+              </p>
+              <p>
+                <strong>TVSH 8%: </strong>
+                {teDhenatFat && parseFloat(teDhenatFat.tvsH8).toFixed(2)} €
+              </p>
+              <p>
+                <strong>TVSH 18%: </strong>
+                {teDhenatFat && parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
+              </p>
+              <p>
+                <strong style={{ fontSize: "18pt" }}>Qmimi Total: </strong>
+
+                <strong style={{ fontSize: "18pt" }}>
+                  {teDhenatFat &&
+                    parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)}{" "}
+                  €
                 </strong>
-              </p>
-              <p>
-                <strong>NUI: </strong>
-                {teDhenatFat && teDhenatFat.regjistrimet.nui} /{" "}
-                <strong>NF: </strong>
-                {teDhenatFat && teDhenatFat.regjistrimet.nrf} /{" "}
-                <strong>TVSH: </strong>
-                {teDhenatFat && teDhenatFat.regjistrimet.partneriTVSH}
-              </p>
-              <p>{teDhenatFat && teDhenatFat.regjistrimet.adresa}</p>
-              <p>
-                {teDhenatFat && teDhenatFat.regjistrimet.nrKontaktit} -{" "}
-                {teDhenatFat && teDhenatFat.regjistrimet.email}
               </p>
             </div>
           </div>
+
+          <br />
+          <hr
+            style={{
+              height: "2px",
+              borderWidth: "0",
+              color: "gray",
+              backgroundColor: "black",
+            }}
+          />
           <div className="nenshkrimet">
             <div className="nenshkrimi">
               <span>
@@ -559,20 +705,6 @@ function Fatura(props) {
             </div>
           </div>
           <br />
-          <h3 style={{ fontSize: "18pt" }}>
-            Ne rast te pageses me transfer bankar ju lutem kontaktoni me stafin!
-          </h3>
-          <h3 style={{ fontSize: "18pt" }}>
-            Te gjitha produktet ne kete fature kane garancion 1 Vjet!
-          </h3>
-          <h3 style={{ fontSize: "18pt" }}>
-            Garancioni vlene deri me:{" "}
-            {skadimiGarancionit.toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            })}
-          </h3>
         </div>
       )}
     </>
