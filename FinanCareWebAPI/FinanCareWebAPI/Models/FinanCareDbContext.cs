@@ -47,26 +47,31 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<KalkulimiImallit>(entity =>
         {
-            entity.HasKey(e => e.IdRegjistrimit).HasName("PK_RegjistrimiStokut");
+            entity.HasKey(e => e.IdRegjistrimit)
+            .HasName("PK_RegjistrimiStokut");
 
             entity.ToTable("KalkulimiIMallit");
 
             entity.HasIndex(e => e.StafiId, "IX_RegjistrimiStokut_stafiID");
 
-            entity.Property(e => e.IdRegjistrimit).HasColumnName("idRegjistrimit");
+            entity.Property(e => e.IdRegjistrimit)
+            .HasColumnName("idRegjistrimit");
             entity.Property(e => e.DataRegjistrimit)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("dataRegjistrimit");
-            entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
+            entity.Property(e => e.Idpartneri)
+            .HasColumnName("IDPartneri");
             entity.Property(e => e.LlojiKalkulimit)
                 .HasMaxLength(20)
                 .HasDefaultValueSql("('HYRJE')");
             entity.Property(e => e.LlojiPageses)
                 .HasMaxLength(6)
                 .HasDefaultValueSql("('Cash')");
-            entity.Property(e => e.NrFatures).HasMaxLength(40);
-            entity.Property(e => e.StafiId).HasColumnName("stafiID");
+            entity.Property(e => e.NrFatures)
+            .HasMaxLength(40);
+            entity.Property(e => e.StafiId)
+            .HasColumnName("stafiID");
             entity.Property(e => e.StatusiKalkulimit)
                 .HasMaxLength(7)
                 .HasDefaultValueSql("('false')")
@@ -75,25 +80,31 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasMaxLength(15)
                 .HasDefaultValueSql("('E Paguar')");
             entity.Property(e => e.TotaliPaTvsh)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("TotaliPaTVSH");
             entity.Property(e => e.Tvsh)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("TVSH");
             entity.Property(e => e.PershkrimShtese)
                 .HasColumnType("text")
                 .HasColumnName("pershkrimShtese");
             entity.Property(e => e.Rabati)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
                 .HasDefaultValueSql("((0))")
                 .HasColumnName("rabati");
+            entity.Property(e => e.NrRendorFatures)
+            .HasColumnName("nrRendorFatures");
 
-            entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.KalkulimiImallits)
+            entity.HasOne(d => d.IdpartneriNavigation)
+            .WithMany(p => p.KalkulimiImallits)
                 .HasForeignKey(d => d.Idpartneri)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Kalkulimi_Partneri");
 
-            entity.HasOne(d => d.Stafi).WithMany(p => p.KalkulimiImallits)
+            entity.HasOne(d => d.Stafi)
+            .WithMany(p => p.KalkulimiImallits)
                 .HasForeignKey(d => d.StafiId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Regjistrimi_Stafi");
@@ -105,7 +116,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.ToTable("NjesiaMatese");
 
-            entity.Property(e => e.IdnjesiaMatese).HasColumnName("IDNjesiaMatese");
+            entity.Property(e => e.IdnjesiaMatese)
+            .HasColumnName("IDNjesiaMatese");
             entity.Property(e => e.NjesiaMatese1)
                 .HasMaxLength(30)
                 .HasColumnName("NjesiaMatese");
@@ -117,7 +129,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.ToTable("GrupiProduktit");
 
-            entity.Property(e => e.IDGrupiProduktit).HasColumnName("IDGrupiProduktit");
+            entity.Property(e => e.IDGrupiProduktit)
+            .HasColumnName("IDGrupiProduktit");
             entity.Property(e => e.GrupiIProduktit)
                 .HasMaxLength(30)
                 .HasColumnName("GrupIProduktit");
@@ -129,14 +142,19 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.ToTable("Partneri");
 
-            entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
-            entity.Property(e => e.Adresa).HasMaxLength(150);
-            entity.Property(e => e.Email).HasMaxLength(40);
-            entity.Property(e => e.EmriBiznesit).HasMaxLength(40);
+            entity.Property(e => e.Idpartneri)
+            .HasColumnName("IDPartneri");
+            entity.Property(e => e.Adresa)
+            .HasMaxLength(150);
+            entity.Property(e => e.Email)
+            .HasMaxLength(40);
+            entity.Property(e => e.EmriBiznesit)
+            .HasMaxLength(40);
             entity.Property(e => e.LlojiPartnerit)
                 .HasMaxLength(12)
                 .HasDefaultValueSql("('Bleres')");
-            entity.Property(e => e.NrKontaktit).HasMaxLength(16);
+            entity.Property(e => e.NrKontaktit)
+            .HasMaxLength(16);
             entity.Property(e => e.Nrf)
                 .HasMaxLength(12)
                 .HasColumnName("NRF");
@@ -153,13 +171,16 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<Perdoruesi>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Perdorue__CB9A1CDFC4C4A0AA");
+            entity.HasKey(e => e.UserId)
+            .HasName("PK__Perdorue__CB9A1CDFC4C4A0AA");
 
             entity.ToTable("Perdoruesi");
 
-            entity.HasIndex(e => e.Username, "UQ__Perdorue__F3DBC5728A6B6DAE").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Perdorue__F3DBC5728A6B6DAE")
+            .IsUnique();
 
-            entity.Property(e => e.UserId).HasColumnName("userID");
+            entity.Property(e => e.UserId)
+            .HasColumnName("userID");
             entity.Property(e => e.AspNetUserId)
                 .HasMaxLength(450)
                 .HasColumnName("AspNetUserID");
@@ -183,46 +204,59 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<Porosit>(entity =>
         {
-            entity.HasKey(e => e.IdPorosia).HasName("PK__Porosit__A9F27D2AB271ADFC");
+            entity.HasKey(e => e.IdPorosia)
+            .HasName("PK__Porosit__A9F27D2AB271ADFC");
 
             entity.ToTable("Porosit");
 
             entity.HasIndex(e => e.Idpartneri, "IX_Porosit_IDPartneri");
 
-            entity.Property(e => e.IdPorosia).HasColumnName("idPorosia");
+            entity.Property(e => e.IdPorosia)
+            .HasColumnName("idPorosia");
             entity.Property(e => e.DataPorosis)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date")
                 .HasColumnName("dataPorosis");
-            entity.Property(e => e.ExtraRabati).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.ExtraRabati2).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
-            entity.Property(e => e.Idstafi).HasColumnName("IDStafi");
+            entity.Property(e => e.ExtraRabati)
+            .HasColumnType("decimal(5, 2)")
+            .HasDefaultValueSql("((0))");
+            entity.Property(e => e.ExtraRabati2)
+            .HasColumnType("decimal(5, 2)")
+            .HasDefaultValueSql("((0))");
+            entity.Property(e => e.Idpartneri)
+            .HasColumnName("IDPartneri");
+            entity.Property(e => e.Idstafi)
+            .HasColumnName("IDStafi");
             entity.Property(e => e.LlojiPageses)
                 .HasMaxLength(6)
                 .HasDefaultValueSql("('Cash')");
             entity.Property(e => e.Pagesa)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("('Pa Paguar')");
-            entity.Property(e => e.Rabati).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Rabati)
+            .HasColumnType("decimal(5, 2)")
+            .HasDefaultValueSql("((0))");
             entity.Property(e => e.StatusiPorosis)
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasDefaultValueSql("('Ne Procesim')")
                 .HasColumnName("statusiPorosis");
             entity.Property(e => e.TotaliPorosis)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("totaliPorosis");
             entity.Property(e => e.TotaliProdukteve)
                 .HasDefaultValueSql("((0))")
                 .HasColumnName("totaliProdukteve");
 
-            entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.Porosits)
+            entity.HasOne(d => d.IdpartneriNavigation)
+            .WithMany(p => p.Porosits)
                 .HasForeignKey(d => d.Idpartneri)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Porosit_Partneri");
 
-            entity.HasOne(d => d.IdstafiNavigation).WithMany(p => p.Porosits)
+            entity.HasOne(d => d.IdstafiNavigation)
+            .WithMany(p => p.Porosits)
                 .HasForeignKey(d => d.Idstafi)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Porosia_Stafi");
@@ -230,7 +264,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<Produkti>(entity =>
         {
-            entity.HasKey(e => e.ProduktiId).HasName("PK__Produkti__76A3DFCF91A50347");
+            entity.HasKey(e => e.ProduktiId)
+            .HasName("PK__Produkti__76A3DFCF91A50347");
 
             entity.ToTable("Produkti");
 
@@ -240,14 +275,19 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.HasIndex(e => e.IdgrupiProdukti, "IX_Produkti_IDGrupiProduktit");
 
-            entity.Property(e => e.ProduktiId).HasColumnName("produktiID");
-            entity.Property(e => e.Barkodi).HasMaxLength(30);
+            entity.Property(e => e.ProduktiId)
+            .HasColumnName("produktiID");
+            entity.Property(e => e.Barkodi)
+            .HasMaxLength(30);
             entity.Property(e => e.EmriProduktit)
                 .HasColumnType("text")
                 .HasColumnName("emriProduktit");
-            entity.Property(e => e.IdnjesiaMatese).HasColumnName("IDNjesiaMatese");
-            entity.Property(e => e.Idpartneri).HasColumnName("IDPartneri");
-            entity.Property(e => e.KodiProduktit).HasMaxLength(20);
+            entity.Property(e => e.IdnjesiaMatese)
+            .HasColumnName("IDNjesiaMatese");
+            entity.Property(e => e.Idpartneri)
+            .HasColumnName("IDPartneri");
+            entity.Property(e => e.KodiProduktit)
+            .HasMaxLength(20);
             entity.Property(e => e.LlojiTVSH)
                 .HasColumnName("LlojiTVSH")
                 .HasDefaultValue(18);
@@ -255,19 +295,23 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("((1))")
                 .HasColumnType("decimal(8, 2)")
                 .HasColumnName("sasiaShumices");
-            entity.Property(e => e.IdgrupiProdukti).HasColumnName("IDGrupiProduktit");
+            entity.Property(e => e.IdgrupiProdukti)
+            .HasColumnName("IDGrupiProduktit");
 
-            entity.HasOne(d => d.IdnjesiaMateseNavigation).WithMany(p => p.Produktis)
+            entity.HasOne(d => d.IdnjesiaMateseNavigation)
+            .WithMany(p => p.Produktis)
                 .HasForeignKey(d => d.IdnjesiaMatese)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_NjesiaMatese");
 
-            entity.HasOne(d => d.IdpartneriNavigation).WithMany(p => p.Produktis)
+            entity.HasOne(d => d.IdpartneriNavigation)
+            .WithMany(p => p.Produktis)
                 .HasForeignKey(d => d.Idpartneri)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_Partneri");
 
-            entity.HasOne(d => d.IdgrupiProduktitNavigation).WithMany(p => p.Produktis)
+            entity.HasOne(d => d.IdgrupiProduktitNavigation)
+            .WithMany(p => p.Produktis)
                 .HasForeignKey(d => d.IdgrupiProdukti)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_GrupiProduktit");
@@ -275,7 +319,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<StokuQmimiProduktit>(entity =>
         {
-            entity.HasKey(e => e.ProduktiId).HasName("PK_StokuProduktit");
+            entity.HasKey(e => e.ProduktiId)
+            .HasName("PK_StokuProduktit");
 
             entity.ToTable("StokuQmimiProduktit");
 
@@ -292,22 +337,24 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasColumnName("dataPerditsimit");
             entity.Property(e => e.QmimiBleres)
                 .HasDefaultValueSql("((0))")
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
                 .HasColumnName("qmimiBleres");
             entity.Property(e => e.QmimiProduktit)
                 .HasDefaultValueSql("((0))")
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
                 .HasColumnName("qmimiProduktit");
             entity.Property(e => e.SasiaNeStok)
                 .HasDefaultValueSql("((0))")
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
                 .HasColumnName("sasiaNeStok");
             entity.Property(e => e.QmimiMeShumic)
                 .HasDefaultValueSql("((0))")
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
                 .HasColumnName("qmimiMeShumic");
 
-            entity.HasOne(d => d.Produkti).WithOne(p => p.StokuQmimiProduktit).HasForeignKey<StokuQmimiProduktit>(d => d.ProduktiId);
+            entity.HasOne(d => d.Produkti)
+            .WithOne(p => p.StokuQmimiProduktit)
+            .HasForeignKey<StokuQmimiProduktit>(d => d.ProduktiId);
         });
 
         modelBuilder.Entity<TeDhenatBiznesit>(entity =>
@@ -319,18 +366,24 @@ public partial class FinanCareDbContext : IdentityDbContext
             entity.Property(e => e.IdteDhenatBiznesit)
                 .ValueGeneratedNever()
                 .HasColumnName("IDTeDhenatBiznesit");
-            entity.Property(e => e.Adresa).HasMaxLength(250);
-            entity.Property(e => e.Email).HasMaxLength(250);
+            entity.Property(e => e.Adresa)
+            .HasMaxLength(250);
+            entity.Property(e => e.Email)
+            .HasMaxLength(250);
             entity.Property(e => e.EmriIbiznesit)
                 .HasMaxLength(250)
                 .HasColumnName("EmriIBiznesit");
             entity.Property(e => e.Logo)
                 .HasMaxLength(40)
                 .IsUnicode(false);
-            entity.Property(e => e.Nf).HasColumnName("NF");
-            entity.Property(e => e.NrKontaktit).HasMaxLength(20);
-            entity.Property(e => e.Nrtvsh).HasColumnName("NRTVSH");
-            entity.Property(e => e.Nui).HasColumnName("NUI");
+            entity.Property(e => e.Nf)
+            .HasColumnName("NF");
+            entity.Property(e => e.NrKontaktit)
+            .HasMaxLength(20);
+            entity.Property(e => e.Nrtvsh)
+            .HasColumnName("NRTVSH");
+            entity.Property(e => e.Nui)
+            .HasColumnName("NUI");
             entity.Property(e => e.ShkurtesaEmritBiznesit)
                 .HasMaxLength(7)
                 .IsUnicode(false);
@@ -338,7 +391,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<TeDhenatEporosi>(entity =>
         {
-            entity.HasKey(e => e.IdDetajet).HasName("PK__TeDhenat__494F491F84D65D51");
+            entity.HasKey(e => e.IdDetajet)
+            .HasName("PK__TeDhenat__494F491F84D65D51");
 
             entity.ToTable("TeDhenatEPorosis");
 
@@ -346,23 +400,31 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.HasIndex(e => e.IdProdukti, "IX_TeDhenatEPorosis_idProdukti");
 
-            entity.Property(e => e.IdDetajet).HasColumnName("idDetajet");
-            entity.Property(e => e.IdPorosia).HasColumnName("idPorosia");
-            entity.Property(e => e.IdProdukti).HasColumnName("idProdukti");
+            entity.Property(e => e.IdDetajet)
+            .HasColumnName("idDetajet");
+            entity.Property(e => e.IdPorosia)
+            .HasColumnName("idPorosia");
+            entity.Property(e => e.IdProdukti)
+            .HasColumnName("idProdukti");
             entity.Property(e => e.QmimiProduktit)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("qmimiProduktit");
             entity.Property(e => e.Rabati)
                 .HasColumnType("decimal(5, 2)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("rabati");
-            entity.Property(e => e.SasiaPorositur).HasColumnName("sasiaPorositur");
+            entity.Property(e => e.SasiaPorositur)
+            .HasColumnName("sasiaPorositur");
 
-            entity.HasOne(d => d.IdPorosiaNavigation).WithMany(p => p.TeDhenatEporosis)
+            entity.HasOne(d => d.IdPorosiaNavigation)
+            .WithMany(p => p.TeDhenatEporosis)
                 .HasForeignKey(d => d.IdPorosia)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_TeDhenatPorosis_Porosia");
 
-            entity.HasOne(d => d.IdProduktiNavigation).WithMany(p => p.TeDhenatEporosis)
+            entity.HasOne(d => d.IdProduktiNavigation)
+            .WithMany(p => p.TeDhenatEporosis)
                 .HasForeignKey(d => d.IdProdukti)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_TeDhenatPorosis_Produkti");
@@ -370,7 +432,8 @@ public partial class FinanCareDbContext : IdentityDbContext
 
         modelBuilder.Entity<TeDhenatKalkulimit>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_TeDhenatRegjistrimit");
+            entity.HasKey(e => e.Id)
+            .HasName("PK_TeDhenatRegjistrimit");
 
             entity.ToTable("TeDhenatKalkulimit");
 
@@ -378,20 +441,27 @@ public partial class FinanCareDbContext : IdentityDbContext
 
             entity.HasIndex(e => e.IdRegjistrimit, "IX_TeDhenatRegjistrimit_idRegjistrimit");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IdProduktit).HasColumnName("idProduktit");
-            entity.Property(e => e.IdRegjistrimit).HasColumnName("idRegjistrimit");
+            entity.Property(e => e.Id)
+            .HasColumnName("id");
+            entity.Property(e => e.IdProduktit)
+            .HasColumnName("idProduktit");
+            entity.Property(e => e.IdRegjistrimit
+            ).HasColumnName("idRegjistrimit");
             entity.Property(e => e.QmimiBleres)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("qmimiBleres");
             entity.Property(e => e.QmimiShites)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("qmimiShites");
             entity.Property(e => e.SasiaStokut)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("sasiaStokut");
             entity.Property(e => e.QmimiShitesMeShumic)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(20, 4)")
+                .HasDefaultValueSql("((0))")
                 .HasColumnName("qmimiShitesMeShumic");
             entity.Property(e => e.Rabati)
                 .HasColumnType("decimal(5, 2)")
@@ -402,12 +472,14 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("((18))")
                 .HasColumnName("llojiTVSH");
 
-            entity.HasOne(d => d.IdProduktitNavigation).WithMany(p => p.TeDhenatKalkulimits)
+            entity.HasOne(d => d.IdProduktitNavigation)
+            .WithMany(p => p.TeDhenatKalkulimits)
                 .HasForeignKey(d => d.IdProduktit)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_TeDhenatRegjistrimit");
 
-            entity.HasOne(d => d.IdRegjistrimitNavigation).WithMany(p => p.TeDhenatKalkulimits)
+            entity.HasOne(d => d.IdRegjistrimitNavigation)
+            .WithMany(p => p.TeDhenatKalkulimits)
                 .HasForeignKey(d => d.IdRegjistrimit)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_RegjistrimiStokut_TeDhenatRegjistrimit");
@@ -438,9 +510,11 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("shteti");
-            entity.Property(e => e.ZipKodi).HasColumnName("zipKodi");
+            entity.Property(e => e.ZipKodi)
+            .HasColumnName("zipKodi");
 
-            entity.HasOne(d => d.User).WithOne(p => p.TeDhenatPerdoruesit)
+            entity.HasOne(d => d.User)
+            .WithOne(p => p.TeDhenatPerdoruesit)
                 .HasForeignKey<TeDhenatPerdoruesit>(d => d.UserId)
                 .HasConstraintName("FK_Perdoruesi_TeDhenat");
         });
@@ -462,9 +536,13 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("dataZbritjes");
-            entity.Property(e => e.Rabati).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.Rabati)
+            .HasColumnType("decimal(5, 2)")
+            .HasDefaultValueSql("((0))");
 
-            entity.HasOne(d => d.Produkti).WithOne(p => p.ZbritjaQmimitProduktit).HasForeignKey<ZbritjaQmimitProduktit>(d => d.ProduktiId);
+            entity.HasOne(d => d.Produkti)
+            .WithOne(p => p.ZbritjaQmimitProduktit)
+            .HasForeignKey<ZbritjaQmimitProduktit>(d => d.ProduktiId);
         });
 
         modelBuilder

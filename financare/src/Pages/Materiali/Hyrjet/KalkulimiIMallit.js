@@ -125,7 +125,7 @@ function KalkulimiIMallit(props) {
     useEffect(() => {
         const vendosNrFaturesMeRradhe = async () => {
             try {
-                const nrFat = await axios.get(`https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe`, authentikimi);
+                const nrFat = await axios.get(`https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=HYRJE`, authentikimi);
                 setNrRendorKalkulimit(parseInt(nrFat.data));
             } catch (err) {
                 console.log(err);
@@ -152,7 +152,8 @@ function KalkulimiIMallit(props) {
                 idpartneri: Partneri,
                 statusiPageses: statusiIPageses,
                 llojiPageses: llojiIPageses,
-                nrFatures: nrFatures
+                nrFatures: nrFatures,
+                nrRendorFatures: nrRendorKalkulimit + 1
             }, authentikimi).then((response) => {
 
                 if (response.status === 200 || response.status === 201) {
@@ -228,7 +229,7 @@ function KalkulimiIMallit(props) {
                 {regjistroKalkulimin && <RegjistroFaturen
                     mbyllKalkulimin={mbyllKalkulimin}
                     mbyllPerkohesisht={() => setRegjistroKalkulimin(false)}
-                    nrRendorKalkulimit={nrRendorKalkulimit}
+                    nrRendorKalkulimit={idKalkulimitEdit}
                     setPerditeso={() => setPerditeso(Date.now())}
                     idKalkulimitEdit={idKalkulimitEdit}
                 />}
@@ -403,7 +404,7 @@ function KalkulimiIMallit(props) {
                             <MDBTableBody>
                                 {kalkulimet.map((k) => (
                                     <tr key={k.idRegjistrimit}>
-                                        <td>{k.idRegjistrimit}</td>
+                                        <td>{k.nrRendorFatures}</td>
                                         <td>{k.nrFatures}</td>
                                         <td>{k.emriBiznesit}</td>
                                         <td>{k.totaliPaTvsh.toFixed(2)} €</td>

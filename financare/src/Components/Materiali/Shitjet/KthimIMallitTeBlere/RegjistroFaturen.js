@@ -104,6 +104,8 @@ function RegjistroFaturen(props) {
 
           setproduktetNeKalkulim(teDhenatKalkulimit.data);
           setTeDhenatFatures(teDhenatFatures.data);
+          console.log(teDhenatFatures.data);
+          console.log(teDhenatKalkulimit.data);
         } catch (err) {
           console.log(err);
         } finally {
@@ -255,7 +257,7 @@ function RegjistroFaturen(props) {
             idRegjistrimit: props.nrRendorKalkulimit,
             idProduktit: produktiID,
             sasiaStokut: sasia,
-            qmimiBleres: qmimiBleres,
+            qmimiBleres: -qmimiBleres,
             qmimiShites: qmimiSH,
             qmimiShitesMeShumic: qmimiSH2,
             rabati: rabati,
@@ -339,7 +341,7 @@ function RegjistroFaturen(props) {
         setQmimiB(p.data[0].qmimiBleres);
         setQmimiSH(p.data[0].qmimiShites);
         setQmimiSH2(p.data[0].qmimiShitesMeShumic);
-        setQmimiBleres(p.data[0].qmimiBleres);
+        setQmimiBleres(-p.data[0].qmimiBleres);
         setRabati(p.data[0].rabati);
       });
   }
@@ -354,7 +356,7 @@ function RegjistroFaturen(props) {
         .put(
           `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
           {
-            qmimiBleres: qmimiBleres,
+            qmimiBleres: -qmimiBleres,
             qmimiShites: qmimiSH,
             sasiaStokut: sasia,
             qmimiShitesMeShumic: qmimiSH2,
@@ -606,17 +608,14 @@ function RegjistroFaturen(props) {
                 <Row>
                   <h5>
                     <strong>Nr. Kalkulimit:</strong>{" "}
-                    {teDhenatFatures.idRegjistrimit}
+                    {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.nrRendorFatures}
                   </h5>
                   <h5>
-                    <strong>Partneri:</strong> {teDhenatFatures.emriBiznesit}
-                  </h5>
-                  <h5>
-                    <strong>Nr. Kthimit:</strong> {teDhenatFatures.nrFatures}
+                    <strong>Partneri:</strong> {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.emriBiznesit}
                   </h5>
                   <h5>
                     <strong>Pershkrim Shtese:</strong>{" "}
-                    {teDhenatFatures.pershkrimShtese}
+                    {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.pershkrimShtese}
                   </h5>
 
                   <hr />

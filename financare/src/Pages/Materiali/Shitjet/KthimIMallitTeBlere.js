@@ -138,7 +138,7 @@ function KthimIMallitTeBlere(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe`,
+          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=KMB`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -174,6 +174,7 @@ function KthimIMallitTeBlere(props) {
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
             llojiKalkulimit: "KMB",
             pershkrimShtese: pershkrimShtese,
+            nrRendorFatures: nrRendorKalkulimit + 1,
           },
           authentikimi
         )
@@ -287,7 +288,7 @@ function KthimIMallitTeBlere(props) {
           <RegjistroFaturen
             mbyllKalkulimin={mbyllKalkulimin}
             mbyllPerkohesisht={() => setRegjistroKalkulimin(false)}
-            nrRendorKalkulimit={nrRendorKalkulimit}
+            nrRendorKalkulimit={idKalkulimitEdit}
             setPerditeso={() => setPerditeso(Date.now())}
             idKalkulimitEdit={idKalkulimitEdit}
           />
@@ -315,7 +316,7 @@ function KthimIMallitTeBlere(props) {
           !regjistroKalkulimin &&
           !shfaqTeDhenat && (
             <>
-              <h1 className="title">Kthim I Mallit Te Blere</h1>
+              <h1 className="title">Kthimi i Mallit te Blere</h1>
 
               <Container fluid>
                 <Row>
@@ -334,11 +335,11 @@ function KthimIMallitTeBlere(props) {
                       </Form.Group>
                     </Form.Group>
                     <Form.Group controlId="idDheEmri">
-                      <Form.Label>Produkti</Form.Label>
+                      <Form.Label>Partneri</Form.Label>
                       <Form.Control
                         type="text"
                         className="form-control styled-input"
-                        placeholder="Search"
+                        placeholder="Zgjedhni Partnerin"
                         value={inputValue}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
@@ -407,7 +408,7 @@ function KthimIMallitTeBlere(props) {
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Asgjesimeve</h1>
+                <h1 className="title">Lista e Kthimeve</h1>
                 <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
@@ -415,7 +416,7 @@ function KthimIMallitTeBlere(props) {
                 <MDBTable style={{ width: "100%" }}>
                   <MDBTableHead>
                     <tr>
-                      <th scope="col">Nr. Asgjesimit</th>
+                      <th scope="col">Nr. Kthimit</th>
                       <th scope="col">Pershkrimi Shtese</th>
                       <th scope="col">Data e Fatures</th>
                       <th scope="col">Statusi Kalkulimit</th>
@@ -426,7 +427,7 @@ function KthimIMallitTeBlere(props) {
                   <MDBTableBody>
                     {kalkulimet.map((k) => (
                       <tr key={k.idRegjistrimit}>
-                        <td>{k.idRegjistrimit}</td>
+                        <td>{k.nrRendorFatures}</td>
                         <td>{k.pershkrimShtese}</td>
                         <td>
                           {new Date(k.dataRegjistrimit).toLocaleDateString(

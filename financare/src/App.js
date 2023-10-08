@@ -23,6 +23,8 @@ import ShtoPartnerin from "./Pages/Gjenerale/Partneret/ShtoPartnerin";
 import KthimiMallitTeShitur from "./Pages/Materiali/Hyrjet/KthimiMallitTeShitur";
 import AsgjesimiIStokut from "./Pages/Materiali/Shitjet/AsgjesimIStokut";
 import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
+import HeaderFatura from "./Components/TeTjera/Fatura/HeaderFatura";
+
 
 function App() {
   useEffect(() => {
@@ -62,6 +64,7 @@ function App() {
         <Route path="/AsgjesimiIStokut" element={<AsgjesimiIStokut />} />
         <Route path="/KthimIMallitTeBlere" element={<KthimIMallitTeBlere />} />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/header" element={<HeaderFatura />} />
       </Routes>
     </div>
   );

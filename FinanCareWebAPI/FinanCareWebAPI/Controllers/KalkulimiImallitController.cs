@@ -39,7 +39,8 @@ namespace WebAPI.Controllers
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
-                    x.Rabati
+                    x.Rabati,
+                    x.NrRendorFatures
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -69,7 +70,8 @@ namespace WebAPI.Controllers
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
-                    x.Rabati
+                    x.Rabati,
+                    x.NrRendorFatures
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -104,7 +106,8 @@ namespace WebAPI.Controllers
                     x.StatusiPageses,
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
-                    x.Rabati
+                    x.Rabati,
+                    x.NrRendorFatures
                 }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
 
             var totTVSH18 = await _context.TeDhenatKalkulimits.Include(x=>x.IdProduktitNavigation).Where(x => x.IdProduktitNavigation.LlojiTVSH == 18 && x.IdRegjistrimit == id).ToListAsync();
@@ -349,12 +352,13 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("getNumriFaturesMeRradhe")]
-        public async Task<IActionResult> GetNumriFaturesMeRradhe()
+        public async Task<IActionResult> GetNumriFaturesMeRradhe(string llojiKalkulimit)
         {
             var nrFatures = await _context.KalkulimiImallits
+                .Where(x => x.LlojiKalkulimit == llojiKalkulimit)
             .OrderByDescending(x => x.IdRegjistrimit)
             .Take(1)
-            .Select(x => x.IdRegjistrimit).ToListAsync();
+            .Select(x => x.NrRendorFatures).ToListAsync();
 
             return Ok(nrFatures);
         }

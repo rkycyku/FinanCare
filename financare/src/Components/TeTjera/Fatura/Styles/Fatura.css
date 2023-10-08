@@ -38,8 +38,8 @@
 .data {
   display: flex;
   width: 100%;
-  justify-content: left;
-  align-items: left;
+  justify-content: flex-start;
+  align-items: flex-end;
   flex-direction: column;
 }
 
@@ -125,9 +125,9 @@ td {
 
 .barkodi{
   display: flex;
-  justify-content: right;
-  gap: 1em;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .teDhenatEKlientit {

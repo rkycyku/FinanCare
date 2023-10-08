@@ -553,12 +553,12 @@ function RegjistroFaturen(props) {
                         </Col>
                         <Col>
                             <Row>
-                                <h5><strong>Nr. Kalkulimit:</strong> {teDhenatFatures.idRegjistrimit}</h5>
-                                <h5><strong>Partneri:</strong> {teDhenatFatures.emriBiznesit}</h5>
-                                <h5><strong>Nr. Fat:</strong> {teDhenatFatures.nrFatures}</h5>
-                                <h5><strong>Totali Fatures pa TVSH:</strong> {parseFloat(teDhenatFatures.totaliPaTvsh).toFixed(2)} €</h5>
-                                <h5><strong>TVSH:</strong> {parseFloat(teDhenatFatures.tvsh).toFixed(2)}  €</h5>
-                                <h5><strong>Totali Fatures:</strong> {parseFloat(teDhenatFatures.totaliPaTvsh + teDhenatFatures.tvsh).toFixed(2)} €</h5>
+                                <h5><strong>Nr. Kalkulimit:</strong> {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.idRegjistrimit}</h5>
+                                <h5><strong>Partneri:</strong> {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.emriBiznesit}</h5>
+                                <h5><strong>Nr. Fat:</strong> {teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.nrFatures}</h5>
+                                <h5><strong>Totali Fatures pa TVSH:</strong> {parseFloat(teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.totaliPaTvsh).toFixed(2)} €</h5>
+                                <h5><strong>TVSH:</strong> {parseFloat(teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.tvsh).toFixed(2)}  €</h5>
+                                <h5><strong>Totali Fatures:</strong> {parseFloat(teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.totaliPaTvsh + teDhenatFatures.regjistrimet && teDhenatFatures.regjistrimet.tvsh).toFixed(2)} €</h5>
 
                                 <hr />
                                 <Col>

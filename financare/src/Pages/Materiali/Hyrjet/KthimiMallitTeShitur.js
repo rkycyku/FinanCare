@@ -134,7 +134,7 @@ function KalkulimiIMallit(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe`,
+          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=KMSH`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -168,6 +168,7 @@ function KalkulimiIMallit(props) {
             llojiPageses: llojiIPageses,
             nrFatures: nrFatures,
             llojiKalkulimit: "KMSH",
+            nrRendorFatures: nrRendorKalkulimit + 1
           },
           authentikimi
         )
@@ -246,7 +247,7 @@ function KalkulimiIMallit(props) {
           <RegjistroFaturen
             mbyllKalkulimin={mbyllKalkulimin}
             mbyllPerkohesisht={() => setRegjistroKalkulimin(false)}
-            nrRendorKalkulimit={nrRendorKalkulimit}
+            nrRendorKalkulimit={idKalkulimitEdit}
             setPerditeso={() => setPerditeso(Date.now())}
             idKalkulimitEdit={idKalkulimitEdit}
           />

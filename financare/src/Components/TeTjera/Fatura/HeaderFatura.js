@@ -1,24 +1,12 @@
 import "./Styles/Fatura.css";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Barkodi from "./Barkodi";
 
 function HeaderFatura(props) {
-  const [perditeso, setPerditeso] = useState(Date.now());
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
 
-  const [produktet, setProduktet] = useState([]);
   const [teDhenatFat, setteDhenatFat] = useState([]);
-
-  const dataPorosise = new Date(
-    teDhenatFat &&
-      teDhenatFat.regjistrimet &&
-      teDhenatFat.regjistrimet.dataRegjistrimit
-  );
-  const dita = dataPorosise.getDate().toString().padStart(2, "0");
-  const muaji = (dataPorosise.getMonth() + 1).toString().padStart(2, "0");
-  const viti = dataPorosise.getFullYear().toString().slice(-2);
 
   const getToken = localStorage.getItem("token");
 
@@ -28,30 +16,19 @@ function HeaderFatura(props) {
     },
   };
 
-  const barkodi = `${
-    teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
-  }-${dita}${muaji}${viti}-${
-    teDhenatFat &&
-    teDhenatFat.regjistrimet &&
-    teDhenatFat.regjistrimet.llojiKalkulimit
-  }-${props.faturaID}`;
-
   useEffect(() => {
     const vendosFature = async () => {
       try {
-        const produktet = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.faturaID}`,
-          authentikimi
-        );
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.faturaID}`,
+          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${
+            props.faturaID ?? 61
+          }`,
           authentikimi
         );
 
-        console.log(teDhenat.data)
+        console.log(teDhenat.data);
 
         setteDhenatFat(teDhenat.data);
-        setProduktet(produktet.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -100,26 +77,30 @@ function HeaderFatura(props) {
 
           <p>
             <strong>Kontakti: </strong>
-            {teDhenatBiznesit && teDhenatBiznesit.nrKontaktit}-
+            {teDhenatBiznesit && teDhenatBiznesit.nrKontaktit} -{" "}
             {teDhenatBiznesit && teDhenatBiznesit.email}
           </p>
           <hr />
           <p>
             <strong>Data e Fatures: </strong>
-            {new Date(dataPorosise).toLocaleDateString(
-                    "en-GB",
-                    { dateStyle: "short" }
-                  )}
+            {new Date(
+              teDhenatFat &&
+                teDhenatFat.regjistrimet &&
+                teDhenatFat.regjistrimet.dataRegjistrimit
+            ).toLocaleDateString("en-GB", { dateStyle: "short" })}
           </p>
-          <p><strong>Shenime Shtese: </strong>
+          <p>
+            <strong>Shenime Shtese: </strong>
             {teDhenatFat &&
               teDhenatFat.regjistrimet &&
-              teDhenatFat.regjistrimet.pershkrimShtese}</p>
+              teDhenatFat.regjistrimet.pershkrimShtese}
+          </p>
+          <strong>Faqe: {props.NrFaqes} / {props.NrFaqeve}</strong>
         </div>
 
         <div className="data">
           <div className="barkodi">
-            <h1>
+            <h3>
               {teDhenatFat &&
               teDhenatFat.regjistrimet &&
               teDhenatFat.regjistrimet.llojiKalkulimit &&
@@ -146,9 +127,9 @@ function HeaderFatura(props) {
                   teDhenatFat.regjistrimet.llojiKalkulimit === "FAT"
                 ? "FATURE"
                 : ""}
-            </h1>
+            </h3>
             <span id="nrFatures">
-              <Barkodi value={barkodi} />
+              <Barkodi value={props.Barkodi} />
             </span>
           </div>
           <div className="teDhenatEKlientit">
