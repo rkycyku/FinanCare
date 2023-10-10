@@ -35,10 +35,18 @@ function FooterFatura(props) {
     <>
       <div className="header">
         <div className="teDhenatKompanis">
-          <p>
-            Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
-            <strong>{props.Barkodi}</strong>
-          </p>
+          {teDhenatFat &&
+            teDhenatFat.regjistrimet &&
+            teDhenatFat.regjistrimet.llojiKalkulimit &&
+            (teDhenatFat.regjistrimet.llojiKalkulimit === "FAT" ||
+              teDhenatFat.regjistrimet.llojiKalkulimit === "FL" ||
+              teDhenatFat.regjistrimet.llojiKalkulimit === "KMB" ||
+              teDhenatFat.regjistrimet.llojiKalkulimit === "HYRJE") && (
+              <p>
+                Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
+                <strong>{props.Barkodi}</strong>
+              </p>
+            )}
         </div>
 
         <div className="data">
@@ -51,8 +59,8 @@ function FooterFatura(props) {
             €
           </p>
           <p>
-            <strong>Rabati: </strong>-{" "}
-            {teDhenatFat && parseFloat(teDhenatFat.rabati).toFixed(2)} €
+            <strong>Rabati: </strong>
+            {teDhenatFat && parseFloat(-teDhenatFat.rabati).toFixed(2)} €
           </p>
           <p>
             <strong>Totali Pa TVSH: </strong>
@@ -101,7 +109,6 @@ function FooterFatura(props) {
           </span>
           <span>(Emri, Mbiemri, Nenshkrimi)</span>
           <span>(Klienti)</span>
-          
         </div>
       </div>
     </>

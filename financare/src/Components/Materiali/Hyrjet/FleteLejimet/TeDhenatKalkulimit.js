@@ -181,7 +181,7 @@ function TeDhenatKalkulimit(props) {
                     </p>
                     <p>
                       <strong>Nr. Kalkulimit: </strong>
-                      {teDhenatFat && teDhenatFat.regjistrimet.idRegjistrimit}
+                      {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
                     </p>
                     <p>
                       <strong>Lloji Fatures:</strong>{" "}

@@ -9,7 +9,6 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import Statistika from "./Pages/Materiali/Shitjet/Statistika";
 import TeDhenatEBiznesit from "./Pages/Gjenerale/TeDhenat/TeDhenatEBiznesit";
-import TabelaEPorosive from "./Pages/Materiali/Shitjet/Porosite/TabelaEPorosive";
 import ListaEProdukteve from "./Pages/Materiali/Artikujt/ListaEProdukteve";
 import NjesiaMatese from "./Pages/Materiali/Artikujt/NjesiaMatese";
 import TabelaEPartnereve from "./Pages/Gjenerale/Partneret/TabelaEPartnereve";
@@ -18,13 +17,13 @@ import TabelaEPerdoruesve from "./Pages/Gjenerale/Stafi/TabelaEPerdoruesve";
 import Rolet from "./Pages/Gjenerale/Stafi/Rolet";
 import KalkulimiIMallit from "./Pages/Materiali/Hyrjet/KalkulimiIMallit";
 import PerditesoTeDhenat from "./Pages/Gjenerale/TeDhenat/PerditesoTeDhenat";
-import KrijoPorosine from "./Pages/Materiali/Shitjet/Porosite/KrijoPorosine";
 import ShtoPartnerin from "./Pages/Gjenerale/Partneret/ShtoPartnerin";
 import KthimiMallitTeShitur from "./Pages/Materiali/Hyrjet/KthimiMallitTeShitur";
 import AsgjesimiIStokut from "./Pages/Materiali/Shitjet/AsgjesimIStokut";
 import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
-import HeaderFatura from "./Components/TeTjera/Fatura/HeaderFatura";
-
+import Porosite from "./Pages/Materiali/Shitjet/Porosite";
+import Ofertat from "./Pages/Materiali/Shitjet/Ofertat";
+import FleteLejimet from "./Pages/Materiali/Hyrjet/FleteLejimet";
 
 function App() {
   useEffect(() => {
@@ -46,7 +45,6 @@ function App() {
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/Statistika" element={<Statistika />} />
         <Route path="/TeDhenatEBiznesit" element={<TeDhenatEBiznesit />} />
-        <Route path="/Porosite" element={<TabelaEPorosive />} />
         <Route path="/Produktet" element={<ListaEProdukteve />} />
         <Route path="/NjesiaMatese" element={<NjesiaMatese />} />
         <Route path="/TabelaEPartnereve" element={<TabelaEPartnereve />} />
@@ -55,7 +53,6 @@ function App() {
         <Route path="/Rolet" element={<Rolet />} />
         <Route path="/KalkulimiIMallit" element={<KalkulimiIMallit />} />
         <Route path="/PerditesoTeDhenat" element={<PerditesoTeDhenat />} />
-        <Route path="/KrijoPorosine" element={<KrijoPorosine />} />
         <Route path="/ShtoPartnerin" element={<ShtoPartnerin />} />
         <Route
           path="/KthimiMallitTeShitur"
@@ -63,8 +60,10 @@ function App() {
         />
         <Route path="/AsgjesimiIStokut" element={<AsgjesimiIStokut />} />
         <Route path="/KthimIMallitTeBlere" element={<KthimIMallitTeBlere />} />
+        <Route path="/Porosite" element={<Porosite />} />
+        <Route path="/Ofertat" element={<Ofertat />} />
+        <Route path="/FleteLejimet" element={<FleteLejimet />} />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/header" element={<HeaderFatura />} />
       </Routes>
     </div>
   );

@@ -22,6 +22,7 @@ import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/KthimIMall
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
+import DatePicker from "react-datepicker";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -53,6 +54,9 @@ function KthimIMallitTeBlere(props) {
 
   const [edito, setEdito] = useState(false);
   const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
+
+  const [dataFillestare, setDataFillestare] = useState(null);
+  const [dataFundit, setDataFundit] = useState(null);
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -413,6 +417,38 @@ function KthimIMallitTeBlere(props) {
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
                 </Button>
+                <div className="DataPerFiltrim">
+                  <div className="datat">
+                    <p>Data Fillimit:</p>
+                    <DatePicker
+                      selected={dataFillestare}
+                      onChange={(date) => setDataFillestare(date)}
+                      dateFormat="dd/MM/yyyy"
+                      maxDate={dataFundit}
+                    />
+                  </div>
+                  <div>
+                    <p>Data Mbarimit:</p>
+                    <DatePicker
+                      selected={dataFundit}
+                      onChange={(date) => setDataFundit(date)}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+                  <div className="datat">
+                    <p>Reseto:</p>
+                    <Button
+                      style={{ marginRight: "0.5em" }}
+                      variant="success"
+                      onClick={() => {
+                        setDataFillestare(null);
+                        setDataFundit(null);
+                      }}
+                    >
+                      Shfaq Te Gjitha porosite
+                    </Button>
+                  </div>
+                </div>
                 <MDBTable style={{ width: "100%" }}>
                   <MDBTableHead>
                     <tr>
@@ -425,48 +461,60 @@ function KthimIMallitTeBlere(props) {
                   </MDBTableHead>
 
                   <MDBTableBody>
-                    {kalkulimet.map((k) => (
-                      <tr key={k.idRegjistrimit}>
-                        <td>{k.nrRendorFatures}</td>
-                        <td>{k.pershkrimShtese}</td>
-                        <td>
-                          {new Date(k.dataRegjistrimit).toLocaleDateString(
-                            "en-GB",
-                            { dateStyle: "short" }
-                          )}
-                        </td>
-                        <td>
-                          {k.statusiKalkulimit === "true"
-                            ? "I Mbyllur"
-                            : "I Hapur"}
-                        </td>
-                        <td>
-                          <Button
-                            style={{ marginRight: "0.5em" }}
-                            variant="success"
-                            onClick={() =>
-                              handleShfaqTeDhenat(k.idRegjistrimit)
-                            }
-                          >
-                            <FontAwesomeIcon icon={faCircleInfo} />
-                          </Button>
-                          <Button
-                            disabled={
-                              k.statusiKalkulimit === "true" ? true : false
-                            }
-                            style={{ marginRight: "0.5em" }}
-                            variant="success"
-                            onClick={() => {
-                              setIdKalkulimitEdit(k.idRegjistrimit);
-                              setNrRendorKalkulimit(k.idRegjistrimit);
-                              setRegjistroKalkulimin(true);
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
+                    {kalkulimet
+                      .filter((p) => {
+                        if (!dataFillestare || !dataFundit) {
+                          return true;
+                        } else {
+                          const dataPorosise = new Date(p.dataRegjistrimit);
+                          return (
+                            dataPorosise >= dataFillestare &&
+                            dataPorosise <= dataFundit
+                          );
+                        }
+                      })
+                      .map((k) => (
+                        <tr key={k.idRegjistrimit}>
+                          <td>{k.nrRendorFatures}</td>
+                          <td>{k.pershkrimShtese}</td>
+                          <td>
+                            {new Date(k.dataRegjistrimit).toLocaleDateString(
+                              "en-GB",
+                              { dateStyle: "short" }
+                            )}
+                          </td>
+                          <td>
+                            {k.statusiKalkulimit === "true"
+                              ? "I Mbyllur"
+                              : "I Hapur"}
+                          </td>
+                          <td>
+                            <Button
+                              style={{ marginRight: "0.5em" }}
+                              variant="success"
+                              onClick={() =>
+                                handleShfaqTeDhenat(k.idRegjistrimit)
+                              }
+                            >
+                              <FontAwesomeIcon icon={faCircleInfo} />
+                            </Button>
+                            <Button
+                              disabled={
+                                k.statusiKalkulimit === "true" ? true : false
+                              }
+                              style={{ marginRight: "0.5em" }}
+                              variant="success"
+                              onClick={() => {
+                                setIdKalkulimitEdit(k.idRegjistrimit);
+                                setNrRendorKalkulimit(k.idRegjistrimit);
+                                setRegjistroKalkulimin(true);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faPenToSquare} />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
                   </MDBTableBody>
                 </MDBTable>
               </Container>

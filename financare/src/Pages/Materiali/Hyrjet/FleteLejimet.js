@@ -16,9 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
-import RegjistroFaturen from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/RegjistroFaturen";
-import PerditesoStatusinKalk from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/PerditesoStatusinKalk";
-import TeDhenatKalkulimit from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/TeDhenatKalkulimit";
+import RegjistroFaturen from "../../../Components/Materiali/Hyrjet/FleteLejimet/RegjistroFaturen";
+import PerditesoStatusinKalk from "../../../Components/Materiali/Hyrjet/FleteLejimet/PerditesoStatusinKalk";
+import TeDhenatKalkulimit from "../../../Components/Materiali/Hyrjet/FleteLejimet/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import DatePicker from "react-datepicker";
@@ -234,7 +234,7 @@ function KalkulimiIMallit(props) {
   return (
     <>
       <Helmet>
-        <title>Kalkulimi i Mallit | FinanCare</title>
+        <title>Flete Lejimet | FinanCare</title>
       </Helmet>
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
@@ -280,7 +280,7 @@ function KalkulimiIMallit(props) {
           !regjistroKalkulimin &&
           !shfaqTeDhenat && (
             <>
-              <h1 className="title">Kalkulimi i Mallit</h1>
+              <h1 className="title">Flete Lejimet</h1>
 
               <Container fluid>
                 <Row>

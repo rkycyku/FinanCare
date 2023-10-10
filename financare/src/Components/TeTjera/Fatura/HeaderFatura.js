@@ -95,7 +95,9 @@ function HeaderFatura(props) {
               teDhenatFat.regjistrimet &&
               teDhenatFat.regjistrimet.pershkrimShtese}
           </p>
-          <strong>Faqe: {props.NrFaqes} / {props.NrFaqeve}</strong>
+          <strong>
+            Faqe: {props.NrFaqes} / {props.NrFaqeve}
+          </strong>
         </div>
 
         <div className="data">
@@ -126,6 +128,11 @@ function HeaderFatura(props) {
                   teDhenatFat.regjistrimet.llojiKalkulimit &&
                   teDhenatFat.regjistrimet.llojiKalkulimit === "FAT"
                 ? "FATURE"
+                : teDhenatFat &&
+                  teDhenatFat.regjistrimet &&
+                  teDhenatFat.regjistrimet.llojiKalkulimit &&
+                  teDhenatFat.regjistrimet.llojiKalkulimit === "KMSH"
+                ? "KTHIM I MALLIT TE SHITUR"
                 : ""}
             </h3>
             <span id="nrFatures">
@@ -133,49 +140,87 @@ function HeaderFatura(props) {
             </span>
           </div>
           <div className="teDhenatEKlientit">
-            <p>
-              <strong>
-                {teDhenatFat &&
-                  teDhenatFat.regjistrimet &&
-                  teDhenatFat.regjistrimet.idpartneri}{" "}
-                -{" "}
-                {teDhenatFat &&
-                  teDhenatFat.regjistrimet &&
-                  teDhenatFat.regjistrimet.shkurtesaPartnerit}{" "}
-                /{" "}
-                {teDhenatFat &&
-                  teDhenatFat.regjistrimet &&
-                  teDhenatFat.regjistrimet.emriBiznesit}
-              </strong>
-            </p>
-            <p>
-              <strong>NUI: </strong>
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.nui}{" "}
-              / <strong>NF: </strong>
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.nrf}{" "}
-              / <strong>TVSH: </strong>
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.partneriTVSH}
-            </p>
-            <p>
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.adresa}
-            </p>
-            <p>
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.nrKontaktit}{" "}
-              -{" "}
-              {teDhenatFat &&
-                teDhenatFat.regjistrimet &&
-                teDhenatFat.regjistrimet.email}
-            </p>
+            {teDhenatFat &&
+              teDhenatFat.regjistrimet &&
+              teDhenatFat.regjistrimet.llojiKalkulimit &&
+              (teDhenatFat.regjistrimet.llojiKalkulimit === "AS" ||
+                teDhenatFat.regjistrimet.llojiKalkulimit === "KMSH") && (
+                <>
+                  <p>
+                    <strong>Personi Pergjegjes: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.username}
+                  </p>
+                  {teDhenatFat.regjistrimet.llojiKalkulimit === "AS" && 
+                  <p>
+                    <strong>Nr. Asgjesimit: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.nrRendorFatures}
+                  </p>
+                  }
+                  {teDhenatFat.regjistrimet.llojiKalkulimit === "KMSH" && 
+                  <p>
+                    <strong>Nr. Referencues: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.nrFatures}
+                  </p>
+                  }
+                </>
+              )}
+            {teDhenatFat &&
+              teDhenatFat.regjistrimet &&
+              teDhenatFat.regjistrimet.llojiKalkulimit &&
+              teDhenatFat.regjistrimet.llojiKalkulimit != "AS" &&
+              teDhenatFat.regjistrimet.llojiKalkulimit != "KMSH" && (
+                <>
+                  <p>
+                    <strong>
+                      {teDhenatFat &&
+                        teDhenatFat.regjistrimet &&
+                        teDhenatFat.regjistrimet.idpartneri}{" "}
+                      -{" "}
+                      {teDhenatFat &&
+                        teDhenatFat.regjistrimet &&
+                        teDhenatFat.regjistrimet.shkurtesaPartnerit}{" "}
+                      /{" "}
+                      {teDhenatFat &&
+                        teDhenatFat.regjistrimet &&
+                        teDhenatFat.regjistrimet.emriBiznesit}
+                    </strong>
+                  </p>
+                  <p>
+                    <strong>NUI: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.nui}{" "}
+                    / <strong>NF: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.nrf}{" "}
+                    / <strong>TVSH: </strong>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.partneriTVSH}
+                  </p>
+                  <p>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.adresa}
+                  </p>
+                  <p>
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.nrKontaktit}{" "}
+                    -{" "}
+                    {teDhenatFat &&
+                      teDhenatFat.regjistrimet &&
+                      teDhenatFat.regjistrimet.email}
+                  </p>
+                </>
+              )}
           </div>
         </div>
       </div>

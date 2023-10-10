@@ -43,7 +43,9 @@ function Fatura(props) {
     teDhenatFat &&
     teDhenatFat.regjistrimet &&
     teDhenatFat.regjistrimet.llojiKalkulimit
-  }-${props.nrFatures}`;
+  }-${teDhenatFat &&
+    teDhenatFat.regjistrimet &&
+    teDhenatFat.regjistrimet.nrRendorFatures}`;
 
   const getID = localStorage.getItem("id");
 

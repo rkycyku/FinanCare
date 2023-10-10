@@ -13,6 +13,7 @@ function TeDhenatKalkulimit(props) {
   const [loading, setLoading] = useState(false);
   const [produktet, setProduktet] = useState([]);
   const [teDhenatFat, setTeDhenatFat] = useState("");
+
   
   const [shkarkoFaturen, setShkarkoFaturen] = useState(false);
   
@@ -118,8 +119,12 @@ function TeDhenatKalkulimit(props) {
                 <Row>
                   <Col className={classes.mobileResponsive}>
                     <h4>
-                      Nr. Asgjesimit:{" "}
-                      {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
+                      Partneri:{" "}
+                      {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                    </h4>
+                    <h4>
+                      Nr. Fatures:{" "}
+                      {teDhenatFat && teDhenatFat.regjistrimet.nrFatures}
                     </h4>
                     <h4>
                       Data Fatures:{" "}
@@ -128,9 +133,42 @@ function TeDhenatKalkulimit(props) {
                       ).toLocaleDateString("en-GB", { dateStyle: "short" })}
                     </h4>
                     <h4>
-                      Pershkrimi Shtese:{" "}
-                      {teDhenatFat && teDhenatFat.regjistrimet.pershkrimShtese}
+                      Rabati: {parseFloat(teDhenatFat.rabati).toFixed(2)} €
                     </h4>
+                    <h4>
+                      Totali Pa TVSH:{" "}
+                      {parseFloat(teDhenatFat.totaliPaTVSH).toFixed(2)} €
+                    </h4>
+                    <h4>
+                      Totali Me TVSH:{" "}
+                      {parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)} €
+                    </h4>
+                  </Col>
+                  <Col className={classes.mobileResponsive}>
+                    <p>
+                      <strong>Totali Pa TVSH 8 %:</strong>{" "}
+                      {parseFloat(teDhenatFat.totaliPaTVSH8).toFixed(2)} €
+                    </p>
+                    <p>
+                      <strong>Totali Pa TVSH 18 %:</strong>{" "}
+                      {parseFloat(teDhenatFat.totaliPaTVSH18).toFixed(2)} €
+                    </p>
+                    <p>
+                      <strong>TVSH-ja 8% :</strong>{" "}
+                      {parseFloat(teDhenatFat.tvsH8).toFixed(2)} €
+                    </p>
+                    <p>
+                      <strong>TVSH-ja 18% :</strong>{" "}
+                      {parseFloat(teDhenatFat.tvsH18).toFixed(2)} €
+                    </p>
+                    <p>
+                      <strong>Pagesa behet me:</strong>{" "}
+                      {teDhenatFat && teDhenatFat.regjistrimet.llojiPageses}
+                    </p>
+                    <p>
+                      <strong>Statusi i Pageses:</strong>{" "}
+                      {teDhenatFat && teDhenatFat.regjistrimet.statusiPageses}
+                    </p>
                   </Col>
                   <Col className={classes.mobileResponsive}>
                     <p>
@@ -142,8 +180,12 @@ function TeDhenatKalkulimit(props) {
                         teDhenatFat.regjistrimet.username}
                     </p>
                     <p>
+                      <strong>Nr. Kalkulimit: </strong>
+                      {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
+                    </p>
+                    <p>
                       <strong>Lloji Fatures:</strong>{" "}
-                      {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                      {teDhenatFat && teDhenatFat.regjistrimet.llojiKalkulimit}
                     </p>
                     <p>
                       <strong>Statusi i kalkulimit:</strong>{" "}
@@ -160,7 +202,10 @@ function TeDhenatKalkulimit(props) {
                       <th>Nr. Rendore</th>
                       <th>ID dhe Emri</th>
                       <th>Sasia</th>
-                      <th>Shuma Totale</th>
+                      <th>Qmimi Bleres</th>
+                      <th>Qmimi Shites</th>
+                      <th>Shuma Totale Blerese</th>
+                      <th>Shuma Totale Shitese</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -172,10 +217,18 @@ function TeDhenatKalkulimit(props) {
                             " - " +
                             produkti.emriProduktit}
                         </td>
-                        <td>{parseFloat(produkti.sasiaStokut).toFixed(2)}</td>
+                        <td>{produkti.sasiaStokut}</td>
+                        <td>{parseFloat(produkti.qmimiBleres).toFixed(2)} €</td>
+                        <td>{parseFloat(produkti.qmimiShites).toFixed(2)} €</td>
                         <td>
-                          {parseFloat(
+                          {(
                             produkti.sasiaStokut * produkti.qmimiBleres
+                          ).toFixed(2)}{" "}
+                          €
+                        </td>
+                        <td>
+                          {(
+                            produkti.sasiaStokut * produkti.qmimiShites
                           ).toFixed(2)}{" "}
                           €
                         </td>

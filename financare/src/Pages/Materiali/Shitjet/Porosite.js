@@ -16,14 +16,15 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
-import RegjistroFaturen from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/RegjistroFaturen";
-import PerditesoStatusinKalk from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/PerditesoStatusinKalk";
-import TeDhenatKalkulimit from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/TeDhenatKalkulimit";
+import RegjistroFaturen from "../../../Components/Materiali/Shitjet/Porosite/RegjistroFaturen";
+import PerditesoStatusinKalk from "../../../Components/Materiali/Shitjet/Porosite/PerditesoStatusinKalk";
+import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/Porosite/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
+import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import DatePicker from "react-datepicker";
 
-function KalkulimiIMallit(props) {
+function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
@@ -32,6 +33,7 @@ function KalkulimiIMallit(props) {
   const [partneret, setPartneret] = useState([]);
 
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
+  const [pershkrimShtese, setPershkrimShtese] = useState("");
   const [Partneri, setPartneri] = useState(0);
   const [nrFatures, setNrFatures] = useState("");
   const today = new Date();
@@ -84,10 +86,10 @@ function KalkulimiIMallit(props) {
           "https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet",
           authentikimi
         );
-        const kalkulimet = kalkulimi.data.filter(
-          (item) => item.llojiKalkulimit === "HYRJE"
+        const kthimet = kalkulimi.data.filter(
+          (item) => item.llojiKalkulimit === "KMB"
         );
-        setKalkulimet(kalkulimet);
+        setKalkulimet(kthimet);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -140,7 +142,7 @@ function KalkulimiIMallit(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=HYRJE`,
+          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=KMB`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -161,6 +163,7 @@ function KalkulimiIMallit(props) {
 
   async function handleRegjistroKalkulimin() {
     try {
+      console.log(nrRendorKalkulimit);
       await axios
         .post(
           "https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin",
@@ -172,7 +175,9 @@ function KalkulimiIMallit(props) {
             idpartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
-            nrFatures: nrFatures,
+            nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
+            llojiKalkulimit: "KMB",
+            pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
           },
           authentikimi
@@ -231,10 +236,45 @@ function KalkulimiIMallit(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
+  const [inputValue, setInputValue] = useState("");
+  const [filteredItems, setFilteredItems] = useState(partneret);
+  const selectedIndex = useKeyboardNavigation(filteredItems);
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredItems.length > 0) {
+        handleNdryshoPartneri(filteredItems[selectedIndex]);
+      }
+
+      ndrroField(e, "pershkrimShtese");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setInputValue(value);
+
+    const filtered = partneret.filter((item) =>
+      item.emriBiznesit.toLowerCase().includes(value)
+    );
+
+    setFilteredItems(filtered);
+  };
+
+  function handleNdryshoPartneri(partneri) {
+    setPartneri(partneri.idpartneri);
+
+    setFilteredItems([]);
+    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
+
+    console.log(partneri);
+  }
+
   return (
     <>
       <Helmet>
-        <title>Kalkulimi i Mallit | FinanCare</title>
+        <title>Porosite | FinanCare</title>
       </Helmet>
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
@@ -280,71 +320,77 @@ function KalkulimiIMallit(props) {
           !regjistroKalkulimin &&
           !shfaqTeDhenat && (
             <>
-              <h1 className="title">Kalkulimi i Mallit</h1>
+              <h1 className="title">Porosite</h1>
 
               <Container fluid>
                 <Row>
                   <Col>
-                    <Form>
-                      <Form.Group controlId="idDheEmri">
-                        <Form.Group>
-                          <Form.Label>Nr. Rendor i Kalkulimit</Form.Label>
-                          <Form.Control
-                            id="nrRendorKalkulimit"
-                            type="number"
-                            value={
-                              nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
-                            }
-                            disabled
-                          />
-                        </Form.Group>
-                        <Form.Label>Partneri</Form.Label>
-                        <select
-                          placeholder="Partneri"
-                          id="Partneri"
-                          className="form-select"
-                          value={Partneri ? Partneri : 0}
-                          onChange={(e) => {
-                            setPartneri(e.target.value);
-                          }}
-                          onKeyDown={(e) => {
-                            ndrroField(e, "nrFatures");
-                          }}
-                        >
-                          <option defaultValue value={0} key={0} disabled>
-                            Zgjedhni Partnerin
-                          </option>
-                          {partneret.map((item) => {
-                            return (
-                              <option
-                                key={item.idpartneri}
-                                value={item.idpartneri}
-                              >
-                                {item.emriBiznesit}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </Form.Group>
+                    <Form.Group controlId="idDheEmri">
                       <Form.Group>
-                        <Form.Label>Nr. Fatures</Form.Label>
+                        <Form.Label>Nr. Rendor i Kthimit</Form.Label>
                         <Form.Control
-                          id="nrFatures"
+                          id="nrRendorKalkulimit"
+                          type="number"
+                          value={
+                            nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
+                          }
+                          disabled
+                        />
+                      </Form.Group>
+                    </Form.Group>
+                    <Form.Group controlId="idDheEmri">
+                      <Form.Label>Partneri</Form.Label>
+                      <Form.Control
+                        type="text"
+                        className="form-control styled-input"
+                        placeholder="Zgjedhni Partnerin"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleInputKeyDown}
+                        onFocus={handleInputChange}
+                      />
+
+                      <div
+                        className="container"
+                        style={{ position: "relative" }}
+                      >
+                        <ul className="list-group mt-2 searchBoxi">
+                          {filteredItems.map((item, index) => (
+                            <li
+                              key={item.idpartneri}
+                              className={`list-group-item${
+                                selectedIndex === index ? " active" : ""
+                              }`}
+                              onClick={() => handleNdryshoPartneri(item)}
+                            >
+                              {item.emriBiznesit}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="pershkrimShtese">
+                      <Form.Group>
+                        <Form.Label>Pershkrim Shtese</Form.Label>
+                        <Form.Control
+                          id="pershkrimShtese"
                           type="text"
-                          value={nrFatures}
+                          value={pershkrimShtese}
                           onChange={(e) => {
-                            setNrFatures(e.target.value);
+                            setPershkrimShtese(e.target.value);
                           }}
                           onKeyDown={(e) => {
                             ndrroField(e, "dataEFatures");
                           }}
                         />
                       </Form.Group>
-                    </Form>
+                    </Form.Group>
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Data e Fatures</Form.Label>
+                      <Form.Label>Data e Kthimit te Mallit</Form.Label>
                       <Form.Control
                         id="dataEFatures"
                         type="date"
@@ -357,87 +403,6 @@ function KalkulimiIMallit(props) {
                         }}
                       />
                     </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Lloji i Pageses</Form.Label>
-                      <select
-                        id="llojiIPageses"
-                        placeholder="LlojiIPageses"
-                        className="form-select"
-                        value={llojiIPageses ? llojiIPageses : 0}
-                        onChange={(e) => {
-                          setLlojiIPageses(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "statusiIPageses");
-                        }}
-                      >
-                        <option defaultValue value={0} key={0} disabled>
-                          Zgjedhni Llojin e Pageses
-                        </option>
-                        <option key={1} value="Cash">
-                          Cash
-                        </option>
-                        <option key={2} value="Banke">
-                          Banke
-                        </option>
-                        <option key={3} value="Borxh">
-                          Borxh
-                        </option>
-                      </select>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Statusi i Pageses</Form.Label>
-                      <select
-                        id="statusiIPageses"
-                        placeholder="Statusi i Pageses"
-                        className="form-select"
-                        value={statusiIPagesesValue}
-                        onChange={(e) => {
-                          setStatusiIPageses(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "totPaTVSH");
-                        }}
-                        disabled={llojiIPageses === "Borxh" ? true : false}
-                      >
-                        <option defaultValue value={0} key={0} disabled>
-                          Zgjedhni Statusin e Pageses
-                        </option>
-                        <option key={1} value="E Paguar">
-                          E Paguar
-                        </option>
-                        <option key={2} value="Borxh">
-                          Pa Paguar
-                        </option>
-                      </select>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Totali Pa TVSH</Form.Label>
-                      <Form.Control
-                        id="totPaTVSH"
-                        type="number"
-                        value={totPaTVSH}
-                        onChange={(e) => {
-                          setTotPaTVSH(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "TVSH");
-                        }}
-                      />
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>TVSH</Form.Label>
-                      <Form.Control
-                        id="TVSH"
-                        type="number"
-                        value={TVSH}
-                        onChange={(e) => {
-                          setTVSH(e.target.value);
-                        }}
-                      />
-                    </Form.Group>
                     <br />
                     <Button
                       className="mb-3 Butoni"
@@ -447,7 +412,7 @@ function KalkulimiIMallit(props) {
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Kalkulimeve</h1>
+                <h1 className="title">Lista e Kthimeve</h1>
                 <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
@@ -487,15 +452,9 @@ function KalkulimiIMallit(props) {
                 <MDBTable style={{ width: "100%" }}>
                   <MDBTableHead>
                     <tr>
-                      <th scope="col">Nr. Kalkulimit</th>
-                      <th scope="col">Nr. Fatures</th>
-                      <th scope="col">Partneri</th>
-                      <th scope="col">Totali Pa TVSH €</th>
-                      <th scope="col">TVSH €</th>
+                      <th scope="col">Nr. Kthimit</th>
+                      <th scope="col">Pershkrimi Shtese</th>
                       <th scope="col">Data e Fatures</th>
-                      <th scope="col">Lloji Fatures</th>
-                      <th scope="col">Statusi Pageses</th>
-                      <th scope="col">Lloji Pageses</th>
                       <th scope="col">Statusi Kalkulimit</th>
                       <th scope="col">Funksione</th>
                     </tr>
@@ -517,19 +476,13 @@ function KalkulimiIMallit(props) {
                       .map((k) => (
                         <tr key={k.idRegjistrimit}>
                           <td>{k.nrRendorFatures}</td>
-                          <td>{k.nrFatures}</td>
-                          <td>{k.emriBiznesit}</td>
-                          <td>{k.totaliPaTvsh.toFixed(2)} €</td>
-                          <td>{k.tvsh.toFixed(2)} €</td>
+                          <td>{k.pershkrimShtese}</td>
                           <td>
                             {new Date(k.dataRegjistrimit).toLocaleDateString(
                               "en-GB",
                               { dateStyle: "short" }
                             )}
                           </td>
-                          <td>{k.llojiKalkulimit}</td>
-                          <td>{k.statusiPageses}</td>
-                          <td>{k.llojiPageses}</td>
                           <td>
                             {k.statusiKalkulimit === "true"
                               ? "I Mbyllur"
@@ -573,4 +526,4 @@ function KalkulimiIMallit(props) {
   );
 }
 
-export default KalkulimiIMallit;
+export default KthimIMallitTeBlere;
