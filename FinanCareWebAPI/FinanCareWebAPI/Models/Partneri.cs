@@ -25,7 +25,7 @@ public partial class Partneri
 
     public string? ShkurtesaPartnerit { get; set; }
 
-    public virtual ICollection<KalkulimiImallit> KalkulimiImallits { get; } = new List<KalkulimiImallit>();
+    public virtual ICollection<Faturat> Faturats { get; } = new List<Faturat>();
 
     public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();
 

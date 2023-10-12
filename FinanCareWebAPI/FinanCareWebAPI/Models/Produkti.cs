@@ -31,7 +31,7 @@ public partial class Produkti
 
     public virtual ICollection<TeDhenatEporosi> TeDhenatEporosis { get; } = new List<TeDhenatEporosi>();
 
-    public virtual ICollection<TeDhenatKalkulimit> TeDhenatKalkulimits { get; } = new List<TeDhenatKalkulimit>();
+    public virtual ICollection<TeDhenatFaturat> TeDhenatFaturats { get; } = new List<TeDhenatFaturat>();
 
     public virtual ZbritjaQmimitProduktit? ZbritjaQmimitProduktit { get; set; }
     

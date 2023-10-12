@@ -6,6 +6,17 @@ table {
   margin-top: 0.3em;
 }
 
+.DataPerFiltrim{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 0.5em;
+  flex-wrap: wrap;
+  margin-left: 1em;
+}
+
 .mdb-tooltip {
   background-color: transparent !important;
   border: none !important; 
@@ -58,3 +69,5 @@ table {
   z-index: 1000;
   width: 100%;
 }
+
+

@@ -93,12 +93,12 @@ function RegjistroFaturen(props) {
       const vendosTeDhenat = async () => {
         try {
           const teDhenatKalkulimit = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.idKalkulimitEdit}`,
+            `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.idKalkulimitEdit}`,
             authentikimi
           );
 
           const teDhenatFatures = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
+            `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
             authentikimi
           );
 
@@ -144,7 +144,7 @@ function RegjistroFaturen(props) {
       totalQmimi += produkti.sasiaStokut * produkti.qmimiBleres;
       totalFat +=
         produkti.sasiaStokut *
-        (produkti.qmimiBleres - produkti.qmimiBleres * (produkti.rabati / 100));
+        (produkti.qmimiBleres - produkti.qmimiBleres * (produkti.rabati3 / 100));
     });
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut);
@@ -174,7 +174,7 @@ function RegjistroFaturen(props) {
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
-          rabati: rabati,
+          rabati3: rabati,
         },
       ]);
     } else {
@@ -204,7 +204,7 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter
       );
       setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
-      setRabati(rabati ?? konifirmoProduktinLista[0].rabati);
+      setRabati(rabati ?? konifirmoProduktinLista[0].rabati3);
       setQmimiBleres(qmimiBleres ?? konifirmoProduktinLista[0].qmimiBleres);
 
       setFilteredItems([]);
@@ -252,7 +252,7 @@ function RegjistroFaturen(props) {
 
       await axios
         .post(
-          "https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/teDhenat",
+          "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
           {
             idRegjistrimit: props.nrRendorKalkulimit,
             idProduktit: produktiID,
@@ -260,7 +260,7 @@ function RegjistroFaturen(props) {
             qmimiBleres: -qmimiBleres,
             qmimiShites: qmimiSH,
             qmimiShitesMeShumic: qmimiSH2,
-            rabati: rabati,
+            rabati3: rabati,
           },
           authentikimi
         )
@@ -297,7 +297,7 @@ function RegjistroFaturen(props) {
         for (let produkti of produktetNeKalkulim) {
           console.log(produkti);
           await axios.put(
-            `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
+            `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
             {
               sasiaNeStok: produkti.sasiaStokut,
             },
@@ -316,7 +316,7 @@ function RegjistroFaturen(props) {
   async function handleFshij(id) {
     await axios
       .delete(
-        `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
+        `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
         authentikimi
       )
       .then(() => {
@@ -327,7 +327,7 @@ function RegjistroFaturen(props) {
   async function handleEdit(id, index) {
     await axios
       .get(
-        `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`,
+        `https://localhost:7285/api/Faturat/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`,
         authentikimi
       )
       .then((p) => {
@@ -342,7 +342,7 @@ function RegjistroFaturen(props) {
         setQmimiSH(p.data[0].qmimiShites);
         setQmimiSH2(p.data[0].qmimiShitesMeShumic);
         setQmimiBleres(-p.data[0].qmimiBleres);
-        setRabati(p.data[0].rabati);
+        setRabati(p.data[0].rabati3);
       });
   }
 
@@ -354,13 +354,13 @@ function RegjistroFaturen(props) {
     } else {
       await axios
         .put(
-          `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
           {
             qmimiBleres: -qmimiBleres,
             qmimiShites: qmimiSH,
             sasiaStokut: sasia,
             qmimiShitesMeShumic: qmimiSH2,
-            rabati: rabati,
+            rabati3: rabati,
           },
           authentikimi
         )
@@ -657,17 +657,17 @@ function RegjistroFaturen(props) {
                     <td>{p.emriProduktit}</td>
                     <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
                     <td>{parseFloat(p.qmimiBleres).toFixed(2)} €</td>
-                    <td>{parseFloat(p.rabati).toFixed(2)} %</td>
+                    <td>{parseFloat(p.rabati3).toFixed(2)} %</td>
                     <td>
                       {parseFloat(
-                        p.qmimiBleres - p.qmimiBleres * (p.rabati / 100)
+                        p.qmimiBleres - p.qmimiBleres * (p.rabati3 / 100)
                       ).toFixed(2)}{" "}
                       €
                     </td>
                     <td>
                       {parseFloat(
                         p.sasiaStokut *
-                          (p.qmimiBleres - p.qmimiBleres * (p.rabati / 100))
+                          (p.qmimiBleres - p.qmimiBleres * (p.rabati3 / 100))
                       ).toFixed(2)}{" "}
                       €
                     </td>
@@ -682,6 +682,7 @@ function RegjistroFaturen(props) {
                         </Button>
                         <Button
                           size="sm"
+                          variant="warning"
                           onClick={() => {
                             handleEdit(p.id, index);
                             setIdTeDhenatKalk(p.id);

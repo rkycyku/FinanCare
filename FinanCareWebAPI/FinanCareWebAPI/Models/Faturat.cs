@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FinanCareWebAPI.Models;
 
-public partial class KalkulimiImallit
+public partial class Faturat
 {
     public int IdRegjistrimit { get; set; }
 
@@ -37,5 +37,5 @@ public partial class KalkulimiImallit
 
     public virtual Perdoruesi? Stafi { get; set; }
 
-    public virtual ICollection<TeDhenatKalkulimit> TeDhenatKalkulimits { get; } = new List<TeDhenatKalkulimit>();
+    public virtual ICollection<TeDhenatFaturat> TeDhenatFaturats { get; } = new List<TeDhenatFaturat>();
 }

@@ -40,15 +40,19 @@ function TeDhenatFatura(props) {
     const vendosFature = async () => {
       try {
         const produktet = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.faturaID ?? 61}`,
+          `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${
+            props.faturaID ?? 61
+          }`,
           authentikimi
         );
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.faturaID ?? 61}`,
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${
+            props.faturaID ?? 61
+          }`,
           authentikimi
         );
 
-        console.log(teDhenat.data)
+        console.log(teDhenat.data);
 
         setteDhenatFat(teDhenat.data);
         setProduktet(produktet.data);
@@ -79,23 +83,27 @@ function TeDhenatFatura(props) {
   return (
     <>
       <div className="tabelaETeDhenaveProduktit">
-          <table>
-            <tr>
-              <th>Nr.</th>
-              <th>Shifra</th>
-              <th>Emertimi</th>
-              <th>Njm</th>
-              <th>Sasia</th>
-              <th>Qmimi pa TVSH</th>
-              <th>Rabati %</th>
-              <th>T %</th>
-              <th>Qmimi me TVSH - Rab</th>
-              <th>TVSH €</th>
-              <th>Shuma €</th>
-            </tr>
-            {produktet.slice(props.ProduktiPare, props.ProduktiFundit).map((produkti, index) => (
+        <table>
+          <tr>
+            <th>Nr.</th>
+            <th>Shifra</th>
+            <th>Emertimi</th>
+            <th>Njm</th>
+            <th>Sasia</th>
+            <th>Qm. - TVSH</th>
+            <th>Rab. 1 %</th>
+            <th>Rab. 2 %</th>
+            <th>Rab. 3 %</th>
+            <th>T %</th>
+            <th>Qm. + TVSH - Rab</th>
+            <th>TVSH €</th>
+            <th>Shuma €</th>
+          </tr>
+          {produktet
+            .slice(props.ProduktiPare, props.ProduktiFundit)
+            .map((produkti, index) => (
               <tr key={index}>
-                <td>{index + props.ProduktiPare+1}</td>
+                <td>{index + props.ProduktiPare + 1}</td>
                 <td>{produkti.kodiProduktit}</td>
                 <td>
                   {produkti.emriProduktit} {produkti.barkodi}
@@ -108,19 +116,29 @@ function TeDhenatFatura(props) {
                       (produkti.qmimiBleres * produkti.llojiTVSH) / 100
                   ).toFixed(4)}
                 </td>
-                <td>{parseFloat(produkti.rabati).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati1).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati2).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati3).toFixed(2)}</td>
                 <td>{produkti.llojiTVSH}</td>
                 <td>
                   {parseFloat(
                     produkti.qmimiBleres -
-                      produkti.qmimiBleres * (produkti.rabati / 100)
+                      produkti.qmimiBleres *
+                        ((produkti.rabati1 +
+                          produkti.rabati2 +
+                          produkti.rabati3) /
+                          100)
                   ).toFixed(4)}
                 </td>
                 <td>
                   {parseFloat(
                     (produkti.sasiaStokut *
                       (produkti.qmimiBleres -
-                        produkti.qmimiBleres * (produkti.rabati / 100)) *
+                        produkti.qmimiBleres *
+                          ((produkti.rabati1 +
+                            produkti.rabati2 +
+                            produkti.rabati3) /
+                            100)) *
                       ((produkti.llojiTVSH /
                         100 /
                         (1 + produkti.llojiTVSH / 100)) *
@@ -133,13 +151,16 @@ function TeDhenatFatura(props) {
                     produkti.sasiaStokut * produkti.qmimiBleres -
                       produkti.sasiaStokut *
                         produkti.qmimiBleres *
-                        (produkti.rabati / 100)
+                        ((produkti.rabati1 +
+                          produkti.rabati2 +
+                          produkti.rabati3) /
+                          100)
                   ).toFixed(4)}
                 </td>
               </tr>
             ))}
-          </table>
-        </div>
+        </table>
+      </div>
     </>
   );
 }

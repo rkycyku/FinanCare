@@ -90,12 +90,12 @@ function RegjistroFaturen(props) {
       const vendosTeDhenat = async () => {
         try {
           const teDhenatKalkulimit = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.idKalkulimitEdit}`,
+            `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.idKalkulimitEdit}`,
             authentikimi
           );
 
           const teDhenatFatures = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
+            `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
             authentikimi
           );
 
@@ -238,7 +238,7 @@ function RegjistroFaturen(props) {
 
       await axios
         .post(
-          "https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/teDhenat",
+          "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
           {
             idRegjistrimit: props.nrRendorKalkulimit,
             idProduktit: produktiID,
@@ -280,7 +280,7 @@ function RegjistroFaturen(props) {
         for (let produkti of produktetNeKalkulim) {
           console.log(produkti);
           await axios.put(
-            `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
+            `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
             {
               sasiaNeStok: produkti.sasiaStokut,
             },
@@ -299,7 +299,7 @@ function RegjistroFaturen(props) {
   async function handleFshij(id) {
     await axios
       .delete(
-        `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
+        `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
         authentikimi
       )
       .then(() => {
@@ -310,7 +310,7 @@ function RegjistroFaturen(props) {
   async function handleEdit(id, index) {
     await axios
       .get(
-        `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`,
+        `https://localhost:7285/api/Faturat/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`,
         authentikimi
       )
       .then((p) => {
@@ -335,7 +335,7 @@ function RegjistroFaturen(props) {
     } else {
       await axios
         .put(
-          `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
           {
             qmimiBleres: qmimiB,
             qmimiShites: qmimiSH,
@@ -600,6 +600,7 @@ function RegjistroFaturen(props) {
                         </Button>
                         <Button
                           size="sm"
+                          variant="warning"
                           onClick={() => {
                             handleEdit(p.id, index);
                             setIdTeDhenatKalk(p.id);

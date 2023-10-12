@@ -3,7 +3,7 @@ import classes from "./Styles/TabelaEKompanive.module.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus,faFileInvoice,faXmark } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
 import Fatura from "../../../TeTjera/Fatura/Fatura";
@@ -30,7 +30,7 @@ function TeDhenatKalkulimit(props) {
       try {
         setLoading(true);
         const produktet = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.id}`,
+          `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.id}`,
           authentikimi
         );
         setProduktet(produktet.data);
@@ -49,7 +49,7 @@ function TeDhenatKalkulimit(props) {
       try {
         setLoading(true);
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.id}`,
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.id}`,
           authentikimi
         );
         setTeDhenatFat(teDhenat.data);
@@ -106,13 +106,13 @@ function TeDhenatKalkulimit(props) {
                   <h1 className="title">
                     Te Dhenat e Fatures
                     <Button className="mb-3 Butoni" onClick={handleSave}>
-                      Mbyll Te Dhenat <FontAwesomeIcon icon={faPlus} />
+                      Mbyll Te Dhenat <FontAwesomeIcon icon={faXmark} />
                     </Button>
                     <Button
                       className="mb-3 Butoni"
                       onClick={() => setShkarkoFaturen(true)}
                     >
-                      Fatura <FontAwesomeIcon icon={faPlus} />
+                      Fatura <FontAwesomeIcon icon={faFileInvoice} />
                     </Button>
                   </h1>
                 </Row>

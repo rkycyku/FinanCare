@@ -17,7 +17,7 @@ public partial class Perdoruesi
 
     public string AspNetUserId { get; set; } = null!;
 
-    public virtual ICollection<KalkulimiImallit> KalkulimiImallits { get; } = new List<KalkulimiImallit>();
+    public virtual ICollection<Faturat> Faturats { get; } = new List<Faturat>();
 
     public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();
 

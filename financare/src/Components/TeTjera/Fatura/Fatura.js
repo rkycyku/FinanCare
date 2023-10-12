@@ -64,11 +64,11 @@ function Fatura(props) {
       const vendosFature = async () => {
         try {
           const produktet = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.nrFatures}`,
+            `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.nrFatures}`,
             authentikimi
           );
           const teDhenat = await axios.get(
-            `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${props.nrFatures}`,
+            `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.nrFatures}`,
             authentikimi
           );
 

@@ -50,8 +50,8 @@ function PerditesoStatusinKalk(props) {
   useEffect(() => {
     const shfaqKalkulimet = async () => {
       try {
-        const kalkulimet = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet`, authentikimi);
-        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "AS")
+        const kalkulimet = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimet`, authentikimi);
+        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "KMB")
         setKalkulimet(kthimet);
       } catch (err) {
         console.log(err);
@@ -64,8 +64,8 @@ function PerditesoStatusinKalk(props) {
   useEffect(() => {
     const shfaqKalkulimet = async () => {
       try {
-        const kalkulimet = await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
-        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "AS")
+        const kalkulimet = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
+        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "KMB")
         setKalkulimetEFiltruara(kthimet);
       } catch (err) {
         console.log(err);
@@ -77,16 +77,16 @@ function PerditesoStatusinKalk(props) {
 
   async function ndryshoStatusinKalkulimit() {
     try {
-      await axios.put(`https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrKalkulimit}&statusi=false`
+      await axios.put(`https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrKalkulimit}&statusi=false`
         , {}, authentikimi).then(() => {
           filtroKalkulimet("hapKalkulimet")
           setHapKalkulimin(false);
         })
 
-      await axios.get(`https://localhost:7285/api/KalkulimiImallit/shfaqTeDhenatKalkulimit?idRegjistrimit=${nrKalkulimit}`
+      await axios.get(`https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${nrKalkulimit}`
         , authentikimi).then(async (teDhenat) => {
           for (let p of teDhenat.data) {
-            await axios.get(`https://localhost:7285/api/KalkulimiImallit/hapAsgjesiminKthimin/perditesoStokunQmimin?idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}&lloji=AS`, authentikimi);
+            await axios.get(`https://localhost:7285/api/Faturat/hapAsgjesiminKthimin/perditesoStokunQmimin?idProdukti=${p.idProduktit}&idTeDhenatKalkulimit=${p.id}&lloji=AS`, authentikimi);
           }
         });
 
@@ -98,7 +98,7 @@ function PerditesoStatusinKalk(props) {
 
   async function fshijKalkuliminFunksioni() {
     try {
-      await axios.delete(`https://localhost:7285/api/KalkulimiImallit/fshijKalkulimin?idKalkulimi=${nrKalkulimit}`
+      await axios.delete(`https://localhost:7285/api/Faturat/fshijKalkulimin?idKalkulimi=${nrKalkulimit}`
         , authentikimi).then(() => {
           filtroKalkulimet("fshijKalkulimet")
         })
@@ -291,11 +291,11 @@ function PerditesoStatusinKalk(props) {
                   <td >{new Date(k.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                   <td>{k.llojiKalkulimit}</td>
                   <td >
-                    {
+                   {
                       statusiIFiltrimit === "true" ?
                         <Button
                           style={{ marginRight: "0.5em" }}
-                          variant="success"
+                          variant="warning"
                           size="sm"
                           onClick={() => {
                             detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit, "hapKalkulimin")
@@ -305,7 +305,7 @@ function PerditesoStatusinKalk(props) {
                         :
                         <Button
                           style={{ marginRight: "0.5em" }}
-                          variant="success"
+                          variant="danger"
                           size="sm"
                           onClick={() => {
                             detajetRiKonfrimitKalkulimit(k.emriBiznesit, k.nrFatures, k.idRegjistrimit, k.dataRegjistrimit, k.llojiKalkulimit, "fshijKalkulimin")
@@ -313,7 +313,6 @@ function PerditesoStatusinKalk(props) {
                         >
                           <FontAwesomeIcon icon={faXmark} /></Button>
                     }
-
                   </td>
                 </tr>
               ))}

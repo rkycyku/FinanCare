@@ -20,7 +20,7 @@ function HeaderFatura(props) {
     const vendosFature = async () => {
       try {
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimetNgaID?id=${
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${
             props.faturaID ?? 61
           }`,
           authentikimi

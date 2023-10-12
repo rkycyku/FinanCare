@@ -17,7 +17,7 @@ public partial class FinanCareDbContext : IdentityDbContext
     {
     }
 
-    public virtual DbSet<KalkulimiImallit> KalkulimiImallits { get; set; }
+    public virtual DbSet<Faturat> Faturats { get; set; }
 
     public virtual DbSet<NjesiaMatese> NjesiaMateses { get; set; }
 
@@ -37,7 +37,7 @@ public partial class FinanCareDbContext : IdentityDbContext
 
     public virtual DbSet<TeDhenatEporosi> TeDhenatEporoses { get; set; }
 
-    public virtual DbSet<TeDhenatKalkulimit> TeDhenatKalkulimits { get; set; }
+    public virtual DbSet<TeDhenatFaturat> TeDhenatFaturats { get; set; }
 
     public virtual DbSet<TeDhenatPerdoruesit> TeDhenatPerdoruesits { get; set; }
 
@@ -45,12 +45,12 @@ public partial class FinanCareDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-        modelBuilder.Entity<KalkulimiImallit>(entity =>
+        modelBuilder.Entity<Faturat>(entity =>
         {
             entity.HasKey(e => e.IdRegjistrimit)
             .HasName("PK_RegjistrimiStokut");
 
-            entity.ToTable("KalkulimiIMallit");
+            entity.ToTable("Faturat");
 
             entity.HasIndex(e => e.StafiId, "IX_RegjistrimiStokut_stafiID");
 
@@ -98,13 +98,13 @@ public partial class FinanCareDbContext : IdentityDbContext
             .HasColumnName("nrRendorFatures");
 
             entity.HasOne(d => d.IdpartneriNavigation)
-            .WithMany(p => p.KalkulimiImallits)
+            .WithMany(p => p.Faturats)
                 .HasForeignKey(d => d.Idpartneri)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Kalkulimi_Partneri");
 
             entity.HasOne(d => d.Stafi)
-            .WithMany(p => p.KalkulimiImallits)
+            .WithMany(p => p.Faturats)
                 .HasForeignKey(d => d.StafiId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Regjistrimi_Stafi");
@@ -430,12 +430,12 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasConstraintName("FK_TeDhenatPorosis_Produkti");
         });
 
-        modelBuilder.Entity<TeDhenatKalkulimit>(entity =>
+        modelBuilder.Entity<TeDhenatFaturat>(entity =>
         {
             entity.HasKey(e => e.Id)
             .HasName("PK_TeDhenatRegjistrimit");
 
-            entity.ToTable("TeDhenatKalkulimit");
+            entity.ToTable("TeDhenatFaturat");
 
             entity.HasIndex(e => e.IdProduktit, "IX_TeDhenatRegjistrimit_idProduktit");
 
@@ -463,23 +463,27 @@ public partial class FinanCareDbContext : IdentityDbContext
                 .HasColumnType("decimal(20, 4)")
                 .HasDefaultValueSql("((0))")
                 .HasColumnName("qmimiShitesMeShumic");
-            entity.Property(e => e.Rabati)
+            entity.Property(e => e.Rabati1)
                 .HasColumnType("decimal(5, 2)")
                 .HasDefaultValueSql("((0))")
-                .HasColumnName("rabati");
-            entity.Property(e => e.LlojiTVSH)
-                .HasColumnType("int")
-                .HasDefaultValueSql("((18))")
-                .HasColumnName("llojiTVSH");
+                .HasColumnName("rabati1");
+            entity.Property(e => e.Rabati2)
+                .HasColumnType("decimal(5, 2)")
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("rabati2");
+            entity.Property(e => e.Rabati3)
+                .HasColumnType("decimal(5, 2)")
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("rabati3");
 
             entity.HasOne(d => d.IdProduktitNavigation)
-            .WithMany(p => p.TeDhenatKalkulimits)
+            .WithMany(p => p.TeDhenatFaturats)
                 .HasForeignKey(d => d.IdProduktit)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Produkti_TeDhenatRegjistrimit");
 
             entity.HasOne(d => d.IdRegjistrimitNavigation)
-            .WithMany(p => p.TeDhenatKalkulimits)
+            .WithMany(p => p.TeDhenatFaturats)
                 .HasForeignKey(d => d.IdRegjistrimit)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_RegjistrimiStokut_TeDhenatRegjistrimit");

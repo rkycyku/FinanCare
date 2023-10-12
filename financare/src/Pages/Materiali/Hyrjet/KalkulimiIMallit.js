@@ -9,6 +9,7 @@ import {
   faXmark,
   faPenToSquare,
   faL,
+  faArrowRotateForward,
 } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Form, Container, Row, Col } from "react-bootstrap";
@@ -21,7 +22,16 @@ import PerditesoStatusinKalk from "../../../Components/Materiali/Hyrjet/Kalkulim
 import TeDhenatKalkulimit from "../../../Components/Materiali/Hyrjet/KalkulimiIMallit/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
-import DatePicker from "react-datepicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateField } from "@mui/x-date-pickers/DateField";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import dayjs from "dayjs";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -54,7 +64,7 @@ function KalkulimiIMallit(props) {
   const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
 
   const [dataFillestare, setDataFillestare] = useState(null);
-  const [dataFundit, setDataFundit] = useState(null);
+  const [dataFundit, setDataFundit] = useState(null);const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -81,7 +91,7 @@ function KalkulimiIMallit(props) {
       try {
         setLoading(true);
         const kalkulimi = await axios.get(
-          "https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet",
+          "https://localhost:7285/api/Faturat/shfaqRegjistrimet",
           authentikimi
         );
         const kalkulimet = kalkulimi.data.filter(
@@ -140,7 +150,7 @@ function KalkulimiIMallit(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=HYRJE`,
+          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=HYRJE`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -163,7 +173,7 @@ function KalkulimiIMallit(props) {
     try {
       await axios
         .post(
-          "https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin",
+          "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
             stafiId: teDhenat.perdoruesi.userId,
@@ -196,7 +206,7 @@ function KalkulimiIMallit(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
           {},
           authentikimi
         )
@@ -452,35 +462,76 @@ function KalkulimiIMallit(props) {
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
                 </Button>
-                <div className="DataPerFiltrim">
-                  <div className="datat">
-                    <p>Data Fillimit:</p>
-                    <DatePicker
-                      selected={dataFillestare}
-                      onChange={(date) => setDataFillestare(date)}
-                      dateFormat="dd/MM/yyyy"
-                      maxDate={dataFundit}
-                    />
+                 <div className="DataPerFiltrim">
+                  <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateField", "DateField"]}>
+                        <DateField
+                          label="Data Fillestare"
+                          value={dataFillestare}
+                          onChange={(date) => setDataFillestare(date)}
+                          size="small"
+                          format="DD/MM/YYYY"
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </div>
                   <div>
-                    <p>Data Mbarimit:</p>
-                    <DatePicker
-                      selected={dataFundit}
-                      onChange={(date) => setDataFundit(date)}
-                      dateFormat="dd/MM/yyyy"
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateField", "DateField"]}>
+                        <DateField
+                          label="Data Fundit"
+                          value={dataFundit}
+                          onChange={(date) => setDataFundit(date)}
+                          size="small"
+                          format="DD/MM/YYYY"
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </div>
+                  <div>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth size="small">
+                        <InputLabel id="demo-simple-select-label">
+                          Statusi i Fatures
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={filtroStatusi}
+                          label="Statusi i Fatures"
+                          onChange={(e) => {
+                            setFiltroStatusi(e.target.value);
+                          }}
+                        >
+                          <MenuItem
+                            defaultValue
+                            value="Te Gjitha"
+                            key="Te Gjitha"
+                          >
+                            Te Gjitha
+                          </MenuItem>
+                          <MenuItem key="false" value="false">
+                            Te Hapur
+                          </MenuItem>
+                          <MenuItem key="true" value="true">
+                            Te Mbyllur
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </div>
                   <div className="datat">
-                    <p>Reseto:</p>
                     <Button
                       style={{ marginRight: "0.5em" }}
                       variant="success"
                       onClick={() => {
                         setDataFillestare(null);
                         setDataFundit(null);
+                        setFiltroStatusi("Te Gjitha");
                       }}
                     >
-                      Shfaq Te Gjitha porosite
+                      Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
                     </Button>
                   </div>
                 </div>
@@ -493,7 +544,6 @@ function KalkulimiIMallit(props) {
                       <th scope="col">Totali Pa TVSH €</th>
                       <th scope="col">TVSH €</th>
                       <th scope="col">Data e Fatures</th>
-                      <th scope="col">Lloji Fatures</th>
                       <th scope="col">Statusi Pageses</th>
                       <th scope="col">Lloji Pageses</th>
                       <th scope="col">Statusi Kalkulimit</th>
@@ -514,6 +564,13 @@ function KalkulimiIMallit(props) {
                           );
                         }
                       })
+                      .filter((p) => {
+                        if (filtroStatusi === "Te Gjitha") {
+                          return true;
+                        } else {
+                          return p.statusiKalkulimit === filtroStatusi;
+                        }
+                      })
                       .map((k) => (
                         <tr key={k.idRegjistrimit}>
                           <td>{k.nrRendorFatures}</td>
@@ -527,7 +584,6 @@ function KalkulimiIMallit(props) {
                               { dateStyle: "short" }
                             )}
                           </td>
-                          <td>{k.llojiKalkulimit}</td>
                           <td>{k.statusiPageses}</td>
                           <td>{k.llojiPageses}</td>
                           <td>
@@ -539,6 +595,7 @@ function KalkulimiIMallit(props) {
                             <Button
                               style={{ marginRight: "0.5em" }}
                               variant="success"
+                              size="sm"
                               onClick={() =>
                                 handleShfaqTeDhenat(k.idRegjistrimit)
                               }
@@ -550,7 +607,8 @@ function KalkulimiIMallit(props) {
                                 k.statusiKalkulimit === "true" ? true : false
                               }
                               style={{ marginRight: "0.5em" }}
-                              variant="success"
+                              variant="warning"
+                              size="sm"
                               onClick={() => {
                                 setIdKalkulimitEdit(k.idRegjistrimit);
                                 setNrRendorKalkulimit(k.idRegjistrimit);

@@ -9,6 +9,7 @@ import {
   faXmark,
   faPenToSquare,
   faL,
+  faArrowRotateForward,
 } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Form, Container, Row, Col } from "react-bootstrap";
@@ -22,7 +23,16 @@ import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/Ofertat/Te
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
-import DatePicker from "react-datepicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateField } from "@mui/x-date-pickers/DateField";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import dayjs from "dayjs";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -57,6 +67,7 @@ function KthimIMallitTeBlere(props) {
 
   const [dataFillestare, setDataFillestare] = useState(null);
   const [dataFundit, setDataFundit] = useState(null);
+  const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -83,12 +94,13 @@ function KthimIMallitTeBlere(props) {
       try {
         setLoading(true);
         const kalkulimi = await axios.get(
-          "https://localhost:7285/api/KalkulimiImallit/shfaqRegjistrimet",
+          "https://localhost:7285/api/Faturat/shfaqRegjistrimet",
           authentikimi
         );
         const kthimet = kalkulimi.data.filter(
-          (item) => item.llojiKalkulimit === "KMB"
+          (item) => item.llojiKalkulimit === "OFERTE"
         );
+        console.log(kthimet);
         setKalkulimet(kthimet);
         setLoading(false);
       } catch (err) {
@@ -126,10 +138,11 @@ function KthimIMallitTeBlere(props) {
     const vendosPartnerin = async () => {
       try {
         const partneri = await axios.get(
-          `https://localhost:7285/api/Partneri/shfaqPartneretFurntiore`,
+          `https://localhost:7285/api/Partneri/shfaqPartneretBleres`,
           authentikimi
         );
         setPartneret(partneri.data);
+        console.log(partneri)
       } catch (err) {
         console.log(err);
       }
@@ -142,7 +155,7 @@ function KthimIMallitTeBlere(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/KalkulimiImallit/getNumriFaturesMeRradhe?llojiKalkulimit=KMB`,
+          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=OFERTE`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -166,7 +179,7 @@ function KthimIMallitTeBlere(props) {
       console.log(nrRendorKalkulimit);
       await axios
         .post(
-          "https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin",
+          "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
             stafiId: teDhenat.perdoruesi.userId,
@@ -176,7 +189,7 @@ function KthimIMallitTeBlere(props) {
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
-            llojiKalkulimit: "KMB",
+            llojiKalkulimit: "OFERTE",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
           },
@@ -201,7 +214,7 @@ function KthimIMallitTeBlere(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/KalkulimiImallit/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
           {},
           authentikimi
         )
@@ -267,8 +280,6 @@ function KthimIMallitTeBlere(props) {
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
-
-    console.log(partneri);
   }
 
   return (
@@ -327,7 +338,7 @@ function KthimIMallitTeBlere(props) {
                   <Col>
                     <Form.Group controlId="idDheEmri">
                       <Form.Group>
-                        <Form.Label>Nr. Rendor i Kthimit</Form.Label>
+                        <Form.Label>Nr. Rendor i Ofertes</Form.Label>
                         <Form.Control
                           id="nrRendorKalkulimit"
                           type="number"
@@ -387,20 +398,43 @@ function KthimIMallitTeBlere(props) {
                         />
                       </Form.Group>
                     </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Lloji i Pageses</Form.Label>
+                      <select
+                        id="llojiIPageses"
+                        placeholder="LlojiIPageses"
+                        className="form-select"
+                        value={llojiIPageses ? llojiIPageses : 0}
+                        onChange={(e) => {
+                          setLlojiIPageses(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "statusiIPageses");
+                        }}
+                      >
+                        <option defaultValue value={0} key={0} disabled>
+                          Zgjedhni Llojin e Pageses
+                        </option>
+                        <option key={1} value="Cash">
+                          Cash
+                        </option>
+                        <option key={2} value="Banke">
+                          Banke
+                        </option>
+                        <option key={3} value="Borxh">
+                          Borxh
+                        </option>
+                      </select>
+                    </Form.Group>
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Data e Kthimit te Mallit</Form.Label>
+                      <Form.Label>Data e Ofertes</Form.Label>
                       <Form.Control
                         id="dataEFatures"
                         type="date"
                         value={dataEFatures}
-                        onChange={(e) => {
-                          setDataEFatures(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
+                        disabled
                       />
                     </Form.Group>
                     <br />
@@ -412,49 +446,93 @@ function KthimIMallitTeBlere(props) {
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Kthimeve</h1>
+                <h1 className="title">Lista e Ofertave</h1>
                 <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
                 </Button>
                 <div className="DataPerFiltrim">
-                  <div className="datat">
-                    <p>Data Fillimit:</p>
-                    <DatePicker
-                      selected={dataFillestare}
-                      onChange={(date) => setDataFillestare(date)}
-                      dateFormat="dd/MM/yyyy"
-                      maxDate={dataFundit}
-                    />
+                  <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateField", "DateField"]}>
+                        <DateField
+                          label="Data Fillestare"
+                          value={dataFillestare}
+                          onChange={(date) => setDataFillestare(date)}
+                          size="small"
+                          format="DD/MM/YYYY"
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </div>
                   <div>
-                    <p>Data Mbarimit:</p>
-                    <DatePicker
-                      selected={dataFundit}
-                      onChange={(date) => setDataFundit(date)}
-                      dateFormat="dd/MM/yyyy"
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateField", "DateField"]}>
+                        <DateField
+                          label="Data Fundit"
+                          value={dataFundit}
+                          onChange={(date) => setDataFundit(date)}
+                          size="small"
+                          format="DD/MM/YYYY"
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </div>
+                  <div>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth size="small">
+                        <InputLabel id="demo-simple-select-label">
+                          Statusi i Fatures
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={filtroStatusi}
+                          label="Statusi i Fatures"
+                          onChange={(e) => {
+                            setFiltroStatusi(e.target.value);
+                          }}
+                        >
+                          <MenuItem
+                            defaultValue
+                            value="Te Gjitha"
+                            key="Te Gjitha"
+                          >
+                            Te Gjitha
+                          </MenuItem>
+                          <MenuItem key="false" value="false">
+                            Te Hapur
+                          </MenuItem>
+                          <MenuItem key="true" value="true">
+                            Te Mbyllur
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </div>
                   <div className="datat">
-                    <p>Reseto:</p>
                     <Button
                       style={{ marginRight: "0.5em" }}
                       variant="success"
                       onClick={() => {
                         setDataFillestare(null);
                         setDataFundit(null);
+                        setFiltroStatusi("Te Gjitha");
                       }}
                     >
-                      Shfaq Te Gjitha porosite
+                      Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
                     </Button>
                   </div>
                 </div>
                 <MDBTable style={{ width: "100%" }}>
                   <MDBTableHead>
                     <tr>
-                      <th scope="col">Nr. Kthimit</th>
+                      <th scope="col">Nr. Ofertes</th>
+                      <th scope="col">Partneri</th>
                       <th scope="col">Pershkrimi Shtese</th>
                       <th scope="col">Data e Fatures</th>
+                      <th scope="col">Lloji Pageses</th>
+                      <th scope="col">Referneti</th>
                       <th scope="col">Statusi Kalkulimit</th>
                       <th scope="col">Funksione</th>
                     </tr>
@@ -473,9 +551,17 @@ function KthimIMallitTeBlere(props) {
                           );
                         }
                       })
+                      .filter((p) => {
+                        if (filtroStatusi === "Te Gjitha") {
+                          return true;
+                        } else {
+                          return p.statusiKalkulimit === filtroStatusi;
+                        }
+                      })
                       .map((k) => (
                         <tr key={k.idRegjistrimit}>
                           <td>{k.nrRendorFatures}</td>
+                          <td>{k.emriBiznesit}</td>
                           <td>{k.pershkrimShtese}</td>
                           <td>
                             {new Date(k.dataRegjistrimit).toLocaleDateString(
@@ -483,6 +569,8 @@ function KthimIMallitTeBlere(props) {
                               { dateStyle: "short" }
                             )}
                           </td>
+                          <td>{k.llojiPageses}</td>
+                          <td>{k.username}</td>
                           <td>
                             {k.statusiKalkulimit === "true"
                               ? "I Mbyllur"
@@ -492,6 +580,7 @@ function KthimIMallitTeBlere(props) {
                             <Button
                               style={{ marginRight: "0.5em" }}
                               variant="success"
+                              size="sm"
                               onClick={() =>
                                 handleShfaqTeDhenat(k.idRegjistrimit)
                               }
@@ -503,7 +592,8 @@ function KthimIMallitTeBlere(props) {
                                 k.statusiKalkulimit === "true" ? true : false
                               }
                               style={{ marginRight: "0.5em" }}
-                              variant="success"
+                              variant="warning"
+                              size="sm"
                               onClick={() => {
                                 setIdKalkulimitEdit(k.idRegjistrimit);
                                 setNrRendorKalkulimit(k.idRegjistrimit);

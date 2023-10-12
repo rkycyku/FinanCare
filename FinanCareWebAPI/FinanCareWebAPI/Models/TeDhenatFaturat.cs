@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FinanCareWebAPI.Models;
 
-public partial class TeDhenatKalkulimit
+public partial class TeDhenatFaturat
 {
     public int Id { get; set; }
 
@@ -18,10 +18,11 @@ public partial class TeDhenatKalkulimit
     public decimal? QmimiShites { get; set; }
 
     public decimal? QmimiShitesMeShumic {get; set;}
-    public decimal? Rabati { get; set; }
-    public int? LlojiTVSH {  get; set; }
+    public decimal? Rabati1 { get; set; }
+    public decimal? Rabati2 { get; set; }
+    public decimal? Rabati3 { get; set; }
 
     public virtual Produkti? IdProduktitNavigation { get; set; }
 
-    public virtual KalkulimiImallit? IdRegjistrimitNavigation { get; set; }
+    public virtual Faturat? IdRegjistrimitNavigation { get; set; }
 }
