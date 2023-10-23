@@ -3,7 +3,11 @@ import classes from "./Styles/TabelaEKompanive.module.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus,faFileInvoice,faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faFileInvoice,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -95,8 +99,7 @@ function TeDhenatKalkulimit(props) {
                     </Button>
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => setShkarkoFaturen(true)}
-                    >
+                      onClick={() => setShkarkoFaturen(true)}>
                       Fatura <FontAwesomeIcon icon={faFileInvoice} />
                     </Button>
                   </h1>
@@ -169,7 +172,7 @@ function TeDhenatKalkulimit(props) {
                       {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
                     </p>
                     <p>
-                      <strong>Lloji Fatures:</strong> Kthim i Mallit te Blere
+                      <strong>Lloji Fatures:</strong> Oferte
                     </p>
                     <p>
                       <strong>Statusi i kalkulimit:</strong>{" "}
@@ -189,7 +192,9 @@ function TeDhenatKalkulimit(props) {
                       <th>Njm</th>
                       <th>Sasia</th>
                       <th>Qmimi pa TVSH</th>
-                      <th>Rabati %</th>
+                      <th>R. 1 %</th>
+                      <th>R. 2 %</th>
+                      <th>R. 3 %</th>
                       <th>T %</th>
                       <th>Qmimi me TVSH - Rab</th>
                       <th>TVSH €</th>
@@ -197,52 +202,63 @@ function TeDhenatKalkulimit(props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {produktet.map((produkti, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{produkti.kodiProduktit}</td>
-                        <td>
-                          {produkti.emriProduktit} {produkti.barkodi}
-                        </td>
-                        <td>{produkti.njesiaMatese1}</td>
-                        <td>{produkti.sasiaStokut}</td>
-                        <td>
-                          {parseFloat(
-                            produkti.qmimiBleres -
-                              (produkti.qmimiBleres * produkti.llojiTVSH) / 100
-                          ).toFixed(3)}
-                        </td>
-                        <td>{produkti.rabati3}</td>
-                        <td>{produkti.llojiTVSH}</td>
-                        <td>
-                          {parseFloat(
-                            produkti.qmimiBleres -
-                              produkti.qmimiBleres * (produkti.rabati3 / 100)
-                          ).toFixed(3)}
-                        </td>
-                        <td>
-                          {parseFloat(
-                            (produkti.sasiaStokut *
-                              (produkti.qmimiBleres -
-                                produkti.qmimiBleres *
-                                  (produkti.rabati3 / 100)) *
-                              ((produkti.llojiTVSH /
-                                100 /
-                                (1 + produkti.llojiTVSH / 100)) *
-                                100)) /
-                              100
-                          ).toFixed(3)}
-                        </td>
-                        <td>
-                          {parseFloat(
-                            produkti.sasiaStokut * produkti.qmimiBleres -
-                              produkti.sasiaStokut *
-                                produkti.qmimiBleres *
-                                (produkti.rabati3 / 100)
-                          ).toFixed(3)}
-                        </td>
-                      </tr>
-                    ))}
+                    {produktet.map((produkti, index) => {
+                      const qmimiMeTVSHRab = parseFloat(
+                        produkti.qmimiShites -
+                          produkti.qmimiShites * (produkti.rabati1 / 100) -
+                          (produkti.qmimiShites -
+                            produkti.qmimiShites * (produkti.rabati1 / 100)) *
+                            (produkti.rabati2 / 100) -
+                          (produkti.qmimiShites -
+                            produkti.qmimiShites * (produkti.rabati1 / 100) -
+                            (produkti.qmimiShites -
+                              produkti.qmimiShites * (produkti.rabati1 / 100)) *
+                              (produkti.rabati2 / 100)) *
+                            (produkti.rabati3 / 100)
+                      ).toFixed(3);
+                      const ShumaToT = parseFloat(
+                        qmimiMeTVSHRab * produkti.sasiaStokut
+                      ).toFixed(3);
+
+                      return (
+                        produkti && (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{produkti.kodiProduktit}</td>
+                            <td>
+                              {produkti.emriProduktit} {produkti.barkodi}
+                            </td>
+                            <td>{produkti.njesiaMatese1}</td>
+                            <td>{produkti.sasiaStokut}</td>
+                            <td>
+                              {parseFloat(
+                                produkti.qmimiShites -
+                                  (produkti.qmimiShites *
+                                    ((produkti.llojiTVSH /
+                                      100 /
+                                      (1 + produkti.llojiTVSH / 100)) *
+                                      100)) /
+                                    100
+                              ).toFixed(3)}
+                            </td>
+                            <td>{parseFloat(produkti.rabati1).toFixed(2)}</td>
+                            <td>{parseFloat(produkti.rabati2).toFixed(2)}</td>
+                            <td>{parseFloat(produkti.rabati3).toFixed(2)}</td>
+                            <td>{produkti.llojiTVSH}</td>
+                            <td>{parseFloat(qmimiMeTVSHRab).toFixed(3)}</td>
+                            <td>
+                              {parseFloat(
+                                ShumaToT *
+                                  (produkti.llojiTVSH /
+                                    100 /
+                                    (1 + produkti.llojiTVSH / 100))
+                              ).toFixed(3)}
+                            </td>
+                            <td>{ShumaToT}</td>
+                          </tr>
+                        )
+                      );
+                    })}
                   </tbody>
                 </Table>
               </Container>

@@ -95,7 +95,7 @@ function KalkulimiIMallit(props) {
           authentikimi
         );
         const kalkulimet = kalkulimi.data.filter(
-          (item) => item.llojiKalkulimit === "HYRJE"
+          (item) => item.llojiKalkulimit === "FL"
         );
         setKalkulimet(kalkulimet);
         setLoading(false);
@@ -150,7 +150,7 @@ function KalkulimiIMallit(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=HYRJE`,
+          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=FL`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));

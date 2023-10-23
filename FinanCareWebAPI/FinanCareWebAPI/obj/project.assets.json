@@ -12580,11 +12580,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Rilindi\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
+      "projectUniqueName": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
       "projectName": "FinanCareWebAPI",
-      "projectPath": "C:\\Rilindi\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
+      "projectPath": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
       "packagesPath": "C:\\Users\\rkycy\\.nuget\\packages\\",
-      "outputPath": "C:\\Rilindi\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\obj\\",
+      "outputPath": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rkycy\\AppData\\Roaming\\NuGet\\NuGet.Config",

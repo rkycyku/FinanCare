@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GpPwIdlTIGwZaj+p+njRzhTmrVMFbujYyyBGDkJmyiaQE4Cy9cbVv24Mv2lg43byQo5rYCJ4wqPyQuHoZNaWuw==",
+  "dgSpecHash": "rOnItFdSKbAmwss5FjqE8Xd38zNq12LCM67kzEKSOn7ZxirwBIWKwZzmShcXRtolpM2oqfJd5kSAiLECAovJAQ==",
   "success": true,
-  "projectFilePath": "C:\\Rilindi\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
+  "projectFilePath": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rkycy\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\rkycy\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

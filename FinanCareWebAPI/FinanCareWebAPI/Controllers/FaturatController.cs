@@ -34,6 +34,7 @@ namespace WebAPI.Controllers
                     x.Stafi.Username,
                     x.NrFatures,
                     x.IdpartneriNavigation.EmriBiznesit,
+                    x.IdpartneriNavigation.Idpartneri,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
@@ -123,24 +124,76 @@ namespace WebAPI.Controllers
             {
                 decimal rabati = teDhenat.Rabati1 + teDhenat.Rabati2 + teDhenat.Rabati3 ?? 0;
                 decimal vatRate = 0.18m; // 18% VAT rate as a decimal
-                decimal totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
-                decimal vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+                decimal totalBeforeVAT = 0.00m;
+                decimal vatAmount = 0.00m;
+
+                if(regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("POROSI"))
+                {
+                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT ;
+                }
+                else
+                {
+                    totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                    vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+                }
 
                 TotaliMeTVSH18 += totalBeforeVAT;
                 TotaliPaTVSH18 += totalBeforeVAT - vatAmount;
-                Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+
+                if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("POROSI"))
+                {
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) +
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) +
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                }
+                else
+                {
+
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+                }
             }
 
             foreach (var teDhenat in totTVSH8)
             {
                 decimal rabati = teDhenat.Rabati1 + teDhenat.Rabati2 + teDhenat.Rabati3 ?? 0;
                 decimal vatRate = 0.08m; // 8% VAT rate as a decimal
-                decimal totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
-                decimal vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+                decimal totalBeforeVAT = 0.00m;
+                decimal vatAmount = 0.00m;
+
+                if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("POROSI"))
+                {
+                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+                }
+                else
+                {
+                    totalBeforeVAT = Convert.ToDecimal(teDhenat.QmimiBleres * teDhenat.SasiaStokut - (teDhenat.QmimiBleres * teDhenat.SasiaStokut * rabati / 100));
+                    vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
+                }
 
                 TotaliMeTVSH8 += totalBeforeVAT;
                 TotaliPaTVSH8 += totalBeforeVAT - vatAmount;
-                Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+
+                if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("POROSI"))
+                {
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) +
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) +
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                }
+                else
+                {
+
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiBleres * teDhenat.SasiaStokut) * rabati / 100);
+                }
             }
 
 
@@ -189,11 +242,49 @@ namespace WebAPI.Controllers
                     x.Rabati1,
                     x.Rabati2,
                     x.Rabati3,
-                    x.IdProduktitNavigation.IdnjesiaMateseNavigation.NjesiaMatese1
+                    x.IdProduktitNavigation.IdnjesiaMateseNavigation.NjesiaMatese1,
+                    SasiaAktualeNeStok = x.IdProduktitNavigation.StokuQmimiProduktit.SasiaNeStok
                 })
                .ToListAsync();
 
             return Ok(teDhenat);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("perditesoFaturen")]
+        public async Task<IActionResult> PerditesoFaturen(int idKalulimit, [FromBody] Faturat fat)
+        {
+            var fatura = await _context.Faturats.FindAsync(idKalulimit);
+            if (fatura == null)
+            {
+                return NotFound();
+            }
+
+            fatura.Rabati = fat.Rabati;
+            fatura.NrFatures = fat.NrFatures;
+            fatura.NrRendorFatures = fat.NrRendorFatures;
+            fatura.StatusiPageses = fat.StatusiPageses;
+            fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
+            fatura.Idpartneri = fat.Idpartneri;
+            fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
+            fatura.LlojiPageses = fat.LlojiPageses;
+            fatura.PershkrimShtese = fat.PershkrimShtese;
+            fatura.StafiId = fat.StafiId;
+            fatura.TotaliPaTvsh = fat.TotaliPaTvsh;
+            fatura.Tvsh = fat.Tvsh;
+            fatura.DataRegjistrimit = fat.DataRegjistrimit;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(fatura);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -229,6 +320,26 @@ namespace WebAPI.Controllers
                 return BadRequest("Invalid id");
 
             _context.TeDhenatFaturats.Remove(produkti);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpDelete]
+        [Route("ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit")]
+        public async Task<IActionResult> DeleteByIdKalkulimi(int idKalkulimi)
+        {
+            var teDhenatKalkulimi = await _context.TeDhenatFaturats.Where(x => x.IdRegjistrimit == idKalkulimi).ToListAsync();
+
+            if (teDhenatKalkulimi == null)
+                return BadRequest("Invalid id");
+
+            foreach (var produkti in teDhenatKalkulimi)
+            {
+                _context.TeDhenatFaturats.Remove(produkti);
+            }
+
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -315,6 +426,10 @@ namespace WebAPI.Controllers
                     x.IdProduktitNavigation.Barkodi,
                     x.IdProduktitNavigation.KodiProduktit,
                     x.SasiaStokut,
+                    x.IdProduktitNavigation.StokuQmimiProduktit.SasiaNeStok,
+                    x.IdProduktitNavigation.StokuQmimiProduktit.QmimiMeShumic,
+                    x.IdProduktitNavigation.StokuQmimiProduktit.QmimiProduktit,
+                    x.IdProduktitNavigation.SasiaShumices,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,
