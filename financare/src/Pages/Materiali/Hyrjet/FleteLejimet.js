@@ -31,7 +31,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import dayjs from "dayjs";
+import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -44,6 +44,7 @@ function KalkulimiIMallit(props) {
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
   const [Partneri, setPartneri] = useState(0);
   const [nrFatures, setNrFatures] = useState("");
+  const [pershkrimShtese, setPershkrimShtese] = useState("");
   const today = new Date();
   const initialDate = today.toISOString().split("T")[0]; // Format as 'yyyy-MM-dd'
   const [dataEFatures, setDataEFatures] = useState(initialDate);
@@ -67,6 +68,12 @@ function KalkulimiIMallit(props) {
   const [dataFundit, setDataFundit] = useState(null);const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
+
+  const [inputValue, setInputValue] = useState("");
+  const [filteredItems, setFilteredItems] = useState(partneret);
+  const selectedIndex = useKeyboardNavigation(filteredItems);
+
+  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
 
   const navigate = useNavigate();
 
@@ -180,9 +187,11 @@ function KalkulimiIMallit(props) {
             totaliPaTvsh: totPaTVSH,
             tvsh: TVSH,
             idpartneri: Partneri,
-            statusiPageses: statusiIPageses,
-            llojiPageses: llojiIPageses,
-            nrFatures: nrFatures,
+            statusiPageses: "Pa Paguar",
+            llojiPageses: "Cash",
+            nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
+            llojiKalkulimit: "FL",
+            pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
           },
           authentikimi
@@ -232,7 +241,6 @@ function KalkulimiIMallit(props) {
     setShfaqTeDhenat(false);
   };
 
-  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
   useEffect(() => {
     if (llojiIPageses === "Borxh") {
       setStatusiIPagesesValue("Borxh");
@@ -240,6 +248,35 @@ function KalkulimiIMallit(props) {
       setStatusiIPagesesValue(statusiIPageses ? statusiIPageses : 0);
     }
   }, [llojiIPageses, statusiIPageses]);
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredItems.length > 0) {
+        handleNdryshoPartneri(filteredItems[selectedIndex]);
+      }
+
+      ndrroField(e, "pershkrimShtese");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setInputValue(value);
+
+    const filtered = partneret.filter((item) =>
+      item.emriBiznesit.toLowerCase().includes(value)
+    );
+
+    setFilteredItems(filtered);
+  };
+
+  function handleNdryshoPartneri(partneri) {
+    setPartneri(partneri.idpartneri);
+
+    setFilteredItems([]);
+    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
+  }
 
   return (
     <>
@@ -294,67 +331,73 @@ function KalkulimiIMallit(props) {
 
               <Container fluid>
                 <Row>
-                  <Col>
-                    <Form>
-                      <Form.Group controlId="idDheEmri">
-                        <Form.Group>
-                          <Form.Label>Nr. Rendor i Kalkulimit</Form.Label>
-                          <Form.Control
-                            id="nrRendorKalkulimit"
-                            type="number"
-                            value={
-                              nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
-                            }
-                            disabled
-                          />
-                        </Form.Group>
-                        <Form.Label>Partneri</Form.Label>
-                        <select
-                          placeholder="Partneri"
-                          id="Partneri"
-                          className="form-select"
-                          value={Partneri ? Partneri : 0}
-                          onChange={(e) => {
-                            setPartneri(e.target.value);
-                          }}
-                          onKeyDown={(e) => {
-                            ndrroField(e, "nrFatures");
-                          }}
-                        >
-                          <option defaultValue value={0} key={0} disabled>
-                            Zgjedhni Partnerin
-                          </option>
-                          {partneret.map((item) => {
-                            return (
-                              <option
-                                key={item.idpartneri}
-                                value={item.idpartneri}
-                              >
-                                {item.emriBiznesit}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </Form.Group>
+                <Col>
+                    <Form.Group controlId="idDheEmri">
                       <Form.Group>
-                        <Form.Label>Nr. Fatures</Form.Label>
+                        <Form.Label>Nr. Rendor i Flete Lejimit</Form.Label>
                         <Form.Control
-                          id="nrFatures"
+                          id="nrRendorKalkulimit"
+                          type="number"
+                          value={
+                            nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
+                          }
+                          disabled
+                        />
+                      </Form.Group>
+                    </Form.Group>
+                    <Form.Group controlId="idDheEmri">
+                      <Form.Label>Partneri</Form.Label>
+                      <Form.Control
+                        type="text"
+                        className="form-control styled-input"
+                        placeholder="Zgjedhni Partnerin"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleInputKeyDown}
+                        onFocus={handleInputChange}
+                      />
+
+                      <div
+                        className="container"
+                        style={{ position: "relative" }}
+                      >
+                        <ul className="list-group mt-2 searchBoxi">
+                          {filteredItems.map((item, index) => (
+                            <li
+                              key={item.idpartneri}
+                              className={`list-group-item${
+                                selectedIndex === index ? " active" : ""
+                              }`}
+                              onClick={() => handleNdryshoPartneri(item)}
+                            >
+                              {item.emriBiznesit}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="pershkrimShtese">
+                      <Form.Group>
+                        <Form.Label>Pershkrim Shtese</Form.Label>
+                        <Form.Control
+                          id="pershkrimShtese"
                           type="text"
-                          value={nrFatures}
+                          value={pershkrimShtese}
                           onChange={(e) => {
-                            setNrFatures(e.target.value);
+                            setPershkrimShtese(e.target.value);
                           }}
                           onKeyDown={(e) => {
                             ndrroField(e, "dataEFatures");
                           }}
                         />
                       </Form.Group>
-                    </Form>
+                    </Form.Group>
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Data e Fatures</Form.Label>
+                      <Form.Label>Data e Flete Lejimit</Form.Label>
                       <Form.Control
                         id="dataEFatures"
                         type="date"
@@ -367,87 +410,6 @@ function KalkulimiIMallit(props) {
                         }}
                       />
                     </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Lloji i Pageses</Form.Label>
-                      <select
-                        id="llojiIPageses"
-                        placeholder="LlojiIPageses"
-                        className="form-select"
-                        value={llojiIPageses ? llojiIPageses : 0}
-                        onChange={(e) => {
-                          setLlojiIPageses(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "statusiIPageses");
-                        }}
-                      >
-                        <option defaultValue value={0} key={0} disabled>
-                          Zgjedhni Llojin e Pageses
-                        </option>
-                        <option key={1} value="Cash">
-                          Cash
-                        </option>
-                        <option key={2} value="Banke">
-                          Banke
-                        </option>
-                        <option key={3} value="Borxh">
-                          Borxh
-                        </option>
-                      </select>
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Statusi i Pageses</Form.Label>
-                      <select
-                        id="statusiIPageses"
-                        placeholder="Statusi i Pageses"
-                        className="form-select"
-                        value={statusiIPagesesValue}
-                        onChange={(e) => {
-                          setStatusiIPageses(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "totPaTVSH");
-                        }}
-                        disabled={llojiIPageses === "Borxh" ? true : false}
-                      >
-                        <option defaultValue value={0} key={0} disabled>
-                          Zgjedhni Statusin e Pageses
-                        </option>
-                        <option key={1} value="E Paguar">
-                          E Paguar
-                        </option>
-                        <option key={2} value="Borxh">
-                          Pa Paguar
-                        </option>
-                      </select>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Totali Pa TVSH</Form.Label>
-                      <Form.Control
-                        id="totPaTVSH"
-                        type="number"
-                        value={totPaTVSH}
-                        onChange={(e) => {
-                          setTotPaTVSH(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "TVSH");
-                        }}
-                      />
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>TVSH</Form.Label>
-                      <Form.Control
-                        id="TVSH"
-                        type="number"
-                        value={TVSH}
-                        onChange={(e) => {
-                          setTVSH(e.target.value);
-                        }}
-                      />
-                    </Form.Group>
                     <br />
                     <Button
                       className="mb-3 Butoni"
@@ -457,7 +419,7 @@ function KalkulimiIMallit(props) {
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Kalkulimeve</h1>
+                <h1 className="title">Lista e Flete Lejimeve</h1>
                 <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />

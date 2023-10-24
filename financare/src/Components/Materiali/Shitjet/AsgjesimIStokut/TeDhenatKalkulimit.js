@@ -142,8 +142,7 @@ function TeDhenatKalkulimit(props) {
                         teDhenatFat.regjistrimet.username}
                     </p>
                     <p>
-                      <strong>Lloji Fatures:</strong>{" "}
-                      {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                      <strong>Lloji Fatures:</strong> Asgjesim i Stokut
                     </p>
                     <p>
                       <strong>Statusi i kalkulimit:</strong>{" "}

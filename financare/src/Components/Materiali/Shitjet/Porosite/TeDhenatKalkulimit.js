@@ -172,7 +172,7 @@ function TeDhenatKalkulimit(props) {
                       {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
                     </p>
                     <p>
-                      <strong>Lloji Fatures:</strong> Oferte
+                      <strong>Lloji Fatures:</strong> Porosi
                     </p>
                     <p>
                       <strong>Statusi i kalkulimit:</strong>{" "}

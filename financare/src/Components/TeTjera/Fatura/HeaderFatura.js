@@ -117,7 +117,7 @@ function HeaderFatura(props) {
                   teDhenatFat.regjistrimet &&
                   teDhenatFat.regjistrimet.llojiKalkulimit &&
                   teDhenatFat.regjistrimet.llojiKalkulimit === "HYRJE"
-                ? "KALKULIM I MALLIt"
+                ? "KALKULIM I MALLIT"
                 : teDhenatFat &&
                   teDhenatFat.regjistrimet &&
                   teDhenatFat.regjistrimet.llojiKalkulimit &&

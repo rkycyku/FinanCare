@@ -142,8 +142,7 @@ function TeDhenatKalkulimit(props) {
                       {teDhenatFat && teDhenatFat.regjistrimet.nrRendorFatures}
                     </p>
                     <p>
-                      <strong>Lloji Fatures:</strong>{" "}
-                      {teDhenatFat && teDhenatFat.regjistrimet.emriBiznesit}
+                      <strong>Lloji Fatures:</strong> Kthim i Mallit te Shitur
                     </p>
                     <p>
                       <strong>Statusi i kalkulimit:</strong>{" "}

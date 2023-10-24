@@ -31,7 +31,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import dayjs from "dayjs";
+import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -67,6 +67,12 @@ function KalkulimiIMallit(props) {
   const [dataFundit, setDataFundit] = useState(null);const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
+
+  const [inputValue, setInputValue] = useState("");
+  const [filteredItems, setFilteredItems] = useState(partneret);
+  const selectedIndex = useKeyboardNavigation(filteredItems);
+
+  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
 
   const navigate = useNavigate();
 
@@ -232,7 +238,6 @@ function KalkulimiIMallit(props) {
     setShfaqTeDhenat(false);
   };
 
-  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
   useEffect(() => {
     if (llojiIPageses === "Borxh") {
       setStatusiIPagesesValue("Borxh");
@@ -240,6 +245,35 @@ function KalkulimiIMallit(props) {
       setStatusiIPagesesValue(statusiIPageses ? statusiIPageses : 0);
     }
   }, [llojiIPageses, statusiIPageses]);
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (filteredItems.length > 0) {
+        handleNdryshoPartneri(filteredItems[selectedIndex]);
+      }
+
+      ndrroField(e, "pershkrimShtese");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setInputValue(value);
+
+    const filtered = partneret.filter((item) =>
+      item.emriBiznesit.toLowerCase().includes(value)
+    );
+
+    setFilteredItems(filtered);
+  };
+
+  function handleNdryshoPartneri(partneri) {
+    setPartneri(partneri.idpartneri);
+
+    setFilteredItems([]);
+    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
+  }
 
   return (
     <>
@@ -308,33 +342,35 @@ function KalkulimiIMallit(props) {
                             disabled
                           />
                         </Form.Group>
-                        <Form.Label>Partneri</Form.Label>
-                        <select
-                          placeholder="Partneri"
-                          id="Partneri"
-                          className="form-select"
-                          value={Partneri ? Partneri : 0}
-                          onChange={(e) => {
-                            setPartneri(e.target.value);
-                          }}
-                          onKeyDown={(e) => {
-                            ndrroField(e, "nrFatures");
-                          }}
-                        >
-                          <option defaultValue value={0} key={0} disabled>
-                            Zgjedhni Partnerin
-                          </option>
-                          {partneret.map((item) => {
-                            return (
-                              <option
-                                key={item.idpartneri}
-                                value={item.idpartneri}
-                              >
-                                {item.emriBiznesit}
-                              </option>
-                            );
-                          })}
-                        </select>
+                      <Form.Label>Partneri</Form.Label>
+                      <Form.Control
+                        type="text"
+                        className="form-control styled-input"
+                        placeholder="Zgjedhni Partnerin"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleInputKeyDown}
+                        onFocus={handleInputChange}
+                      />
+
+                      <div
+                        className="container"
+                        style={{ position: "relative" }}
+                      >
+                        <ul className="list-group mt-2 searchBoxi">
+                          {filteredItems.map((item, index) => (
+                            <li
+                              key={item.idpartneri}
+                              className={`list-group-item${
+                                selectedIndex === index ? " active" : ""
+                              }`}
+                              onClick={() => handleNdryshoPartneri(item)}
+                            >
+                              {item.emriBiznesit}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Nr. Fatures</Form.Label>
@@ -543,6 +579,8 @@ function KalkulimiIMallit(props) {
                       <th scope="col">Partneri</th>
                       <th scope="col">Totali Pa TVSH €</th>
                       <th scope="col">TVSH €</th>
+                      <th scope="col">Totali €</th>
+                      <th scope="col">Tot. nga Regjistrimi</th>
                       <th scope="col">Data e Fatures</th>
                       <th scope="col">Statusi Pageses</th>
                       <th scope="col">Lloji Pageses</th>
@@ -578,6 +616,8 @@ function KalkulimiIMallit(props) {
                           <td>{k.emriBiznesit}</td>
                           <td>{k.totaliPaTvsh.toFixed(2)} €</td>
                           <td>{k.tvsh.toFixed(2)} €</td>
+                          <td>{parseFloat(k.totaliPaTvsh + k.tvsh).toFixed(2)} €</td>
+                          <td>{k.pershkrimShtese}</td>
                           <td>
                             {new Date(k.dataRegjistrimit).toLocaleDateString(
                               "en-GB",

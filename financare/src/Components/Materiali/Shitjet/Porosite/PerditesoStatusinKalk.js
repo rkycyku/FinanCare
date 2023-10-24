@@ -51,7 +51,7 @@ function PerditesoStatusinKalk(props) {
     const shfaqKalkulimet = async () => {
       try {
         const kalkulimet = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimet`, authentikimi);
-        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "POROSI")
+        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "FAT")
         setKalkulimet(kthimet);
       } catch (err) {
         console.log(err);
@@ -65,7 +65,7 @@ function PerditesoStatusinKalk(props) {
     const shfaqKalkulimet = async () => {
       try {
         const kalkulimet = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
-        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "POROSI")
+        const kthimet = kalkulimet.data.filter((item) => item.llojiKalkulimit === "FAT")
         setKalkulimetEFiltruara(kthimet);
       } catch (err) {
         console.log(err);

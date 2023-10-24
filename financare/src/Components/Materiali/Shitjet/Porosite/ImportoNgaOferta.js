@@ -113,7 +113,9 @@ function PerditesoStatusinKalk(props) {
           authentikimi
         );
         const ofertat = kalkulimet.data.filter(
-          (item) => item.llojiKalkulimit === "OFERTE"
+          (item) =>
+            item.llojiKalkulimit === "OFERTE" &&
+            item.statusiKalkulimit === "true"
         );
         const ofertatPerPartnerin = ofertat.filter(
           (item) => item.idpartneri === props.partneri
@@ -192,6 +194,11 @@ function PerditesoStatusinKalk(props) {
           }
         });
     }
+
+    await axios.delete(
+      `https://localhost:7285/api/Faturat/fshijKalkulimin?idKalkulimi=${idRegjistrimit}`,
+      authentikimi
+    );
 
     setImportoOfertenKonfirmimi(false);
     setEPara(false);
@@ -332,7 +339,13 @@ function PerditesoStatusinKalk(props) {
                 dateStyle: "short",
               })}
             </span>
-            <br />
+            <hr />
+            <strong style={{ fontSize: "10pt" }}>
+              Oferta do te fshihet dhe si e tille nuk mund te perdoret me!
+              <br />
+              Te gjitha produktet ne fature do largohen dhe do te zevendesohen
+              me ato te ofertes!
+            </strong>
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -343,6 +356,7 @@ function PerditesoStatusinKalk(props) {
             </Button>
             <Button
               size="sm"
+              variant="warning"
               onClick={() => {
                 importoOferte(idRegjistrimit);
               }}>

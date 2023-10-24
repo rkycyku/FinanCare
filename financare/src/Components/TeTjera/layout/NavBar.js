@@ -194,10 +194,10 @@ function NavBar(props) {
                       </MDBDropdownToggle>
                       <MDBDropdownMenu>
                         <Link to="/Porosite">
-                          <MDBDropdownItem link>Porosite #</MDBDropdownItem>
+                          <MDBDropdownItem link>Porosite</MDBDropdownItem>
                         </Link>
                         <Link to="/Ofertat">
-                          <MDBDropdownItem link>Ofertat #</MDBDropdownItem>
+                          <MDBDropdownItem link>Ofertat</MDBDropdownItem>
                         </Link>
                         <Link to="/Statistika">
                           <MDBDropdownItem link>

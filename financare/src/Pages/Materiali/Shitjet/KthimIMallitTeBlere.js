@@ -71,6 +71,12 @@ function KthimIMallitTeBlere(props) {
 
   const [teDhenat, setTeDhenat] = useState([]);
 
+  const [inputValue, setInputValue] = useState("");
+  const [filteredItems, setFilteredItems] = useState(partneret);
+  const selectedIndex = useKeyboardNavigation(filteredItems);
+
+  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
+
   const navigate = useNavigate();
 
   const getID = localStorage.getItem("id");
@@ -238,7 +244,6 @@ function KthimIMallitTeBlere(props) {
     setShfaqTeDhenat(false);
   };
 
-  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
   useEffect(() => {
     if (llojiIPageses === "Borxh") {
       setStatusiIPagesesValue("Borxh");
@@ -246,10 +251,6 @@ function KthimIMallitTeBlere(props) {
       setStatusiIPagesesValue(statusiIPageses ? statusiIPageses : 0);
     }
   }, [llojiIPageses, statusiIPageses]);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(partneret);
-  const selectedIndex = useKeyboardNavigation(filteredItems);
 
   const handleInputKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -278,8 +279,6 @@ function KthimIMallitTeBlere(props) {
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
-
-    console.log(partneri);
   }
 
   return (

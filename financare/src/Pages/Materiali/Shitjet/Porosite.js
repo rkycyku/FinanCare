@@ -98,7 +98,7 @@ function KthimIMallitTeBlere(props) {
           authentikimi
         );
         const kthimet = kalkulimi.data.filter(
-          (item) => item.llojiKalkulimit === "POROSI"
+          (item) => item.llojiKalkulimit === "FAT"
         );
         console.log(kthimet);
         setKalkulimet(kthimet);
@@ -155,7 +155,7 @@ function KthimIMallitTeBlere(props) {
     const vendosNrFaturesMeRradhe = async () => {
       try {
         const nrFat = await axios.get(
-          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=POROSI`,
+          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=FAT`,
           authentikimi
         );
         setNrRendorKalkulimit(parseInt(nrFat.data));
@@ -189,7 +189,7 @@ function KthimIMallitTeBlere(props) {
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
-            llojiKalkulimit: "POROSI",
+            llojiKalkulimit: "FAT",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
           },
@@ -214,7 +214,7 @@ function KthimIMallitTeBlere(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${idKalkulimitEdit}&statusi=true`,
           {},
           authentikimi
         )
@@ -531,8 +531,11 @@ function KthimIMallitTeBlere(props) {
                       <th scope="col">Partneri</th>
                       <th scope="col">Pershkrimi Shtese</th>
                       <th scope="col">Data e Fatures</th>
+                      <th scope="col">Tot - TVSH €</th>
+                      <th scope="col">TVSH €</th>
+                      <th scope="col">R. €</th>
+                      <th scope="col">Totali €</th>
                       <th scope="col">Lloji Pageses</th>
-                      <th scope="col">Referneti</th>
                       <th scope="col">Statusi Kalkulimit</th>
                       <th scope="col">Funksione</th>
                     </tr>
@@ -569,8 +572,12 @@ function KthimIMallitTeBlere(props) {
                               { dateStyle: "short" }
                             )}
                           </td>
+                          
+                          <td>{parseFloat(k.totaliPaTvsh).toFixed(2)}</td>
+                          <td>{parseFloat(k.tvsh).toFixed(2)}</td>
+                          <td>{parseFloat(k.rabati).toFixed(2)}</td>
+                          <td>{parseFloat(k.totaliPaTvsh + k.tvsh).toFixed(2)}</td>
                           <td>{k.llojiPageses}</td>
-                          <td>{k.username}</td>
                           <td>
                             {k.statusiKalkulimit === "true"
                               ? "I Mbyllur"

@@ -245,8 +245,34 @@ function RegjistroFaturen(props) {
           },
           authentikimi
         )
-        .then(() => {
+        .then(async () => {
           setPerditeso(Date.now());
+          await axios
+            .get(
+              `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
+              authentikimi
+            )
+            .then(async (r) => {
+              await axios.put(
+                `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
+                {
+                  dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+                  stafiId: r.data.regjistrimet.stafiId,
+                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
+                  idpartneri: r.data.regjistrimet.idpartneri,
+                  statusiPageses: r.data.statusiPageses,
+                  llojiPageses: r.data.regjistrimet.llojiPageses,
+                  llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
+                  nrFatures: r.data.regjistrimet.nrFatures,
+                  statusiKalkulimit: r.data.regjistrimet.statusiKalkulimit,
+                  pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
+                  rabati: parseFloat(r.data.rabati),
+                  nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
+                },
+                authentikimi
+              );
+            });
         });
 
       setProduktiID(0);
@@ -300,8 +326,34 @@ function RegjistroFaturen(props) {
         `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
         authentikimi
       )
-      .then(() => {
-        setPerditeso(Date.now);
+      .then(async () => {
+        setPerditeso(Date.now());
+        await axios
+          .get(
+            `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
+            authentikimi
+          )
+          .then(async (r) => {
+            await axios.put(
+              `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
+              {
+                dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+                stafiId: r.data.regjistrimet.stafiId,
+                totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
+                idpartneri: r.data.regjistrimet.idpartneri,
+                statusiPageses: r.data.statusiPageses,
+                llojiPageses: r.data.regjistrimet.llojiPageses,
+                llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
+                nrFatures: r.data.regjistrimet.nrFatures,
+                statusiKalkulimit: r.data.regjistrimet.statusiKalkulimit,
+                pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
+                rabati: parseFloat(r.data.rabati),
+                nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
+              },
+              authentikimi
+            );
+          });
       });
   }
 
@@ -342,8 +394,34 @@ function RegjistroFaturen(props) {
           },
           authentikimi
         )
-        .then(() => {
+        .then(async () => {
           setPerditeso(Date.now());
+          await axios
+            .get(
+              `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
+              authentikimi
+            )
+            .then(async (r) => {
+              await axios.put(
+                `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
+                {
+                  dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+                  stafiId: r.data.regjistrimet.stafiId,
+                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
+                  idpartneri: r.data.regjistrimet.idpartneri,
+                  statusiPageses: r.data.statusiPageses,
+                  llojiPageses: r.data.regjistrimet.llojiPageses,
+                  llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
+                  nrFatures: r.data.regjistrimet.nrFatures,
+                  statusiKalkulimit: r.data.regjistrimet.statusiKalkulimit,
+                  pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
+                  rabati: parseFloat(r.data.rabati),
+                  nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
+                },
+                authentikimi
+              );
+            });
         });
 
       setProduktiID(0);
