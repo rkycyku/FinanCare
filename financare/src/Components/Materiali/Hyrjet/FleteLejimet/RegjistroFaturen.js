@@ -191,6 +191,7 @@ function RegjistroFaturen(props) {
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
+          rabati1: selectedOption.rabati ?? 0,
           rabati3: rabati3,
           sasiaShumices: selectedOption.sasiaShumices,
         },
@@ -222,6 +223,7 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter
       );
       setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
+      setRabati1((selectedOption?.rabati !== null ? selectedOption.rabati : 0) ?? konifirmoProduktinLista[0].rabati1);
       setRabati3(rabati3 ?? konifirmoProduktinLista[0].rabati3);
       setQmimiShites(qmimiShites ?? konifirmoProduktinLista[0].qmimiShites);
       setSasiaShumices(
@@ -263,12 +265,7 @@ function RegjistroFaturen(props) {
   };
 
   const handleSubmit = async (event) => {
-    if (
-      produktiID === 0 ||
-      sasia <= 0 ||
-      qmimiShites <= 0 ||
-      qmimiBleres <= 0
-    ) {
+    if (produktiID === 0 || sasia <= 0) {
       event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
       setTipiMesazhit("danger");
@@ -286,6 +283,7 @@ function RegjistroFaturen(props) {
             qmimiBleres: qmimiB,
             qmimiShites: qmimiSH,
             qmimiShitesMeShumic: qmimiSH2,
+            rabati1: rabati1,
             rabati3: rabati3,
           },
           authentikimi
@@ -347,7 +345,6 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          console.log(produkti);
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
             {
@@ -429,12 +426,7 @@ function RegjistroFaturen(props) {
   }
 
   async function handleEdito(id) {
-    if (
-      produktiID === 0 ||
-      sasia <= 0 ||
-      qmimiShites <= 0 ||
-      qmimiBleres <= 0
-    ) {
+    if (produktiID === 0 || sasia <= 0) {
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
@@ -713,7 +705,7 @@ function RegjistroFaturen(props) {
               <Col>
                 <Row>
                   <h5>
-                    <strong>Nr. Porosise:</strong>{" "}
+                    <strong>Nr. Flete Lejimit:</strong>{" "}
                     {teDhenatFatures.regjistrimet &&
                       teDhenatFatures.regjistrimet.nrRendorFatures}
                   </h5>
@@ -734,6 +726,11 @@ function RegjistroFaturen(props) {
                     <strong>Lloji Pageses:</strong>{" "}
                     {teDhenatFatures.regjistrimet &&
                       teDhenatFatures.regjistrimet.llojiPageses}
+                  </h5>
+                  <h5>
+                    <strong>Statusi Pageses:</strong>{" "}
+                    {teDhenatFatures.regjistrimet &&
+                      teDhenatFatures.regjistrimet.statusiPageses}
                   </h5>
 
                   <hr />
@@ -760,9 +757,9 @@ function RegjistroFaturen(props) {
                   <th>Emri Produktit</th>
                   <th>Sasia</th>
                   <th>Qmimi Shites</th>
-                  <th>R. 1</th>
-                  <th>R. 2</th>
-                  <th>R. 3</th>
+                  <th>R. 1 %</th>
+                  <th>R. 2 %</th>
+                  <th>R. 3 %</th>
                   <th>Qmimi Shites - Rabati</th>
                   <th>Totali</th>
                   <th>Funksione</th>

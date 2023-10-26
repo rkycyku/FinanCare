@@ -64,8 +64,10 @@ function PerditesoStatusinKalk(props) {
   useEffect(() => {
     const shfaqKalkulimet = async () => {
       try {
-        const kalkulimet = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
-        setKalkulimetEFiltruara(kalkulimet.data);
+        const kalkulimi = await axios.get(`https://localhost:7285/api/Faturat/shfaqRegjistrimetSipasStatusit?statusi=${statusiIFiltrimit}`, authentikimi);
+        
+        const kalkulimet = kalkulimi.data.filter((item) => item.llojiKalkulimit === "FL")
+        setKalkulimetEFiltruara(kalkulimet);
       } catch (err) {
         console.log(err);
       }

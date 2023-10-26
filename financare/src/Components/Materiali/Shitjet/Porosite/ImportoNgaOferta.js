@@ -57,9 +57,17 @@ function PerditesoStatusinKalk(props) {
   const muaji = (dataPorosise.getMonth() + 1).toString().padStart(2, "0");
   const viti = dataPorosise.getFullYear().toString().slice(-2);
 
-  const barkodi = `${
+  const barkodiOferte = `${
     teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
   }-${dita}${muaji}${viti}-${"OFERTE"}-${nrFatures}`;
+
+  const barkodiFat = `${
+    teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
+  }-${dita}${muaji}${viti}-${"FAT"}-${
+    detajetRegjistrimi &&
+      detajetRegjistrimi.regjistrimet &&
+    detajetRegjistrimi.regjistrimet.nrRendorFatures
+  }`;
 
   useEffect(() => {
     if (getID) {
@@ -158,15 +166,12 @@ function PerditesoStatusinKalk(props) {
           " Referenti: " +
           detajetRegjistrimi.regjistrimet.username +
           ", Nr. Ofertes: " +
-          barkodi,
+          barkodiOferte,
         rabati: parseFloat(detajetRegjistrimi.rabati),
         nrRendorFatures: detajetRegjistrimi.regjistrimet.nrRendorFatures,
       },
       authentikimi
     );
-
-    console.log(detajetRegjistrimi.regjistrimet);
-
     for (let produktet of kalkulimi.data) {
       await axios
         .post(
@@ -251,8 +256,12 @@ function PerditesoStatusinKalk(props) {
           idpartneri: idPartneri,
           nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
           llojiKalkulimit: "FL",
-          pershkrimShtese: "Flete Lejimi per munges malli",
+          pershkrimShtese:
+            "Flete Lejimi per munges malli" +
+            ", Vlene per Faturen Nr: <strong>" +
+            barkodiFat +"</strong>",
           nrRendorFatures: nrRendorKalkulimit + 1,
+          statusiPageses: "Pa Paguar",
         },
         authentikimi
       )

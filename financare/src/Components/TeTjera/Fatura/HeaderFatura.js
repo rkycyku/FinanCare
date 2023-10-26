@@ -92,8 +92,13 @@ function HeaderFatura(props) {
           <p>
             <strong>Shenime Shtese: </strong>
             {teDhenatFat &&
-              teDhenatFat.regjistrimet &&
-              teDhenatFat.regjistrimet.pershkrimShtese}
+              teDhenatFat.regjistrimet && (
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: teDhenatFat.regjistrimet.pershkrimShtese
+                  }}
+                />
+              )}
           </p>
           <strong>
             Faqe: {props.NrFaqes} / {props.NrFaqeve}

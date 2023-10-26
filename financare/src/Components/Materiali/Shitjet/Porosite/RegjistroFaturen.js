@@ -149,15 +149,24 @@ function RegjistroFaturen(props) {
       totalStokut += produkti.sasiaStokut;
       totalQmimi += produkti.sasiaStokut * produkti.qmimiShites;
       totalFat +=
-        produkti.sasiaStokut *
         (produkti.qmimiShites -
-          produkti.qmimiShites * (produkti.rabati3 / 100));
+        produkti.qmimiShites * (produkti.rabati1 / 100) -
+        (produkti.qmimiShites -
+          produkti.qmimiShites * (produkti.rabati1 / 100)) *
+          (produkti.rabati2 / 100) -
+        (produkti.qmimiShites -
+          produkti.qmimiShites * (produkti.rabati1 / 100) -
+          (produkti.qmimiShites -
+            produkti.qmimiShites * (produkti.rabati1 / 100)) *
+            (produkti.rabati2 / 100)) *
+          (produkti.rabati3 / 100)) * produkti.sasiaStokut;
     });
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut);
     setTotQmimi(totalQmimi);
     setTotFat(totalFat);
   }, [produktetNeKalkulim]);
+
 
   const handleProduktiChange = (selectedOption) => {
     const kontrolloProduktin = produktetNeKalkulim.filter(
@@ -183,6 +192,7 @@ function RegjistroFaturen(props) {
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
+          rabati1: selectedOption.rabati ?? 0,
           rabati3: rabati3,
           sasiaShumices: selectedOption.sasiaShumices,
         },
@@ -214,6 +224,7 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter
       );
       setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
+      setRabati1((selectedOption?.rabati !== null ? selectedOption.rabati : 0) ?? konifirmoProduktinLista[0].rabati1);
       setRabati3(rabati3 ?? konifirmoProduktinLista[0].rabati3);
       setQmimiShites(qmimiShites ?? konifirmoProduktinLista[0].qmimiShites);
       setSasiaShumices(
@@ -273,6 +284,7 @@ function RegjistroFaturen(props) {
             qmimiBleres: qmimiB,
             qmimiShites: qmimiSH,
             qmimiShitesMeShumic: qmimiSH2,
+            rabati1: rabati1,
             rabati3: rabati3,
           },
           authentikimi
@@ -334,7 +346,6 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          console.log(produkti);
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
             {
@@ -771,55 +782,69 @@ function RegjistroFaturen(props) {
                   <th>Emri Produktit</th>
                   <th>Sasia</th>
                   <th>Qmimi Shites</th>
-                  <th>Rabati</th>
+                  <th>R. 1 %</th>
+                  <th>R. 2 %</th>
+                  <th>R. 3 %</th>
                   <th>Qmimi Shites - Rabati</th>
                   <th>Totali</th>
                   <th>Funksione</th>
                 </tr>
               </thead>
               <tbody>
-                {produktetNeKalkulim.map((p, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{p.emriProduktit}</td>
-                    <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
-                    <td>{parseFloat(p.qmimiShites).toFixed(2)} €</td>
-                    <td>{parseFloat(p.rabati3).toFixed(2)} %</td>
-                    <td>
-                      {parseFloat(
-                        p.qmimiShites - p.qmimiShites * (p.rabati3 / 100)
-                      ).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>
-                      {parseFloat(
-                        p.sasiaStokut *
-                          (p.qmimiShites - p.qmimiShites * (p.rabati3 / 100))
-                      ).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>
-                      <div style={{ display: "flex", gap: "0.3em" }}>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          onClick={() => handleFshij(p.id)}>
-                          <FontAwesomeIcon icon={faXmark} />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="warning"
-                          onClick={() => {
-                            handleEdit(p.id, index);
-                            setIdTeDhenatKalk(p.id);
-                          }}>
-                          <FontAwesomeIcon icon={faPenToSquare} />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {produktetNeKalkulim.map((p, index) => {
+                  const qmimiMeTVSHRab = parseFloat(
+                    p.qmimiShites -
+                      p.qmimiShites * (p.rabati1 / 100) -
+                      (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                        (p.rabati2 / 100) -
+                      (p.qmimiShites -
+                        p.qmimiShites * (p.rabati1 / 100) -
+                        (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                          (p.rabati2 / 100)) *
+                        (p.rabati3 / 100)
+                  ).toFixed(3);
+                  const ShumaToT = parseFloat(
+                    qmimiMeTVSHRab * p.sasiaStokut
+                  ).toFixed(3);
+
+                  return (
+                    p && (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{p.emriProduktit}</td>
+                        <td>{parseFloat(p.sasiaStokut).toFixed(2)}</td>
+                        <td>{parseFloat(p.qmimiShites).toFixed(2)} €</td>
+                        <td>{parseFloat(p.rabati1).toFixed(2)} %</td>
+                        <td>{parseFloat(p.rabati2).toFixed(2)} %</td>
+                        <td>{parseFloat(p.rabati3).toFixed(2)} %</td>
+                        <td>{parseFloat(qmimiMeTVSHRab).toFixed(3)} €</td>
+                        <td>{parseFloat(ShumaToT).toFixed(2)} €</td>
+                        <td>
+                          <div style={{ display: "flex", gap: "0.3em" }}>
+                            <Button
+                              size="sm"
+                              variant="danger"
+                              onClick={() => handleFshij(p.id)}>
+                              <FontAwesomeIcon icon={faXmark} />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="warning"
+                              onClick={() => {
+                                handleEdit(p.id, index);
+                                setIdTeDhenatKalk(p.id);
+                              }}>
+                              <FontAwesomeIcon icon={faPenToSquare} />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  );
+                })}
                 <tr>
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -834,6 +859,8 @@ function RegjistroFaturen(props) {
                   <td>-</td>
                   <td>{parseFloat(totStokut).toFixed(2)}</td>
                   <td>{parseFloat(totQmimi).toFixed(2)} €</td>
+                  <td>-</td>
+                  <td>-</td>
                   <td>-</td>
                   <td>-</td>
                   <td>{parseFloat(totFat).toFixed(2)} €</td>

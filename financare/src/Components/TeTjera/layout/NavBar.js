@@ -154,9 +154,9 @@ function NavBar(props) {
                         <Link to="/NjesiaMatese">
                           <MDBDropdownItem link>Njesia Matese</MDBDropdownItem>
                         </Link>
-                        <Link to="#">
+                        <Link to="/KartelaEArtikullit">
                           <MDBDropdownItem link>
-                            Kartela e Artikullit #
+                            Kartela e Artikullit
                           </MDBDropdownItem>
                         </Link>
                         <MDBDropdownItem divider />
@@ -184,7 +184,7 @@ function NavBar(props) {
                           </MDBDropdownItem>
                         </Link>
                         <Link to="/FleteLejimet">
-                          <MDBDropdownItem link>Flete Lejimet #</MDBDropdownItem>
+                          <MDBDropdownItem link>Flete Lejimet</MDBDropdownItem>
                         </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>

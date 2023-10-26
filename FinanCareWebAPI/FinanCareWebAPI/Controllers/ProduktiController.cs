@@ -87,44 +87,6 @@ namespace TechStoreWebAPI.Controllers
             return Ok(Produkti);
         }
 
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(int id)
-        {
-            var produkti = await _context.Produktis
-                .Include(p => p.IdpartneriNavigation)
-                .Include(p => p.IdnjesiaMateseNavigation)
-                .Include(p => p.StokuQmimiProduktit)
-                .Where(p => p.ProduktiId == id)
-                .Select(p => new
-                {
-                    p.ProduktiId,
-                    p.EmriProduktit,
-                    p.Idpartneri,
-                    p.IdpartneriNavigation.EmriBiznesit,
-                    p.IdnjesiaMatese,
-                    p.IdnjesiaMateseNavigation.NjesiaMatese1,
-                    p.Barkodi,
-                    p.KodiProduktit,
-                    p.LlojiTVSH,
-                    p.StokuQmimiProduktit.SasiaNeStok,
-                    p.StokuQmimiProduktit.QmimiProduktit,
-                    p.StokuQmimiProduktit.QmimiBleres,
-                    p.StokuQmimiProduktit.QmimiMeShumic,
-                    p.ZbritjaQmimitProduktit.Rabati,
-                    p.SasiaShumices,
-                    p.IdgrupiProdukti,
-                    p.IdgrupiProduktitNavigation.GrupiIProduktit,
-                })
-                .FirstOrDefaultAsync();
-
-            if (produkti == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(produkti);
-        }
 
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPost]
@@ -255,6 +217,115 @@ namespace TechStoreWebAPI.Controllers
             var kodiProduktit = $"{partneri.ShkurtesaPartnerit.ToUpper()}{totaliProdukteveNgaPartneri + 1:D4}";
 
             return Ok(kodiProduktit);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("KartelaArtikullit")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            var produkti = await _context.Produktis
+                .Include(p => p.IdpartneriNavigation)
+                .Include(p => p.IdnjesiaMateseNavigation)
+                .Include(p => p.StokuQmimiProduktit)
+                .Where(p => p.ProduktiId == id)
+                .Select(p => new
+                {
+                    p.ProduktiId,
+                    p.EmriProduktit,
+                    p.IdpartneriNavigation.EmriBiznesit,
+                    p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                    p.Barkodi,
+                    p.KodiProduktit,
+                    p.LlojiTVSH,
+                    p.StokuQmimiProduktit.SasiaNeStok,
+                    p.StokuQmimiProduktit.QmimiProduktit,
+                    p.StokuQmimiProduktit.QmimiBleres,
+                    p.StokuQmimiProduktit.QmimiMeShumic,
+                    p.ZbritjaQmimitProduktit.Rabati,
+                    p.SasiaShumices,
+                    p.IdgrupiProduktitNavigation.GrupiIProduktit,
+                })
+                .FirstOrDefaultAsync();
+
+            var kalkulimet = await _context.TeDhenatFaturats
+                .Include(x => x.IdRegjistrimitNavigation)
+                .Where(x => x.IdProduktit == id && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true"))
+                .Select(x => new
+                {
+                    x.Id,
+                    x.SasiaStokut,
+                    x.QmimiBleres,
+                    x.QmimiShites,
+                    x.QmimiShitesMeShumic,
+                    x.Rabati1,
+                    x.Rabati2,
+                    x.Rabati3,
+                    x.IdRegjistrimitNavigation.DataRegjistrimit,
+                    x.IdRegjistrimitNavigation.LlojiKalkulimit,
+                    x.IdRegjistrimitNavigation.NrRendorFatures,
+                    x.IdRegjistrimitNavigation.IdpartneriNavigation.EmriBiznesit,
+                })
+                .ToListAsync();
+
+            var kalkulimetHyrese = await _context.TeDhenatFaturats
+                .Include(x => x.IdRegjistrimitNavigation)
+                .Where(x => x.IdProduktit == id &&
+                    (x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("HYRJE")
+                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("FL")
+                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("KMSH")
+                    ) && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true")
+                )
+                .ToListAsync();
+
+
+            var kalkulimetDalese = await _context.TeDhenatFaturats
+                .Include(x => x.IdRegjistrimitNavigation)
+                .Where(x => x.IdProduktit == id &&
+                    (x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("FAT")
+                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("AS")
+                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("KMB")
+                    ) && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true")
+                )
+                .ToListAsync();
+
+            decimal TotaliHyrese = 0;
+            decimal TotaliDalese = 0;
+
+            foreach (var produktiNeKalkulim in kalkulimetHyrese)
+            {
+                TotaliHyrese += produktiNeKalkulim.SasiaStokut ?? 0;
+            }
+
+            foreach (var produktiNeKalkulim in kalkulimetDalese)
+            {
+                TotaliDalese += produktiNeKalkulim.SasiaStokut ?? 0;
+            }
+
+            var zbritjet = await _context.ZbritjaQmimitProduktits
+                .Where(x => x.ProduktiId == id)
+                .Select(x => new
+                {
+                    x.DataZbritjes,
+                    x.DataSkadimit,
+                    x.Rabati,
+                })
+                .ToListAsync();
+
+
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                produkti,
+                kalkulimet,
+                zbritjet,
+                TotaliHyrese,
+                TotaliDalese
+            });
         }
 
     }
