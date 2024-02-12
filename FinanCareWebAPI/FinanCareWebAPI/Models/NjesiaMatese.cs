@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinanCareWebAPI.Models;
 
 public partial class NjesiaMatese
 {
-    public int IdnjesiaMatese { get; set; }
+    [Key]
+    public int IDNjesiaMatese { get; set; }
 
-    public string? NjesiaMatese1 { get; set; }
+    public string? EmriNjesiaMatese { get; set; }
 
-    public virtual ICollection<Produkti> Produktis { get; } = new List<Produkti>();
+    public virtual ICollection<Produkti> Produkti { get; } = new List<Produkti>();
 }

@@ -42,10 +42,29 @@ function FooterFatura(props) {
               teDhenatFat.regjistrimet.llojiKalkulimit === "FL" ||
               teDhenatFat.regjistrimet.llojiKalkulimit === "KMB" ||
               teDhenatFat.regjistrimet.llojiKalkulimit === "HYRJE") && (
-              <p>
-                Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
-                <strong>{props.Barkodi}</strong>
-              </p>
+              <>
+                <p>
+                  Gjate pageses ju lutem te shkruani numrin e Fatures:{" "}
+                  <strong>{props.Barkodi}</strong>
+                </p>
+                <p>
+                  <strong>Pagesa duhet te behet ne nje nga llogarit e cekura me poshte:</strong>
+                </p>
+                <table>
+                  <tr>
+                    <th>Emri Bankes</th>
+                    <th>NR Bankes</th>
+                  </tr>
+                  <tr key={"a"}>
+                    <td>banka 1</td>
+                    <td>Numri 1</td>
+                  </tr>
+                  <tr key={"ab"}>
+                    <td>banka 2</td>
+                    <td>Numri 2</td>
+                  </tr>
+                </table>
+              </>
             )}
         </div>
 

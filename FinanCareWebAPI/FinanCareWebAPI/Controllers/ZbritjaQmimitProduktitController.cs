@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace WebAPI.Controllers
 {
@@ -22,12 +23,12 @@ namespace WebAPI.Controllers
         [Route("shfaqZbritjet")]
         public async Task<IActionResult> get()
         {
-            var prodMeZbritje = await _context.Produktis
+            var prodMeZbritje = await _context.Produkti
                 .Where(x => x.ZbritjaQmimitProduktit.Rabati != null)
                 .Select(x => new
                 {
                     x.EmriProduktit,
-                    x.ZbritjaQmimitProduktit.ProduktiId,
+                    x.ZbritjaQmimitProduktit.ProduktiID,
                     x.ZbritjaQmimitProduktit.Rabati,
                     x.ZbritjaQmimitProduktit.DataZbritjes,
                     x.ZbritjaQmimitProduktit.DataSkadimit
@@ -41,10 +42,10 @@ namespace WebAPI.Controllers
         [Route("shtoZbritjenProduktit")]
         public async Task<IActionResult> post(ZbritjaQmimitProduktit zbritja)
         {
-            await _context.ZbritjaQmimitProduktits.AddAsync(zbritja);
+            await _context.ZbritjaQmimitProduktit.AddAsync(zbritja);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("get", zbritja.ProduktiId, zbritja);
+            return CreatedAtAction("get", zbritja.ProduktiID, zbritja);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -52,14 +53,14 @@ namespace WebAPI.Controllers
         [Route("fshijZbritjenProduktit")]
         public async Task<IActionResult> Delete(int id)
         {
-            var produkti = await _context.ZbritjaQmimitProduktits.FirstOrDefaultAsync(x => x.ProduktiId == id);
+            var produkti = await _context.ZbritjaQmimitProduktit.FirstOrDefaultAsync(x => x.ProduktiID == id);
 
             if(produkti == null)
             {
                 return BadRequest("Ky produkt nuk ka zbritje!");
             }
 
-            _context.ZbritjaQmimitProduktits.Remove(produkti);
+            _context.ZbritjaQmimitProduktit.Remove(produkti);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -182,10 +182,10 @@ function KthimIMallitTeBlere(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
+            stafiID: teDhenat.perdoruesi.userID,
             totaliPaTvsh: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),

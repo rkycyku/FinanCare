@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace FinanCareWebAPI.Controllers
 {
@@ -25,7 +26,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var grupiIProduktit = await _context.GrupiProduktits.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
+                var grupiIProduktit = await _context.GrupiProduktit.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
 
                 return Ok(grupiIProduktit);
             }
@@ -44,15 +45,15 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var grupiIProduktit = await _context.GrupiProduktits
-                    .Include(x => x.Produktis)
+                var grupiIProduktit = await _context.GrupiProduktit
+                    .Include(x => x.Produkti)
                     .ToListAsync();
 
                 var grupiIProduktitDheTotProdukteve = grupiIProduktit.Select(n => new
                 {
                     n.IDGrupiProduktit,
                     n.GrupiIProduktit,
-                    totaliProdukteve = n.Produktis.Count()
+                    totaliProdukteve = n.Produkti.Count()
                 }).ToList();
 
                 return Ok(grupiIProduktitDheTotProdukteve);
@@ -70,7 +71,7 @@ namespace FinanCareWebAPI.Controllers
         [Route("perditesoGrupinEProduktit")]
         public async Task<IActionResult> Put(int id, [FromBody] GrupiProduktit k)
         {
-            var grupiIProduktit = await _context.GrupiProduktits.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
+            var grupiIProduktit = await _context.GrupiProduktit.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
 
             if (id < 0)
             {
@@ -82,7 +83,7 @@ namespace FinanCareWebAPI.Controllers
                 grupiIProduktit.GrupiIProduktit = k.GrupiIProduktit;
             }
 
-            _context.GrupiProduktits.Update(grupiIProduktit);
+            _context.GrupiProduktit.Update(grupiIProduktit);
             await _context.SaveChangesAsync();
 
             return Ok(grupiIProduktit);
@@ -93,7 +94,7 @@ namespace FinanCareWebAPI.Controllers
         [Route("shtoGrupinEProduktit")]
         public async Task<IActionResult> Post(GrupiProduktit grupiIProduktit)
         {
-            await _context.GrupiProduktits.AddAsync(grupiIProduktit);
+            await _context.GrupiProduktit.AddAsync(grupiIProduktit);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Get", grupiIProduktit.IDGrupiProduktit, grupiIProduktit);
@@ -104,9 +105,9 @@ namespace FinanCareWebAPI.Controllers
         [Route("fshijGrupinEProduktit")]
         public async Task<IActionResult> Delete(int id)
         {
-            var grupiIProduktit = await _context.GrupiProduktits.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
+            var grupiIProduktit = await _context.GrupiProduktit.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
 
-            _context.GrupiProduktits.Remove(grupiIProduktit);
+            _context.GrupiProduktit.Remove(grupiIProduktit);
             await _context.SaveChangesAsync();
 
             return Ok("Grupi i Produktit u fshi me sukses!");

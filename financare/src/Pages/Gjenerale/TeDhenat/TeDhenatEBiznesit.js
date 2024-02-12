@@ -25,11 +25,11 @@ function TeDhenatEBiznesit(props) {
     const [foto, setFoto] = useState(null);
 
     const [formValue, setFormValue] = useState({
-        emriBiznesit: "",
+        emriIBiznesit: "",
         shkurtesaEmrit: "",
         nui: "",
         nf: "",
-        nrtvsh: "",
+        nrTVSH: "",
         adresa: "",
         nrKontaktit: "",
         email: "",
@@ -84,11 +84,11 @@ function TeDhenatEBiznesit(props) {
                 await axios.post(`https://localhost:7285/api/VendosFotot/PerditesoTeDhenatBiznesit?logoVjeter=${teDhenatBiznesit.logo}`, formData, authentikimi)
                     .then(async (response) => {
                         axios.put("https://localhost:7285/api/TeDhenatBiznesit/perditesoTeDhenat", {
-                            "emriIbiznesit": formValue.emriBiznesit,
+                            "emriIbiznesit": formValue.emriIBiznesit,
                             "shkurtesaEmritBiznesit": formValue.shkurtesaEmrit,
                             "nui": formValue.nui,
                             "nf": formValue.nf,
-                            "nrtvsh": formValue.nrtvsh,
+                            "nrTVSH": formValue.nrTVSH,
                             "adresa": formValue.adresa,
                             "nrKontaktit": formValue.nrKontaktit,
                             "email": formValue.email,
@@ -103,11 +103,11 @@ function TeDhenatEBiznesit(props) {
             }
         } else {
             await axios.put("https://localhost:7285/api/TeDhenatBiznesit/perditesoTeDhenat", {
-                "emriIbiznesit": formValue.emriBiznesit,
+                "emriIbiznesit": formValue.emriIBiznesit,
                 "shkurtesaEmritBiznesit": formValue.shkurtesaEmrit,
                 "nui": formValue.nui,
                 "nf": formValue.nf,
-                "nrtvsh": formValue.nrtvsh,
+                "nrTVSH": formValue.nrTVSH,
                 "adresa": formValue.adresa,
                 "nrKontaktit": formValue.nrKontaktit,
                 "email": formValue.email,
@@ -123,11 +123,11 @@ function TeDhenatEBiznesit(props) {
         if (teDhenatBiznesit) {
             setFormValue({
                 ...formValue,
-                emriBiznesit: teDhenatBiznesit.emriIbiznesit,
+                emriIBiznesit: teDhenatBiznesit.emriIBiznesit,
                 shkurtesaEmrit: teDhenatBiznesit.shkurtesaEmritBiznesit,
                 nui: teDhenatBiznesit.nui,
                 nf: teDhenatBiznesit.nf,
-                nrtvsh: teDhenatBiznesit.nrtvsh,
+                nrTVSH: teDhenatBiznesit.nrTVSH,
                 adresa: teDhenatBiznesit.adresa,
                 nrKontaktit: teDhenatBiznesit.nrKontaktit,
                 email: teDhenatBiznesit.email
@@ -170,8 +170,8 @@ function TeDhenatEBiznesit(props) {
 
                                 <MDBCol md="6">
                                     <MDBInput
-                                        value={formValue.emriBiznesit ?? ''}
-                                        name='emriBiznesit'
+                                        value={formValue.emriIBiznesit ?? ''}
+                                        name='emriIBiznesit'
                                         onChange={onChange}
                                         id='validationCustom01'
                                         required
@@ -214,12 +214,12 @@ function TeDhenatEBiznesit(props) {
                                 </MDBCol>
                                 <MDBCol md="4">
                                     <MDBInput
-                                        value={formValue.nrtvsh ?? ''}
-                                        name='nrtvsh'
+                                        value={formValue.nrTVSH ?? ''}
+                                        name='nrTVSH'
                                         onChange={onChange}
                                         id='validationCustom03'
                                         required
-                                        label='Numri TVSH: NRTVSH'
+                                        label='Numri TVSH: nrTVSH'
                                         disabled={!edito}
                                     />
                                 </MDBCol>

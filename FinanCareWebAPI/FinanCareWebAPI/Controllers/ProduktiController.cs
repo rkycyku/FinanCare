@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FinanCareWebAPI.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using FinanCareWebAPI.Migrations;
 
 namespace TechStoreWebAPI.Controllers
 {
@@ -25,17 +26,17 @@ namespace TechStoreWebAPI.Controllers
         public async Task<ActionResult> Get()
         {
 
-            var Produkti = await _context.Produktis
+            var Produkti = await _context.Produkti
                 .OrderByDescending(p => p.StokuQmimiProduktit.SasiaNeStok)
-                .ThenByDescending(p => p.ProduktiId)
+                .ThenByDescending(p => p.ProduktiID)
                .Select(p => new
                {
-                   p.ProduktiId,
+                   p.ProduktiID,
                    p.EmriProduktit,
-                   p.Idpartneri,
-                   p.IdpartneriNavigation.EmriBiznesit,
-                   p.IdnjesiaMatese,
-                   p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                   p.IDPartneri,
+                   p.Partneri.EmriBiznesit,
+                   p.IDNjesiaMatese,
+                   p.NjesiaMatese.EmriNjesiaMatese,
                    p.Barkodi,
                    p.KodiProduktit,
                    p.LlojiTVSH,
@@ -45,8 +46,8 @@ namespace TechStoreWebAPI.Controllers
                    p.StokuQmimiProduktit.QmimiMeShumic,
                    p.ZbritjaQmimitProduktit.Rabati,
                    p.SasiaShumices,
-                   p.IdgrupiProdukti,
-                   p.IdgrupiProduktitNavigation.GrupiIProduktit,
+                   p.IDGrupiProduktit,
+                   p.GrupiProduktit.GrupiIProduktit,
                })
                .ToListAsync();
 
@@ -59,17 +60,17 @@ namespace TechStoreWebAPI.Controllers
         public async Task<ActionResult> ProduktetPerKalkulim()
         {
 
-            var Produkti = await _context.Produktis
+            var Produkti = await _context.Produkti
                .OrderBy(x => x.StokuQmimiProduktit.SasiaNeStok)
-               .ThenByDescending(x => x.ProduktiId)
+               .ThenByDescending(x => x.ProduktiID)
                .Select(p => new
                {
-                   p.ProduktiId,
+                   p.ProduktiID,
                    p.EmriProduktit,
-                   p.Idpartneri,
-                   p.IdpartneriNavigation.EmriBiznesit,
-                   p.IdnjesiaMatese,
-                   p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                   p.IDPartneri,
+                   p.Partneri.EmriBiznesit,
+                   p.IDNjesiaMatese,
+                   p.NjesiaMatese.EmriNjesiaMatese,
                    p.Barkodi,
                    p.KodiProduktit,
                    p.LlojiTVSH,
@@ -79,8 +80,8 @@ namespace TechStoreWebAPI.Controllers
                    p.StokuQmimiProduktit.QmimiMeShumic,
                    p.ZbritjaQmimitProduktit.Rabati,
                    p.SasiaShumices,
-                   p.IdgrupiProdukti,
-                   p.IdgrupiProduktitNavigation.GrupiIProduktit,
+                   p.IDGrupiProduktit,
+                   p.GrupiProduktit.GrupiIProduktit,
                })
                .ToListAsync();
 
@@ -93,26 +94,26 @@ namespace TechStoreWebAPI.Controllers
         [Route("shtoProdukt")]
         public async Task<IActionResult> Post(Produkti produkti)
         {
-            await _context.Produktis.AddAsync(produkti);
+            await _context.Produkti.AddAsync(produkti);
             await _context.SaveChangesAsync();
 
             StokuQmimiProduktit s = new StokuQmimiProduktit
             {
-                ProduktiId = produkti.ProduktiId
+                ProduktiID = produkti.ProduktiID
             };
 
-            await _context.StokuQmimiProduktits.AddAsync(s);
+            await _context.StokuQmimiProduktit.AddAsync(s);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", produkti.ProduktiId, produkti);
+            return CreatedAtAction("Get", produkti.ProduktiID, produkti);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Produkti p)
         {
-            var produkti = await _context.Produktis.FirstOrDefaultAsync(x => x.ProduktiId == id);
-            var stokuQmimi = await _context.StokuQmimiProduktits.FirstOrDefaultAsync(x => x.ProduktiId == id);
+            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
+            var stokuQmimi = await _context.StokuQmimiProduktit.FirstOrDefaultAsync(x => x.ProduktiID == id);
 
             if (produkti == null || stokuQmimi == null)
             {
@@ -124,14 +125,14 @@ namespace TechStoreWebAPI.Controllers
                 produkti.EmriProduktit = p.EmriProduktit;
             }
 
-            if (p.IdnjesiaMatese != null)
+            if (p.IDNjesiaMatese != null)
             {
-                produkti.IdnjesiaMatese = p.IdnjesiaMatese;
+                produkti.IDNjesiaMatese = p.IDNjesiaMatese;
             }
 
-            if (p.Idpartneri != null)
+            if (p.IDPartneri != null)
             {
-                produkti.Idpartneri = p.Idpartneri;
+                produkti.IDPartneri = p.IDPartneri;
             }
 
             if (p.Barkodi != null)
@@ -154,9 +155,9 @@ namespace TechStoreWebAPI.Controllers
                 produkti.SasiaShumices = p.SasiaShumices;
             }
 
-            if (p.IdgrupiProdukti != null)
+            if (p.IDGrupiProduktit != null)
             {
-                produkti.IdgrupiProdukti = p.IdgrupiProdukti;
+                produkti.IDGrupiProduktit = p.IDGrupiProduktit;
             }
 
             if (p.StokuQmimiProduktit != null)
@@ -182,8 +183,8 @@ namespace TechStoreWebAPI.Controllers
                 }
             }
 
-            _context.Produktis.Update(produkti);
-            _context.StokuQmimiProduktits.Update(stokuQmimi);
+            _context.Produkti.Update(produkti);
+            _context.StokuQmimiProduktit.Update(stokuQmimi);
             await _context.SaveChangesAsync();
 
             return Ok(produkti);
@@ -193,12 +194,12 @@ namespace TechStoreWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var produkti = await _context.Produktis.FirstOrDefaultAsync(x => x.ProduktiId == id);
+            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
 
             if (produkti == null)
                 return BadRequest("Invalid id");
 
-            _context.Produktis.Remove(produkti);
+            _context.Produkti.Remove(produkti);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -208,11 +209,11 @@ namespace TechStoreWebAPI.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("GetKodiProduktitPerRegjistrim")]
-        public async Task<IActionResult> GetKodiProduktitPerRegjistrim(int idPartneri)
+        public async Task<IActionResult> GetKodiProduktitPerRegjistrim(int IDPartneri)
         {
-            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == idPartneri);
+            var partneri = await _context.Partneri.FirstOrDefaultAsync(x => x.IDPartneri == IDPartneri);
 
-            var totaliProdukteveNgaPartneri = await _context.Produktis.Where(x => x.Idpartneri == idPartneri).CountAsync();
+            var totaliProdukteveNgaPartneri = await _context.Produkti.Where(x => x.IDPartneri == IDPartneri).CountAsync();
 
             var kodiProduktit = $"{partneri.ShkurtesaPartnerit.ToUpper()}{totaliProdukteveNgaPartneri + 1:D4}";
 
@@ -224,17 +225,17 @@ namespace TechStoreWebAPI.Controllers
         [Route("KartelaArtikullit")]
         public async Task<ActionResult> GetById(int id)
         {
-            var produkti = await _context.Produktis
-                .Include(p => p.IdpartneriNavigation)
-                .Include(p => p.IdnjesiaMateseNavigation)
+            var produkti = await _context.Produkti
+                .Include(p => p.Partneri)
+                .Include(p => p.NjesiaMatese)
                 .Include(p => p.StokuQmimiProduktit)
-                .Where(p => p.ProduktiId == id)
+                .Where(p => p.ProduktiID == id)
                 .Select(p => new
                 {
-                    p.ProduktiId,
+                    p.ProduktiID,
                     p.EmriProduktit,
-                    p.IdpartneriNavigation.EmriBiznesit,
-                    p.IdnjesiaMateseNavigation.NjesiaMatese1,
+                    p.Partneri.EmriBiznesit,
+                    p.NjesiaMatese.EmriNjesiaMatese,
                     p.Barkodi,
                     p.KodiProduktit,
                     p.LlojiTVSH,
@@ -244,16 +245,16 @@ namespace TechStoreWebAPI.Controllers
                     p.StokuQmimiProduktit.QmimiMeShumic,
                     p.ZbritjaQmimitProduktit.Rabati,
                     p.SasiaShumices,
-                    p.IdgrupiProduktitNavigation.GrupiIProduktit,
+                    p.GrupiProduktit.GrupiIProduktit,
                 })
                 .FirstOrDefaultAsync();
 
-            var kalkulimet = await _context.TeDhenatFaturats
-                .Include(x => x.IdRegjistrimitNavigation)
-                .Where(x => x.IdProduktit == id && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true"))
+            var kalkulimet = await _context.TeDhenatFaturat
+                .Include(x => x.Faturat)
+                .Where(x => x.IDProduktit == id && x.Faturat.StatusiKalkulimit.Equals("true"))
                 .Select(x => new
                 {
-                    x.Id,
+                    x.ID,
                     x.SasiaStokut,
                     x.QmimiBleres,
                     x.QmimiShites,
@@ -261,31 +262,31 @@ namespace TechStoreWebAPI.Controllers
                     x.Rabati1,
                     x.Rabati2,
                     x.Rabati3,
-                    x.IdRegjistrimitNavigation.DataRegjistrimit,
-                    x.IdRegjistrimitNavigation.LlojiKalkulimit,
-                    x.IdRegjistrimitNavigation.NrRendorFatures,
-                    x.IdRegjistrimitNavigation.IdpartneriNavigation.EmriBiznesit,
+                    x.Faturat.DataRegjistrimit,
+                    x.Faturat.LlojiKalkulimit,
+                    x.Faturat.NrRendorFatures,
+                    x.Faturat.Partneri.EmriBiznesit,
                 })
                 .ToListAsync();
 
-            var kalkulimetHyrese = await _context.TeDhenatFaturats
-                .Include(x => x.IdRegjistrimitNavigation)
-                .Where(x => x.IdProduktit == id &&
-                    (x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("HYRJE")
-                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("FL")
-                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("KMSH")
-                    ) && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true")
+            var kalkulimetHyrese = await _context.TeDhenatFaturat
+                .Include(x => x.Faturat)
+                .Where(x => x.IDProduktit == id &&
+                    (x.Faturat.LlojiKalkulimit.Equals("HYRJE")
+                    || x.Faturat.LlojiKalkulimit.Equals("FL")
+                    || x.Faturat.LlojiKalkulimit.Equals("KMSH")
+                    ) && x.Faturat.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();
 
 
-            var kalkulimetDalese = await _context.TeDhenatFaturats
-                .Include(x => x.IdRegjistrimitNavigation)
-                .Where(x => x.IdProduktit == id &&
-                    (x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("FAT")
-                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("AS")
-                    || x.IdRegjistrimitNavigation.LlojiKalkulimit.Equals("KMB")
-                    ) && x.IdRegjistrimitNavigation.StatusiKalkulimit.Equals("true")
+            var kalkulimetDalese = await _context.TeDhenatFaturat
+                .Include(x => x.Faturat)
+                .Where(x => x.IDProduktit == id &&
+                    (x.Faturat.LlojiKalkulimit.Equals("FAT")
+                    || x.Faturat.LlojiKalkulimit.Equals("AS")
+                    || x.Faturat.LlojiKalkulimit.Equals("KMB")
+                    ) && x.Faturat.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();
 
@@ -302,8 +303,8 @@ namespace TechStoreWebAPI.Controllers
                 TotaliDalese += produktiNeKalkulim.SasiaStokut ?? 0;
             }
 
-            var zbritjet = await _context.ZbritjaQmimitProduktits
-                .Where(x => x.ProduktiId == id)
+            var zbritjet = await _context.ZbritjaQmimitProduktit
+                .Where(x => x.ProduktiID == id)
                 .Select(x => new
                 {
                     x.DataZbritjes,

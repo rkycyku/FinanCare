@@ -202,6 +202,7 @@ const ProductTables = () => {
           <Link to="/ZbritjetEProduktit"><MDBBtn className="Butoni">Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
           <Link to="/TabelaEPartnereve"><MDBBtn className="Butoni">Partneret <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
           <Link to="/NjesiaMatese"><MDBBtn className="Butoni">Njesia Matese <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
+          <Link to="/GrupetEProduktit"><MDBBtn className="Butoni">Grupet e Produktit <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
           <MDBTable>
             <MDBTableHead>
               <tr>

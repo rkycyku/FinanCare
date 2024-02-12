@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using FinanCareWebAPI.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Configurations;
 using Microsoft.OpenApi.Models;
+using FinanCareWebAPI.Migrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,7 +74,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "JWTToken_Auth_API",
+        Title = "FinanCare_API",
         Version = "v1"
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

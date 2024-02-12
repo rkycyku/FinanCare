@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinanCareWebAPI.Models;
 
 public partial class Partneri
 {
-    public int Idpartneri { get; set; }
-
+    [Key]
+    public int IDPartneri { get; set; }
     public string? EmriBiznesit { get; set; }
-
-    public string? Nui { get; set; }
-
-    public string? Nrf { get; set; }
-
-    public string? Tvsh { get; set; }
-
+    public string? NUI { get; set; }
+    public string? NRF { get; set; }
+    public string? TVSH { get; set; }
     public string? Email { get; set; }
-
     public string? Adresa { get; set; }
-
     public string? NrKontaktit { get; set; }
-
     public string? LlojiPartnerit { get; set; }
-
     public string? ShkurtesaPartnerit { get; set; }
 
-    public virtual ICollection<Faturat> Faturats { get; } = new List<Faturat>();
+    public virtual ICollection<Faturat> Faturat { get; } = new List<Faturat>();
 
-    public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();
+    public virtual ICollection<Porosit> Porosit { get; } = new List<Porosit>();
 
-    public virtual ICollection<Produkti> Produktis { get; } = new List<Produkti>();
+    public virtual ICollection<Produkti> Produkti { get; } = new List<Produkti>();
 }

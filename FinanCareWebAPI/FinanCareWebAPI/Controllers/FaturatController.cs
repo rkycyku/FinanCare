@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace WebAPI.Controllers
 {
@@ -22,19 +23,19 @@ namespace WebAPI.Controllers
         [Route("shfaqRegjistrimet")]
         public async Task<IActionResult> Get()
         {
-            var regjistrimet = await _context.Faturats
-                .OrderByDescending(x => x.IdRegjistrimit)
+            var regjistrimet = await _context.Faturat
+                .OrderByDescending(x => x.IDRegjistrimit)
                 .Select(x => new
                 {
-                    x.IdRegjistrimit,
-                    x.TotaliPaTvsh,
-                    x.Tvsh,
+                    x.IDRegjistrimit,
+                    x.TotaliPaTVSH,
+                    x.TVSH,
                     x.DataRegjistrimit,
-                    x.StafiId,
+                    x.StafiID,
                     x.Stafi.Username,
                     x.NrFatures,
-                    x.IdpartneriNavigation.EmriBiznesit,
-                    x.IdpartneriNavigation.Idpartneri,
+                    x.Partneri.EmriBiznesit,
+                    x.Partneri.IDPartneri,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
@@ -53,19 +54,19 @@ namespace WebAPI.Controllers
         [Route("shfaqRegjistrimetSipasStatusit")]
         public async Task<IActionResult> GetByStatusi(string statusi)
         {
-            var regjistrimet = await _context.Faturats
+            var regjistrimet = await _context.Faturat
                 .Where(x => x.StatusiKalkulimit == statusi)
-                .OrderByDescending(x => x.IdRegjistrimit)
+                .OrderByDescending(x => x.IDRegjistrimit)
                 .Select(x => new
                 {
-                    x.IdRegjistrimit,
-                    x.TotaliPaTvsh,
-                    x.Tvsh,
+                    x.IDRegjistrimit,
+                    x.TotaliPaTVSH,
+                    x.TVSH,
                     x.DataRegjistrimit,
-                    x.StafiId,
+                    x.StafiID,
                     x.Stafi.Username,
                     x.NrFatures,
-                    x.IdpartneriNavigation.EmriBiznesit,
+                    x.Partneri.EmriBiznesit,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
@@ -83,25 +84,25 @@ namespace WebAPI.Controllers
         [Route("shfaqRegjistrimetNgaID")]
         public async Task<IActionResult> GetRegjistrimin(int id)
         {
-            var regjistrimet = await _context.Faturats
+            var regjistrimet = await _context.Faturat
                 .Select(x => new
                 {
-                    x.IdRegjistrimit,
-                    x.TotaliPaTvsh,
-                    x.Tvsh,
+                    x.IDRegjistrimit,
+                    x.TotaliPaTVSH,
+                    x.TVSH,
                     x.DataRegjistrimit,
-                    x.StafiId,
+                    x.StafiID,
                     x.Stafi.Username,
                     x.NrFatures,
-                    x.IdpartneriNavigation.EmriBiznesit,
-                    x.IdpartneriNavigation.Adresa,
-                    x.IdpartneriNavigation.Nrf,
-                    x.IdpartneriNavigation.Nui,
-                    partneriTVSH = x.IdpartneriNavigation.Tvsh,
-                    x.IdpartneriNavigation.Idpartneri,
-                    x.IdpartneriNavigation.ShkurtesaPartnerit,
-                    x.IdpartneriNavigation.Email,
-                    x.IdpartneriNavigation.NrKontaktit,
+                    x.Partneri.EmriBiznesit,
+                    x.Partneri.Adresa,
+                    x.Partneri.NRF,
+                    x.Partneri.NUI,
+                    partneriTVSH = x.Partneri.TVSH,
+                    x.Partneri.IDPartneri,
+                    x.Partneri.ShkurtesaPartnerit,
+                    x.Partneri.Email,
+                    x.Partneri.NrKontaktit,
                     x.LlojiKalkulimit,
                     x.LlojiPageses,
                     x.StatusiPageses,
@@ -109,10 +110,10 @@ namespace WebAPI.Controllers
                     x.PershkrimShtese,
                     x.Rabati,
                     x.NrRendorFatures
-                }).FirstOrDefaultAsync(x => x.IdRegjistrimit == id);
+                }).FirstOrDefaultAsync(x => x.IDRegjistrimit == id);
 
-            var totTVSH18 = await _context.TeDhenatFaturats.Include(x => x.IdProduktitNavigation).Where(x => x.IdProduktitNavigation.LlojiTVSH == 18 && x.IdRegjistrimit == id).ToListAsync();
-            var totTVSH8 = await _context.TeDhenatFaturats.Include(x => x.IdProduktitNavigation).Where(x => x.IdProduktitNavigation.LlojiTVSH == 8 && x.IdRegjistrimit == id).ToListAsync();
+            var totTVSH18 = await _context.TeDhenatFaturat.Include(x => x.Produkti).Where(x => x.Produkti.LlojiTVSH == 18 && x.IDRegjistrimit == id).ToListAsync();
+            var totTVSH8 = await _context.TeDhenatFaturat.Include(x => x.Produkti).Where(x => x.Produkti.LlojiTVSH == 8 && x.IDRegjistrimit == id).ToListAsync();
 
             decimal TotaliMeTVSH18 = 0;
             decimal TotaliMeTVSH8 = 0;
@@ -222,28 +223,28 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("shfaqTeDhenatKalkulimit")]
-        public async Task<IActionResult> GetRegjistrimi(int idRegjistrimit)
+        public async Task<IActionResult> GetRegjistrimi(int IDRegjistrimit)
         {
-            var teDhenat = await _context.TeDhenatFaturats
-                .Where(x => x.IdRegjistrimit == idRegjistrimit)
+            var teDhenat = await _context.TeDhenatFaturat
+                .Where(x => x.IDRegjistrimit == IDRegjistrimit)
                 .Select(x => new
                 {
-                    x.Id,
-                    x.IdRegjistrimit,
-                    x.IdProduktit,
-                    x.IdProduktitNavigation.EmriProduktit,
-                    x.IdProduktitNavigation.Barkodi,
-                    x.IdProduktitNavigation.KodiProduktit,
+                    x.ID,
+                    x.IDRegjistrimit,
+                    x.IDProduktit,
+                    x.Produkti.EmriProduktit,
+                    x.Produkti.Barkodi,
+                    x.Produkti.KodiProduktit,
                     x.SasiaStokut,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,
-                    x.IdProduktitNavigation.LlojiTVSH,
+                    x.Produkti.LlojiTVSH,
                     x.Rabati1,
                     x.Rabati2,
                     x.Rabati3,
-                    x.IdProduktitNavigation.IdnjesiaMateseNavigation.NjesiaMatese1,
-                    SasiaAktualeNeStok = x.IdProduktitNavigation.StokuQmimiProduktit.SasiaNeStok
+                    x.Produkti.NjesiaMatese.EmriNjesiaMatese,
+                    SasiaAktualeNeStok = x.Produkti.StokuQmimiProduktit.SasiaNeStok
                 })
                .ToListAsync();
 
@@ -255,7 +256,7 @@ namespace WebAPI.Controllers
         [Route("perditesoFaturen")]
         public async Task<IActionResult> PerditesoFaturen(int idKalulimit, [FromBody] Faturat fat)
         {
-            var fatura = await _context.Faturats.FindAsync(idKalulimit);
+            var fatura = await _context.Faturat.FindAsync(idKalulimit);
             if (fatura == null)
             {
                 return NotFound();
@@ -266,13 +267,13 @@ namespace WebAPI.Controllers
             fatura.NrRendorFatures = fat.NrRendorFatures;
             fatura.StatusiPageses = fat.StatusiPageses;
             fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
-            fatura.Idpartneri = fat.Idpartneri;
+            fatura.IDPartneri = fat.IDPartneri;
             fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
             fatura.LlojiPageses = fat.LlojiPageses;
             fatura.PershkrimShtese = fat.PershkrimShtese;
-            fatura.StafiId = fat.StafiId;
-            fatura.TotaliPaTvsh = fat.TotaliPaTvsh;
-            fatura.Tvsh = fat.Tvsh;
+            fatura.StafiID = fat.StafiID;
+            fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
+            fatura.TVSH = fat.TVSH;
             fatura.DataRegjistrimit = fat.DataRegjistrimit;
 
             try
@@ -292,10 +293,10 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin")]
         public async Task<IActionResult> Post(Faturat regjistrimet)
         {
-            await _context.Faturats.AddAsync(regjistrimet);
+            await _context.Faturat.AddAsync(regjistrimet);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", regjistrimet.IdRegjistrimit, regjistrimet);
+            return CreatedAtAction("Get", regjistrimet.IDRegjistrimit, regjistrimet);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -303,7 +304,7 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/teDhenat")]
         public async Task<IActionResult> Post(TeDhenatFaturat teDhenat)
         {
-            await _context.TeDhenatFaturats.AddAsync(teDhenat);
+            await _context.TeDhenatFaturat.AddAsync(teDhenat);
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -314,12 +315,12 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/FshijTeDhenat")]
         public async Task<IActionResult> Delete(int idTeDhenat)
         {
-            var produkti = await _context.TeDhenatFaturats.FirstOrDefaultAsync(x => x.Id == idTeDhenat);
+            var produkti = await _context.TeDhenatFaturat.FirstOrDefaultAsync(x => x.ID == idTeDhenat);
 
             if (produkti == null)
                 return BadRequest("Invalid id");
 
-            _context.TeDhenatFaturats.Remove(produkti);
+            _context.TeDhenatFaturat.Remove(produkti);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -330,14 +331,14 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit")]
         public async Task<IActionResult> DeleteByIdKalkulimi(int idKalkulimi)
         {
-            var teDhenatKalkulimi = await _context.TeDhenatFaturats.Where(x => x.IdRegjistrimit == idKalkulimi).ToListAsync();
+            var teDhenatKalkulimi = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
 
             if (teDhenatKalkulimi == null)
                 return BadRequest("Invalid id");
 
             foreach (var produkti in teDhenatKalkulimi)
             {
-                _context.TeDhenatFaturats.Remove(produkti);
+                _context.TeDhenatFaturat.Remove(produkti);
             }
 
             await _context.SaveChangesAsync();
@@ -350,7 +351,7 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/PerditesoTeDhenat")]
         public async Task<IActionResult> Put(int id, [FromBody] TeDhenatFaturat teDhenat)
         {
-            var produkti = await _context.TeDhenatFaturats.FindAsync(id);
+            var produkti = await _context.TeDhenatFaturat.FindAsync(id);
             if (produkti == null)
             {
                 return NotFound();
@@ -381,7 +382,7 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/perditesoStokunQmimin")]
         public async Task<IActionResult> Put(int id, [FromBody] StokuQmimiProduktit stoku)
         {
-            var produkti = await _context.StokuQmimiProduktits.FindAsync(id);
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
             if (produkti == null)
             {
                 return NotFound();
@@ -415,25 +416,25 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/getKalkulimi")]
         public async Task<IActionResult> GetKalkulimi(int idKalkulimit)
         {
-            var kalkulimi = await _context.TeDhenatFaturats
-                .Where(x => x.Id == idKalkulimit)
+            var kalkulimi = await _context.TeDhenatFaturat
+                .Where(x => x.ID == idKalkulimit)
                 .Select(x => new
                 {
-                    x.Id,
-                    x.IdRegjistrimit,
-                    x.IdProduktit,
-                    x.IdProduktitNavigation.EmriProduktit,
-                    x.IdProduktitNavigation.Barkodi,
-                    x.IdProduktitNavigation.KodiProduktit,
+                    x.ID,
+                    x.IDRegjistrimit,
+                    x.IDProduktit,
+                    x.Produkti.EmriProduktit,
+                    x.Produkti.Barkodi,
+                    x.Produkti.KodiProduktit,
                     x.SasiaStokut,
-                    x.IdProduktitNavigation.StokuQmimiProduktit.SasiaNeStok,
-                    x.IdProduktitNavigation.StokuQmimiProduktit.QmimiMeShumic,
-                    x.IdProduktitNavigation.StokuQmimiProduktit.QmimiProduktit,
-                    x.IdProduktitNavigation.SasiaShumices,
+                    x.Produkti.StokuQmimiProduktit.SasiaNeStok,
+                    x.Produkti.StokuQmimiProduktit.QmimiMeShumic,
+                    x.Produkti.StokuQmimiProduktit.QmimiProduktit,
+                    x.Produkti.SasiaShumices,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,
-                    x.IdProduktitNavigation.LlojiTVSH,
+                    x.Produkti.LlojiTVSH,
                     x.Rabati1,
                     x.Rabati2,
                     x.Rabati3,
@@ -450,7 +451,7 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
         public async Task<IActionResult> Put(int id, string statusi)
         {
-            var kalkulimi = await _context.Faturats.FindAsync(id);
+            var kalkulimi = await _context.Faturat.FindAsync(id);
             if (kalkulimi == null)
             {
                 return NotFound();
@@ -475,9 +476,9 @@ namespace WebAPI.Controllers
         [Route("getNumriFaturesMeRradhe")]
         public async Task<IActionResult> GetNumriFaturesMeRradhe(string llojiKalkulimit)
         {
-            var nrFatures = await _context.Faturats
+            var nrFatures = await _context.Faturat
                 .Where(x => x.LlojiKalkulimit == llojiKalkulimit)
-                .OrderByDescending(x => x.IdRegjistrimit)
+                .OrderByDescending(x => x.IDRegjistrimit)
                 .Take(1)
                 .Select(x => x.NrRendorFatures)
                 .ToListAsync();
@@ -496,15 +497,15 @@ namespace WebAPI.Controllers
         [Route("fshijKalkulimin")]
         public async Task<IActionResult> fshijKalkulimin(int idKalkulimi)
         {
-            var kalkulimi = await _context.Faturats.FirstOrDefaultAsync(x => x.IdRegjistrimit == idKalkulimi);
-            var teDhenatKalkulimit = await _context.TeDhenatFaturats.Where(x => x.IdRegjistrimit == idKalkulimi).ToListAsync();
+            var kalkulimi = await _context.Faturat.FirstOrDefaultAsync(x => x.IDRegjistrimit == idKalkulimi);
+            var teDhenatKalkulimit = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
 
             foreach (var teDhenat in teDhenatKalkulimit)
             {
-                _context.TeDhenatFaturats.Remove(teDhenat);
+                _context.TeDhenatFaturat.Remove(teDhenat);
             }
 
-            _context.Faturats.Remove(kalkulimi);
+            _context.Faturat.Remove(kalkulimi);
 
             await _context.SaveChangesAsync();
 
@@ -516,16 +517,16 @@ namespace WebAPI.Controllers
         [Route("fshijKalkulimin/perditesoStokunQmimin")]
         public async Task<IActionResult> fshijKalkuliminPerditesoStokun(int idKalkulimi, int idProdukti, int idTeDhenatKalkulimit)
         {
-            var secondLatestTeDhenat = await _context.TeDhenatFaturats
-            .Where(x => x.IdProduktit == idProdukti && x.IdRegjistrimit != idKalkulimi && x.IdRegjistrimitNavigation.StatusiKalkulimit == "true")
-            .OrderByDescending(x => x.Id)
+            var secondLatestTeDhenat = await _context.TeDhenatFaturat
+            .Where(x => x.IDProduktit == idProdukti && x.IDRegjistrimit != idKalkulimi && x.Faturat.StatusiKalkulimit == "true")
+            .OrderByDescending(x => x.ID)
             .Take(1) // Take only one record (the second latest)
             .Select(x => new
             {
-                x.Id,
-                x.IdRegjistrimit,
-                x.IdProduktit,
-                x.IdProduktitNavigation.EmriProduktit,
+                x.ID,
+                x.IDRegjistrimit,
+                x.IDProduktit,
+                x.Produkti.EmriProduktit,
                 x.SasiaStokut,
                 x.QmimiBleres,
                 x.QmimiShites,
@@ -537,10 +538,10 @@ namespace WebAPI.Controllers
             .SingleOrDefaultAsync(); // Use SingleOrDefaultAsync to retrieve one record
 
 
-            var produktiNeKalkulim = await _context.TeDhenatFaturats.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
+            var produktiNeKalkulim = await _context.TeDhenatFaturat.FirstOrDefaultAsync(x => x.ID == idTeDhenatKalkulimit);
 
 
-            var produkti = await _context.StokuQmimiProduktits.FindAsync(idProdukti);
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(idProdukti);
 
             if (produkti == null)
             {
@@ -593,10 +594,10 @@ namespace WebAPI.Controllers
         [Route("hapAsgjesiminKthimin/perditesoStokunQmimin")]
         public async Task<IActionResult> FshijAsgjesiminPerditesoStokun(int idProdukti, int idTeDhenatKalkulimit, string lloji)
         {
-            var produktiNeKalkulim = await _context.TeDhenatFaturats.FirstOrDefaultAsync(x => x.Id == idTeDhenatKalkulimit);
+            var produktiNeKalkulim = await _context.TeDhenatFaturat.FirstOrDefaultAsync(x => x.ID == idTeDhenatKalkulimit);
 
 
-            var produkti = await _context.StokuQmimiProduktits.FindAsync(idProdukti);
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(idProdukti);
 
             if (produkti == null)
             {
@@ -615,7 +616,7 @@ namespace WebAPI.Controllers
                 produkti.DataPerditsimit = DateTime.Now;
             }
 
-            _context.StokuQmimiProduktits.Update(produkti);
+            _context.StokuQmimiProduktit.Update(produkti);
             await _context.SaveChangesAsync();
 
             var result = new
@@ -633,7 +634,7 @@ namespace WebAPI.Controllers
         [Route("ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin")]
         public async Task<IActionResult> AsgjesoStokunPerditesoStokunQmimin(int id, [FromBody] StokuQmimiProduktit stoku)
         {
-            var produkti = await _context.StokuQmimiProduktits.FindAsync(id);
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
             if (produkti == null)
             {
                 return NotFound();

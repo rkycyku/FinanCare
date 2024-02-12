@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace FinanCareWebAPI.Controllers
 {
@@ -25,7 +26,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+                var partneri = await _context.Partneri.FirstOrDefaultAsync(x => x.IDPartneri == id);
 
                 return Ok(partneri);
             }
@@ -44,7 +45,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneris.Where(x => x.LlojiPartnerit == llojiPartnerit).ToListAsync();
+                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit == llojiPartnerit).ToListAsync();
 
                 return Ok(partneri);
             }
@@ -61,7 +62,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneris.Where(x => x.LlojiPartnerit != "B").ToListAsync();
+                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit != "B").ToListAsync();
 
                 return Ok(partneri);
             }
@@ -78,7 +79,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneris.Where(x => x.LlojiPartnerit != "F").ToListAsync();
+                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit != "F").ToListAsync();
 
                 return Ok(partneri);
             }
@@ -95,7 +96,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneret = await _context.Partneris.ToArrayAsync();
+                var partneret = await _context.Partneri.ToArrayAsync();
 
                 return Ok(partneret);
             }
@@ -110,7 +111,7 @@ namespace FinanCareWebAPI.Controllers
         [Route("perditesoPartnerin")]
         public async Task<IActionResult> Put(int id, [FromBody] Partneri k)
         {
-            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+            var partneri = await _context.Partneri.FirstOrDefaultAsync(x => x.IDPartneri == id);
             if (id < 0)
             {
                 return BadRequest("Partneri nuk egziston");
@@ -120,17 +121,17 @@ namespace FinanCareWebAPI.Controllers
             {
                 partneri.EmriBiznesit = k.EmriBiznesit;
             }
-            if (!k.Nui.IsNullOrEmpty())
+            if (!k.NUI.IsNullOrEmpty())
             {
-                partneri.Nui = k.Nui;
+                partneri.NUI = k.NUI;
             }
-            if (!k.Nrf.IsNullOrEmpty())
+            if (!k.NRF.IsNullOrEmpty())
             {
-                partneri.Nrf = k.Nrf;
+                partneri.NRF = k.NRF;
             }
-            if (!k.Tvsh.IsNullOrEmpty())
+            if (!k.TVSH.IsNullOrEmpty())
             {
-                partneri.Tvsh = k.Tvsh;
+                partneri.TVSH = k.TVSH;
             }
             if (!k.Email.IsNullOrEmpty())
             {
@@ -153,7 +154,7 @@ namespace FinanCareWebAPI.Controllers
                 partneri.ShkurtesaPartnerit = k.ShkurtesaPartnerit;
             }
 
-            _context.Partneris.Update(partneri);
+            _context.Partneri.Update(partneri);
             await _context.SaveChangesAsync();
 
             return Ok(partneri);
@@ -164,10 +165,10 @@ namespace FinanCareWebAPI.Controllers
         [Route("shtoPartnerin")]
         public async Task<IActionResult> Post(Partneri partneri)
         {
-            await _context.Partneris.AddAsync(partneri);
+            await _context.Partneri.AddAsync(partneri);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", partneri.Idpartneri, partneri);
+            return CreatedAtAction("Get", partneri.IDPartneri, partneri);
         }
 
         [Authorize(Roles = "Admin")]
@@ -175,9 +176,9 @@ namespace FinanCareWebAPI.Controllers
         [Route("fshijPartnerin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var partneri = await _context.Partneris.FirstOrDefaultAsync(x => x.Idpartneri == id);
+            var partneri = await _context.Partneri.FirstOrDefaultAsync(x => x.IDPartneri == id);
 
-            _context.Partneris.Remove(partneri);
+            _context.Partneri.Remove(partneri);
             await _context.SaveChangesAsync();
 
             return Ok("Partneri u fshi me sukses!");

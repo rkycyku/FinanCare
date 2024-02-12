@@ -25,6 +25,7 @@ import Porosite from "./Pages/Materiali/Shitjet/Porosite";
 import Ofertat from "./Pages/Materiali/Shitjet/Ofertat";
 import FleteLejimet from "./Pages/Materiali/Hyrjet/FleteLejimet";
 import KartelaEArtikullit from "./Pages/Materiali/Artikujt/KartelaEArtikullit"
+import GrupetEProduktit from "./Pages/Materiali/Artikujt/GrupetEProduktit";
 
 function App() {
   useEffect(() => {
@@ -65,6 +66,7 @@ function App() {
         <Route path="/Ofertat" element={<Ofertat />} />
         <Route path="/FleteLejimet" element={<FleteLejimet />} />
         <Route path="/KartelaEArtikullit" element={<KartelaEArtikullit />} />
+        <Route path="/GrupetEProduktit" element={<GrupetEProduktit />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

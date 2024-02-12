@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
         [Route("shfaqPerdoruesit")]
         public async Task<IActionResult> Get()
         {
-            var perdoruesit = await _context.Perdoruesis
+            var perdoruesit = await _context.Perdoruesi
                 .Include(p => p.TeDhenatPerdoruesit)
                 .ToListAsync();
 
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
 
             foreach (var perdoruesi in perdoruesit)
             {
-                var user = await _userManager.FindByIdAsync(perdoruesi.AspNetUserId);
+                var user = await _userManager.FindByIdAsync(perdoruesi.AspNetUserID);
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var roletEPerdoruesit = new RoletEPerdoruesit
@@ -58,9 +59,9 @@ namespace WebAPI.Controllers
         {
             var user = await _userManager.FindByIdAsync(idUserAspNet);
 
-            var perdoruesi = await _context.Perdoruesis
+            var perdoruesi = await _context.Perdoruesi
                 .Include(p => p.TeDhenatPerdoruesit)
-                .FirstOrDefaultAsync(x => x.AspNetUserId.Equals(idUserAspNet));
+                .FirstOrDefaultAsync(x => x.AspNetUserID.Equals(idUserAspNet));
 
             var rolet = await _userManager.GetRolesAsync(user);
 
@@ -78,7 +79,7 @@ namespace WebAPI.Controllers
         [Route("perditesoPerdorues/{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Perdoruesi p)
         {
-            var perdouresi = await _context.Perdoruesis.FirstOrDefaultAsync(x => x.UserId == id);
+            var perdouresi = await _context.Perdoruesi.FirstOrDefaultAsync(x => x.UserID == id);
 
             if (perdouresi == null)
             {
@@ -98,10 +99,10 @@ namespace WebAPI.Controllers
                 perdouresi.Mbiemri = p.Mbiemri;
             }
 
-            _context.Perdoruesis.Update(perdouresi);
+            _context.Perdoruesi.Update(perdouresi);
             await _context.SaveChangesAsync();
 
-            var teDhenatUser = await _context.TeDhenatPerdoruesits.FirstOrDefaultAsync(x => x.UserId == id);
+            var teDhenatUser = await _context.TeDhenatPerdoruesit.FirstOrDefaultAsync(x => x.UserID == id);
 
             if (!p.TeDhenatPerdoruesit.Qyteti.IsNullOrEmpty())
             {
@@ -124,7 +125,7 @@ namespace WebAPI.Controllers
                 teDhenatUser.NrKontaktit = p.TeDhenatPerdoruesit.NrKontaktit;
             }
 
-            _context.TeDhenatPerdoruesits.Update(teDhenatUser);
+            _context.TeDhenatPerdoruesit.Update(teDhenatUser);
             await _context.SaveChangesAsync();
 
             return Ok(perdouresi);

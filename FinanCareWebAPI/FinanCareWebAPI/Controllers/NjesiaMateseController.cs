@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace FinanCareWebAPI.Controllers
 {
@@ -25,7 +26,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var njesiaMatese = await _context.NjesiaMateses.FirstOrDefaultAsync(x => x.IdnjesiaMatese == id);
+                var njesiaMatese = await _context.NjesiaMatese.FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
 
                 return Ok(njesiaMatese);
             }
@@ -44,15 +45,15 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var njesiaMatese = await _context.NjesiaMateses
-                    .Include(x => x.Produktis)
+                var njesiaMatese = await _context.NjesiaMatese
+                    .Include(x => x.Produkti)
                     .ToListAsync();
 
                 var njesiaMateseDheTotProdukteve = njesiaMatese.Select(n => new
                 {
-                    idNjesiaMatese = n.IdnjesiaMatese,
-                    njesiaMatese = n.NjesiaMatese1,
-                    totaliProdukteve = n.Produktis.Count()
+                    IDNjesiaMatese = n.IDNjesiaMatese,
+                    njesiaMatese = n.EmriNjesiaMatese,
+                    totaliProdukteve = n.Produkti.Count()
                 }).ToList();
 
                 return Ok(njesiaMateseDheTotProdukteve);
@@ -70,19 +71,19 @@ namespace FinanCareWebAPI.Controllers
         [Route("perditesoNjesineMatese")]
         public async Task<IActionResult> Put(int id, [FromBody] NjesiaMatese k)
         {
-            var njesiaMatese = await _context.NjesiaMateses.FirstOrDefaultAsync(x => x.IdnjesiaMatese == id);
+            var njesiaMatese = await _context.NjesiaMatese.FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
 
             if (id < 0)
             {
                 return BadRequest("Partneri nuk egziston");
             }
 
-            if (!k.NjesiaMatese1.IsNullOrEmpty())
+            if (!k.EmriNjesiaMatese.IsNullOrEmpty())
             {
-                njesiaMatese.NjesiaMatese1 = k.NjesiaMatese1;
+                njesiaMatese.EmriNjesiaMatese = k.EmriNjesiaMatese;
             }
 
-            _context.NjesiaMateses.Update(njesiaMatese);
+            _context.NjesiaMatese.Update(njesiaMatese);
             await _context.SaveChangesAsync();
 
             return Ok(njesiaMatese);
@@ -93,10 +94,10 @@ namespace FinanCareWebAPI.Controllers
         [Route("shtoNjesineMatese")]
         public async Task<IActionResult> Post(NjesiaMatese njesiaMatese)
         {
-            await _context.NjesiaMateses.AddAsync(njesiaMatese);
+            await _context.NjesiaMatese.AddAsync(njesiaMatese);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", njesiaMatese.IdnjesiaMatese, njesiaMatese);
+            return CreatedAtAction("Get", njesiaMatese.IDNjesiaMatese, njesiaMatese);
         }
 
         [Authorize(Roles = "Admin")]
@@ -104,9 +105,9 @@ namespace FinanCareWebAPI.Controllers
         [Route("fshijNjesineMatese")]
         public async Task<IActionResult> Delete(int id)
         {
-            var njesiaMatese = await _context.NjesiaMateses.FirstOrDefaultAsync(x => x.IdnjesiaMatese == id);
+            var njesiaMatese = await _context.NjesiaMatese.FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
 
-            _context.NjesiaMateses.Remove(njesiaMatese);
+            _context.NjesiaMatese.Remove(njesiaMatese);
             await _context.SaveChangesAsync();
 
             return Ok("Njesia Matese u fshi me sukses!");

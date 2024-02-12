@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Data.Entity;
 using FinanCareWebAPI.Models;
+using FinanCareWebAPI.Migrations;
 
 namespace WebAPI.Controllers
 {
@@ -23,7 +24,7 @@ namespace WebAPI.Controllers
         [Route("ShfaqTeDhenat")]
         public IActionResult Get()
         {
-            var teDhenat = _context.TeDhenatBiznesits.First();
+            var teDhenat = _context.TeDhenatBiznesit.First();
 
             return Ok(teDhenat);
         }
@@ -33,19 +34,19 @@ namespace WebAPI.Controllers
         [Route("perditesoTeDhenat")]
         public IActionResult Put([FromBody] TeDhenatBiznesit k)
         {
-            var teDhenat = _context.TeDhenatBiznesits.FirstOrDefault(x => x.IdteDhenatBiznesit == 1);
+            var teDhenat = _context.TeDhenatBiznesit.FirstOrDefault(x => x.IDTeDhenatBiznesit == 1);
             if (teDhenat == null)
             {
                 return BadRequest("Kategoria nuk egziston");
             }
 
             teDhenat.NrKontaktit = k.NrKontaktit;
-            teDhenat.Nf = k.Nf;
-            teDhenat.Nui = k.Nui;
+            teDhenat.NF = k.NF;
+            teDhenat.NUI = k.NUI;
             teDhenat.Email = k.Email;
-            teDhenat.EmriIbiznesit  = k.EmriIbiznesit;
+            teDhenat.EmriIBiznesit  = k.EmriIBiznesit;
             teDhenat.ShkurtesaEmritBiznesit = k.ShkurtesaEmritBiznesit;
-            teDhenat.Nrtvsh = k.Nrtvsh;
+            teDhenat.NrTVSH = k.NrTVSH;
             teDhenat.Adresa = k.Adresa;
             teDhenat.Logo = k.Logo;
 

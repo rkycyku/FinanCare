@@ -8,6 +8,7 @@ using WebAPI.Auth;
 using FinanCareWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using FinanCareWebAPI.Migrations;
 
 namespace WebAPI.Controllers
 {
@@ -69,25 +70,25 @@ namespace WebAPI.Controllers
 
                     Perdoruesi perdoruesi = new Perdoruesi
                     {
-                        AspNetUserId = perdoruesiIRI.Id,
+                        AspNetUserID = perdoruesiIRI.Id,
                         Emri = registerModel.Name,
                         Username = perdoruesiIRI.UserName,
                         Email = perdoruesiIRI.Email,
                         Mbiemri = registerModel.LastName,
                     };
-                    await _context.Perdoruesis.AddAsync(perdoruesi);
+                    await _context.Perdoruesi.AddAsync(perdoruesi);
                     await _context.SaveChangesAsync();
 
                     TeDhenatPerdoruesit teDhenatPerdoruesit = new TeDhenatPerdoruesit
                     {
-                        UserId = perdoruesi.UserId,
+                        UserID = perdoruesi.UserID,
                         Adresa = !registerModel.Adresa.IsNullOrEmpty() ? registerModel.Adresa : null,
                         Qyteti = !registerModel.Qyteti.IsNullOrEmpty() ? registerModel.Qyteti : null,
                         Shteti = !registerModel.Shteti.IsNullOrEmpty() ? registerModel.Shteti : null,
                         ZipKodi = registerModel.ZipKodi > 0 ? registerModel.ZipKodi : 0,
                         NrKontaktit = !registerModel.NrTelefonit.IsNullOrEmpty() ? registerModel.NrTelefonit : null
                     };
-                    await _context.TeDhenatPerdoruesits.AddAsync(teDhenatPerdoruesit);
+                    await _context.TeDhenatPerdoruesit.AddAsync(teDhenatPerdoruesit);
                     await _context.SaveChangesAsync();
 
                     return Ok(new AuthResults()
@@ -164,12 +165,35 @@ namespace WebAPI.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin, Menaxher, User")]
+        [HttpPost]
+        [Route("NdryshoFjalekalimin")]
+        public async Task<IActionResult> NdryshoFjalekalimin(string AspNetID, string fjalekalimiAktual, string fjalekalimiIRi)
+        {
+            var perdoruesi = await _userManager.FindByIdAsync(AspNetID);
+
+
+            if (perdoruesi == null)
+            {
+                return BadRequest("Perdoreusi nuk egziston");
+            }
+
+            var passwodiINdryshuar = await _userManager.ChangePasswordAsync(perdoruesi, fjalekalimiAktual, fjalekalimiIRi);
+
+            if (!passwodiINdryshuar.Succeeded)
+            {
+                return BadRequest("Ndodhi nje gabim gjate perditesimit te fjalekalimit");
+            }
+
+            return Ok(passwodiINdryshuar);
+        }
+
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPost]
         [Route("shtoRolinPerdoruesit")]
-        public async Task<IActionResult> PerditesoAksesin(string userID, string roli)
+        public async Task<IActionResult> PerditesoAksesin(string UserID, string roli)
         {
-            var user = await _userManager.FindByIdAsync(userID);
+            var user = await _userManager.FindByIdAsync(UserID);
 
             if (user == null)
             {
@@ -208,9 +232,9 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpDelete]
         [Route("FshijRolinUserit")]
-        public async Task<IActionResult> FshijRolinUserit(string userID, string roli)
+        public async Task<IActionResult> FshijRolinUserit(string UserID, string roli)
         {
-            var perdoruesi = await _userManager.FindByIdAsync(userID);
+            var perdoruesi = await _userManager.FindByIdAsync(UserID);
 
             if(perdoruesi == null)
             {

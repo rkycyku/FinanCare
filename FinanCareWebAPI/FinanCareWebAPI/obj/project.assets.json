@@ -12580,11 +12580,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
+      "projectUniqueName": "D:\\OneDrive - ubt-uni.net\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
       "projectName": "FinanCareWebAPI",
-      "projectPath": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
+      "projectPath": "D:\\OneDrive - ubt-uni.net\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\FinanCareWebAPI.csproj",
       "packagesPath": "C:\\Users\\rkycy\\.nuget\\packages\\",
-      "outputPath": "D:\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\obj\\",
+      "outputPath": "D:\\OneDrive - ubt-uni.net\\Programim\\GitHubProjekte\\FinanCare\\FinanCareWebAPI\\FinanCareWebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\rkycy\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -12703,7 +12703,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   },

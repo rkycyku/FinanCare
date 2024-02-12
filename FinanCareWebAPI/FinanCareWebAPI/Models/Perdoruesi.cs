@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanCareWebAPI.Models;
 
 public partial class Perdoruesi
 {
-    public int UserId { get; set; }
+    [Key]
+    public int UserID { get; set; }
 
     public string? Emri { get; set; }
 
@@ -15,11 +19,14 @@ public partial class Perdoruesi
 
     public string? Username { get; set; }
 
-    public string AspNetUserId { get; set; } = null!;
+    public string AspNetUserID { get; set; }
 
-    public virtual ICollection<Faturat> Faturats { get; } = new List<Faturat>();
+    [ForeignKey("AspNetUserID")]
+    public IdentityUser? AspNetUser { get; set; }
 
-    public virtual ICollection<Porosit> Porosits { get; } = new List<Porosit>();
+    public virtual ICollection<Faturat> Faturat { get; } = new List<Faturat>();
+
+    public virtual ICollection<Porosit> Porosit { get; } = new List<Porosit>();
 
     public virtual TeDhenatPerdoruesit? TeDhenatPerdoruesit { get; set; }
 }
