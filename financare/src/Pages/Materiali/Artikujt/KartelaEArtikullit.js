@@ -28,7 +28,7 @@ function KartelaEArtikullit(props) {
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
   const [loading, setLoading] = useState(false);
-  const [produktiID, setProduktiID] = useState(0);
+  const [produktiID, setproduktiID] = useState(0);
   const [kartelaEProduktit, setKartelaEProduktit] = useState([]);
   const [produktet, setProduktet] = useState([]);
 
@@ -106,7 +106,7 @@ function KartelaEArtikullit(props) {
   }, [perditeso, produktiID]);
 
   const handleProduktiChange = async (selectedOption) => {
-    setProduktiID(selectedOption?.produktiId ?? 0);
+    setproduktiID(selectedOption?.produktiID ?? 0);
 
     setFilteredItems([]);
     setInputValue(
@@ -278,7 +278,7 @@ function KartelaEArtikullit(props) {
                         <ul className="list-group mt-2 searchBoxi">
                           {filteredItems.map((item, index) => (
                             <li
-                              key={item.produktiId}
+                              key={item.produktiID}
                               className={`list-group-item${
                                 selectedIndex === index ? " active" : ""
                               }`}
@@ -295,7 +295,7 @@ function KartelaEArtikullit(props) {
                   <p>
                     <strong>Njesia Matese:</strong>{" "}
                     {(kartelaEProduktit &&
-                      kartelaEProduktit?.produkti?.njesiaMatese1) ??
+                      kartelaEProduktit?.produkti?.emriNjesiaMatese) ??
                       0}
                   </p>
                   <p>
@@ -312,7 +312,7 @@ function KartelaEArtikullit(props) {
                       kartelaEProduktit?.produkti?.sasiaNeStok) ??
                       0}{" "}
                     {(kartelaEProduktit &&
-                      kartelaEProduktit?.produkti?.njesiaMatese1) ??
+                      kartelaEProduktit?.produkti?.emriNjesiaMatese) ??
                       0}
                   </p>
                   <p>

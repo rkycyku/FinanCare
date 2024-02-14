@@ -64,7 +64,8 @@ function KalkulimiIMallit(props) {
   const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
 
   const [dataFillestare, setDataFillestare] = useState(null);
-  const [dataFundit, setDataFundit] = useState(null);const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
+  const [dataFundit, setDataFundit] = useState(null);
+  const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -182,14 +183,15 @@ function KalkulimiIMallit(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
-            totaliPaTvsh: totPaTVSH,
+            stafiID: teDhenat.perdoruesi.userID,
+            totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: nrFatures,
             nrRendorFatures: nrRendorKalkulimit + 1,
+            llojiKalkulimit: "HYRJE",
           },
           authentikimi
         )
@@ -198,6 +200,13 @@ function KalkulimiIMallit(props) {
             setPerditeso(Date.now());
             setIdKalkulimitEdit(response.data.idRegjistrimit);
             setRegjistroKalkulimin(true);
+            setInputValue("");
+            setNrFatures("");
+            setDataEFatures(initialDate);
+            setLlojiIPageses("Cash");
+            setStatusiIPageses("E Paguar");
+            setTotPaTVSH("0.00");
+            setTVSH("0.00");
           } else {
             console.log("gabim");
             setPerditeso(Date.now());
@@ -212,7 +221,7 @@ function KalkulimiIMallit(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${idKalkulimitEdit}&statusi=true`,
           {},
           authentikimi
         )
@@ -269,7 +278,7 @@ function KalkulimiIMallit(props) {
   };
 
   function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idpartneri);
+    setPartneri(partneri.idPartneri);
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
@@ -342,35 +351,33 @@ function KalkulimiIMallit(props) {
                             disabled
                           />
                         </Form.Group>
-                      <Form.Label>Partneri</Form.Label>
-                      <Form.Control
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Zgjedhni Partnerin"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
-                      />
+                        <Form.Label>Partneri</Form.Label>
+                        <Form.Control
+                          type="text"
+                          className="form-control styled-input"
+                          placeholder="Zgjedhni Partnerin"
+                          value={inputValue}
+                          onChange={handleInputChange}
+                          onKeyDown={handleInputKeyDown}
+                          onFocus={handleInputChange}
+                        />
 
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}
-                      >
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.idpartneri}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleNdryshoPartneri(item)}
-                            >
-                              {item.emriBiznesit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                        <div
+                          className="container"
+                          style={{ position: "relative" }}>
+                          <ul className="list-group mt-2 searchBoxi">
+                            {filteredItems.map((item, index) => (
+                              <li
+                                key={item.idPartneri}
+                                className={`list-group-item${
+                                  selectedIndex === index ? " active" : ""
+                                }`}
+                                onClick={() => handleNdryshoPartneri(item)}>
+                                {item.emriBiznesit}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Nr. Fatures</Form.Label>
@@ -415,8 +422,7 @@ function KalkulimiIMallit(props) {
                         }}
                         onKeyDown={(e) => {
                           ndrroField(e, "statusiIPageses");
-                        }}
-                      >
+                        }}>
                         <option defaultValue value={0} key={0} disabled>
                           Zgjedhni Llojin e Pageses
                         </option>
@@ -444,8 +450,7 @@ function KalkulimiIMallit(props) {
                         onKeyDown={(e) => {
                           ndrroField(e, "totPaTVSH");
                         }}
-                        disabled={llojiIPageses === "Borxh" ? true : false}
-                      >
+                        disabled={llojiIPageses === "Borxh" ? true : false}>
                         <option defaultValue value={0} key={0} disabled>
                           Zgjedhni Statusin e Pageses
                         </option>
@@ -487,8 +492,7 @@ function KalkulimiIMallit(props) {
                     <br />
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => handleRegjistroKalkulimin()}
-                    >
+                      onClick={() => handleRegjistroKalkulimin()}>
                       Regjistro <FontAwesomeIcon icon={faPlus} />
                     </Button>
                   </Col>
@@ -498,7 +502,7 @@ function KalkulimiIMallit(props) {
                   Ndrysho Statusin e Fatures{" "}
                   <FontAwesomeIcon icon={faPenToSquare} />
                 </Button>
-                 <div className="DataPerFiltrim">
+                <div className="DataPerFiltrim">
                   <div>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["DateField", "DateField"]}>
@@ -538,13 +542,11 @@ function KalkulimiIMallit(props) {
                           label="Statusi i Fatures"
                           onChange={(e) => {
                             setFiltroStatusi(e.target.value);
-                          }}
-                        >
+                          }}>
                           <MenuItem
                             defaultValue
                             value="Te Gjitha"
-                            key="Te Gjitha"
-                          >
+                            key="Te Gjitha">
                             Te Gjitha
                           </MenuItem>
                           <MenuItem key="false" value="false">
@@ -565,8 +567,7 @@ function KalkulimiIMallit(props) {
                         setDataFillestare(null);
                         setDataFundit(null);
                         setFiltroStatusi("Te Gjitha");
-                      }}
-                    >
+                      }}>
                       Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
                     </Button>
                   </div>
@@ -614,9 +615,11 @@ function KalkulimiIMallit(props) {
                           <td>{k.nrRendorFatures}</td>
                           <td>{k.nrFatures}</td>
                           <td>{k.emriBiznesit}</td>
-                          <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                          <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                           <td>{k.tvsh.toFixed(2)} €</td>
-                          <td>{parseFloat(k.totaliPaTvsh + k.tvsh).toFixed(2)} €</td>
+                          <td>
+                            {parseFloat(k.totaliPaTVSH + k.tvsh).toFixed(2)} €
+                          </td>
                           <td>{k.pershkrimShtese}</td>
                           <td>
                             {new Date(k.dataRegjistrimit).toLocaleDateString(
@@ -638,8 +641,7 @@ function KalkulimiIMallit(props) {
                               size="sm"
                               onClick={() =>
                                 handleShfaqTeDhenat(k.idRegjistrimit)
-                              }
-                            >
+                              }>
                               <FontAwesomeIcon icon={faCircleInfo} />
                             </Button>
                             <Button
@@ -653,8 +655,7 @@ function KalkulimiIMallit(props) {
                                 setIdKalkulimitEdit(k.idRegjistrimit);
                                 setNrRendorKalkulimit(k.idRegjistrimit);
                                 setRegjistroKalkulimin(true);
-                              }}
-                            >
+                              }}>
                               <FontAwesomeIcon icon={faPenToSquare} />
                             </Button>
                           </td>

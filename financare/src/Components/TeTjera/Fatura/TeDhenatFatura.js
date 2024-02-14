@@ -108,7 +108,7 @@ function TeDhenatFatura(props) {
                 <td>
                   {produkti.emriProduktit} {produkti.barkodi}
                 </td>
-                <td>{produkti.njesiaMatese1}</td>
+                <td>{produkti.emriNjesiaMatese}</td>
                 <td>{produkti.sasiaStokut}</td>
                 <td>
                   {parseFloat(

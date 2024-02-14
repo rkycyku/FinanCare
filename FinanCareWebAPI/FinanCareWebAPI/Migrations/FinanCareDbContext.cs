@@ -27,4 +27,5 @@ public partial class FinanCareDbContext : IdentityDbContext
     public DbSet<TeDhenatFaturat> TeDhenatFaturat { get; set; }
     public DbSet<TeDhenatPerdoruesit> TeDhenatPerdoruesit { get; set; }
     public DbSet<ZbritjaQmimitProduktit> ZbritjaQmimitProduktit { get; set; }
+    public DbSet<Bankat> Bankat { get; set; }
 }

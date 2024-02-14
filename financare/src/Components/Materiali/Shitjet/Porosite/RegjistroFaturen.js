@@ -16,7 +16,6 @@ import { Table, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
-import ImportoNgaOferta from "./ImportoNgaOferta";
 
 function RegjistroFaturen(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -26,7 +25,7 @@ function RegjistroFaturen(props) {
   const [loading, setLoading] = useState(false);
   const [produktetNeKalkulim, setProduktetNeKalkulim] = useState([]);
   const [emriProduktit, setEmriProduktit] = useState("");
-  const [produktiID, setProduktiID] = useState(0);
+  const [produktiID, setproduktiID] = useState(0);
   const [produktet, setProduktet] = useState([]);
   const [sasia, setSasia] = useState("");
   const [qmimiShites, setQmimiShites] = useState("");
@@ -47,7 +46,6 @@ function RegjistroFaturen(props) {
   const [idTeDhenatKalk, setIdTeDhenatKalk] = useState(0);
 
   const [edito, setEdito] = useState(false);
-  const [importoNgaOferta, setImportoNgaOferta] = useState(false);
   const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
   const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
 
@@ -150,16 +148,17 @@ function RegjistroFaturen(props) {
       totalQmimi += produkti.sasiaStokut * produkti.qmimiShites;
       totalFat +=
         (produkti.qmimiShites -
-        produkti.qmimiShites * (produkti.rabati1 / 100) -
-        (produkti.qmimiShites -
-          produkti.qmimiShites * (produkti.rabati1 / 100)) *
-          (produkti.rabati2 / 100) -
-        (produkti.qmimiShites -
           produkti.qmimiShites * (produkti.rabati1 / 100) -
           (produkti.qmimiShites -
             produkti.qmimiShites * (produkti.rabati1 / 100)) *
-            (produkti.rabati2 / 100)) *
-          (produkti.rabati3 / 100)) * produkti.sasiaStokut;
+            (produkti.rabati2 / 100) -
+          (produkti.qmimiShites -
+            produkti.qmimiShites * (produkti.rabati1 / 100) -
+            (produkti.qmimiShites -
+              produkti.qmimiShites * (produkti.rabati1 / 100)) *
+              (produkti.rabati2 / 100)) *
+            (produkti.rabati3 / 100)) *
+        produkti.sasiaStokut;
     });
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut);
@@ -167,10 +166,9 @@ function RegjistroFaturen(props) {
     setTotFat(totalFat);
   }, [produktetNeKalkulim]);
 
-
   const handleProduktiChange = (selectedOption) => {
     const kontrolloProduktin = produktetNeKalkulim.filter(
-      (item) => item.idProduktit === selectedOption.produktiId
+      (item) => item.idProduktit === selectedOption.produktiID
     );
 
     if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
@@ -180,7 +178,7 @@ function RegjistroFaturen(props) {
 
       setKonifirmoProduktinLista([
         {
-          produktiID: selectedOption.produktiId,
+          produktiID: selectedOption.produktiID,
           emriProduktit: selectedOption.emriProduktit,
           qmimiBleresIVjeter: selectedOption.qmimiBleres,
           qmimiShitesIVjeter: selectedOption.qmimiProduktit,
@@ -188,7 +186,7 @@ function RegjistroFaturen(props) {
           sasiaNeStokEVjeter: selectedOption.sasiaNeStok,
           qmimiShites: qmimiShites,
           sasiaNeStok: sasiaNeStok,
-          njesiaMatese: selectedOption.njesiaMatese1,
+          njesiaMatese: selectedOption.emriNjesiaMatese,
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
@@ -198,8 +196,8 @@ function RegjistroFaturen(props) {
         },
       ]);
     } else {
-      setProduktiID(
-        selectedOption?.produktiId ?? konifirmoProduktinLista[0].produktiID
+      setproduktiID(
+        selectedOption?.produktiID ?? konifirmoProduktinLista[0].produktiID
       );
       setEmriProduktit(
         selectedOption?.emriProduktit ??
@@ -217,14 +215,18 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiBleresIVjeter
       );
       setNjesiaMatese(
-        selectedOption?.njesiaMatese1 ?? konifirmoProduktinLista[0].njesiaMatese
+        selectedOption?.emriNjesiaMatese ??
+          konifirmoProduktinLista[0].njesiaMatese
       );
       setQmimiSH2(
         selectedOption?.qmimiMeShumic ??
           konifirmoProduktinLista[0].qmimiShitesMeShumicIVjeter
       );
       setSasia(sasia ?? konifirmoProduktinLista[0].sasiaNeStok);
-      setRabati1((selectedOption?.rabati !== null ? selectedOption.rabati : 0) ?? konifirmoProduktinLista[0].rabati1);
+      setRabati1(
+        (selectedOption?.rabati !== null ? selectedOption.rabati : 0) ??
+          konifirmoProduktinLista[0].rabati1
+      );
       setRabati3(rabati3 ?? konifirmoProduktinLista[0].rabati3);
       setQmimiShites(qmimiShites ?? konifirmoProduktinLista[0].qmimiShites);
       setSasiaShumices(
@@ -301,10 +303,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -319,7 +321,7 @@ function RegjistroFaturen(props) {
             });
         });
 
-      setProduktiID(0);
+      setproduktiID(0);
       setInputValue("");
       setSasia("");
       setSasiaNeStok(0);
@@ -381,10 +383,10 @@ function RegjistroFaturen(props) {
               `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
               {
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                stafiId: r.data.regjistrimet.stafiId,
-                totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                stafiID: r.data.regjistrimet.stafiID,
+                totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                 tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                idpartneri: r.data.regjistrimet.idpartneri,
+                idPartneri: r.data.regjistrimet.idPartneri,
                 statusiPageses: r.data.statusiPageses,
                 llojiPageses: r.data.regjistrimet.llojiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -411,7 +413,7 @@ function RegjistroFaturen(props) {
         setPerditeso(Date.now);
 
         setEdito(true);
-        setProduktiID(p.data[0].idProduktit);
+        setproduktiID(p.data[0].idProduktit);
         setInputValue(index + 1 + " - " + p.data[0].emriProduktit);
         setEmriProduktit(p.data[0].emriProduktit);
         setSasiaNeStok(p.data[0].sasiaNeStok);
@@ -458,10 +460,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -476,7 +478,7 @@ function RegjistroFaturen(props) {
             });
         });
 
-      setProduktiID(0);
+      setproduktiID(0);
       setSasia("");
       setInputValue("");
       setSasiaNeStok(0);
@@ -492,15 +494,6 @@ function RegjistroFaturen(props) {
   function KthehuTekFaturat() {
     props.setPerditeso();
     props.mbyllPerkohesisht();
-  }
-
-  function shfaqImportoNgaOferta(shfaq) {
-    if (shfaq === true) {
-      setImportoNgaOferta(true);
-    } else {
-      setImportoNgaOferta(false);
-    }
-    setPerditeso(Date.now());
   }
 
   const handleInputKeyDown = (e) => {
@@ -594,21 +587,6 @@ function RegjistroFaturen(props) {
           </Modal.Footer>
         </Modal>
       )}
-      {importoNgaOferta && (
-        <ImportoNgaOferta
-          show={() => shfaqImportoNgaOferta(true)}
-          hide={() => shfaqImportoNgaOferta(false)}
-          partneri={
-            teDhenatFatures.regjistrimet &&
-            teDhenatFatures.regjistrimet.idpartneri
-          }
-          nrRendorKalkulimit={props.nrRendorKalkulimit}
-          setPerditeso={() => setPerditeso(Date.now())}
-          setShfaqMesazhin={(e) => setShfaqMesazhin(e)}
-          setPershkrimiMesazhit={(e) => setPershkrimiMesazhit(e)}
-          setTipiMesazhit={(e) => setTipiMesazhit(e)}
-        />
-      )}
       {loading ? (
         <div className="Loader">
           <TailSpin
@@ -647,7 +625,7 @@ function RegjistroFaturen(props) {
                       <ul className="list-group mt-2 searchBoxi">
                         {filteredItems.map((item, index) => (
                           <li
-                            key={item.produktiId}
+                            key={item.produktiID}
                             className={`list-group-item${
                               selectedIndex === index ? " active" : ""
                             }`}
@@ -737,7 +715,7 @@ function RegjistroFaturen(props) {
                   <h5>
                     <strong>Partneri:</strong>{" "}
                     {teDhenatFatures.regjistrimet &&
-                      teDhenatFatures.regjistrimet.idpartneri}{" "}
+                      teDhenatFatures.regjistrimet.idPartneri}{" "}
                     -{" "}
                     {teDhenatFatures.regjistrimet &&
                       teDhenatFatures.regjistrimet.emriBiznesit}
@@ -759,11 +737,6 @@ function RegjistroFaturen(props) {
                       className="mb-3 Butoni"
                       onClick={() => setKonfirmoMbylljenFatures(true)}>
                       Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Button
-                      className="mb-3 Butoni"
-                      onClick={() => setImportoNgaOferta(true)}>
-                      Importo nga Oferta <FontAwesomeIcon icon={faFileImport} />
                     </Button>
                     <Button
                       className="mb-3 Butoni"

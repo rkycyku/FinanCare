@@ -185,7 +185,7 @@ function HeaderFatura(props) {
                     <strong>
                       {teDhenatFat &&
                         teDhenatFat.regjistrimet &&
-                        teDhenatFat.regjistrimet.idpartneri}{" "}
+                        teDhenatFat.regjistrimet.idPartneri}{" "}
                       -{" "}
                       {teDhenatFat &&
                         teDhenatFat.regjistrimet &&

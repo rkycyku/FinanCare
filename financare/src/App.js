@@ -26,6 +26,7 @@ import Ofertat from "./Pages/Materiali/Shitjet/Ofertat";
 import FleteLejimet from "./Pages/Materiali/Hyrjet/FleteLejimet";
 import KartelaEArtikullit from "./Pages/Materiali/Artikujt/KartelaEArtikullit"
 import GrupetEProduktit from "./Pages/Materiali/Artikujt/GrupetEProduktit";
+import Bankat from "./Pages/Gjenerale/TeDhenat/Bankat";
 
 function App() {
   useEffect(() => {
@@ -67,6 +68,7 @@ function App() {
         <Route path="/FleteLejimet" element={<FleteLejimet />} />
         <Route path="/KartelaEArtikullit" element={<KartelaEArtikullit />} />
         <Route path="/GrupetEProduktit" element={<GrupetEProduktit />} />
+        <Route path="/Bankat" element={<Bankat />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

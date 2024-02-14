@@ -56,6 +56,45 @@ namespace TechStoreWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        [Route("ShfaqProduktinNgaID")]
+        public async Task<ActionResult> ShfaqProduktinNgaID(int id)
+        {
+
+            var Produkti = await _context.Produkti
+                .OrderByDescending(p => p.StokuQmimiProduktit.SasiaNeStok)
+                .ThenByDescending(p => p.ProduktiID)
+               .Select(p => new
+               {
+                   p.ProduktiID,
+                   p.EmriProduktit,
+                   p.IDPartneri,
+                   p.Partneri.EmriBiznesit,
+                   p.IDNjesiaMatese,
+                   p.NjesiaMatese.EmriNjesiaMatese,
+                   p.Barkodi,
+                   p.KodiProduktit,
+                   p.LlojiTVSH,
+                   p.StokuQmimiProduktit.SasiaNeStok,
+                   p.StokuQmimiProduktit.QmimiProduktit,
+                   p.StokuQmimiProduktit.QmimiBleres,
+                   p.StokuQmimiProduktit.QmimiMeShumic,
+                   p.ZbritjaQmimitProduktit.Rabati,
+                   p.SasiaShumices,
+                   p.IDGrupiProduktit,
+                   p.GrupiProduktit.GrupiIProduktit,
+               }).Where(x => x.ProduktiID == id)
+               .FirstOrDefaultAsync();
+
+            if(Produkti == null)
+            {
+                return BadRequest("Produkti nuk egziston");
+            }
+
+            return Ok(Produkti);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
         [Route("ProduktetPerKalkulim")]
         public async Task<ActionResult> ProduktetPerKalkulim()
         {
@@ -84,6 +123,31 @@ namespace TechStoreWebAPI.Controllers
                    p.GrupiProduktit.GrupiIProduktit,
                })
                .ToListAsync();
+
+            return Ok(Produkti);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetStokuProduktit")]
+        public async Task<ActionResult> GetStokuProduktit(int id)
+        {
+
+            var Produkti = await _context.Produkti
+               .OrderBy(x => x.StokuQmimiProduktit.SasiaNeStok)
+               .ThenByDescending(x => x.ProduktiID)
+               .Select(p => new
+               {
+                   p.ProduktiID,
+                   p.EmriProduktit,
+                   p.StokuQmimiProduktit.SasiaNeStok,
+               })
+               .Where(x => x.ProduktiID == id).FirstOrDefaultAsync();
+
+            if(Produkti == null)
+            {
+                return BadRequest("Produkti nuk u Gjet");
+            }
 
             return Ok(Produkti);
         }
@@ -251,7 +315,7 @@ namespace TechStoreWebAPI.Controllers
 
             var kalkulimet = await _context.TeDhenatFaturat
                 .Include(x => x.Faturat)
-                .Where(x => x.IDProduktit == id && x.Faturat.StatusiKalkulimit.Equals("true"))
+                .Where(x => x.IDProduktit == id && x.Faturat.StatusiKalkulimit.Equals("true") && x.Faturat.LlojiKalkulimit != "OFERTE")
                 .Select(x => new
                 {
                     x.ID,

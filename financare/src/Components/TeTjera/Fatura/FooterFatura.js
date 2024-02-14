@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 function FooterFatura(props) {
   const [teDhenatFat, setteDhenatFat] = useState([]);
+  const [bankat, setBankat] = useState([]);
 
   const getToken = localStorage.getItem("token");
 
@@ -22,7 +23,12 @@ function FooterFatura(props) {
           }`,
           authentikimi
         );
+        const bankat = await axios.get(
+          `https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat`,
+          authentikimi
+        );
         setteDhenatFat(teDhenat.data);
+        setBankat(bankat.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -48,24 +54,28 @@ function FooterFatura(props) {
                   <strong>{props.Barkodi}</strong>
                 </p>
                 <p>
-                  <strong>Pagesa duhet te behet ne nje nga llogarit e cekura me poshte:</strong>
+                  <strong>
+                    Pagesa duhet te behet ne nje nga llogarit e cekura me
+                    poshte:
+                  </strong>
                 </p>
                 <table>
-                  <tr>
+                <tr style={{ fontSize: "12px" }}>
                     <th>Emri Bankes</th>
-                    <th>NR Bankes</th>
+                    <th>Numri Llogaris</th>
+                    <th>Valuta</th>
                   </tr>
-                  <tr key={"a"}>
-                    <td>banka 1</td>
-                    <td>Numri 1</td>
-                  </tr>
-                  <tr key={"ab"}>
-                    <td>banka 2</td>
-                    <td>Numri 2</td>
-                  </tr>
+                  {bankat &&
+                    bankat.map((x) => (
+                      <tr style={{ fontSize: "12px" }} key={x.bankaID}>
+                        <td><strong>{x.emriBankes}</strong></td>
+                        <td><strong>{x.numriLlogaris}</strong></td>
+                        <td><strong>{x.valuta}</strong></td>
+                      </tr>
+                    ))}
                 </table>
               </>
-            )}
+            )}  
         </div>
 
         <div className="data">

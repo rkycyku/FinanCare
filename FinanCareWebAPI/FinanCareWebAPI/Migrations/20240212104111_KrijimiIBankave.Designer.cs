@@ -4,6 +4,7 @@ using FinanCareWebAPI.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinanCareWebAPI.Migrations
 {
     [DbContext(typeof(FinanCareDbContext))]
-    partial class FinanCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240212104111_KrijimiIBankave")]
+    partial class KrijimiIBankave
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,9 @@ namespace FinanCareWebAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmriBankes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KodiBankes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumriLlogaris")
@@ -57,9 +63,6 @@ namespace FinanCareWebAPI.Migrations
 
                     b.Property<DateTime?>("DataRegjistrimit")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("EshteFaturuarOferta")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IDPartneri")
                         .HasColumnType("int");
@@ -414,7 +417,7 @@ namespace FinanCareWebAPI.Migrations
                     b.Property<int?>("IDProduktit")
                         .HasColumnType("int");
 
-                    b.Property<int>("IDRegjistrimit")
+                    b.Property<int?>("IDRegjistrimit")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("QmimiBleres")
@@ -785,9 +788,7 @@ namespace FinanCareWebAPI.Migrations
 
                     b.HasOne("FinanCareWebAPI.Models.Faturat", "Faturat")
                         .WithMany("TeDhenatFaturat")
-                        .HasForeignKey("IDRegjistrimit")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IDRegjistrimit");
 
                     b.Navigation("Faturat");
 

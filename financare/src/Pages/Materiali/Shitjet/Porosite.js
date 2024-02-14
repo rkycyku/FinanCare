@@ -183,7 +183,7 @@ function KthimIMallitTeBlere(props) {
           {
             dataRegjistrimit: dataEFatures,
             stafiID: teDhenat.perdoruesi.userID,
-            totaliPaTvsh: totPaTVSH,
+            totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
             idPartneri: Partneri,
             statusiPageses: statusiIPageses,
@@ -276,7 +276,7 @@ function KthimIMallitTeBlere(props) {
   };
 
   function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idpartneri);
+    setPartneri(partneri.idPartneri);
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
@@ -573,10 +573,10 @@ function KthimIMallitTeBlere(props) {
                             )}
                           </td>
                           
-                          <td>{parseFloat(k.totaliPaTvsh).toFixed(2)}</td>
+                          <td>{parseFloat(k.totaliPaTVSH).toFixed(2)}</td>
                           <td>{parseFloat(k.tvsh).toFixed(2)}</td>
                           <td>{parseFloat(k.rabati).toFixed(2)}</td>
-                          <td>{parseFloat(k.totaliPaTvsh + k.tvsh).toFixed(2)}</td>
+                          <td>{parseFloat(k.totaliPaTVSH + k.tvsh).toFixed(2)}</td>
                           <td>{k.llojiPageses}</td>
                           <td>
                             {k.statusiKalkulimit === "true"

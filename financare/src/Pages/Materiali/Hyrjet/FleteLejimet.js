@@ -183,10 +183,10 @@ function KalkulimiIMallit(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
-            totaliPaTvsh: totPaTVSH,
+            stafiID: teDhenat.perdoruesi.userID,
+            totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: "Pa Paguar",
             llojiPageses: "Cash",
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
@@ -272,7 +272,7 @@ function KalkulimiIMallit(props) {
   };
 
   function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idpartneri);
+    setPartneri(partneri.idPartneri);
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
@@ -364,7 +364,7 @@ function KalkulimiIMallit(props) {
                         <ul className="list-group mt-2 searchBoxi">
                           {filteredItems.map((item, index) => (
                             <li
-                              key={item.idpartneri}
+                              key={item.idPartneri}
                               className={`list-group-item${
                                 selectedIndex === index ? " active" : ""
                               }`}
@@ -539,7 +539,7 @@ function KalkulimiIMallit(props) {
                           <td>{k.nrRendorFatures}</td>
                           <td>{k.nrFatures}</td>
                           <td>{k.emriBiznesit}</td>
-                          <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                          <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                           <td>{k.tvsh.toFixed(2)} €</td>
                           <td>
                             {new Date(k.dataRegjistrimit).toLocaleDateString(

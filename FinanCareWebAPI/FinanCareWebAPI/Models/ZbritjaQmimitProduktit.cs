@@ -9,9 +9,9 @@ public partial class ZbritjaQmimitProduktit
 {
     [Key]
     public int ProduktiID { get; set; }
-    public DateTime? DataZbritjes { get; set; }
-    public DateTime? DataSkadimit { get; set; }
-    public decimal? Rabati { get; set; }
+    public DateTime? DataZbritjes { get; set; } = DateTime.Now;
+    public DateTime? DataSkadimit { get; set; } = DateTime.Now;
+    public decimal? Rabati { get; set; } = 0;
 
     [ForeignKey(nameof(ProduktiID))]
     public virtual Produkti? Produkti { get; set; }

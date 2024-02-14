@@ -10,6 +10,7 @@ import {
   faPenToSquare,
   faL,
   faArrowRotateForward,
+  faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Form, Container, Row, Col } from "react-bootstrap";
@@ -33,6 +34,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import dayjs from "dayjs";
+import FaturoOferten from "../../../Components/Materiali/Shitjet/Ofertat/FaturoOferten";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -63,7 +65,12 @@ function KthimIMallitTeBlere(props) {
   const [idKalkulimitEdit, setIdKalkulimitEdit] = useState(0);
 
   const [edito, setEdito] = useState(false);
+  const [importoNgaOferta, setImportoNgaOferta] = useState(false);
   const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
+
+  const [teDhenatFatures, setTeDhenatFatures] = useState([]);
+
+  const [nrRendorFat, setNrRendorFat] = useState(0);
 
   const [dataFillestare, setDataFillestare] = useState(null);
   const [dataFundit, setDataFundit] = useState(null);
@@ -142,7 +149,7 @@ function KthimIMallitTeBlere(props) {
           authentikimi
         );
         setPartneret(partneri.data);
-        console.log(partneri)
+        console.log(partneri);
       } catch (err) {
         console.log(err);
       }
@@ -182,10 +189,10 @@ function KthimIMallitTeBlere(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
-            totaliPaTvsh: totPaTVSH,
+            stafiID: teDhenat.perdoruesi.userID,
+            totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
@@ -214,7 +221,7 @@ function KthimIMallitTeBlere(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${idKalkulimitEdit}&statusi=true`,
           {},
           authentikimi
         )
@@ -276,10 +283,19 @@ function KthimIMallitTeBlere(props) {
   };
 
   function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idpartneri);
+    setPartneri(partneri.idPartneri);
 
     setFilteredItems([]);
     setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
+  }
+
+  function shfaqImportoNgaOferta(shfaq) {
+    if (shfaq === true) {
+      setImportoNgaOferta(true);
+    } else {
+      setImportoNgaOferta(false);
+    }
+    setPerditeso(Date.now());
   }
 
   return (
@@ -312,6 +328,17 @@ function KthimIMallitTeBlere(props) {
           <PerditesoStatusinKalk
             show={() => ndryshoStatusin(true)}
             hide={() => ndryshoStatusin(false)}
+          />
+        )}
+        {importoNgaOferta && (
+          <FaturoOferten
+            show={() => shfaqImportoNgaOferta(true)}
+            hide={() => shfaqImportoNgaOferta(false)}
+            nrRendorKalkulimit={nrRendorFat}
+            setPerditeso={() => setPerditeso(Date.now())}
+            setShfaqMesazhin={(e) => setShfaqMesazhin(e)}
+            setPershkrimiMesazhit={(e) => setPershkrimiMesazhit(e)}
+            setTipiMesazhit={(e) => setTipiMesazhit(e)}
           />
         )}
         {loading ? (
@@ -363,17 +390,15 @@ function KthimIMallitTeBlere(props) {
 
                       <div
                         className="container"
-                        style={{ position: "relative" }}
-                      >
+                        style={{ position: "relative" }}>
                         <ul className="list-group mt-2 searchBoxi">
                           {filteredItems.map((item, index) => (
                             <li
-                              key={item.idpartneri}
+                              key={item.idPartneri}
                               className={`list-group-item${
                                 selectedIndex === index ? " active" : ""
                               }`}
-                              onClick={() => handleNdryshoPartneri(item)}
-                            >
+                              onClick={() => handleNdryshoPartneri(item)}>
                               {item.emriBiznesit}
                             </li>
                           ))}
@@ -410,8 +435,7 @@ function KthimIMallitTeBlere(props) {
                         }}
                         onKeyDown={(e) => {
                           ndrroField(e, "statusiIPageses");
-                        }}
-                      >
+                        }}>
                         <option defaultValue value={0} key={0} disabled>
                           Zgjedhni Llojin e Pageses
                         </option>
@@ -440,8 +464,7 @@ function KthimIMallitTeBlere(props) {
                     <br />
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => handleRegjistroKalkulimin()}
-                    >
+                      onClick={() => handleRegjistroKalkulimin()}>
                       Regjistro <FontAwesomeIcon icon={faPlus} />
                     </Button>
                   </Col>
@@ -491,13 +514,11 @@ function KthimIMallitTeBlere(props) {
                           label="Statusi i Fatures"
                           onChange={(e) => {
                             setFiltroStatusi(e.target.value);
-                          }}
-                        >
+                          }}>
                           <MenuItem
                             defaultValue
                             value="Te Gjitha"
-                            key="Te Gjitha"
-                          >
+                            key="Te Gjitha">
                             Te Gjitha
                           </MenuItem>
                           <MenuItem key="false" value="false">
@@ -518,8 +539,7 @@ function KthimIMallitTeBlere(props) {
                         setDataFillestare(null);
                         setDataFundit(null);
                         setFiltroStatusi("Te Gjitha");
-                      }}
-                    >
+                      }}>
                       Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
                     </Button>
                   </div>
@@ -583,8 +603,7 @@ function KthimIMallitTeBlere(props) {
                               size="sm"
                               onClick={() =>
                                 handleShfaqTeDhenat(k.idRegjistrimit)
-                              }
-                            >
+                              }>
                               <FontAwesomeIcon icon={faCircleInfo} />
                             </Button>
                             <Button
@@ -598,9 +617,23 @@ function KthimIMallitTeBlere(props) {
                                 setIdKalkulimitEdit(k.idRegjistrimit);
                                 setNrRendorKalkulimit(k.idRegjistrimit);
                                 setRegjistroKalkulimin(true);
-                              }}
-                            >
+                              }}>
                               <FontAwesomeIcon icon={faPenToSquare} />
+                            </Button>
+                            <Button
+                              style={{ marginRight: "0.5em" }}
+                              variant="success"
+                              size="sm"
+                              disabled={
+                                k.statusiKalkulimit === "false" ? true : false ||
+                                k.eshteFaturuarOferta === "true" ? true : false
+                              }
+                              onClick={() => {
+                                setImportoNgaOferta(true);
+                                setNrRendorFat(k.idRegjistrimit);
+                              }}>
+                              Faturo Oferten{" "}
+                              <FontAwesomeIcon icon={faFileImport} />
                             </Button>
                           </td>
                         </tr>

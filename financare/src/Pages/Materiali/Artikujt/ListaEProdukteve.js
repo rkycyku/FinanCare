@@ -226,7 +226,7 @@ const ProductTables = () => {
                     <td>{p.barkodi} / {p.kodiProduktit}</td>
                     <td>{p.emriProduktit}</td>
                     <td>{p.emriBiznesit}</td>
-                    <td>{p.njesiaMatese1}</td>
+                    <td>{p.emriNjesiaMatese}</td>
                     <td>{p.grupiIProduktit}</td>
                     <td>{p.llojiTVSH}</td>
                     <td>{(p.qmimiProduktit).toFixed(2)} €</td>

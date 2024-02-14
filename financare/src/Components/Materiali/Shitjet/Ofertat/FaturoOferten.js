@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 
-function PerditesoStatusinKalk(props) {
+function FaturoOferten(props) {
   const [kalkulimet, setKalkulimet] = useState([]);
   const [detajetRegjistrimi, setDetajetRegjistrimit] = useState([]);
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
@@ -19,7 +19,7 @@ function PerditesoStatusinKalk(props) {
   const [nrFatures, setNrFatures] = useState("");
   const [referenti, setReferenti] = useState("");
   const [dataFatures, setDataFatures] = useState("");
-  const [idPartneri, setIdPartneri] = useState("");
+  const [idPartneri, setidPartneri] = useState("");
 
   const [idRegjistrimit, setIdRegjistrimit] = useState(0);
 
@@ -33,6 +33,7 @@ function PerditesoStatusinKalk(props) {
   const [krijoFletLejimin, setKrijoFleteLejimin] = useState(false);
 
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
+  const [nrRendorKalkulimitFat, setNrRendorKalkulimitFat] = useState(0);
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -57,17 +58,29 @@ function PerditesoStatusinKalk(props) {
   const muaji = (dataPorosise.getMonth() + 1).toString().padStart(2, "0");
   const viti = dataPorosise.getFullYear().toString().slice(-2);
 
+  useEffect(() => {
+    const vendosNrFaturesMeRradhe = async () => {
+      try {
+        const nrFat = await axios.get(
+          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=FAT`,
+          authentikimi
+        );
+        setNrRendorKalkulimitFat(parseInt(nrFat.data));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    vendosNrFaturesMeRradhe();
+  }, [perditeso]);
+
   const barkodiOferte = `${
     teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
   }-${dita}${muaji}${viti}-${"OFERTE"}-${nrFatures}`;
 
   const barkodiFat = `${
     teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
-  }-${dita}${muaji}${viti}-${"FAT"}-${
-    detajetRegjistrimi &&
-      detajetRegjistrimi.regjistrimet &&
-    detajetRegjistrimi.regjistrimet.nrRendorFatures
-  }`;
+  }-${dita}${muaji}${viti}-${"FAT"}-${nrRendorKalkulimitFat + 1}`;
 
   useEffect(() => {
     if (getID) {
@@ -117,7 +130,7 @@ function PerditesoStatusinKalk(props) {
     const shfaqKalkulimet = async () => {
       try {
         const kalkulimet = await axios.get(
-          `https://localhost:7285/api/Faturat/shfaqRegjistrimet`,
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.nrRendorKalkulimit}`,
           authentikimi
         );
         const ofertat = kalkulimet.data.filter(
@@ -126,7 +139,7 @@ function PerditesoStatusinKalk(props) {
             item.statusiKalkulimit === "true"
         );
         const ofertatPerPartnerin = ofertat.filter(
-          (item) => item.idpartneri === props.partneri
+          (item) => item.idPartneri === props.partneri
         );
         setKalkulimet(ofertatPerPartnerin);
       } catch (err) {
@@ -143,24 +156,17 @@ function PerditesoStatusinKalk(props) {
       authentikimi
     );
 
-    await axios.delete(
-      `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit?idKalkulimi=${props.nrRendorKalkulimit}`,
-      authentikimi
-    );
-
-    await axios.put(
-      `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
+    await axios.post(
+      `https://localhost:7285/api/Faturat/ruajKalkulimin`,
       {
         dataRegjistrimit: detajetRegjistrimi.regjistrimet.dataRegjistrimit,
-        stafiId: detajetRegjistrimi.regjistrimet.stafiId,
-        totaliPaTvsh: parseFloat(detajetRegjistrimi.totaliPaTVSH),
+        stafiID: detajetRegjistrimi.regjistrimet.stafiID,
+        totaliPaTVSH: parseFloat(detajetRegjistrimi.totaliPaTVSH),
         tvsh: parseFloat(detajetRegjistrimi.tvsH18 + detajetRegjistrimi.tvsH8),
-        idpartneri: detajetRegjistrimi.regjistrimet.idpartneri,
+        idPartneri: detajetRegjistrimi.regjistrimet.idPartneri,
         statusiPageses: "Pa Paguar",
         llojiPageses: detajetRegjistrimi.regjistrimet.llojiPageses,
-        llojiKalkulimit: detajetRegjistrimi.regjistrimet.llojiKalkulimit,
-        nrFatures: detajetRegjistrimi.regjistrimet.nrFatures,
-        statusiKalkulimit: detajetRegjistrimi.regjistrimet.statusiKalkulimit,
+        nrFatures: (nrRendorKalkulimitFat + 1).toString(),
         pershkrimShtese:
           detajetRegjistrimi.regjistrimet.pershkrimShtese +
           " Referenti: " +
@@ -168,16 +174,23 @@ function PerditesoStatusinKalk(props) {
           ", Nr. Ofertes: " +
           barkodiOferte,
         rabati: parseFloat(detajetRegjistrimi.rabati),
-        nrRendorFatures: detajetRegjistrimi.regjistrimet.nrRendorFatures,
+        nrRendorFatures: nrRendorKalkulimitFat + 1,
+        statusiKalkulimit: "true",
+        llojiKalkulimit: "FAT",
       },
       authentikimi
     );
     for (let produktet of kalkulimi.data) {
+      await axios.put(
+        `https://localhost:7285/api/Faturat/FaturoOferten/PerditesoStokun?id=${produktet.idProduktit}&lloji=FAT&stoku=${produktet.sasiaStokut}`,
+        {},
+        authentikimi
+      );
       await axios
         .post(
           `https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat`,
           {
-            idRegjistrimit: props.nrRendorKalkulimit,
+            idRegjistrimit: props.nrRendorKalkulimit + 1,
             idProduktit: produktet.idProduktit,
             qmimiBleres: produktet.qmimiBleres,
             qmimiShites: produktet.qmimiShites,
@@ -189,7 +202,7 @@ function PerditesoStatusinKalk(props) {
           },
           authentikimi
         )
-        .then(() => {
+        .then(async () => {
           props.setPerditeso();
           if (produktet.sasiaStokut > produktet.sasiaAktualeNeStok) {
             setProduktetPerFletLejim((prev) => {
@@ -197,13 +210,13 @@ function PerditesoStatusinKalk(props) {
             });
             setKaFleteLejim(true);
           }
+          await axios.put(
+            `https://localhost:7285/api/Faturat/FaturoOferten?id=${idRegjistrimit}`,
+            {},
+            authentikimi
+          );
         });
     }
-
-    await axios.delete(
-      `https://localhost:7285/api/Faturat/fshijKalkulimin?idKalkulimi=${idRegjistrimit}`,
-      authentikimi
-    );
 
     setImportoOfertenKonfirmimi(false);
     setEPara(false);
@@ -216,7 +229,6 @@ function PerditesoStatusinKalk(props) {
   }, [kaFletLejim, ePara]);
 
   function kontrolloFletLejimin() {
-    console.log('"a');
     if (kaFletLejim) {
       setImportoOfertenKonfirmimi(false);
       setKrijoFleteLejimin(true);
@@ -250,25 +262,40 @@ function PerditesoStatusinKalk(props) {
       .post(
         "https://localhost:7285/api/Faturat/ruajKalkulimin",
         {
-          stafiId: teDhenat.perdoruesi.userId,
-          totaliPaTvsh: 0,
+          stafiID: teDhenat.perdoruesi.userID,
+          totaliPaTVSH: 0,
           tvsh: 0,
-          idpartneri: idPartneri,
+          idPartneri: idPartneri,
           nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
           llojiKalkulimit: "FL",
           pershkrimShtese:
             "Flete Lejimi per munges malli" +
             ", Vlene per Faturen Nr: <strong>" +
-            barkodiFat +"</strong>",
+            barkodiFat +
+            "</strong>",
           nrRendorFatures: nrRendorKalkulimit + 1,
           statusiPageses: "Pa Paguar",
+          statusiKalkulimit: "true",
         },
         authentikimi
       )
       .then(async (response) => {
-        if (response.status === 200 || response.status === 201) {
-          setPerditeso(Date.now());
-          for (let produktet of produktetPerFletLejim) {
+        setPerditeso(Date.now());
+        for (let produktet of produktetPerFletLejim) {
+          const stoku = await axios.get(
+            `https://localhost:7285/api/Produkti/GetStokuProduktit?id=${produktet.idProduktit}`,
+            authentikimi
+          );
+
+          if (stoku.data.sasiaNeStok < 0) {
+            await axios.put(
+              `https://localhost:7285/api/Faturat/FaturoOferten/PerditesoStokun?id=${
+                produktet.idProduktit
+              }&lloji=FL&stoku=${parseFloat(stoku.data.sasiaNeStok * -1)}`,
+              {},
+              authentikimi
+            );
+
             await axios
               .post(
                 `https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat`,
@@ -277,7 +304,7 @@ function PerditesoStatusinKalk(props) {
                   idProduktit: produktet.idProduktit,
                   qmimiBleres: produktet.qmimiBleres,
                   qmimiShites: -produktet.qmimiShites,
-                  sasiaStokut: produktet.sasiaStokut,
+                  sasiaStokut: parseFloat(stoku.data.sasiaNeStok * -1),
                   qmimiShitesMeShumic: produktet.qmimiShitesMeShumic,
                   rabati1: produktet.rabati1,
                   rabati2: produktet.rabati2,
@@ -285,14 +312,46 @@ function PerditesoStatusinKalk(props) {
                 },
                 authentikimi
               )
-              .then(() => {});
+              .then(async () => {
+                const stoku = await axios.get(
+                  `https://localhost:7285/api/Produkti/GetStokuProduktit?id=${produktet.idProduktit}`,
+                  authentikimi
+                );
+              });
           }
-        } else {
-          console.log("gabim");
-          setPerditeso(Date.now());
         }
       })
-      .finally(() => {
+      .finally(async () => {
+        const kalkulimet = await axios.get(
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.nrRendorKalkulimit}`,
+          authentikimi
+        );
+
+        await axios.put(
+          `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
+          {
+            dataRegjistrimit: kalkulimet.data.regjistrimet.dataRegjistrimit,
+            stafiID: kalkulimet.data.regjistrimet.stafiID,
+            totaliPaTVSH: parseFloat(kalkulimet.data.totaliPaTVSH),
+            tvsh: parseFloat(kalkulimet.data.tvsH18 + kalkulimet.data.tvsH8),
+            idPartneri: kalkulimet.data.regjistrimet.idPartneri,
+            statusiPageses: kalkulimet.data.statusiPageses,
+            llojiPageses: kalkulimet.data.regjistrimet.llojiPageses,
+            llojiKalkulimit: kalkulimet.data.regjistrimet.llojiKalkulimit,
+            nrFatures: kalkulimet.data.regjistrimet.nrFatures,
+            statusiKalkulimit: kalkulimet.data.regjistrimet.statusiKalkulimit,
+            pershkrimShtese: kalkulimet.data.regjistrimet.pershkrimShtese,
+            rabati: parseFloat(kalkulimet.data.rabati),
+            nrRendorFatures: kalkulimet.data.regjistrimet.nrRendorFatures,
+          },
+          authentikimi
+        );
+        await axios.put(
+          `https://localhost:7285/api/Faturat/FaturoOferten?id=${idRegjistrimit}`,
+          {},
+          authentikimi
+        );
+
         props.setPerditeso();
         setKrijoFleteLejimin(false);
         props.hide();
@@ -323,11 +382,11 @@ function PerditesoStatusinKalk(props) {
           style={{ marginTop: "7em" }}
           onHide={() => setImportoOfertenKonfirmimi(false)}>
           <Modal.Header closeButton>
-            <Modal.Title as="h5">Konfirmo Importimin e Ofertes</Modal.Title>
+            <Modal.Title as="h5">Konfirmo Faturimin e Ofertes</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <strong style={{ fontSize: "10pt" }}>
-              A jeni te sigurt qe deshironi ta importoni kete Oferte?
+              A jeni te sigurt qe deshironi ta faturoni kete Oferte?
             </strong>
             <hr />
             <span style={{ fontSize: "10pt" }}>
@@ -350,11 +409,14 @@ function PerditesoStatusinKalk(props) {
             </span>
             <hr />
             <strong style={{ fontSize: "10pt" }}>
-              Oferta do te fshihet dhe si e tille nuk mund te perdoret me!
-              <br />
-              Te gjitha produktet ne fature do largohen dhe do te zevendesohen
-              me ato te ofertes!
+              Pas konfirmimit kjo oferte do te quhet si e kompletuar! Si e tille
+              faturimi nuk do te jete me i mundur per kete.
             </strong>
+            <br />
+            <p style={{ fontSize: "10pt" }}>
+              Ne rast se produktet e ofertes nuk jane ne stok do te shfaqet
+              opsioni i krijimit te Flete Lejimit!
+            </p>
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -430,13 +492,15 @@ function PerditesoStatusinKalk(props) {
               </tr>
             </MDBTableHead>
             <MDBTableBody>
-              {kalkulimet.map((k) => (
-                <tr key={k.idRegjistrimit}>
-                  <td>{k.nrFatures}</td>
-                  <td>{k.emriBiznesit}</td>
-                  <td>{k.username}</td>
+              {detajetRegjistrimi && detajetRegjistrimi.regjistrimet && (
+                <tr key={detajetRegjistrimi.regjistrimet.idRegjistrimit}>
+                  <td>{detajetRegjistrimi.regjistrimet.nrFatures}</td>
+                  <td>{detajetRegjistrimi.regjistrimet.emriBiznesit}</td>
+                  <td>{detajetRegjistrimi.regjistrimet.username}</td>
                   <td>
-                    {new Date(k.dataRegjistrimit).toLocaleDateString("en-GB", {
+                    {new Date(
+                      detajetRegjistrimi.regjistrimet.dataRegjistrimit
+                    ).toLocaleDateString("en-GB", {
                       dateStyle: "short",
                     })}
                   </td>
@@ -446,19 +510,27 @@ function PerditesoStatusinKalk(props) {
                       variant="warning"
                       size="sm"
                       onClick={() => {
-                        setIdRegjistrimit(k.idRegjistrimit);
-                        setIdPartneri(k.idpartneri);
-                        setNrFatures(k.nrFatures);
-                        setEmriBiznesit(k.emriBiznesit);
-                        setReferenti(k.username);
-                        setDataFatures(k.dataRegjistrimit);
+                        setIdRegjistrimit(
+                          detajetRegjistrimi.regjistrimet.idRegjistrimit
+                        );
+                        setidPartneri(
+                          detajetRegjistrimi.regjistrimet.idPartneri
+                        );
+                        setNrFatures(detajetRegjistrimi.regjistrimet.nrFatures);
+                        setEmriBiznesit(
+                          detajetRegjistrimi.regjistrimet.emriBiznesit
+                        );
+                        setReferenti(detajetRegjistrimi.regjistrimet.username);
+                        setDataFatures(
+                          detajetRegjistrimi.regjistrimet.dataRegjistrimit
+                        );
                         setImportoOfertenKonfirmimi(true);
                       }}>
                       <FontAwesomeIcon icon={faFileImport} />
                     </Button>
                   </td>
                 </tr>
-              ))}
+              )}
             </MDBTableBody>
           </MDBTable>
         </Modal.Body>
@@ -467,4 +539,4 @@ function PerditesoStatusinKalk(props) {
   );
 }
 
-export default PerditesoStatusinKalk;
+export default FaturoOferten;

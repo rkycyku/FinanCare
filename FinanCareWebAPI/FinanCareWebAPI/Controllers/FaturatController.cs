@@ -42,7 +42,8 @@ namespace WebAPI.Controllers
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
                     x.Rabati,
-                    x.NrRendorFatures
+                    x.NrRendorFatures,
+                    x.EshteFaturuarOferta
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -73,7 +74,8 @@ namespace WebAPI.Controllers
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
                     x.Rabati,
-                    x.NrRendorFatures
+                    x.NrRendorFatures,
+                    x.EshteFaturuarOferta
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -109,7 +111,8 @@ namespace WebAPI.Controllers
                     x.StatusiKalkulimit,
                     x.PershkrimShtese,
                     x.Rabati,
-                    x.NrRendorFatures
+                    x.NrRendorFatures,
+                    x.EshteFaturuarOferta
                 }).FirstOrDefaultAsync(x => x.IDRegjistrimit == id);
 
             var totTVSH18 = await _context.TeDhenatFaturat.Include(x => x.Produkti).Where(x => x.Produkti.LlojiTVSH == 18 && x.IDRegjistrimit == id).ToListAsync();
@@ -275,6 +278,7 @@ namespace WebAPI.Controllers
             fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
             fatura.TVSH = fat.TVSH;
             fatura.DataRegjistrimit = fat.DataRegjistrimit;
+            fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
 
             try
             {
@@ -472,6 +476,31 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("FaturoOferten")]
+        public async Task<IActionResult> FaturoOferten(int id)
+        {
+            var oferta = await _context.Faturat.FindAsync(id);
+            if (oferta == null)
+            {
+                return NotFound();
+            }
+
+            oferta.EshteFaturuarOferta = "true";
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(oferta);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("getNumriFaturesMeRradhe")]
         public async Task<IActionResult> GetNumriFaturesMeRradhe(string llojiKalkulimit)
@@ -484,7 +513,7 @@ namespace WebAPI.Controllers
                 .ToListAsync();
 
             if (nrFatures.Count == 0)
-            {
+            {   
                 return Ok(0);
             }
 
@@ -650,6 +679,42 @@ namespace WebAPI.Controllers
 
             try
             {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(produkti);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("FaturoOferten/PerditesoStokun")]
+        public async Task<IActionResult> FaturoOfertenPerditesoStokun(int id, string lloji, double stoku)
+        {
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            if(lloji == "FAT")
+            {
+                produkti.SasiaNeStok -= (decimal)stoku;
+                produkti.DataPerditsimit = DateTime.Now;
+            }
+            
+            if(lloji == "FL")
+            {
+                produkti.SasiaNeStok += (decimal)stoku;
+                produkti.DataPerditsimit = DateTime.Now;
+            }
+
+            try
+            {
+                _context.StokuQmimiProduktit.Update(produkti);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

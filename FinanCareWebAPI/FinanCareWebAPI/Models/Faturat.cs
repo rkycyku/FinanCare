@@ -9,19 +9,20 @@ public partial class Faturat
 { 
     [Key]
     public int IDRegjistrimit { get; set; }
-    public DateTime? DataRegjistrimit { get; set; }
-    public int? StafiID { get; set; }
-    public decimal? TotaliPaTVSH { get; set; }
-    public decimal? TVSH { get; set; }
-    public int? IDPartneri { get; set; }
-    public string? StatusiPageses { get; set; }
-    public string? LlojiPageses { get; set; }
-    public string? LlojiKalkulimit { get; set; }
-    public string? NrFatures { get; set; }
-    public string? StatusiKalkulimit { get; set; }
-    public string? PershkrimShtese { get; set; }    
-    public decimal? Rabati { get; set; }    
-    public int? NrRendorFatures { get; set; }
+    public DateTime? DataRegjistrimit { get; set; } = DateTime.Now;
+    public int? StafiID { get; set; } = 0;
+    public decimal? TotaliPaTVSH { get; set; } = 0;
+    public decimal? TVSH { get; set; } = 0;
+    public int? IDPartneri { get; set; } = 0;
+    public string? StatusiPageses { get; set; } = "E Paguar";
+    public string? LlojiPageses { get; set; } = "Cash";
+    public string? LlojiKalkulimit { get; set; } = "HYRJE";
+    public string? NrFatures { get; set; } = null;
+    public string? StatusiKalkulimit { get; set; } = "false";
+    public string? PershkrimShtese { get; set; } = "";
+    public decimal? Rabati { get; set; } = 0;
+    public int? NrRendorFatures { get; set; } = 0;
+    public string? EshteFaturuarOferta { get; set; } = "false";
 
     [ForeignKey(nameof(IDPartneri))]
     public virtual Partneri? Partneri { get; set; }

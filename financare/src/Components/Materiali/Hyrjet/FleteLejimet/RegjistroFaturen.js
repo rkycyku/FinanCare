@@ -300,10 +300,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -380,10 +380,10 @@ function RegjistroFaturen(props) {
               `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
               {
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                stafiId: r.data.regjistrimet.stafiId,
-                totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                stafiID: r.data.regjistrimet.stafiID,
+                totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                 tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                idpartneri: r.data.regjistrimet.idpartneri,
+                idPartneri: r.data.regjistrimet.idPartneri,
                 statusiPageses: r.data.statusiPageses,
                 llojiPageses: r.data.regjistrimet.llojiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -457,10 +457,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -712,7 +712,7 @@ function RegjistroFaturen(props) {
                   <h5>
                     <strong>Partneri:</strong>{" "}
                     {teDhenatFatures.regjistrimet &&
-                      teDhenatFatures.regjistrimet.idpartneri}{" "}
+                      teDhenatFatures.regjistrimet.idPartneri}{" "}
                     -{" "}
                     {teDhenatFatures.regjistrimet &&
                       teDhenatFatures.regjistrimet.emriBiznesit}

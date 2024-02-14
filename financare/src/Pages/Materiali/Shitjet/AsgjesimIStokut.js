@@ -180,7 +180,7 @@ function KalkulimiIMallit(props) {
           {
             dataRegjistrimit: dataEFatures,
             stafiId: teDhenat.perdoruesi.userId,
-            totaliPaTvsh: totPaTVSH,
+            totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
             idpartneri: Partneri,
             statusiPageses: statusiIPageses,

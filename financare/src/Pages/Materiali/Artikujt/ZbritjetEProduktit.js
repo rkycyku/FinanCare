@@ -54,8 +54,7 @@ function ZbritjetEProduktit(props) {
         zbritjet.forEach(zbritja => {
             const dataSkadimit = new Date(zbritja.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' });
             if (dataSkadimit < currentDate) {
-
-                fshijZbritjen(zbritja.produktiId);
+                fshijZbritjen(zbritja.produktiID);
             }
         });
     }, [zbritjet])
@@ -139,12 +138,12 @@ function ZbritjetEProduktit(props) {
                             {zbritjet.map((z, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{z.produktiId + " - " + z.emriProduktit}</td>
+                                    <td>{z.produktiID + " - " + z.emriProduktit}</td>
                                     <td >{parseFloat(z.rabati).toFixed(2)} % </td>
                                     <td >{new Date(z.dataZbritjes).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                                     <td >{new Date(z.dataSkadimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                                     <td >
-                                        <Button style={{ marginRight: "0.5em" }} variant="danger" onClick={() => handleFshij(z.produktiId)}><FontAwesomeIcon icon={faClose} /></Button>
+                                        <Button style={{ marginRight: "0.5em" }} variant="danger" onClick={() => handleFshij(z.produktiID)}><FontAwesomeIcon icon={faClose} /></Button>
                                     </td>
                                 </tr>
                             ))}
