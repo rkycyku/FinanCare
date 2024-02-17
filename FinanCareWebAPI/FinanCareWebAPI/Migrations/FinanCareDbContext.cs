@@ -19,11 +19,9 @@ public partial class FinanCareDbContext : IdentityDbContext
     public DbSet<GrupiProduktit> GrupiProduktit { get; set; }
     public DbSet<Partneri> Partneri { get; set; }
     public DbSet<Perdoruesi> Perdoruesi { get; set; }
-    public DbSet<Porosit> Porosit { get; set; }
     public DbSet<Produkti> Produkti { get; set; }
     public DbSet<StokuQmimiProduktit> StokuQmimiProduktit { get; set; }
     public DbSet<TeDhenatBiznesit> TeDhenatBiznesit { get; set; }
-    public DbSet<TeDhenatEPorosis> TeDhenatEPorosis { get; set; }
     public DbSet<TeDhenatFaturat> TeDhenatFaturat { get; set; }
     public DbSet<TeDhenatPerdoruesit> TeDhenatPerdoruesit { get; set; }
     public DbSet<ZbritjaQmimitProduktit> ZbritjaQmimitProduktit { get; set; }

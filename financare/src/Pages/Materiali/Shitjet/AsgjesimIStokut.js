@@ -43,7 +43,7 @@ function KalkulimiIMallit(props) {
 
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
   const [pershkrimShtese, setPershkrimShtese] = useState("");
-  const [Partneri, setPartneri] = useState(2);
+  const [Partneri, setPartneri] = useState(3);
   const [nrFatures, setNrFatures] = useState("");
   const today = new Date();
   const initialDate = today.toISOString().split("T")[0]; // Format as 'yyyy-MM-dd'
@@ -179,10 +179,10 @@ function KalkulimiIMallit(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
+            stafiID: teDhenat.perdoruesi.userID,
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
@@ -211,7 +211,7 @@ function KalkulimiIMallit(props) {
     try {
       axios
         .put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${nrRendorKalkulimit}&statusi=true`,
+          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${idKalkulimitEdit}&statusi=true`,
           {},
           authentikimi
         )

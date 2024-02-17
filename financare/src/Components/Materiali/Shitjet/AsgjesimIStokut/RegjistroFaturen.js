@@ -24,7 +24,7 @@ function RegjistroFaturen(props) {
   const [loading, setLoading] = useState(false);
   const [produktetNeKalkulim, setproduktetNeKalkulim] = useState([]);
   const [emriProduktit, setEmriProduktit] = useState("");
-  const [produktiID, setProduktiID] = useState(0);
+  const [produktiID, setproduktiID] = useState(0);
   const [produktet, setProduktet] = useState([]);
   const [sasia, setSasia] = useState("");
   const [njesiaMatese, setNjesiaMatese] = useState("Cope");
@@ -144,7 +144,7 @@ function RegjistroFaturen(props) {
 
   const handleProduktiChange = (selectedOption) => {
     const kontrolloProduktin = produktetNeKalkulim.filter(
-      (item) => item.idProduktit === selectedOption.produktiId
+      (item) => item.idProduktit === selectedOption.produktiID
     );
 
     if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
@@ -152,22 +152,22 @@ function RegjistroFaturen(props) {
 
       setKonifirmoProduktinLista([
         {
-          produktiID: selectedOption.produktiId,
+          produktiID: selectedOption.produktiID,
           emriProduktit: selectedOption.emriProduktit,
           qmimiBleresIVjeter: selectedOption.qmimiBleres,
           qmimiShitesIVjeter: selectedOption.qmimiProduktit,
           qmimiShitesMeShumicIVjeter: selectedOption.qmimiMeShumic,
           sasiaNeStokEVjeter: selectedOption.sasiaNeStok,
           sasiaNeStok: sasiaNeStok,
-          njesiaMatese: selectedOption.njesiaMatese1,
+          njesiaMatese: selectedOption.emriNjesiaMatese,
           llojiTVSH: selectedOption.llojiTVSH,
           barkodi: selectedOption.barkodi,
           kodiProduktit: selectedOption.kodiProduktit,
         },
       ]);
     } else {
-      setProduktiID(
-        selectedOption?.produktiId ?? konifirmoProduktinLista[0].produktiID
+      setproduktiID(
+        selectedOption?.produktiID ?? konifirmoProduktinLista[0].produktiID
       );
       setEmriProduktit(
         selectedOption?.emriProduktit ??
@@ -185,7 +185,7 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiBleresIVjeter
       );
       setNjesiaMatese(
-        selectedOption?.njesiaMatese1 ?? konifirmoProduktinLista[0].njesiaMatese
+        selectedOption?.emriNjesiaMatese ?? konifirmoProduktinLista[0].njesiaMatese
       );
       setQmimiSH2(
         selectedOption?.qmimiMeShumic ??
@@ -261,10 +261,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -279,7 +279,7 @@ function RegjistroFaturen(props) {
             });
         });
 
-      setProduktiID(0);
+      setproduktiID(0);
       setInputValue("")
       setSasia("");
       setSasiaNeStok(0);
@@ -340,10 +340,10 @@ function RegjistroFaturen(props) {
               `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
               {
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                stafiId: r.data.regjistrimet.stafiId,
-                totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                stafiID: r.data.regjistrimet.stafiID,
+                totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                 tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                idpartneri: r.data.regjistrimet.idpartneri,
+                idPartneri: r.data.regjistrimet.idPartneri,
                 statusiPageses: r.data.statusiPageses,
                 llojiPageses: r.data.regjistrimet.llojiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -369,7 +369,7 @@ function RegjistroFaturen(props) {
         setPerditeso(Date.now);
 
         setEdito(true);
-        setProduktiID(p.data[0].idProduktit);
+        setproduktiID(p.data[0].idProduktit);
         setInputValue(index + 1 + " - " + p.data[0].emriProduktit);
         setEmriProduktit(p.data[0].emriProduktit);
         setSasia(p.data[0].sasiaStokut);
@@ -408,10 +408,10 @@ function RegjistroFaturen(props) {
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
@@ -426,7 +426,7 @@ function RegjistroFaturen(props) {
             });
         });
 
-      setProduktiID(0);
+      setproduktiID(0);
       setSasia("");
       setInputValue("");
       setSasiaNeStok(0);
@@ -572,7 +572,7 @@ function RegjistroFaturen(props) {
                       <ul className="list-group mt-2 searchBoxi">
                         {filteredItems.map((item, index) => (
                           <li
-                            key={item.produktiId}
+                            key={item.produktiID}
                             className={`list-group-item${
                               selectedIndex === index ? " active" : ""
                             }`}

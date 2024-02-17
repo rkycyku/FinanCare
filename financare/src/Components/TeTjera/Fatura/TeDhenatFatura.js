@@ -112,8 +112,8 @@ function TeDhenatFatura(props) {
                 <td>{produkti.sasiaStokut}</td>
                 <td>
                   {parseFloat(
-                    produkti.qmimiBleres -
-                      (produkti.qmimiBleres * produkti.llojiTVSH) / 100
+                    produkti.qmimiShites -
+                      (produkti.qmimiShites * produkti.llojiTVSH) / 100
                   ).toFixed(4)}
                 </td>
                 <td>{parseFloat(produkti.rabati1).toFixed(2)}</td>
@@ -122,8 +122,8 @@ function TeDhenatFatura(props) {
                 <td>{produkti.llojiTVSH}</td>
                 <td>
                   {parseFloat(
-                    produkti.qmimiBleres -
-                      produkti.qmimiBleres *
+                    produkti.qmimiShites -
+                      produkti.qmimiShites *
                         ((produkti.rabati1 +
                           produkti.rabati2 +
                           produkti.rabati3) /
@@ -133,8 +133,8 @@ function TeDhenatFatura(props) {
                 <td>
                   {parseFloat(
                     (produkti.sasiaStokut *
-                      (produkti.qmimiBleres -
-                        produkti.qmimiBleres *
+                      (produkti.qmimiShites -
+                        produkti.qmimiShites *
                           ((produkti.rabati1 +
                             produkti.rabati2 +
                             produkti.rabati3) /
@@ -148,9 +148,9 @@ function TeDhenatFatura(props) {
                 </td>
                 <td>
                   {parseFloat(
-                    produkti.sasiaStokut * produkti.qmimiBleres -
+                    produkti.sasiaStokut * produkti.qmimiShites -
                       produkti.sasiaStokut *
-                        produkti.qmimiBleres *
+                        produkti.qmimiShites *
                         ((produkti.rabati1 +
                           produkti.rabati2 +
                           produkti.rabati3) /

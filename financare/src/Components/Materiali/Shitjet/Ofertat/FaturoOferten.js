@@ -257,6 +257,36 @@ function FaturoOferten(props) {
     vendosNrFaturesMeRradhe();
   }, [perditeso]);
 
+  let totalPaTVSH = 0;
+  let totalTVSH = 0;
+  let totalRabati = 0;
+
+  function PerditesoFleteLejimin(
+    llojiTVSH,
+    qmimiShites,
+    sasiaStokut,
+    rabati1,
+    rabati2,
+    rabati3
+  ) {
+    let totalFat =
+      (qmimiShites -
+        qmimiShites * (rabati1 / 100) -
+        (qmimiShites - qmimiShites * (rabati1 / 100)) *
+          (rabati2 / 100) -
+        (qmimiShites -
+          qmimiShites * (rabati1 / 100) -
+          (qmimiShites - qmimiShites * (rabati1 / 100)) *
+            (rabati2 / 100)) *
+          (rabati3 / 100)) *
+      sasiaStokut;
+    let totTVSHProdukt = totalFat * (1 + llojiTVSH / 100) - totalFat;
+
+    totalTVSH -= totTVSHProdukt;
+    totalPaTVSH -= totalFat - totTVSHProdukt;
+    totalRabati -= qmimiShites * sasiaStokut - totalFat;
+  }
+
   async function krijoFleteLejimin() {
     await axios
       .post(
@@ -296,6 +326,15 @@ function FaturoOferten(props) {
               authentikimi
             );
 
+            PerditesoFleteLejimin(
+              produktet.llojiTVSH,
+              -produktet.qmimiShites,
+              stoku.data.sasiaNeStok * -1,
+              produktet.rabati1,
+              produktet.rabati2,
+              produktet.rabati3
+            );
+
             await axios
               .post(
                 `https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat`,
@@ -327,6 +366,8 @@ function FaturoOferten(props) {
           authentikimi
         );
 
+        console.log(kalkulimet);
+
         await axios.put(
           `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
           {
@@ -346,6 +387,34 @@ function FaturoOferten(props) {
           },
           authentikimi
         );
+
+        const FleteLejimi = await axios.get(
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${
+            kalkulimet.data.regjistrimet.idRegjistrimit + 2
+          }`,
+          authentikimi
+        );
+
+        await axios.put(
+          `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${FleteLejimi.data.regjistrimet.idRegjistrimit}`,
+          {
+            dataRegjistrimit: FleteLejimi.data.regjistrimet.dataRegjistrimit,
+            stafiID: FleteLejimi.data.regjistrimet.stafiID,
+            idPartneri: FleteLejimi.data.regjistrimet.idPartneri,
+            statusiPageses: FleteLejimi.data.statusiPageses,
+            llojiPageses: FleteLejimi.data.regjistrimet.llojiPageses,
+            llojiKalkulimit: FleteLejimi.data.regjistrimet.llojiKalkulimit,
+            nrFatures: FleteLejimi.data.regjistrimet.nrFatures,
+            statusiKalkulimit: FleteLejimi.data.regjistrimet.statusiKalkulimit,
+            pershkrimShtese: FleteLejimi.data.regjistrimet.pershkrimShtese,
+            nrRendorFatures: FleteLejimi.data.regjistrimet.nrRendorFatures,
+            totaliPaTVSH: parseFloat(-totalPaTVSH),
+            tvsh: parseFloat(-totalTVSH),
+            rabati: parseFloat(-totalRabati),
+          },
+          authentikimi
+        );
+
         await axios.put(
           `https://localhost:7285/api/Faturat/FaturoOferten?id=${idRegjistrimit}`,
           {},

@@ -265,22 +265,63 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            fatura.Rabati = fat.Rabati;
-            fatura.NrFatures = fat.NrFatures;
-            fatura.NrRendorFatures = fat.NrRendorFatures;
-            fatura.StatusiPageses = fat.StatusiPageses;
-            fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
-            fatura.IDPartneri = fat.IDPartneri;
-            fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
-            fatura.LlojiPageses = fat.LlojiPageses;
-            fatura.PershkrimShtese = fat.PershkrimShtese;
-            fatura.StafiID = fat.StafiID;
-            fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
-            fatura.TVSH = fat.TVSH;
-            fatura.DataRegjistrimit = fat.DataRegjistrimit;
-            fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
-
-            try
+            if (fat.Rabati != null)
+            {
+                fatura.Rabati = fat.Rabati;
+            }
+            if (fat.NrFatures != null)
+            {
+                fatura.NrFatures = fat.NrFatures;
+            }
+            if (fat.NrRendorFatures != null)
+            {
+                fatura.NrRendorFatures = fat.NrRendorFatures;
+            }
+            if (fat.StatusiPageses != null)
+            {
+                fatura.StatusiPageses = fat.StatusiPageses;
+            }
+            if (fat.StatusiKalkulimit != null)
+            {
+                fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
+            }
+            if (fat.IDPartneri != null)
+            {
+                fatura.IDPartneri = fat.IDPartneri;
+            }
+            if (fat.LlojiKalkulimit != null)
+            {
+                fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
+            }
+            if (fat.LlojiPageses != null)
+            {
+                fatura.LlojiPageses = fat.LlojiPageses;
+            }
+            if (fat.PershkrimShtese != null)
+            {
+                fatura.PershkrimShtese = fat.PershkrimShtese;
+            }
+            if (fat.StafiID != null)
+            {
+                fatura.StafiID = fat.StafiID;
+            }
+            if (fat.TotaliPaTVSH != null)
+            {
+                fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
+            }
+            if (fat.TVSH != null)
+            {
+                fatura.TVSH = fat.TVSH;
+            }
+            if (fat.DataRegjistrimit != null)
+            {
+                fatura.DataRegjistrimit = fat.DataRegjistrimit;
+            }
+            if (fat.EshteFaturuarOferta != null)
+            {
+                fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
+            }
+                try
             {
                 await _context.SaveChangesAsync();
             }

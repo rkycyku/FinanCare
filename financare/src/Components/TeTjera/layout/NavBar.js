@@ -128,8 +128,7 @@ function NavBar(props) {
           type="button"
           aria-expanded="false"
           aria-label="Toggle navigation"
-          onClick={() => setShowNav(!showNav)}
-        >
+          onClick={() => setShowNav(!showNav)}>
           <MDBIcon icon="bars" fas />
         </MDBNavbarToggler>
         <MDBCollapse navbar show={showNav}>
@@ -155,7 +154,9 @@ function NavBar(props) {
                           <MDBDropdownItem link>Njesia Matese</MDBDropdownItem>
                         </Link>
                         <Link to="/GrupetEProduktit">
-                          <MDBDropdownItem link>Grupet e Produktit</MDBDropdownItem>
+                          <MDBDropdownItem link>
+                            Grupet e Produktit
+                          </MDBDropdownItem>
                         </Link>
                         <Link to="/KartelaEArtikullit">
                           <MDBDropdownItem link>
@@ -239,16 +240,15 @@ function NavBar(props) {
                             Perditeso Te Dhenat
                           </MDBDropdownItem>
                         </Link>
-                        <MDBDropdownItem link>
-                          <Link to="/TeDhenatEBiznesit">
+
+                        <Link to="/TeDhenatEBiznesit">
+                          <MDBDropdownItem link>
                             Te Dhenat e Biznesit
-                          </Link>
-                        </MDBDropdownItem>
-                        <MDBDropdownItem link>
-                          <Link to="/Bankat">
-                            Bankat
-                          </Link>
-                        </MDBDropdownItem>
+                          </MDBDropdownItem>
+                        </Link>
+                        <Link to="/Bankat">
+                          <MDBDropdownItem link>Bankat</MDBDropdownItem>
+                        </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
                     <MDBDropdown dropright group className="btnNav-group">
@@ -288,8 +288,7 @@ function NavBar(props) {
             <MDBNavbarNav
               right={showNav ? false : true}
               fullWidth={false}
-              className="mb-2 mb-lg-0"
-            >
+              className="mb-2 mb-lg-0">
               {token && (
                 <>
                   <MDBNavbarItem>

@@ -25,7 +25,6 @@ public partial class Produkti
     [ForeignKey(nameof(IDGrupiProduktit))]
     public virtual GrupiProduktit? GrupiProduktit { get; set; }
     public virtual StokuQmimiProduktit? StokuQmimiProduktit { get; set; }
-    public virtual ICollection<TeDhenatEPorosis> TeDhenatEPorosis { get; } = new List<TeDhenatEPorosis>();
     public virtual ICollection<TeDhenatFaturat> TeDhenatFaturat { get; } = new List<TeDhenatFaturat>();
     public virtual ZbritjaQmimitProduktit? ZbritjaQmimitProduktit { get; set; }
 }

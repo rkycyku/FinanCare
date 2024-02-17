@@ -287,7 +287,7 @@ function PerditesoStatusinKalk(props) {
                   <td>{k.idRegjistrimit}</td>
                   <td>{k.nrFatures}</td>
                   <td>{k.emriBiznesit}</td>
-                  <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                  <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                   <td>{k.tvsh.toFixed(2)} €</td>
                   <td >{new Date(k.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                   <td>{k.llojiKalkulimit}</td>
@@ -322,7 +322,7 @@ function PerditesoStatusinKalk(props) {
                   <td>{k.idRegjistrimit}</td>
                   <td>{k.nrFatures}</td>
                   <td>{k.emriBiznesit}</td>
-                  <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                  <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                   <td>{k.tvsh.toFixed(2)} €</td>
                   <td >{new Date(k.dataRegjistrimit).toLocaleDateString('en-GB', { dateStyle: 'short' })}</td>
                   <td>{k.llojiKalkulimit}</td>
