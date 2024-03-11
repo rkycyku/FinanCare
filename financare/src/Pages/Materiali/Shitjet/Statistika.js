@@ -123,11 +123,11 @@ function Statistika() {
                         </Card.Body>
                     </Card>
                     <Card className="KartaStatistikave" border="dark">
-                        <Card.Header>Totali Perdoruesve</Card.Header>
+                        <Card.Header>Totali Klienteve</Card.Header>
                         <Card.Body>
                             <Card.Text>
                                 <span className="TekstiStatistika" >
-                                    {totaleTeNdryshme.totaliUsers}
+                                    {totaleTeNdryshme.totaliKlient}
                                 </span>
                             </Card.Text>
                         </Card.Body>

@@ -6,6 +6,8 @@ function FooterFatura(props) {
   const [teDhenatFat, setteDhenatFat] = useState([]);
   const [bankat, setBankat] = useState([]);
 
+  const [konvertimiValutave, setKonvertimiValutave] = useState([]);
+
   const getToken = localStorage.getItem("token");
 
   const authentikimi = {
@@ -27,8 +29,13 @@ function FooterFatura(props) {
           `https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat`,
           authentikimi
         );
+        const apiKonvertimiValutave = await axios.get(
+          `https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_At6H7hASeL41xhqWxRdKNKxduFJPT9VcktC7iM1m&currencies=EUR%2CUSD%2CCHF&base_currency=EUR`,
+          authentikimi
+        ); //Version free, Duhet te ruhet sigurt ne rast se ndryshon.
         setteDhenatFat(teDhenat.data);
         setBankat(bankat.data);
+        setKonvertimiValutave(apiKonvertimiValutave.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -109,6 +116,12 @@ function FooterFatura(props) {
             <strong style={{ fontSize: "18pt" }}>
               {teDhenatFat && parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)} €
             </strong>
+          </p>
+          <p style={{ marginTop: "-1em", fontSize: "13pt", fontWeight: "bold" }}>
+            {teDhenatFat && parseFloat(teDhenatFat.tvsH18*(konvertimiValutave && konvertimiValutave.USD)).toFixed(2)} $
+          </p>
+          <p style={{ marginTop: "-0.7em", fontSize: "13pt", fontWeight: "bold"  }}>
+            {teDhenatFat && parseFloat(teDhenatFat.tvsH18*(konvertimiValutave && konvertimiValutave.CHF)).toFixed(2)} CHF
           </p>
         </div>
       </div>

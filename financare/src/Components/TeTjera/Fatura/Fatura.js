@@ -76,30 +76,30 @@ function Fatura(props) {
           console.log(produktet.data);
           setteDhenatFat(teDhenat.data);
 
-          if (produktet.data.length > 15) {
+          if (produktet.data.length >= 15) {
             setMeShumeSe15(true);
             setNrFaqeve(2);
           }
 
-          if (produktet.data.length > 40) {
+          if (produktet.data.length >= 40) {
             setMeShumeSe30(true);
             setNrFaqeve(3);
           }
 
-          if (produktet.data.length > 65) {
+          if (produktet.data.length >= 65) {
             setMeShumeSe45(true);
             setNrFaqeve(4);
           }
 
-          if (produktet.data.length > 90) {
+          if (produktet.data.length >= 90) {
             setMeShumeSe60(true);
             setNrFaqeve(5);
           }
-          if (produktet.data.length > 115) {
+          if (produktet.data.length >= 115) {
             setMeShumeSe75(true);
             setNrFaqeve(6);
           }
-          if (produktet.data.length > 140) {
+          if (produktet.data.length >= 140) {
             setMeShumeSe90(true);
             setNrFaqeve(7);
           }

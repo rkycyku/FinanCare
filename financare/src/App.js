@@ -24,9 +24,10 @@ import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
 import Porosite from "./Pages/Materiali/Shitjet/Porosite";
 import Ofertat from "./Pages/Materiali/Shitjet/Ofertat";
 import FleteLejimet from "./Pages/Materiali/Hyrjet/FleteLejimet";
-import KartelaEArtikullit from "./Pages/Materiali/Artikujt/KartelaEArtikullit"
+import KartelaEArtikullit from "./Pages/Materiali/Artikujt/KartelaEArtikullit";
 import GrupetEProduktit from "./Pages/Materiali/Artikujt/GrupetEProduktit";
 import Bankat from "./Pages/Gjenerale/TeDhenat/Bankat";
+import POS from "./Pages/Materiali/Shitjet/POS";
 
 function App() {
   useEffect(() => {
@@ -43,6 +44,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route exact path="/" element={<Dashboard />} />
+        <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Dashboard" element={<Dashboard key={Date.now()} />} />
         <Route path="/LogIn" element={<LogIn />} />
         <Route path="/SignUp" element={<SignUp />} />
@@ -69,7 +71,7 @@ function App() {
         <Route path="/KartelaEArtikullit" element={<KartelaEArtikullit />} />
         <Route path="/GrupetEProduktit" element={<GrupetEProduktit />} />
         <Route path="/Bankat" element={<Bankat />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="POS" element={<POS />} />
       </Routes>
     </div>
   );

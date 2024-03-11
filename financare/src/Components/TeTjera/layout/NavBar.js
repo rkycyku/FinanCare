@@ -218,8 +218,8 @@ function NavBar(props) {
                             Kthimi i Mallit te Blere{" "}
                           </MDBDropdownItem>
                         </Link>
-                        <Link to="#">
-                          <MDBDropdownItem link>POS #</MDBDropdownItem>
+                        <Link to="/POS">
+                          <MDBDropdownItem link>POS</MDBDropdownItem>
                         </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>

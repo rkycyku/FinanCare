@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             var totShitjeveVetemTVSHFat= await _context.Faturat.Where(x => x.LlojiKalkulimit == "FAT").SumAsync(p => p.TVSH);
             var totShitjevePaTVSHFl = await _context.Faturat.Where(x => x.LlojiKalkulimit == "FL").SumAsync(p => p.TotaliPaTVSH);
             var totShitjeveVetemTVSHFl = await _context.Faturat.Where(x => x.LlojiKalkulimit == "FL").SumAsync(p => p.TVSH);
-            var totUser = await _context.Perdoruesi.CountAsync();
+            var totKlient = await _context.Partneri.Where(x => x.LlojiPartnerit == "B" || x.LlojiPartnerit == "B/F").CountAsync();
             var totProdukteve = await _context.Produkti.CountAsync();
             var totPorosive = await _context.Faturat.Where(x => x.LlojiKalkulimit == "FAT").CountAsync();
             /* PERGJITHSHME */
@@ -106,7 +106,7 @@ namespace WebAPI.Controllers
             {
                 /* PERGJITHSHME */
                     TotaliShitjeve = (totShitjevePaTVSHFat + totShitjeveVetemTVSHFat) + (totShitjevePaTVSHFl - totShitjeveVetemTVSHFl),
-                    TotaliUsers = totUser,
+                    TotaliKlient = totKlient,
                     TotaliProdukteve = totProdukteve,
                     TotaliPorosive = totPorosive,
                 /* PERGJITHSHME */
