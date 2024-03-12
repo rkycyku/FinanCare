@@ -279,6 +279,11 @@ function NavBar(props) {
                             Shtoni Partnerin
                           </MDBDropdownItem>
                         </Link>
+                        <Link to="/KartelaFinanciare">
+                          <MDBDropdownItem link>
+                            Kartela Financiare
+                          </MDBDropdownItem>
+                        </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
                   </MDBDropdownMenu>

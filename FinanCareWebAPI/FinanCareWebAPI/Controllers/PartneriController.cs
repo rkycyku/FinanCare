@@ -106,6 +106,92 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("KartelaFinanciare")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            var partneri = await _context.Partneri
+                .Where(p => p.IDPartneri == id)
+                .Select(x => new
+                {
+                    x.IDPartneri,
+                    x.EmriBiznesit,
+                    x.NUI,
+                    x.TVSH,
+                    x.NRF,
+                    x.Email,
+                    x.Adresa,
+                    x.NrKontaktit,
+                    x.LlojiPartnerit,
+                    x.ShkurtesaPartnerit
+                })
+                .FirstOrDefaultAsync();
+
+            var kalkulimet = await _context.Faturat
+                .Where(x => x.IDPartneri == id && x.StatusiKalkulimit.Equals("true") && x.LlojiKalkulimit != "OFERTE")
+                .Select(x => new
+                {
+                    x.IDRegjistrimit,
+                    x.DataRegjistrimit,
+                    x.TotaliPaTVSH,
+                    x.TVSH,
+                    x.Rabati,
+                    x.LlojiKalkulimit,
+                    x.StatusiPageses,
+                    x.LlojiPageses,
+                    x.StatusiKalkulimit,
+                    x.NrRendorFatures,
+                    x.PershkrimShtese
+                })
+                .ToListAsync();
+
+            var kalkulimetHyrese = await _context.Faturat
+                .Where(x => x.IDPartneri == id &&
+                    (x.LlojiKalkulimit.Equals("HYRJE")
+                    || x.LlojiKalkulimit.Equals("FL")
+                    || x.LlojiKalkulimit.Equals("KMSH")
+                    ) && x.StatusiKalkulimit.Equals("true")
+                )
+                .ToListAsync();
+
+
+            var kalkulimetDalese = await _context.Faturat
+                .Where(x => x.IDPartneri == id &&
+                    (x.LlojiKalkulimit.Equals("FAT")
+                    || x.Equals("AS")
+                    || x.LlojiKalkulimit.Equals("KMB")
+                    ) && x.StatusiKalkulimit.Equals("true")
+                )
+                .ToListAsync();
+
+            decimal TotaliHyrese = 0;
+            decimal TotaliDalese = 0;
+
+            foreach (var produktiNeKalkulim in kalkulimetHyrese)
+            {
+                TotaliHyrese += (produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati) ?? 0;
+            }
+
+            foreach (var produktiNeKalkulim in kalkulimetDalese)
+            {
+                TotaliDalese += (produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati) ?? 0;
+            }
+
+            if (partneri == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                partneri,
+                kalkulimet,
+                TotaliHyrese,
+                TotaliDalese
+            });
+        }
+
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPut]
         [Route("perditesoPartnerin")]

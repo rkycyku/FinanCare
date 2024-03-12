@@ -28,6 +28,7 @@ import KartelaEArtikullit from "./Pages/Materiali/Artikujt/KartelaEArtikullit";
 import GrupetEProduktit from "./Pages/Materiali/Artikujt/GrupetEProduktit";
 import Bankat from "./Pages/Gjenerale/TeDhenat/Bankat";
 import POS from "./Pages/Materiali/Shitjet/POS";
+import KartelaFinanciare from "./Pages/Gjenerale/Partneret/KartelaFinanciare";
 
 function App() {
   useEffect(() => {
@@ -71,7 +72,8 @@ function App() {
         <Route path="/KartelaEArtikullit" element={<KartelaEArtikullit />} />
         <Route path="/GrupetEProduktit" element={<GrupetEProduktit />} />
         <Route path="/Bankat" element={<Bankat />} />
-        <Route path="POS" element={<POS />} />
+        <Route path="/POS" element={<POS />} />
+        <Route path="/KartelaFinanciare" element={<KartelaFinanciare />} />
       </Routes>
     </div>
   );
