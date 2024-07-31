@@ -131,7 +131,7 @@ namespace WebAPI.Controllers
                 decimal totalBeforeVAT = 0.00m;
                 decimal vatAmount = 0.00m;
 
-                if(regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL"))
+                if(regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
                     totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
                               (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) -
@@ -148,7 +148,7 @@ namespace WebAPI.Controllers
                 TotaliMeTVSH18 += totalBeforeVAT;
                 TotaliPaTVSH18 += totalBeforeVAT - vatAmount;
 
-                if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL"))
+                if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
                     Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) +
                               (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) +
@@ -252,6 +252,33 @@ namespace WebAPI.Controllers
                .ToListAsync();
 
             return Ok(teDhenat);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpGet]
+        [Route("ShfaqNumrinRendorFatures")]
+        public async Task<IActionResult> ShfaqNumrinRendorFatures(int stafiID)
+        {
+            var nrFat = await _context.Faturat.Where(x => x.DataRegjistrimit.Value.Date == DateTime.Today && x.StafiID == stafiID && x.LlojiKalkulimit == "PARAGON").CountAsync();
+
+            string datePart = DateTime.Today.ToString("ddMMyy");
+            string nrFatures = $"{datePart}-{stafiID}-{nrFat + 1}";
+
+            Faturat f = new Faturat()
+            {
+               IDPartneri = 1, StafiID = stafiID,LlojiKalkulimit = "PARAGON",NrFatures = nrFatures, NrRendorFatures = nrFat+1
+            };
+
+            await _context.Faturat.AddAsync(f);
+            await _context.SaveChangesAsync();
+
+            var obj = new
+            {
+                NrFat = nrFat + 1,
+                f.IDRegjistrimit,
+            };
+
+            return Ok(obj);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]

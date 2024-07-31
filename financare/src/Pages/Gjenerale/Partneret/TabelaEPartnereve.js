@@ -110,6 +110,7 @@ function TabelaEKompanive(props) {
 
                     <Link to="/Produktet"><MDBBtn className="Butoni">Mbyll Partnerin <FontAwesomeIcon icon={faClose} /></MDBBtn></Link>
                     <Link to='/ShtoPartnerin'><MDBBtn className="mb-3 Butoni" >Shtoni Partnerin <FontAwesomeIcon icon={faPlus} /></MDBBtn></Link>
+                    <Link to='/ShtoPagesat'><MDBBtn className="mb-3 Butoni" >Pagesat <FontAwesomeIcon icon={faPlus} /></MDBBtn></Link>
 
                     <MDBTable align="middle">
                         <MDBTableHead>

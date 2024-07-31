@@ -22,7 +22,7 @@ import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-function KartelaFinanciare(props) {
+function ShtoPagesat(props) {
   const [perditeso, setPerditeso] = useState("");
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
@@ -33,6 +33,10 @@ function KartelaFinanciare(props) {
   const [produktet, setProduktet] = useState([]);
 
   const [teDhenat, setTeDhenat] = useState([]);
+
+  const [pershkrimiPageses, setPershkrimiPageses] = useState("");
+  const [shumaPageses, setShumaPageses] = useState(0);
+  const [llojiIPageses, setLlojiIPageses] = useState("Cash");
 
   const [inputValue, setInputValue] = useState("");
   const [filteredItems, setFilteredItems] = useState(produktet);
@@ -127,6 +131,8 @@ function KartelaFinanciare(props) {
       if (filteredItems.length > 0) {
         handleProduktiChange(filteredItems[selectedIndex]);
       }
+
+      ndrroField(e, "pershkrimiPageses");
     }
   };
 
@@ -146,75 +152,42 @@ function KartelaFinanciare(props) {
     setFilteredItems(filtered);
   };
 
-  function FaturaPerRuajtje() {
-    const kartela = document.querySelector(".kartela");
-    const kthejButonat = [];
-
-    const largoButonat = kartela.querySelectorAll("button");
-    largoButonat.forEach((button) => {
-      const parent = button.parentNode;
-      const position = Array.from(parent.children).indexOf(button);
-      kthejButonat.push({ button, parent, position });
-      button.remove();
-    });
-
-    html2canvas(kartela, { useCORS: true })
-      .then((invoiceCanvas) => {
-        var contentWidth = invoiceCanvas.width;
-        var contentHeight = invoiceCanvas.height;
-        var pageHeight = (contentWidth / 592.28) * 841.89;
-        var leftHeight = contentHeight;
-        var position = 0;
-        var imgWidth = 555.28;
-        var imgHeight = (imgWidth / contentWidth) * contentHeight;
-        var invoicePageData = invoiceCanvas.toDataURL("image/jpeg", 1.0);
-        var pdf = new jsPDF("", "pt", "a4");
-
-        if (leftHeight < pageHeight) {
-          pdf.addImage(invoicePageData, "JPEG", 20, 20, imgWidth, imgHeight);
-        } else {
-          while (leftHeight > 0) {
-            pdf.addImage(
-              invoicePageData,
-              "JPEG",
-              20,
-              position + 5,
-              imgWidth,
-              imgHeight
-            );
-            leftHeight -= pageHeight;
-            position -= 841.89;
-            if (leftHeight > 0) {
-              pdf.addPage();
-            }
+  async function handleRegjistroKalkulimin() {
+    try {
+      await axios
+        .post(
+          "https://localhost:7285/api/Faturat/ruajKalkulimin",
+          {
+            stafiID: teDhenat.perdoruesi.userID,
+            totaliPaTVSH: shumaPageses,
+            idPartneri: produktiID,
+            llojiPageses: llojiIPageses,
+            pershkrimShtese: pershkrimiPageses,
+            llojiKalkulimit: "PAGES",
+            statusiKalkulimit: "true",
+          },
+          authentikimi
+        )
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            setPerditeso(Date.now());
+            setPershkrimiPageses("");
+            setShumaPageses(0);
+            setLlojiIPageses("Cash");
+          } else {
+            console.log("gabim");
+            setPerditeso(Date.now());
           }
-        }
-
-        kthejButonat.forEach(({ button, parent, position }) => {
-          parent.insertBefore(button, parent.children[position]);
         });
-
-        ruajFaturen(pdf);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  function ruajFaturen(pdf) {
-    pdf.save(
-      "Kartela Financiare - " +
-        (kartelaEProduktit && kartelaEProduktit?.emriBiznesit) +
-        " - " +
-        (kartelaEProduktit && kartelaEProduktit?.nui) +
-        ".pdf"
-    );
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
     <>
       <Helmet>
-        <title>Kartela Financiare | FinanCare</title>
+        <title>Pagesat e Fatures | FinanCare</title>
       </Helmet>
       <NavBar />
 
@@ -280,74 +253,21 @@ function KartelaFinanciare(props) {
                     </Form.Group>
                   </Form>
                   <br />
-
                   <p>
-                    <strong>Shkurtesa:</strong>{" "}
-                    {(kartelaEProduktit &&
-                      kartelaEProduktit.partneri?.shkurtesaPartnerit) ??
-                      ""}
+                    <strong>Totali Hyres :</strong>{" "}
+                    {parseFloat(
+                      kartelaEProduktit && kartelaEProduktit?.totaliHyrese
+                    ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
+                    €
                   </p>
                   <p>
-                    <strong>Nr. Unik:</strong>{" "}
-                    {(kartelaEProduktit && kartelaEProduktit.partneri?.nui) ??
-                      0}
+                    <strong>Totali Dales :</strong>{" "}
+                    {parseFloat(
+                      kartelaEProduktit && kartelaEProduktit?.totaliDalese
+                    ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
+                    €
                   </p>
                   <p>
-                    <strong>Lloji Partnerit:</strong>{" "}
-                    {(kartelaEProduktit &&
-                      kartelaEProduktit.partneri?.llojiPartnerit) ??
-                      ""}
-                  </p>
-                </Col>
-                <Col>
-                  <h3>Te dhenat Ndihmese</h3>
-                  <p>
-                    <strong>Nr. TVSH:</strong>{" "}
-                    {(kartelaEProduktit && kartelaEProduktit.partneri?.tvsh) ??
-                      0}
-                  </p>
-                  <p>
-                    <strong>Nr. Fiskal:</strong>{" "}
-                    {(kartelaEProduktit && kartelaEProduktit.partneri?.nrf) ??
-                      0}
-                  </p>
-                  <p>
-                    <strong>Email:</strong>{" "}
-                    {(kartelaEProduktit &&
-                      kartelaEProduktit?.produkti?.email) ??
-                      0}
-                  </p>
-                  <p>
-                    <strong>Adresa:</strong>{" "}
-                    {(kartelaEProduktit &&
-                      kartelaEProduktit.partneri?.adresa) ??
-                      ""}
-                  </p>
-                  <p>
-                    <strong>Nr. Kontaktit:</strong>{" "}
-                    {(kartelaEProduktit &&
-                      kartelaEProduktit.partneri?.nrKontaktit) ??
-                      0}
-                  </p>
-                </Col>
-                <Col>
-                  <Row>
-                    <h3>Financat</h3>
-                    <p>
-                      <strong>Totali Hyres :</strong>{" "}
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliHyrese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </p>
-                    <p>
-                      <strong>Totali Dales :</strong>{" "}
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliDalese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </p>
-                    <p>
                     <strong>Saldo :</strong>{" "}
                     {parseFloat(
                       (kartelaEProduktit && kartelaEProduktit?.totaliDalese) -
@@ -355,6 +275,64 @@ function KartelaFinanciare(props) {
                     ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
                     €
                   </p>
+                </Col>
+                <Col>
+                  <h3>Pagesa</h3>
+                  <Form.Group>
+                    <Form.Label>Pershkrimi Pageses</Form.Label>
+                    <Form.Control
+                      id="pershkrimiPageses"
+                      type="text"
+                      value={pershkrimiPageses}
+                      onChange={(e) => {
+                        setPershkrimiPageses(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        ndrroField(e, "llojiIPageses");
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Lloji i Pageses</Form.Label>
+                    <select
+                      id="llojiIPageses"
+                      placeholder="LlojiIPageses"
+                      className="form-select"
+                      value={llojiIPageses ? llojiIPageses : 0}
+                      onChange={(e) => {
+                        setLlojiIPageses(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        ndrroField(e, "shumaPageses");
+                      }}>
+                      <option defaultValue value={0} key={0} disabled>
+                        Zgjedhni Llojin e Pageses
+                      </option>
+                      <option key={1} value="Cash">
+                        Cash
+                      </option>
+                      <option key={2} value="Banke">
+                        Banke
+                      </option>
+                    </select>
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Form.Label>Shuma Pageses</Form.Label>
+                    <Form.Control
+                      id="shumaPageses"
+                      type="number"
+                      value={shumaPageses}
+                      onChange={(e) => {
+                        setShumaPageses(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                  <br />
+                </Col>
+                <Col>
+                  <Row>
+                    <h3>Funksione</h3>
                     <hr />
                     <Col
                       style={{
@@ -364,10 +342,11 @@ function KartelaFinanciare(props) {
                       <Link to="/TabelaEPartnereve">
                         <Button className="mb-3 Butoni">Partneret</Button>
                       </Link>
+
                       <Button
                         className="mb-3 Butoni"
-                        onClick={() => FaturaPerRuajtje()}>
-                        Ruaj Kartelen <FontAwesomeIcon icon={faDownload} />
+                        onClick={() => handleRegjistroKalkulimin()}>
+                        Regjistro <FontAwesomeIcon icon={faPlus} />
                       </Button>
                     </Col>
                   </Row>
@@ -425,7 +404,7 @@ function KartelaFinanciare(props) {
                         } else if (
                           p.llojiKalkulimit == "HYRJE" ||
                           p.llojiKalkulimit == "FL" ||
-                          p.llojiKalkulimit == "KMSH"||
+                          p.llojiKalkulimit == "KMSH" ||
                           p.llojiKalkulimit == "PAGES"
                         ) {
                           faturimValue = parseFloat(vlera).toFixed(2);
@@ -444,7 +423,11 @@ function KartelaFinanciare(props) {
                                 })}
                               </td>
                               <td>{p.llojiKalkulimit}</td>
-                              <td>{p.nrRendorFatures}</td>
+                              <td>
+                                {p.nrRendorFatures === 0
+                                  ? "-"
+                                  : p.nrRendorFatures}
+                              </td>
                               <td>
                                 <span
                                   dangerouslySetInnerHTML={{
@@ -464,8 +447,8 @@ function KartelaFinanciare(props) {
                               <td>
                                 {p.llojiKalkulimit === "HYRJE" ||
                                 p.llojiKalkulimit === "FL" ||
-                                p.llojiKalkulimit === "KMSH"||
-                          p.llojiKalkulimit == "PAGES"
+                                p.llojiKalkulimit === "KMSH" ||
+                                p.llojiKalkulimit === "PAGES"
                                   ? faturimValue < 0
                                     ? (faturimValue * -1).toFixed(2) + " €"
                                     : faturimValue + " €"
@@ -510,10 +493,13 @@ function KartelaFinanciare(props) {
                       ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
                       €
                     </td>
-                    <td>{parseFloat((
-                        kartelaEProduktit && kartelaEProduktit?.totaliDalese) - (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
+                    <td>
+                      {parseFloat(
+                        (kartelaEProduktit && kartelaEProduktit?.totaliDalese) -
+                          (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
                       ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €</td>
+                      €
+                    </td>
                   </tr>
                 </tbody>
               </Table>
@@ -525,4 +511,4 @@ function KartelaFinanciare(props) {
   );
 }
 
-export default KartelaFinanciare;
+export default ShtoPagesat;

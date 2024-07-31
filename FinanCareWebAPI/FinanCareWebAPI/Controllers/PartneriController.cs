@@ -146,20 +146,21 @@ namespace FinanCareWebAPI.Controllers
                 })
                 .ToListAsync();
 
-            var kalkulimetHyrese = await _context.Faturat
+            var kalkulimetDalese  = await _context.Faturat
                 .Where(x => x.IDPartneri == id &&
                     (x.LlojiKalkulimit.Equals("HYRJE")
                     || x.LlojiKalkulimit.Equals("FL")
                     || x.LlojiKalkulimit.Equals("KMSH")
+                    || x.LlojiKalkulimit.Equals("PAGES")
                     ) && x.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();
 
 
-            var kalkulimetDalese = await _context.Faturat
+            var kalkulimetHyrese = await _context.Faturat
                 .Where(x => x.IDPartneri == id &&
                     (x.LlojiKalkulimit.Equals("FAT")
-                    || x.Equals("AS")
+                    || x.LlojiKalkulimit.Equals("AS")
                     || x.LlojiKalkulimit.Equals("KMB")
                     ) && x.StatusiKalkulimit.Equals("true")
                 )
@@ -175,7 +176,15 @@ namespace FinanCareWebAPI.Controllers
 
             foreach (var produktiNeKalkulim in kalkulimetDalese)
             {
-                TotaliDalese += (produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati) ?? 0;
+                if((produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati) < 0)
+                {
+                    TotaliDalese += (produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati)*(-1) ?? 0;
+                }
+                else
+                {
+                    TotaliDalese += (produktiNeKalkulim.TotaliPaTVSH + produktiNeKalkulim.TVSH - produktiNeKalkulim.Rabati) ?? 0;
+                }
+                
             }
 
             if (partneri == null)

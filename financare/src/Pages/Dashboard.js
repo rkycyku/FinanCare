@@ -151,47 +151,47 @@ const Dashboard = () => {
                 <td>
                   <strong>Emri:</strong>
                 </td>
-                <td>{teDhenat.perdoruesi.emri}</td>
+                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.emri}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Mbiemri:</strong>
                 </td>
-                <td>{teDhenat.perdoruesi.mbiemri}</td>
+                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.mbiemri}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Username:</strong>
                 </td>
-                <td>{teDhenat.perdoruesi.username}</td>
+                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.username}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Email:</strong>
                 </td>
-                <td>{teDhenat.perdoruesi.email}</td>
+                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.email}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Numri Kontaktit:</strong>
                 </td>
-                <td>{teDhenat.perdoruesi.teDhenatPerdoruesit.nrKontaktit}</td>
+                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.nrKontaktit}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Pozita: </strong>
                 </td>
-                <td>{teDhenat.rolet.join(', ')}</td>
+                <td>{teDhenat.rolet && teDhenat.rolet.join(', ')}</td>
               </tr>
               <tr>
                 <td>
                   <strong>Adresa: </strong>
                 </td>
                 <td>
-                  {teDhenat.perdoruesi.teDhenatPerdoruesit.adresa},{" "}
-                  {teDhenat.perdoruesi.teDhenatPerdoruesit.qyteti},{" "}
-                  {teDhenat.perdoruesi.teDhenatPerdoruesit.shteti}{" "}
-                  {teDhenat.perdoruesi.teDhenatPerdoruesit.zipKodi}
+                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.adresa},{" "}
+                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.qyteti},{" "}
+                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.shteti}{" "}
+                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.zipKodi}
                 </td>
               </tr>
             </table>

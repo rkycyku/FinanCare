@@ -29,6 +29,7 @@ import GrupetEProduktit from "./Pages/Materiali/Artikujt/GrupetEProduktit";
 import Bankat from "./Pages/Gjenerale/TeDhenat/Bankat";
 import POS from "./Pages/Materiali/Shitjet/POS";
 import KartelaFinanciare from "./Pages/Gjenerale/Partneret/KartelaFinanciare";
+import ShtoPagesat from "./Pages/Gjenerale/Partneret/ShtoPagesat";
 
 function App() {
   useEffect(() => {
@@ -74,6 +75,7 @@ function App() {
         <Route path="/Bankat" element={<Bankat />} />
         <Route path="/POS" element={<POS />} />
         <Route path="/KartelaFinanciare" element={<KartelaFinanciare />} />
+        <Route path="/ShtoPagesat" element={<ShtoPagesat />} />
       </Routes>
     </div>
   );
