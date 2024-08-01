@@ -445,7 +445,8 @@ function KartelaEArtikullit(props) {
                         <td>
                           {p.llojiKalkulimit === "FAT" ||
                           p.llojiKalkulimit === "AS" ||
-                          p.llojiKalkulimit === "KMB"
+                          p.llojiKalkulimit === "KMB" ||
+                          p.llojiKalkulimit === "PARAGON"
                             ? p.sasiaStokut
                             : "-"}
                         </td>
@@ -459,7 +460,8 @@ function KartelaEArtikullit(props) {
                         <td>
                           {p.llojiKalkulimit === "FAT" ||
                           p.llojiKalkulimit === "AS" ||
-                          p.llojiKalkulimit === "KMB"
+                          p.llojiKalkulimit === "KMB" ||
+                          p.llojiKalkulimit === "PARAGON"
                             ? parseFloat(p.qmimiShites).toFixed(3) + " €"
                             : "-"}
                         </td>
