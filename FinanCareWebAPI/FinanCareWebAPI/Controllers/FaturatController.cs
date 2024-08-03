@@ -524,6 +524,7 @@ namespace WebAPI.Controllers
                     x.Produkti.StokuQmimiProduktit.QmimiMeShumic,
                     x.Produkti.StokuQmimiProduktit.QmimiProduktit,
                     x.Produkti.SasiaShumices,
+                    x.Produkti.NjesiaMatese.EmriNjesiaMatese,
                     x.QmimiBleres,
                     x.QmimiShites,
                     x.QmimiShitesMeShumic,

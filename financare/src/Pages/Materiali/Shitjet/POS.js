@@ -29,9 +29,11 @@ function POS(props) {
   const [produktiID, setproduktiID] = useState(0);
   const [sasia, setSasia] = useState("1");
   const [njesiaMatese, setNjesiaMatese] = useState("Cope");
+  const [sasiaAktualeNeStok, setSasiaAktualeNeStok] = useState(0);
 
   const [vendosKartelenBleresit, setVendosKartelenBleresit] = useState(false);
-  const [kartelaBleresit, setKartelaBleresit] = useState(0);
+  const [kartelaBleresit, setKartelaBleresit] = useState(null);
+  const [teDhenatKartelaBleresit, setTeDhenatKartelaBleresit] = useState(null);
 
   const [rabati1, setRabati1] = useState(0);
   const [rabati2, setRabati2] = useState(0);
@@ -46,6 +48,7 @@ function POS(props) {
   const [llojiPageses, setLlojiPageses] = useState("Cash");
   const [shumaPageses, setShumaPageses] = useState(0);
   const [qmimiTotal, setQmimiTotal] = useState(0);
+  const [qmimiPaRabatBonus, setQmimiPaRabatBonus] = useState(0);
   const [totaliTVSH, setTotaliTVSH] = useState(0);
   const [kalkEditID, setKalkEditID] = useState(0);
 
@@ -136,6 +139,7 @@ function POS(props) {
     const calculateTotals = async () => {
       let totalQmimiPaTVSH = 0;
       let totalTVSH = 0;
+      let qmimiPaRabatBonus = 0;
 
       produktetNeKalkulim.forEach((produkti) => {
         const qmimiShitesPasRabatit =
@@ -151,16 +155,22 @@ function POS(props) {
               (produkti.rabati2 / 100)) *
             (produkti.rabati3 / 100);
 
+        const qmimiShitesPaRabatBonus =
+          produkti.qmimiShites -
+          produkti.qmimiShites * (produkti.rabati1 / 100);
+
         const qmimiPaTVSH =
           qmimiShitesPasRabatit / (1 + produkti.llojiTVSH / 100);
         const qmimiTVSH = qmimiPaTVSH * (produkti.llojiTVSH / 100);
 
         totalQmimiPaTVSH += qmimiPaTVSH * produkti.sasiaStokut;
         totalTVSH += qmimiTVSH * produkti.sasiaStokut;
+        qmimiPaRabatBonus += qmimiShitesPaRabatBonus * produkti.sasiaStokut;
       });
 
       setTotaliTVSH(totalTVSH);
       setQmimiTotal(totalQmimiPaTVSH + totalTVSH);
+      setQmimiPaRabatBonus(qmimiPaRabatBonus);
 
       try {
         const response = await axios.get(
@@ -175,7 +185,7 @@ function POS(props) {
             stafiID: response.data.regjistrimet.stafiID,
             totaliPaTVSH: parseFloat(totalQmimiPaTVSH),
             tvsh: parseFloat(totalTVSH),
-            idPartneri: idPartneri,
+            idPartneri: response.data.regjistrimet.idPartneri,
             statusiPageses: response.data.statusiPageses,
             llojiPageses: response.data.regjistrimet.llojiPageses,
             llojiKalkulimit: response.data.regjistrimet.llojiKalkulimit,
@@ -229,6 +239,9 @@ function POS(props) {
         setRabati1(p.data[0].rabati1);
         setRabati2(p.data[0].rabati2);
         setKalkEditID(p.data[0].id);
+
+        setNjesiaMatese(p.data[0].emriNjesiaMatese);
+        setSasiaAktualeNeStok(p.data[0].sasiaNeStok);
 
         document.getElementById("sasia").focus();
       });
@@ -323,6 +336,8 @@ function POS(props) {
           qmimiProduktit: item.qmimiProduktit,
           qmimiMeShumic: item.qmimiMeShumic,
           rabati: item.rabati,
+          sasiaNeStok: item.sasiaNeStok,
+          emriNjesiaMatese: item.emriNjesiaMatese,
         }));
         setOptionsBarkodi(fetchedOptionsBarkodi);
 
@@ -337,6 +352,8 @@ function POS(props) {
           qmimiProduktit: item.qmimiProduktit,
           qmimiMeShumic: item.qmimiMeShumic,
           rabati: item.rabati,
+          sasiaNeStok: item.sasiaNeStok,
+          emriNjesiaMatese: item.emriNjesiaMatese,
         }));
         setOptionsProdukti(fetchedOptionsProdukti);
       })
@@ -345,19 +362,19 @@ function POS(props) {
       });
   }, []);
 
-  const handleChange = async (optionsBarkodiSelected) => {
-    setOptionsBarkodiSelected(optionsBarkodiSelected);
-    console.log("Selected option:", optionsBarkodiSelected);
+  const handleChange = async (barkodi) => {
+    setOptionsBarkodiSelected(barkodi);
+    console.log("Selected option:", barkodi);
 
     await axios.post(
       "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
       {
         idRegjistrimit: idRegjistrimit,
-        idProduktit: optionsBarkodiSelected.value,
+        idProduktit: barkodi.value,
         sasiaStokut: 1,
-        qmimiShites: optionsBarkodiSelected.qmimiProduktit,
-        qmimiShitesMeShumic: optionsBarkodiSelected.qmimiMeShumic,
-        rabati1: optionsBarkodiSelected.rabati,
+        qmimiShites: barkodi.qmimiProduktit,
+        qmimiShitesMeShumic: barkodi.qmimiMeShumic,
+        rabati1: barkodi.rabati,
         rabati2: rabati2,
       },
       authentikimi
@@ -366,6 +383,8 @@ function POS(props) {
     setproduktiID(0);
     setSasia("");
     setSasiaShumices(0);
+    setNjesiaMatese(barkodi.emriNjesiaMatese);
+    setSasiaAktualeNeStok(barkodi.sasiaNeStok);
     setQmimiSH(0);
     setQmimiSH2(0);
     setOptionsBarkodiSelected(null);
@@ -411,7 +430,7 @@ function POS(props) {
               {
                 llojiPageses: llojiPageses,
                 statusiKalkulimit: "true",
-                idPartneri: idPartneri,
+                idPartneri: r.data.regjistrimet.idPartneri,
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
                 stafiID: r.data.regjistrimet.stafiID,
                 totaliPaTVSH: parseFloat(r.data.regjistrimet.totaliPaTVSH),
@@ -446,6 +465,7 @@ function POS(props) {
         setOptionsBarkodiSelected(null);
         setOptionsProduktiSelected(null);
         setIDPartneri(1);
+        setTeDhenatKartelaBleresit(null);
       });
   };
 
@@ -464,34 +484,71 @@ function POS(props) {
   }, []);
 
   async function VendosKartelenBleresit() {
-    const kaKartele = await axios.get(
-      `https://localhost:7285/api/Kartelat/shfaqKartelenSipasKodit?kodiKarteles=${kartelaBleresit}`,
-      authentikimi
-    );
+    try {
+      const kaKartele = await axios.get(
+        `https://localhost:7285/api/Kartelat/shfaqKartelenSipasKodit?kodiKarteles=${kartelaBleresit}`,
+        authentikimi
+      );
 
-    console.log(kaKartele.data)
+      if (kaKartele != null) {
+        setRabati2(kaKartele.data.rabati);
+        setIDPartneri(kaKartele.data.partneriID);
+        setTeDhenatKartelaBleresit(kaKartele.data);
 
-    if (kaKartele != null) {
-      setRabati2(kaKartele.data.rabati);
-      setIDPartneri(kaKartele.data.partneriID);
+        console.log(kaKartele.data);
 
-      for (let produkti of produktetNeKalkulim) {
-        console.log(produkti);
+        const r = await axios.get(
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${idRegjistrimit}`,
+          authentikimi
+        );
+
         await axios.put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/PerditesoTeDhenat?id=${produkti.id}`,
+          `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${idRegjistrimit}`,
           {
-            sasiaStokut: produkti.sasiaStokut,
-            qmimiShites: produkti.qmimiShites,
-            qmimiShitesMeShumic: produkti.qmimiShitesMeShumic,
-            rabati1: produkti.rabati1,
-            rabati2: kaKartele.data.rabati,
+            llojiPageses: r.data.regjistrimet.llojiPageses,
+            statusiKalkulimit: r.data.regjistrimet.statusiKalkulimit,
+            idPartneri: kaKartele.data.partneriID,
+            dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+            stafiID: r.data.regjistrimet.stafiID,
+            totaliPaTVSH: parseFloat(r.data.regjistrimet.totaliPaTVSH),
+            tvsh: parseFloat(r.data.regjistrimet.tvsh),
+            statusiPageses: r.data.statusiPageses,
+            llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
+            nrFatures: r.data.regjistrimet.nrFatures,
+            pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
+            rabati: parseFloat(r.data.rabati),
+            nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
           },
           authentikimi
         );
-      }
 
-      setVendosKartelenBleresit(false);
-      setPerditesoFat(Date.now());
+        for (let produkti of produktetNeKalkulim) {
+          console.log(produkti);
+          await axios.put(
+            `https://localhost:7285/api/Faturat/ruajKalkulimin/PerditesoTeDhenat?id=${produkti.id}`,
+            {
+              sasiaStokut: produkti.sasiaStokut,
+              qmimiShites: produkti.qmimiShites,
+              qmimiShitesMeShumic: produkti.qmimiShitesMeShumic,
+              rabati1: produkti.rabati1,
+              rabati2: kaKartele.data.rabati,
+            },
+            authentikimi
+          );
+        }
+
+        setKartelaBleresit(null);
+        setVendosKartelenBleresit(false);
+        setPerditesoFat(Date.now());
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        document.getElementById("barkodiSelect-input").focus();
+        setVendosKartelenBleresit(false);
+        setTipiMesazhit("danger");
+        setPershkrimiMesazhit("Kartela nuk egziston!");
+        setShfaqMesazhin(true);
+      }
     }
   }
 
@@ -525,6 +582,7 @@ function POS(props) {
                   value={kartelaBleresit}
                   onChange={(e) => setKartelaBleresit(e.target.value)}
                   placeholder="Shkruani kartelen bleresit"
+                  autoFocus
                 />
               </Form.Group>
             </Modal.Body>
@@ -570,15 +628,20 @@ function POS(props) {
                       disabled
                     />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="mt-1" >
                     <Form.Label>Data</Form.Label>
                     <Form.Control
                       id="qmimiShites"
                       type="text"
                       value={currentDate}
                       disabled
+                      className="mb-3"
                     />
                   </Form.Group>
+                  <h5 className="mt-1">
+                    <strong>Sasia ne Stok:</strong>{" "}
+                    {parseFloat(sasiaAktualeNeStok).toFixed(4)} {njesiaMatese}
+                  </h5>
                   <br />
                 </Col>
                 <Col>
@@ -631,7 +694,33 @@ function POS(props) {
                   <br />
                 </Col>
                 <Col>
-                  <h1>{parseFloat(qmimiTotal).toFixed(2)} €</h1>
+                  <h1 style={{ fontSize: "3.7em" }}>
+                    {parseFloat(qmimiTotal).toFixed(2)} €
+                  </h1>
+                  {teDhenatKartelaBleresit != null && (
+                    <>
+                      <p style={{ fontSize: "1.8em" }}>
+                        <strong>Klienti: </strong>
+                        {teDhenatKartelaBleresit &&
+                          teDhenatKartelaBleresit.partneri &&
+                          teDhenatKartelaBleresit.partneri.emriBiznesit}
+                      </p>
+                      <p style={{ fontSize: "1.4em", marginTop: "-0.55em" }}>
+                        <strong>Rabati: </strong>
+                        {parseFloat(
+                          teDhenatKartelaBleresit &&
+                            teDhenatKartelaBleresit.rabati
+                        ).toFixed(2)}{" "}
+                        % -{" "}
+                        {parseFloat(qmimiPaRabatBonus - qmimiTotal).toFixed(2)}{" "}
+                        €
+                      </p>
+                      <p style={{ fontSize: "1.4em", marginTop: "-0.55em" }}>
+                        <strong>Tot. Pa Rab.: </strong>
+                        {parseFloat(qmimiPaRabatBonus).toFixed(2)} €
+                      </p>
+                    </>
+                  )}
                 </Col>
               </Row>
               <Row>
@@ -695,7 +784,7 @@ function POS(props) {
                   </Form.Group>
                 </Col>
               </Row>
-              <h1 className="title">Tabela e Produkteve te Fatures</h1>
+              <h1 className="mt-2">Regjistrimi Pozicioneve te Paragonit</h1>
 
               <div
                 className="tabelaDiv"
@@ -717,12 +806,7 @@ function POS(props) {
                       <th>Emertimi</th>
                       <th>Njm</th>
                       <th>Sasia</th>
-                      <th>Qmimi pa TVSH</th>
-                      <th>R. 1 %</th>
-                      <th>R. 2 %</th>
-                      <th>T %</th>
-                      <th>Qmimi me TVSH - Rab</th>
-                      <th>TVSH €</th>
+                      <th>Qmimi Shites</th>
                       <th>Shuma €</th>
 
                       <th>Funksione</th>
@@ -760,30 +844,9 @@ function POS(props) {
                               <td>{p.emriProduktit}</td>
                               <td>{p.emriNjesiaMatese}</td>
                               <td>{p.sasiaStokut}</td>
-                              <td>
-                                {parseFloat(
-                                  p.qmimiShites -
-                                    (p.qmimiShites *
-                                      ((p.llojiTVSH /
-                                        100 /
-                                        (1 + p.llojiTVSH / 100)) *
-                                        100)) /
-                                      100
-                                ).toFixed(3)}
-                              </td>
-                              <td>{parseFloat(p.rabati1 ?? 0).toFixed(2)}</td>
-                              <td>{parseFloat(p.rabati2 ?? 0).toFixed(2)}</td>
-                              <td>{p.llojiTVSH}</td>
-                              <td>{parseFloat(qmimiMeTVSHRab).toFixed(3)}</td>
-                              <td>
-                                {parseFloat(
-                                  ShumaToT *
-                                    (p.llojiTVSH /
-                                      100 /
-                                      (1 + p.llojiTVSH / 100))
-                                ).toFixed(3)}
-                              </td>
-                              <td>{ShumaToT}</td>
+
+                              <td>{parseFloat(qmimiMeTVSHRab).toFixed(2)} €</td>
+                              <td>{parseFloat(ShumaToT).toFixed(2)} €</td>
                               <td>
                                 <div style={{ display: "flex", gap: "0.3em" }}>
                                   <Button
@@ -818,11 +881,6 @@ function POS(props) {
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
                     </tr>
                   </tbody>
                 </Table>
@@ -837,7 +895,10 @@ function POS(props) {
                   fontWeight: "bold",
                   fontSize: "0.8em",
                 }}>
-                <p>Me ESC kalohet tek Pagesa. F5 Mbyllet Fatura. F4 Bonus Kartela.</p>
+                <p>
+                  Me ESC kalohet tek Pagesa. F5 Mbyllet Fatura. F4 Bonus
+                  Kartela.
+                </p>
               </footer>
             </Container>
           </>
