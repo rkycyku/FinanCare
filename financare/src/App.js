@@ -30,6 +30,7 @@ import Bankat from "./Pages/Gjenerale/TeDhenat/Bankat";
 import POS from "./Pages/Materiali/Shitjet/POS";
 import KartelaFinanciare from "./Pages/Gjenerale/Partneret/KartelaFinanciare";
 import ShtoPagesat from "./Pages/Gjenerale/Partneret/ShtoPagesat";
+import ListaShitjeveMeParagon from "./Pages/Materiali/Shitjet/ListaShitjeveMeParagon";
 
 function App() {
   useEffect(() => {
@@ -76,6 +77,7 @@ function App() {
         <Route path="/POS" element={<POS />} />
         <Route path="/KartelaFinanciare" element={<KartelaFinanciare />} />
         <Route path="/ShtoPagesat" element={<ShtoPagesat />} />
+        <Route path="/ListaShitjeveMeParagon" element={<ListaShitjeveMeParagon />} />
       </Routes>
     </div>
   );

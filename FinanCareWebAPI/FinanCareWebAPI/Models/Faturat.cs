@@ -23,10 +23,13 @@ public partial class Faturat
     public decimal? Rabati { get; set; } = 0;
     public int? NrRendorFatures { get; set; } = 0;
     public string? EshteFaturuarOferta { get; set; } = "false";
+    public int? IDBonusKartela { get; set; } = 0;
 
     [ForeignKey(nameof(IDPartneri))]
     public virtual Partneri? Partneri { get; set; }
     [ForeignKey(nameof(StafiID))]
     public virtual Perdoruesi? Stafi { get; set; }
+    [ForeignKey(nameof(IDBonusKartela))]
+    public virtual Kartelat? BonusKartela { get; set; }
     public virtual ICollection<TeDhenatFaturat> TeDhenatFaturat { get; } = new List<TeDhenatFaturat>();
 }

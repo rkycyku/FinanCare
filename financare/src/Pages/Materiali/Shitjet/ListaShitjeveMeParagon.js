@@ -17,11 +17,11 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
-import RegjistroFaturen from "../../../Components/Materiali/Shitjet/AsgjesimIStokut/RegjistroFaturen";
-import PerditesoStatusinKalk from "../../../Components/Materiali/Shitjet/AsgjesimIStokut/PerditesoStatusinKalk";
-import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/AsgjesimIStokut/TeDhenatKalkulimit";
+import PerditesoStatusinKalk from "../../../Components/Materiali/Shitjet/ListaShitjeveMeParagon/PerditesoStatusinKalk";
+import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/ListaShitjeveMeParagon/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
+import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -31,10 +31,10 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import dayjs from "dayjs";
+import CustomDatePicker from "../../../Components/TeTjera/layout/CustomDatePicker";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
-function KalkulimiIMallit(props) {
+function ListaShitjeveMeParagon(props) {
   const [perditeso, setPerditeso] = useState("");
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
@@ -44,7 +44,7 @@ function KalkulimiIMallit(props) {
 
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
   const [pershkrimShtese, setPershkrimShtese] = useState("");
-  const [Partneri, setPartneri] = useState(3);
+  const [Partneri, setPartneri] = useState(0);
   const [nrFatures, setNrFatures] = useState("");
   const today = new Date();
   const initialDate = today.toISOString().split("T")[0]; // Format as 'yyyy-MM-dd'
@@ -56,6 +56,7 @@ function KalkulimiIMallit(props) {
 
   const [kalkulimet, setKalkulimet] = useState([]);
   const [regjistroKalkulimin, setRegjistroKalkulimin] = useState(false);
+
   const [shfaqTeDhenat, setShfaqTeDhenat] = useState(false);
   const [mbyllFature, setMbyllFaturen] = useState(true);
   const [id, setId] = useState(0);
@@ -98,14 +99,20 @@ function KalkulimiIMallit(props) {
           authentikimi
         );
         const kthimet = kalkulimi.data.filter(
-          (item) => item.llojiKalkulimit === "AS"
+          (item) => item.llojiKalkulimit === "PARAGON"
         );
+        console.log(kthimet);
         setKalkulimet(
           kthimet.map((k) => ({
             ID: k.idRegjistrimit,
-            "Nr. Asgjesimit": k.nrRendorFatures,
-            "Pershkrimi Shtese": k.pershkrimShtese,
+            "Nr. Fatures": k.nrFatures,
+            Partneri: k.emriBiznesit,
             "Data e Fatures": new Date(k.dataRegjistrimit).toISOString(),
+            "Tot - TVSH €": parseFloat(k.totaliPaTVSH).toFixed(2),
+            "TVSH €": parseFloat(k.tvsh).toFixed(2),
+            "R. €": parseFloat(k.rabati).toFixed(2),
+            "Totali €": parseFloat(k.totaliPaTVSH + k.tvsh).toFixed(2),
+            "Lloji Pageses": k.llojiPageses,
             "Statusi Kalkulimit":
               k.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur",
           }))
@@ -146,10 +153,11 @@ function KalkulimiIMallit(props) {
     const vendosPartnerin = async () => {
       try {
         const partneri = await axios.get(
-          `https://localhost:7285/api/Partneri/shfaqPartneretFurntiore`,
+          `https://localhost:7285/api/Partneri/shfaqPartneretBleres`,
           authentikimi
         );
         setPartneret(partneri.data);
+        console.log(partneri);
       } catch (err) {
         console.log(err);
       }
@@ -157,81 +165,6 @@ function KalkulimiIMallit(props) {
 
     vendosPartnerin();
   }, [perditeso]);
-
-  useEffect(() => {
-    const vendosNrFaturesMeRradhe = async () => {
-      try {
-        const nrFat = await axios.get(
-          `https://localhost:7285/api/Faturat/getNumriFaturesMeRradhe?llojiKalkulimit=AS`,
-          authentikimi
-        );
-        setNrRendorKalkulimit(parseInt(nrFat.data));
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    vendosNrFaturesMeRradhe();
-  }, [perditeso]);
-
-  const ndrroField = (e, tjetra) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById(tjetra).focus();
-    }
-  };
-
-  async function handleRegjistroKalkulimin() {
-    try {
-      console.log(nrRendorKalkulimit);
-      await axios
-        .post(
-          "https://localhost:7285/api/Faturat/ruajKalkulimin",
-          {
-            dataRegjistrimit: dataEFatures,
-            stafiID: teDhenat.perdoruesi.userID,
-            totaliPaTVSH: totPaTVSH,
-            tvsh: TVSH,
-            idPartneri: Partneri,
-            statusiPageses: statusiIPageses,
-            llojiPageses: llojiIPageses,
-            nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),
-            llojiKalkulimit: "AS",
-            pershkrimShtese: pershkrimShtese,
-            nrRendorFatures: nrRendorKalkulimit + 1,
-          },
-          authentikimi
-        )
-        .then((response) => {
-          if (response.status === 200 || response.status === 201) {
-            setPerditeso(Date.now());
-            setIdKalkulimitEdit(response.data.idRegjistrimit);
-            setRegjistroKalkulimin(true);
-          } else {
-            console.log("gabim");
-            setPerditeso(Date.now());
-          }
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function mbyllKalkulimin() {
-    try {
-      axios
-        .put(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStatusinKalkulimit?id=${idKalkulimitEdit}&statusi=true`,
-          {},
-          authentikimi
-        )
-        .then(() => {
-          setRegjistroKalkulimin(false);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   function ndryshoStatusin(shfaq) {
     if (shfaq === true) {
@@ -247,19 +180,10 @@ function KalkulimiIMallit(props) {
     setShfaqTeDhenat(false);
   };
 
-  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
-  useEffect(() => {
-    if (llojiIPageses === "Borxh") {
-      setStatusiIPagesesValue("Borxh");
-    } else {
-      setStatusiIPagesesValue(statusiIPageses ? statusiIPageses : 0);
-    }
-  }, [llojiIPageses, statusiIPageses]);
-
   return (
     <>
       <Helmet>
-        <title>Asgjesimi I Stokut | FinanCare</title>
+        <title>Ofertat | FinanCare</title>
       </Helmet>
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
@@ -272,15 +196,6 @@ function KalkulimiIMallit(props) {
         )}
         {shfaqTeDhenat && (
           <TeDhenatKalkulimit setMbyllTeDhenat={mbyllTeDhenat} id={id} />
-        )}
-        {regjistroKalkulimin && (
-          <RegjistroFaturen
-            mbyllKalkulimin={mbyllKalkulimin}
-            mbyllPerkohesisht={() => setRegjistroKalkulimin(false)}
-            nrRendorKalkulimit={idKalkulimitEdit}
-            setPerditeso={() => setPerditeso(Date.now())}
-            idKalkulimitEdit={idKalkulimitEdit}
-          />
         )}
         {edito && (
           <PerditesoStatusinKalk
@@ -302,80 +217,15 @@ function KalkulimiIMallit(props) {
             />
           </div>
         ) : (
-          !regjistroKalkulimin &&
           !shfaqTeDhenat && (
             <>
-              <h1 className="title">Asgjesimi I Stokut</h1>
-
               <Container fluid>
-                <Row>
-                  <Col>
-                    <Form.Group controlId="idDheEmri">
-                      <Form.Group>
-                        <Form.Label>Nr. Rendor i Asgjesimit</Form.Label>
-                        <Form.Control
-                          id="nrRendorKalkulimit"
-                          type="number"
-                          value={
-                            nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
-                          }
-                          disabled
-                        />
-                      </Form.Group>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId="pershkrimShtese">
-                      <Form.Group>
-                        <Form.Label>Pershkrim Shtese</Form.Label>
-                        <Form.Control
-                          id="pershkrimShtese"
-                          type="text"
-                          value={pershkrimShtese}
-                          onChange={(e) => {
-                            setPershkrimShtese(e.target.value);
-                          }}
-                          onKeyDown={(e) => {
-                            ndrroField(e, "dataEFatures");
-                          }}
-                        />
-                      </Form.Group>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Data e Asgjesimit te Mallit</Form.Label>
-                      <Form.Control
-                        id="dataEFatures"
-                        type="date"
-                        value={dataEFatures}
-                        onChange={(e) => {
-                          setDataEFatures(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
-                      />
-                    </Form.Group>
-                    <br />
-                    <Button
-                      className="mb-3 Butoni"
-                      onClick={() => handleRegjistroKalkulimin()}>
-                      Regjistro <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                  </Col>
-                </Row>
                 <Tabela
                   data={kalkulimet}
-                  tableName="Lista e Asgjesimeve"
+                  tableName="Lista e Shitjeve me Paragon"
                   kaButona={true}
                   funksionShfaqFature={(e) => handleShfaqTeDhenat(e)}
                   funksionNdryshoStatusinEFatures={() => setEdito(true)}
-                  funksionButonEdit={(e) => {
-                    setIdKalkulimitEdit(e);
-                    setNrRendorKalkulimit(e);
-                    setRegjistroKalkulimin(true);
-                  }}
                   dateField="Data e Fatures" // The field in your data that contains the date values
                   mosShfaqID={true}
                 />
@@ -388,4 +238,4 @@ function KalkulimiIMallit(props) {
   );
 }
 
-export default KalkulimiIMallit;
+export default ListaShitjeveMeParagon;

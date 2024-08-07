@@ -218,6 +218,11 @@ function NavBar(props) {
                             Kthimi i Mallit te Blere{" "}
                           </MDBDropdownItem>
                         </Link>
+                        <Link to="/ListaShitjeveMeParagon">
+                          <MDBDropdownItem link>
+                          Lista e shitjeve me Paragon
+                          </MDBDropdownItem>
+                        </Link>
                         <Link to="/POS">
                           <MDBDropdownItem link>POS</MDBDropdownItem>
                         </Link>

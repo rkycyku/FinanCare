@@ -24,6 +24,8 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get()
         {
             var regjistrimet = await _context.Faturat
+                .Include(x => x.BonusKartela)
+                .ThenInclude(x => x.Partneri)
                 .OrderByDescending(x => x.IDRegjistrimit)
                 .Select(x => new
                 {
@@ -43,7 +45,9 @@ namespace WebAPI.Controllers
                     x.PershkrimShtese,
                     x.Rabati,
                     x.NrRendorFatures,
-                    x.EshteFaturuarOferta
+                    x.EshteFaturuarOferta,
+                    x.IDBonusKartela,
+                    x.BonusKartela
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -56,6 +60,8 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetByStatusi(string statusi)
         {
             var regjistrimet = await _context.Faturat
+                .Include(x => x.BonusKartela)
+                .ThenInclude(x => x.Partneri)
                 .Where(x => x.StatusiKalkulimit == statusi)
                 .OrderByDescending(x => x.IDRegjistrimit)
                 .Select(x => new
@@ -75,7 +81,9 @@ namespace WebAPI.Controllers
                     x.PershkrimShtese,
                     x.Rabati,
                     x.NrRendorFatures,
-                    x.EshteFaturuarOferta
+                    x.EshteFaturuarOferta,
+                    x.IDBonusKartela,
+                    x.BonusKartela
                 }).ToListAsync();
 
             return Ok(regjistrimet);
@@ -87,6 +95,8 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetRegjistrimin(int id)
         {
             var regjistrimet = await _context.Faturat
+                .Include(x => x.BonusKartela)
+                .ThenInclude(x => x.Partneri)
                 .Select(x => new
                 {
                     x.IDRegjistrimit,
@@ -112,7 +122,9 @@ namespace WebAPI.Controllers
                     x.PershkrimShtese,
                     x.Rabati,
                     x.NrRendorFatures,
-                    x.EshteFaturuarOferta
+                    x.EshteFaturuarOferta,
+                    x.IDBonusKartela,
+                    x.BonusKartela
                 }).FirstOrDefaultAsync(x => x.IDRegjistrimit == id);
 
             var totTVSH18 = await _context.TeDhenatFaturat.Include(x => x.Produkti).Where(x => x.Produkti.LlojiTVSH == 18 && x.IDRegjistrimit == id).ToListAsync();
@@ -126,17 +138,20 @@ namespace WebAPI.Controllers
 
             foreach (var teDhenat in totTVSH18)
             {
-                decimal rabati = teDhenat.Rabati1 + teDhenat.Rabati2 + teDhenat.Rabati3 ?? 0;
+                decimal rabati1 = teDhenat.Rabati1 ?? 0;
+                decimal rabati2 = teDhenat.Rabati2 ?? 0;
+                decimal rabati3 = teDhenat.Rabati3 ?? 0;
+                decimal rabati = rabati1 + rabati2 + rabati3;
                 decimal vatRate = 0.18m; // 18% VAT rate as a decimal
                 decimal totalBeforeVAT = 0.00m;
                 decimal vatAmount = 0.00m;
 
                 if(regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
-                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100)) * (rabati3 / 100)) * teDhenat.SasiaStokut);
                     vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT ;
                 }
                 else
@@ -150,10 +165,10 @@ namespace WebAPI.Controllers
 
                 if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
-                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) +
-                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) +
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (rabati1 / 100) +
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100) +
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100)) * (rabati3 / 100)) * teDhenat.SasiaStokut);
                 }
                 else
                 {
@@ -164,17 +179,20 @@ namespace WebAPI.Controllers
 
             foreach (var teDhenat in totTVSH8)
             {
-                decimal rabati = teDhenat.Rabati1 + teDhenat.Rabati2 + teDhenat.Rabati3 ?? 0;
+                decimal rabati1 = teDhenat.Rabati1 ?? 0;
+                decimal rabati2 = teDhenat.Rabati2 ?? 0;
+                decimal rabati3 = teDhenat.Rabati3 ?? 0;
+                decimal rabati = rabati1 + rabati2 + rabati3;
                 decimal vatRate = 0.08m; // 8% VAT rate as a decimal
                 decimal totalBeforeVAT = 0.00m;
                 decimal vatAmount = 0.00m;
 
                 if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
-                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    totalBeforeVAT = Convert.ToDecimal((teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100)) * (rabati3 / 100)) * teDhenat.SasiaStokut);
                     vatAmount = (vatRate / (1 + vatRate)) * totalBeforeVAT;
                 }
                 else
@@ -188,10 +206,10 @@ namespace WebAPI.Controllers
 
                 if (regjistrimet.LlojiKalkulimit.Equals("OFERTE") || regjistrimet.LlojiKalkulimit.Equals("FAT") || regjistrimet.LlojiKalkulimit.Equals("FL") || regjistrimet.LlojiKalkulimit.Equals("PARAGON"))
                 {
-                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) +
-                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100) +
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100) -
-                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (teDhenat.Rabati1 / 100)) * (teDhenat.Rabati2 / 100)) * (teDhenat.Rabati3 / 100)) * teDhenat.SasiaStokut);
+                    Rabati += Convert.ToDecimal((teDhenat.QmimiShites * (rabati1 / 100) +
+                              (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100) +
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100) -
+                                (teDhenat.QmimiShites - teDhenat.QmimiShites * (rabati1 / 100)) * (rabati2 / 100)) * (rabati3 / 100)) * teDhenat.SasiaStokut);
                 }
                 else
                 {
@@ -284,7 +302,8 @@ namespace WebAPI.Controllers
                     StafiID = stafiID,
                     LlojiKalkulimit = "PARAGON",
                     NrFatures = nrFatures,
-                    NrRendorFatures = nrFat + 1
+                    NrRendorFatures = nrFat + 1,
+                    IDBonusKartela = null
                 };
 
                 await _context.Faturat.AddAsync(f);
@@ -369,7 +388,11 @@ namespace WebAPI.Controllers
             {
                 fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
             }
-                try
+            if (fat.IDBonusKartela != null)
+            {
+                fatura.IDBonusKartela = fat.IDBonusKartela;
+            }
+            try
             {
                 await _context.SaveChangesAsync();
             }
@@ -400,7 +423,7 @@ namespace WebAPI.Controllers
             await _context.TeDhenatFaturat.AddAsync(teDhenat);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(teDhenat);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]

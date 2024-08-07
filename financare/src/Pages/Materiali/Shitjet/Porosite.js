@@ -32,6 +32,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -55,7 +56,7 @@ function KthimIMallitTeBlere(props) {
 
   const [kalkulimet, setKalkulimet] = useState([]);
   const [regjistroKalkulimin, setRegjistroKalkulimin] = useState(false);
-  
+
   const [shfaqTeDhenat, setShfaqTeDhenat] = useState(false);
   const [mbyllFature, setMbyllFaturen] = useState(true);
   const [id, setId] = useState(0);
@@ -101,7 +102,23 @@ function KthimIMallitTeBlere(props) {
           (item) => item.llojiKalkulimit === "FAT"
         );
         console.log(kthimet);
-        setKalkulimet(kthimet);
+
+        setKalkulimet(
+          kthimet.map((k) => ({
+            ID: k.idRegjistrimit,
+            "Nr. Porosis": k.nrRendorFatures,
+            Partneri: k.emriBiznesit,
+            "Pershkrimi Shtese": k.pershkrimShtese,
+            "Data e Fatures": new Date(k.dataRegjistrimit).toISOString(),
+            "Tot - TVSH €": parseFloat(k.totaliPaTVSH).toFixed(2),
+            "TVSH €": parseFloat(k.tvsh).toFixed(2),
+            "R. €": parseFloat(k.rabati).toFixed(2),
+            "Totali €": parseFloat(k.totaliPaTVSH + k.tvsh).toFixed(2),
+            "Lloji Pageses": k.llojiPageses,
+            "Statusi Kalkulimit":
+              k.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur",
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -142,7 +159,7 @@ function KthimIMallitTeBlere(props) {
           authentikimi
         );
         setPartneret(partneri.data);
-        console.log(partneri)
+        console.log(partneri);
       } catch (err) {
         console.log(err);
       }
@@ -363,8 +380,7 @@ function KthimIMallitTeBlere(props) {
 
                       <div
                         className="container"
-                        style={{ position: "relative" }}
-                      >
+                        style={{ position: "relative" }}>
                         <ul className="list-group mt-2 searchBoxi">
                           {filteredItems.map((item, index) => (
                             <li
@@ -372,8 +388,7 @@ function KthimIMallitTeBlere(props) {
                               className={`list-group-item${
                                 selectedIndex === index ? " active" : ""
                               }`}
-                              onClick={() => handleNdryshoPartneri(item)}
-                            >
+                              onClick={() => handleNdryshoPartneri(item)}>
                               {item.emriBiznesit}
                             </li>
                           ))}
@@ -410,8 +425,7 @@ function KthimIMallitTeBlere(props) {
                         }}
                         onKeyDown={(e) => {
                           ndrroField(e, "statusiIPageses");
-                        }}
-                      >
+                        }}>
                         <option defaultValue value={0} key={0} disabled>
                           Zgjedhni Llojin e Pageses
                         </option>
@@ -440,180 +454,28 @@ function KthimIMallitTeBlere(props) {
                     <br />
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => handleRegjistroKalkulimin()}
-                    >
+                      onClick={() => handleRegjistroKalkulimin()}>
                       Regjistro <FontAwesomeIcon icon={faPlus} />
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Porosive</h1>
-                <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
-                  Ndrysho Statusin e Fatures{" "}
-                  <FontAwesomeIcon icon={faPenToSquare} />
-                </Button>
-                <div className="DataPerFiltrim">
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DateField", "DateField"]}>
-                        <DateField
-                          label="Data Fillestare"
-                          value={dataFillestare}
-                          onChange={(date) => setDataFillestare(date)}
-                          size="small"
-                          format="DD/MM/YYYY"
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </div>
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DateField", "DateField"]}>
-                        <DateField
-                          label="Data Fundit"
-                          value={dataFundit}
-                          onChange={(date) => setDataFundit(date)}
-                          size="small"
-                          format="DD/MM/YYYY"
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </div>
-                  <div>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth size="small">
-                        <InputLabel id="demo-simple-select-label">
-                          Statusi i Fatures
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={filtroStatusi}
-                          label="Statusi i Fatures"
-                          onChange={(e) => {
-                            setFiltroStatusi(e.target.value);
-                          }}
-                        >
-                          <MenuItem
-                            defaultValue
-                            value="Te Gjitha"
-                            key="Te Gjitha"
-                          >
-                            Te Gjitha
-                          </MenuItem>
-                          <MenuItem key="false" value="false">
-                            Te Hapur
-                          </MenuItem>
-                          <MenuItem key="true" value="true">
-                            Te Mbyllur
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-                  </div>
-                  <div className="datat">
-                    <Button
-                      style={{ marginRight: "0.5em" }}
-                      variant="success"
-                      onClick={() => {
-                        setDataFillestare(null);
-                        setDataFundit(null);
-                        setFiltroStatusi("Te Gjitha");
-                      }}
-                    >
-                      Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
-                    </Button>
-                  </div>
+                <div className="mt-2">
+                  <Tabela
+                    data={kalkulimet}
+                    tableName="Lista e Porosive"
+                    kaButona={true}
+                    funksionShfaqFature={(e) => handleShfaqTeDhenat(e)}
+                    funksionNdryshoStatusinEFatures={() => setEdito(true)}
+                    funksionButonEdit={(e) => {
+                      setIdKalkulimitEdit(e);
+                      setNrRendorKalkulimit(e);
+                      setRegjistroKalkulimin(true);
+                    }}
+                    dateField="Data e Fatures" // The field in your data that contains the date values
+                    kontrolloStatusin
+                    mosShfaqID={true}
+                  />
                 </div>
-                <MDBTable style={{ width: "100%" }}>
-                  <MDBTableHead>
-                    <tr>
-                      <th scope="col">Nr. Ofertes</th>
-                      <th scope="col">Partneri</th>
-                      <th scope="col">Pershkrimi Shtese</th>
-                      <th scope="col">Data e Fatures</th>
-                      <th scope="col">Tot - TVSH €</th>
-                      <th scope="col">TVSH €</th>
-                      <th scope="col">R. €</th>
-                      <th scope="col">Totali €</th>
-                      <th scope="col">Lloji Pageses</th>
-                      <th scope="col">Statusi Kalkulimit</th>
-                      <th scope="col">Funksione</th>
-                    </tr>
-                  </MDBTableHead>
-
-                  <MDBTableBody>
-                    {kalkulimet
-                      .filter((p) => {
-                        if (!dataFillestare || !dataFundit) {
-                          return true;
-                        } else {
-                          const dataPorosise = new Date(p.dataRegjistrimit);
-                          return (
-                            dataPorosise >= dataFillestare &&
-                            dataPorosise <= dataFundit
-                          );
-                        }
-                      })
-                      .filter((p) => {
-                        if (filtroStatusi === "Te Gjitha") {
-                          return true;
-                        } else {
-                          return p.statusiKalkulimit === filtroStatusi;
-                        }
-                      })
-                      .map((k) => (
-                        <tr key={k.idRegjistrimit}>
-                          <td>{k.nrRendorFatures}</td>
-                          <td>{k.emriBiznesit}</td>
-                          <td>{k.pershkrimShtese}</td>
-                          <td>
-                            {new Date(k.dataRegjistrimit).toLocaleDateString(
-                              "en-GB",
-                              { dateStyle: "short" }
-                            )}
-                          </td>
-                          
-                          <td>{parseFloat(k.totaliPaTVSH).toFixed(2)}</td>
-                          <td>{parseFloat(k.tvsh).toFixed(2)}</td>
-                          <td>{parseFloat(k.rabati).toFixed(2)}</td>
-                          <td>{parseFloat(k.totaliPaTVSH + k.tvsh).toFixed(2)}</td>
-                          <td>{k.llojiPageses}</td>
-                          <td>
-                            {k.statusiKalkulimit === "true"
-                              ? "I Mbyllur"
-                              : "I Hapur"}
-                          </td>
-                          <td>
-                            <Button
-                              style={{ marginRight: "0.5em" }}
-                              variant="success"
-                              size="sm"
-                              onClick={() =>
-                                handleShfaqTeDhenat(k.idRegjistrimit)
-                              }
-                            >
-                              <FontAwesomeIcon icon={faCircleInfo} />
-                            </Button>
-                            <Button
-                              disabled={
-                                k.statusiKalkulimit === "true" ? true : false
-                              }
-                              style={{ marginRight: "0.5em" }}
-                              variant="warning"
-                              size="sm"
-                              onClick={() => {
-                                setIdKalkulimitEdit(k.idRegjistrimit);
-                                setNrRendorKalkulimit(k.idRegjistrimit);
-                                setRegjistroKalkulimin(true);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faPenToSquare} />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                  </MDBTableBody>
-                </MDBTable>
               </Container>
             </>
           )

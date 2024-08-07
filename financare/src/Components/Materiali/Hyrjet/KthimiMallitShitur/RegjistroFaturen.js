@@ -143,6 +143,8 @@ function RegjistroFaturen(props) {
       (item) => item.idProduktit === selectedOption.produktiId
     );
 
+    console.log(selectedOption)
+
     if (kontrolloProduktin.length > 0 && konfirmoProduktin === false) {
       setKonfirmoProduktin(true);
 
@@ -163,7 +165,7 @@ function RegjistroFaturen(props) {
       ]);
     } else {
       setProduktiID(
-        selectedOption?.produktiId ?? konifirmoProduktinLista[0].produktiID
+        selectedOption?.produktiID ?? konifirmoProduktinLista[0].produktiID
       );
       setEmriProduktit(
         selectedOption?.emriProduktit ??
@@ -181,7 +183,7 @@ function RegjistroFaturen(props) {
           konifirmoProduktinLista[0].qmimiBleresIVjeter
       );
       setNjesiaMatese(
-        selectedOption?.njesiaMatese1 ?? konifirmoProduktinLista[0].njesiaMatese
+        selectedOption?.emriNjesiaMatese ?? konifirmoProduktinLista[0].njesiaMatese
       );
       setQmimiSH2(
         selectedOption?.qmimiMeShumic ??
@@ -253,14 +255,15 @@ function RegjistroFaturen(props) {
               authentikimi
             )
             .then(async (r) => {
+              console.log(r);
               await axios.put(
                 `https://localhost:7285/api/Faturat/perditesoFaturen?idKalulimit=${props.nrRendorKalkulimit}`,
                 {
                   dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
-                  stafiId: r.data.regjistrimet.stafiId,
-                  totaliPaTvsh: parseFloat(r.data.totaliPaTVSH),
+                  stafiID: r.data.regjistrimet.stafiID,
+                  totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
                   tvsh: parseFloat(r.data.tvsH18 + r.data.tvsH8),
-                  idpartneri: r.data.regjistrimet.idpartneri,
+                  idPartneri: r.data.regjistrimet.idPartneri,
                   statusiPageses: r.data.statusiPageses,
                   llojiPageses: r.data.regjistrimet.llojiPageses,
                   llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,

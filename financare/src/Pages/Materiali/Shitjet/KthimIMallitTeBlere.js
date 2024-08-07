@@ -4,35 +4,18 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faXmark,
-  faPenToSquare,
-  faL,
-  faArrowRotateForward,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
-import { Table, Form, Container, Row, Col } from "react-bootstrap";
+import { Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "react-bootstrap";
-import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import RegjistroFaturen from "../../../Components/Materiali/Shitjet/KthimIMallitTeBlere//RegjistroFaturen";
 import PerditesoStatusinKalk from "../../../Components/Materiali/Shitjet/KthimIMallitTeBlere/PerditesoStatusinKalk";
 import TeDhenatKalkulimit from "../../../Components/Materiali/Shitjet/KthimIMallitTeBlere/TeDhenatKalkulimit";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateField } from "@mui/x-date-pickers/DateField";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import dayjs from "dayjs";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Select from "react-select";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -45,7 +28,6 @@ function KthimIMallitTeBlere(props) {
   const [nrRendorKalkulimit, setNrRendorKalkulimit] = useState(0);
   const [pershkrimShtese, setPershkrimShtese] = useState("");
   const [Partneri, setPartneri] = useState(0);
-  const [nrFatures, setNrFatures] = useState("");
   const today = new Date();
   const initialDate = today.toISOString().split("T")[0]; // Format as 'yyyy-MM-dd'
   const [dataEFatures, setDataEFatures] = useState(initialDate);
@@ -63,17 +45,8 @@ function KthimIMallitTeBlere(props) {
   const [idKalkulimitEdit, setIdKalkulimitEdit] = useState(0);
 
   const [edito, setEdito] = useState(false);
-  const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
-
-  const [dataFillestare, setDataFillestare] = useState();
-  const [dataFundit, setDataFundit] = useState();
-  const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(partneret);
-  const selectedIndex = useKeyboardNavigation(filteredItems);
 
   const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
 
@@ -106,7 +79,17 @@ function KthimIMallitTeBlere(props) {
         const kthimet = kalkulimi.data.filter(
           (item) => item.llojiKalkulimit === "KMB"
         );
-        setKalkulimet(kthimet);
+        setKalkulimet(
+          kthimet.map((k) => ({
+            ID: k.idRegjistrimit,
+            "Nr. Kthimit": k.nrRendorFatures,
+            Partneri: k.emriBiznesit,
+            "Pershkrimi Shtese": parseFloat(k.totaliPaTVSH).toFixed(2),
+            "Data e Fatures": new Date(k.dataRegjistrimit).toISOString(),
+            "Statusi Kalkulimit":
+              k.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur",
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -186,7 +169,7 @@ function KthimIMallitTeBlere(props) {
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
             dataRegjistrimit: dataEFatures,
-            stafiId: teDhenat.perdoruesi.userId,
+            stafiID: teDhenat.perdoruesi.userID,
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
             idpartneri: Partneri,
@@ -196,6 +179,7 @@ function KthimIMallitTeBlere(props) {
             llojiKalkulimit: "KMB",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
+            idBonusKartela: null,
           },
           authentikimi
         )
@@ -252,34 +236,32 @@ function KthimIMallitTeBlere(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleNdryshoPartneri(filteredItems[selectedIndex]);
-      }
-
-      ndrroField(e, "pershkrimShtese");
-    }
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
   };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = partneret.filter((item) =>
-      item.emriBiznesit.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setPartneri(partneri.value);
+    setOptionsSelected(partneri);
   };
-
-  function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idpartneri);
-
-    setFilteredItems([]);
-    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
-  }
 
   return (
     <>
@@ -349,35 +331,16 @@ function KthimIMallitTeBlere(props) {
                       </Form.Group>
                     </Form.Group>
                     <Form.Group controlId="idDheEmri">
-                      <Form.Label>Partneri</Form.Label>
-                      <Form.Control
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Zgjedhni Partnerin"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
+                      <Form.Label>Produkti</Form.Label>
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        isDisabled={edito}
+                        styles={customStyles}
                       />
-
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}
-                      >
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.idpartneri}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleNdryshoPartneri(item)}
-                            >
-                              {item.emriBiznesit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
                     </Form.Group>
                   </Col>
                   <Col>
@@ -416,167 +379,28 @@ function KthimIMallitTeBlere(props) {
                     <br />
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => handleRegjistroKalkulimin()}
-                    >
+                      onClick={() => handleRegjistroKalkulimin()}>
                       Regjistro <FontAwesomeIcon icon={faPlus} />
                     </Button>
                   </Col>
                 </Row>
-                <h1 className="title">Lista e Kthimeve</h1>
-                <Button className="mb-3 Butoni" onClick={() => setEdito(true)}>
-                  Ndrysho Statusin e Fatures{" "}
-                  <FontAwesomeIcon icon={faPenToSquare} />
-                </Button>
-                <div className="DataPerFiltrim">
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DateField", "DateField"]}>
-                        <DateField
-                          label="Data Fillestare"
-                          value={dataFillestare}
-                          onChange={(date) => setDataFillestare(date)}
-                          size="small"
-                          format="DD/MM/YYYY"
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </div>
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DateField", "DateField"]}>
-                        <DateField
-                          label="Data Fundit"
-                          value={dataFundit}
-                          onChange={(date) => setDataFundit(date)}
-                          size="small"
-                          format="DD/MM/YYYY"
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </div>
-                  <div>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth size="small">
-                        <InputLabel id="demo-simple-select-label">
-                          Statusi i Fatures
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={filtroStatusi}
-                          label="Statusi i Fatures"
-                          onChange={(e) => {
-                            setFiltroStatusi(e.target.value);
-                          }}
-                        >
-                          <MenuItem
-                            defaultValue
-                            value="Te Gjitha"
-                            key="Te Gjitha"
-                          >
-                            Te Gjitha
-                          </MenuItem>
-                          <MenuItem key="false" value="false">
-                            Te Hapur
-                          </MenuItem>
-                          <MenuItem key="true" value="true">
-                            Te Mbyllur
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-                  </div>
-                  <div className="datat">
-                    <Button
-                      style={{ marginRight: "0.5em" }}
-                      variant="success"
-                      onClick={() => {
-                        setDataFillestare(null);
-                        setDataFundit(null);
-                        setFiltroStatusi("Te Gjitha");
-                      }}
-                    >
-                      Reseto <FontAwesomeIcon icon={faArrowRotateForward} />
-                    </Button>
-                  </div>
+                <div className="mt-2">
+                  <Tabela
+                    data={kalkulimet}
+                    tableName="Lista e Kthimeve"
+                    kaButona={true}
+                    funksionShfaqFature={(e) => handleShfaqTeDhenat(e)}
+                    funksionNdryshoStatusinEFatures={() => setEdito(true)}
+                    funksionButonEdit={(e) => {
+                      setIdKalkulimitEdit(e);
+                      setNrRendorKalkulimit(e);
+                      setRegjistroKalkulimin(true);
+                    }}
+                    dateField="Data e Fatures" // The field in your data that contains the date values
+                    kontrolloStatusin
+                    mosShfaqID={true}
+                  />
                 </div>
-                <MDBTable style={{ width: "100%" }}>
-                  <MDBTableHead>
-                    <tr>
-                      <th scope="col">Nr. Kthimit</th>
-                      <th scope="col">Pershkrimi Shtese</th>
-                      <th scope="col">Data e Fatures</th>
-                      <th scope="col">Statusi Kalkulimit</th>
-                      <th scope="col">Funksione</th>
-                    </tr>
-                  </MDBTableHead>
-
-                  <MDBTableBody>
-                    {kalkulimet
-                      .filter((p) => {
-                        if (!dataFillestare || !dataFundit) {
-                          return true;
-                        } else {
-                          const dataPorosise = new Date(p.dataRegjistrimit);
-                          return (
-                            dataPorosise >= dataFillestare &&
-                            dataPorosise <= dataFundit
-                          );
-                        }
-                      })
-                      .filter((p) => {
-                        if (filtroStatusi === "Te Gjitha") {
-                          return true;
-                        } else {
-                          return p.statusiKalkulimit === filtroStatusi;
-                        }
-                      })
-                      .map((k) => (
-                        <tr key={k.idRegjistrimit}>
-                          <td>{k.nrRendorFatures}</td>
-                          <td>{k.pershkrimShtese}</td>
-                          <td>
-                            {new Date(k.dataRegjistrimit).toLocaleDateString(
-                              "en-GB",
-                              { dateStyle: "short" }
-                            )}
-                          </td>
-                          <td>
-                            {k.statusiKalkulimit === "true"
-                              ? "I Mbyllur"
-                              : "I Hapur"}
-                          </td>
-                          <td>
-                            <Button
-                              style={{ marginRight: "0.5em" }}
-                              variant="success"
-                              size="sm"
-                              onClick={() =>
-                                handleShfaqTeDhenat(k.idRegjistrimit)
-                              }
-                            >
-                              <FontAwesomeIcon icon={faCircleInfo} />
-                            </Button>
-                            <Button
-                              disabled={
-                                k.statusiKalkulimit === "true" ? true : false
-                              }
-                              style={{ marginRight: "0.5em" }}
-                              variant="warning"
-                              size="sm"
-                              onClick={() => {
-                                setIdKalkulimitEdit(k.idRegjistrimit);
-                                setNrRendorKalkulimit(k.idRegjistrimit);
-                                setRegjistroKalkulimin(true);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faPenToSquare} />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                  </MDBTableBody>
-                </MDBTable>
               </Container>
             </>
           )

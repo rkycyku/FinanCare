@@ -28,6 +28,8 @@ function Fatura(props) {
 
   const [kaAkses, setKaAkses] = useState(true);
 
+  let barkodi = ""
+
   const dataPorosise = new Date(
     teDhenatFat &&
       teDhenatFat.regjistrimet &&
@@ -37,15 +39,28 @@ function Fatura(props) {
   const muaji = (dataPorosise.getMonth() + 1).toString().padStart(2, "0");
   const viti = dataPorosise.getFullYear().toString().slice(-2);
 
-  const barkodi = `${
+  barkodi = `${
     teDhenatBiznesit && teDhenatBiznesit.shkurtesaEmritBiznesit
   }-${dita}${muaji}${viti}-${
     teDhenatFat &&
     teDhenatFat.regjistrimet &&
     teDhenatFat.regjistrimet.llojiKalkulimit
-  }-${teDhenatFat &&
+  }-${
+    teDhenatFat &&
     teDhenatFat.regjistrimet &&
-    teDhenatFat.regjistrimet.nrRendorFatures}`;
+    teDhenatFat.regjistrimet.nrRendorFatures
+  }`;
+
+  if (
+    teDhenatFat &&
+    teDhenatFat.regjistrimet &&
+    teDhenatFat.regjistrimet.llojiKalkulimit &&
+    teDhenatFat.regjistrimet.llojiKalkulimit == "PARAGON"
+  ) {
+    barkodi = teDhenatFat &&
+    teDhenatFat.regjistrimet &&
+    teDhenatFat.regjistrimet.nrFatures
+  }
 
   const getID = localStorage.getItem("id");
 
@@ -207,7 +222,7 @@ function Fatura(props) {
           }
         }
 
-        if(!meShumeSe15){
+        if (!meShumeSe15) {
           ruajFaturen(pdf);
         }
 

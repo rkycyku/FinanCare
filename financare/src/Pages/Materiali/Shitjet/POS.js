@@ -11,6 +11,7 @@ import {
   faXmark,
   faPenToSquare,
   faArrowLeft,
+  faDolly,
 } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Form, Container, Row, Col, InputGroup } from "react-bootstrap";
@@ -35,6 +36,12 @@ function POS(props) {
   const [kartelaBleresit, setKartelaBleresit] = useState(null);
   const [teDhenatKartelaBleresit, setTeDhenatKartelaBleresit] = useState(null);
 
+  const [vendosKartelenFshirjeProduktit, setVendosKartelenFshirjeProduktit] =
+    useState(false);
+  const [kartelaFshirjes, setKartelaFshirjes] = useState(null);
+  const [teDhenatKartelaFshirjes, setTeDhenatKartelaFshirjes] = useState(null);
+  const [fshijProdKalkID, setFshijProduktKalkID] = useState(0);
+
   const [rabati1, setRabati1] = useState(0);
   const [rabati2, setRabati2] = useState(0);
 
@@ -51,6 +58,7 @@ function POS(props) {
   const [qmimiPaRabatBonus, setQmimiPaRabatBonus] = useState(0);
   const [totaliTVSH, setTotaliTVSH] = useState(0);
   const [kalkEditID, setKalkEditID] = useState(0);
+  const [IDProduktiFunditShtuar, setIDProduktiFunditShtuar] = useState(null);
 
   const [perditesoFat, setPerditesoFat] = useState("");
 
@@ -123,6 +131,21 @@ function POS(props) {
 
         setproduktetNeKalkulim(teDhenatKalkulimit.data);
         setIDPartneri(teDhenatFatures.data.regjistrimet.idPartneri);
+
+        if (teDhenatFatures.data.regjistrimet.bonusKartela != null) {
+          setKartelaBleresit(teDhenatFatures.data.regjistrimet.idBonusKartela);
+          setTeDhenatKartelaBleresit(
+            teDhenatFatures.data.regjistrimet.bonusKartela
+          );
+        } else {
+          setKartelaBleresit(null);
+          setTeDhenatKartelaBleresit(null);
+        }
+
+        if (teDhenatKalkulimit.data && teDhenatKalkulimit.data.length > 0) {
+          setIDProduktiFunditShtuar(teDhenatKalkulimit.data[0].id);
+        }
+
         console.log(teDhenatFatures.data);
         console.log(teDhenatKalkulimit.data);
       } catch (err) {
@@ -194,6 +217,7 @@ function POS(props) {
             pershkrimShtese: response.data.regjistrimet.pershkrimShtese,
             rabati: parseFloat(response.data.rabati),
             nrRendorFatures: response.data.regjistrimet.nrRendorFatures,
+            idBonusKartela: response.data.regjistrimet.idBonusKartela,
           },
           authentikimi
         );
@@ -212,15 +236,6 @@ function POS(props) {
     }
   };
 
-  async function handleFshij(id) {
-    await axios.delete(
-      `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${id}`,
-      authentikimi
-    );
-
-    setPerditesoFat(Date.now());
-  }
-
   async function handleEdit(id, index) {
     await axios
       .get(
@@ -229,12 +244,13 @@ function POS(props) {
       )
       .then((p) => {
         console.log(p.data[0]);
+        console.log(id);
 
         setEdito(true);
         setproduktiID(p.data[0].idProduktit);
         setSasia(p.data[0].sasiaStokut);
         setSasiaShumices(p.data[0].sasiaShumices);
-        setQmimiSH(p.data[0].qmimiShites);
+        setQmimiSH(p.data[0].qmimiProduktit);
         setQmimiSH2(p.data[0].qmimiShitesMeShumic);
         setRabati1(p.data[0].rabati1);
         setRabati2(p.data[0].rabati2);
@@ -257,7 +273,7 @@ function POS(props) {
         {
           sasiaStokut: sasia,
           qmimiShites: qmimiSH,
-          qmimiShitesMeShumic: qmimiSH,
+          qmimiShitesMeShumic: qmimiSH2,
           rabati1: rabati1,
           rabati2: rabati2,
         },
@@ -366,19 +382,23 @@ function POS(props) {
     setOptionsBarkodiSelected(barkodi);
     console.log("Selected option:", barkodi);
 
-    await axios.post(
-      "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
-      {
-        idRegjistrimit: idRegjistrimit,
-        idProduktit: barkodi.value,
-        sasiaStokut: 1,
-        qmimiShites: barkodi.qmimiProduktit,
-        qmimiShitesMeShumic: barkodi.qmimiMeShumic,
-        rabati1: barkodi.rabati,
-        rabati2: rabati2,
-      },
-      authentikimi
-    );
+    await axios
+      .post(
+        "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
+        {
+          idRegjistrimit: idRegjistrimit,
+          idProduktit: barkodi.value,
+          sasiaStokut: 1,
+          qmimiShites: barkodi.qmimiProduktit,
+          qmimiShitesMeShumic: barkodi.qmimiMeShumic,
+          rabati1: barkodi.rabati,
+          rabati2: rabati2,
+        },
+        authentikimi
+      )
+      .then((r) => {
+        setIDProduktiFunditShtuar(r.data.id);
+      });
 
     setproduktiID(0);
     setSasia("");
@@ -393,19 +413,38 @@ function POS(props) {
   };
 
   const handleKaloTekPagesa = (event) => {
+    event.preventDefault();
     if (event.key === "Escape") {
       document.getElementById("shumaPageses").focus();
+    }
+    if (event.key === "F1") {
+      if (IDProduktiFunditShtuar != null) {
+        handleEdit(IDProduktiFunditShtuar);
+      }
     }
   };
 
   const handleMenaxhoTastetPagesa = (event) => {
+    event.preventDefault();
     if (event.key === "F4") {
-      event.preventDefault();
       setVendosKartelenBleresit(true);
     }
     if (event.key === "F5") {
-      event.preventDefault();
       mbyllFature();
+    }
+  };
+
+  const handleMenaxhoTastetKartelaZbritjes = (event) => {
+    event.preventDefault();
+    if (event.key === "Enter") {
+      VendosKartelenBleresit();
+    }
+  };
+
+  const handleMenaxhoTastetKartelaFshirjes = (event) => {
+    event.preventDefault();
+    if (event.key === "Enter") {
+      VendosKartelenFshirjesProduktit();
     }
   };
 
@@ -441,6 +480,7 @@ function POS(props) {
                 pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
                 rabati: parseFloat(r.data.rabati),
                 nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
+                idBonusKartela: r.data.regjistrimet.idBonusKartela,
               },
               authentikimi
             )
@@ -466,6 +506,7 @@ function POS(props) {
         setOptionsProduktiSelected(null);
         setIDPartneri(1);
         setTeDhenatKartelaBleresit(null);
+        setIDProduktiFunditShtuar(null);
       });
   };
 
@@ -518,6 +559,7 @@ function POS(props) {
             pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
             rabati: parseFloat(r.data.rabati),
             nrRendorFatures: r.data.regjistrimet.nrRendorFatures,
+            idBonusKartela: kaKartele.data.idKartela,
           },
           authentikimi
         );
@@ -540,6 +582,44 @@ function POS(props) {
         setKartelaBleresit(null);
         setVendosKartelenBleresit(false);
         setPerditesoFat(Date.now());
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        document.getElementById("barkodiSelect-input").focus();
+        setVendosKartelenBleresit(false);
+        setTipiMesazhit("danger");
+        setPershkrimiMesazhit("Kartela nuk egziston!");
+        setShfaqMesazhin(true);
+      }
+    }
+  }
+
+  async function VendosKartelenFshirjesProduktit() {
+    try {
+      const kaKartele = await axios.get(
+        `https://localhost:7285/api/Kartelat/shfaqKartelenSipasKodit?kodiKarteles=${kartelaFshirjes}`,
+        authentikimi
+      );
+
+      if (kaKartele != null) {
+        if (kaKartele.data.llojiKarteles == "Fshirje") {
+          await axios.delete(
+            `https://localhost:7285/api/Faturat/ruajKalkulimin/FshijTeDhenat?idTeDhenat=${fshijProdKalkID}`,
+            authentikimi
+          );
+
+          document.getElementById("barkodiSelect-input").focus();
+          setVendosKartelenFshirjeProduktit(false);
+          setKartelaFshirjes(null);
+          setPerditesoFat(Date.now());
+        } else {
+          document.getElementById("barkodiSelect-input").focus();
+          setVendosKartelenFshirjeProduktit(false);
+          setKartelaFshirjes(null);
+          setTipiMesazhit("danger");
+          setPershkrimiMesazhit("Kartela nuk eshte valide per kete funksion!");
+          setShfaqMesazhin(true);
+        }
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -582,6 +662,7 @@ function POS(props) {
                   value={kartelaBleresit}
                   onChange={(e) => setKartelaBleresit(e.target.value)}
                   placeholder="Shkruani kartelen bleresit"
+                  onKeyDown={handleMenaxhoTastetKartelaZbritjes}
                   autoFocus
                 />
               </Form.Group>
@@ -593,6 +674,41 @@ function POS(props) {
                 Anulo <FontAwesomeIcon icon={faPenToSquare} />
               </Button>
               <Button variant="warning" onClick={VendosKartelenBleresit}>
+                Vendos Kartelen <FontAwesomeIcon icon={faPlus} />
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
+        {vendosKartelenFshirjeProduktit && (
+          <Modal
+            show={vendosKartelenFshirjeProduktit}
+            onHide={() => setVendosKartelenFshirjeProduktit(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title as="h6">Vendosni Kartelen</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group>
+                <Form.Label>Nr. Karteles</Form.Label>
+                <Form.Control
+                  id="nrKarteles"
+                  type="text"
+                  value={kartelaBleresit}
+                  onChange={(e) => setKartelaFshirjes(e.target.value)}
+                  placeholder="Shkruani kartelen per fshirjen e produktit"
+                  autoFocus
+                  onKeyDown={handleMenaxhoTastetKartelaFshirjes}
+                />
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setVendosKartelenFshirjeProduktit(false)}>
+                Anulo <FontAwesomeIcon icon={faPenToSquare} />
+              </Button>
+              <Button
+                variant="warning"
+                onClick={VendosKartelenFshirjesProduktit}>
                 Vendos Kartelen <FontAwesomeIcon icon={faPlus} />
               </Button>
             </Modal.Footer>
@@ -628,7 +744,7 @@ function POS(props) {
                       disabled
                     />
                   </Form.Group>
-                  <Form.Group className="mt-1" >
+                  <Form.Group className="mt-1">
                     <Form.Label>Data</Form.Label>
                     <Form.Control
                       id="qmimiShites"
@@ -753,7 +869,7 @@ function POS(props) {
                     />
                   </Form.Group>
                 </Col>
-                <Col md={3}>
+                <Col md={2}>
                   <Form.Group>
                     <Form.Label>Sasia - {njesiaMatese}</Form.Label>
                     <Form.Control
@@ -771,7 +887,7 @@ function POS(props) {
                     />
                   </Form.Group>
                 </Col>
-                <Col md={3}>
+                <Col md={2}>
                   <Form.Group>
                     <Form.Label>Qmimi Shites €</Form.Label>
                     <Form.Control
@@ -782,6 +898,13 @@ function POS(props) {
                       disabled
                     />
                   </Form.Group>
+                </Col>
+                <Col md={2}>
+                  <Button
+                    className="mt-4 Butoni"
+                    onClick={() => navigate("/KthimiMallitTeShitur")}>
+                    Kthimet <FontAwesomeIcon icon={faDolly} />
+                  </Button>
                 </Col>
               </Row>
               <h1 className="mt-2">Regjistrimi Pozicioneve te Paragonit</h1>
@@ -853,7 +976,10 @@ function POS(props) {
                                     size="sm"
                                     variant="danger"
                                     disabled={edito}
-                                    onClick={() => handleFshij(p.id)}>
+                                    onClick={() => {
+                                      setVendosKartelenFshirjeProduktit(true);
+                                      setFshijProduktKalkID(p.id);
+                                    }}>
                                     <FontAwesomeIcon icon={faXmark} />
                                   </Button>
                                   <Button
@@ -896,8 +1022,8 @@ function POS(props) {
                   fontSize: "0.8em",
                 }}>
                 <p>
-                  Me ESC kalohet tek Pagesa. F5 Mbyllet Fatura. F4 Bonus
-                  Kartela.
+                  Me ESC kalohet tek Pagesa. F1 Editohet produkti i fundit. F4
+                  Bonus Kartela. F5 Mbyllet Fatura.
                 </p>
               </footer>
             </Container>

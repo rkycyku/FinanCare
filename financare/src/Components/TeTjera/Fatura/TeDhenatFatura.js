@@ -116,9 +116,9 @@ function TeDhenatFatura(props) {
                       (produkti.qmimiShites * produkti.llojiTVSH) / 100
                   ).toFixed(4)}
                 </td>
-                <td>{parseFloat(produkti.rabati1).toFixed(2)}</td>
-                <td>{parseFloat(produkti.rabati2).toFixed(2)}</td>
-                <td>{parseFloat(produkti.rabati3).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati1 ?? 0).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati2 ?? 0).toFixed(2)}</td>
+                <td>{parseFloat(produkti.rabati3 ?? 0).toFixed(2)}</td>
                 <td>{produkti.llojiTVSH}</td>
                 <td>
                   {parseFloat(
