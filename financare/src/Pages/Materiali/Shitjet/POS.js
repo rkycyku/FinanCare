@@ -66,8 +66,6 @@ function POS(props) {
 
   const [optionsBarkodi, setOptionsBarkodi] = useState([]);
   const [optionsBarkodiSelected, setOptionsBarkodiSelected] = useState(null);
-  const [optionsProdukti, setOptionsProdukti] = useState([]);
-  const [optionsProduktiSelected, setOptionsProduktiSelected] = useState(null);
 
   const navigate = useNavigate();
 
@@ -325,18 +323,6 @@ function POS(props) {
     );
     setOptionsBarkodiSelected(initialOptionsBarkodiSelected);
 
-    console.log(optionsBarkodiSelected);
-
-    const initialOptionsProduktiSelected = optionsProdukti.find(
-      (option) => option.value === produktiID
-    );
-
-    setOptionsProduktiSelected(initialOptionsProduktiSelected);
-
-    console.log(
-      optionsProdukti.find((option) => option.value === optionsBarkodiSelected)
-    );
-
     document.getElementById("sasia").focus();
   }, [edito, produktiID]);
 
@@ -348,21 +334,10 @@ function POS(props) {
         // Assuming the response data is an array of objects with `value` and `label` properties
         const fetchedOptionsBarkodi = response.data.map((item) => ({
           value: item.produktiID,
-          label: item.barkodi,
-          qmimiProduktit: item.qmimiProduktit,
-          qmimiMeShumic: item.qmimiMeShumic,
-          rabati: item.rabati,
-          sasiaNeStok: item.sasiaNeStok,
-          emriNjesiaMatese: item.emriNjesiaMatese,
-        }));
-        setOptionsBarkodi(fetchedOptionsBarkodi);
-
-        const fetchedOptionsProdukti = response.data.map((item) => ({
-          value: item.produktiID,
           label:
-            item.emriProduktit +
-            " - " +
             item.barkodi +
+            " - " +
+            item.emriProduktit +
             " - " +
             item.kodiProduktit,
           qmimiProduktit: item.qmimiProduktit,
@@ -371,7 +346,7 @@ function POS(props) {
           sasiaNeStok: item.sasiaNeStok,
           emriNjesiaMatese: item.emriNjesiaMatese,
         }));
-        setOptionsProdukti(fetchedOptionsProdukti);
+        setOptionsBarkodi(fetchedOptionsBarkodi);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -408,7 +383,6 @@ function POS(props) {
     setQmimiSH(0);
     setQmimiSH2(0);
     setOptionsBarkodiSelected(null);
-    setOptionsProduktiSelected(null);
     setPerditesoFat(Date.now());
   };
 
@@ -435,15 +409,17 @@ function POS(props) {
   };
 
   const handleMenaxhoTastetKartelaZbritjes = (event) => {
-    event.preventDefault();
     if (event.key === "Enter") {
+      
+    event.preventDefault();
       VendosKartelenBleresit();
     }
   };
 
   const handleMenaxhoTastetKartelaFshirjes = (event) => {
-    event.preventDefault();
     if (event.key === "Enter") {
+      
+    event.preventDefault();
       VendosKartelenFshirjesProduktit();
     }
   };
@@ -503,7 +479,6 @@ function POS(props) {
         setShumaPageses(0);
         setLlojiPageses("Cash");
         setOptionsBarkodiSelected(null);
-        setOptionsProduktiSelected(null);
         setIDPartneri(1);
         setTeDhenatKartelaBleresit(null);
         setIDProduktiFunditShtuar(null);
@@ -692,7 +667,7 @@ function POS(props) {
                 <Form.Control
                   id="nrKarteles"
                   type="text"
-                  value={kartelaBleresit}
+                  value={kartelaFshirjes}
                   onChange={(e) => setKartelaFshirjes(e.target.value)}
                   placeholder="Shkruani kartelen per fshirjen e produktit"
                   autoFocus
@@ -840,7 +815,7 @@ function POS(props) {
                 </Col>
               </Row>
               <Row>
-                <Col md={3}>
+                <Col md={4}>
                   <Form.Group controlId="idDheEmri">
                     <Form.Label>Barkodi</Form.Label>
                     <Select
@@ -856,20 +831,6 @@ function POS(props) {
                   </Form.Group>
                 </Col>
                 <Col md={3}>
-                  <Form.Group controlId="idDheEmri">
-                    <Form.Label>Produkti</Form.Label>
-                    <Select
-                      value={optionsProduktiSelected}
-                      onChange={handleChange}
-                      options={optionsProdukti}
-                      id="produktiSelect" // Setting the id attribute
-                      inputId="produktiSelect-input" // Setting the input id attribute
-                      isDisabled={edito}
-                      styles={customStyles}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={2}>
                   <Form.Group>
                     <Form.Label>Sasia - {njesiaMatese}</Form.Label>
                     <Form.Control
@@ -887,7 +848,7 @@ function POS(props) {
                     />
                   </Form.Group>
                 </Col>
-                <Col md={2}>
+                <Col md={3}>
                   <Form.Group>
                     <Form.Label>Qmimi Shites €</Form.Label>
                     <Form.Control

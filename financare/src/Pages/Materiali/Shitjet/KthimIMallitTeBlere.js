@@ -163,7 +163,6 @@ function KthimIMallitTeBlere(props) {
 
   async function handleRegjistroKalkulimin() {
     try {
-      console.log(nrRendorKalkulimit);
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin",

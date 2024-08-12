@@ -177,6 +177,7 @@ function FaturoOferten(props) {
         nrRendorFatures: nrRendorKalkulimitFat + 1,
         statusiKalkulimit: "true",
         llojiKalkulimit: "FAT",
+        idBonusKartela: null,
       },
       authentikimi
     );
@@ -306,6 +307,7 @@ function FaturoOferten(props) {
           nrRendorFatures: nrRendorKalkulimit + 1,
           statusiPageses: "Pa Paguar",
           statusiKalkulimit: "true",
+          idBonusKartela: null,
         },
         authentikimi
       )
@@ -384,6 +386,7 @@ function FaturoOferten(props) {
             pershkrimShtese: kalkulimet.data.regjistrimet.pershkrimShtese,
             rabati: parseFloat(kalkulimet.data.rabati),
             nrRendorFatures: kalkulimet.data.regjistrimet.nrRendorFatures,
+            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela
           },
           authentikimi
         );
@@ -411,6 +414,7 @@ function FaturoOferten(props) {
             totaliPaTVSH: parseFloat(-totalPaTVSH),
             tvsh: parseFloat(-totalTVSH),
             rabati: parseFloat(-totalRabati),
+            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela
           },
           authentikimi
         );

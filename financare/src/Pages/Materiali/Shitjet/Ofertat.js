@@ -201,6 +201,7 @@ function KthimIMallitTeBlere(props) {
             llojiKalkulimit: "OFERTE",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
+            idBonusKartela: null,
           },
           authentikimi
         )

@@ -213,7 +213,8 @@ function RegjistroFaturen(props) {
           qmimiBleres: -qmimiBleres,
           qmimiShites: optionsSelected?.item?.qmimiProduktit,
           qmimiShitesMeShumic: optionsSelected?.item?.qmimiMeShumic,
-          rabati3: rabati,
+          rabati1: optionsSelected?.item?.rabati1 ?? 0,
+          rabati3: rabati?? 0,
         },
         authentikimi
       );
@@ -237,9 +238,10 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          console.log(produkti);
+          var prod = produktet.find((item) => item.emriProduktit == produkti["Emri Produktit"]);
+          
           await axios.put(
-            `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
+            `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
               sasiaNeStok: produkti.sasiaStokut,
             },
@@ -284,6 +286,8 @@ function RegjistroFaturen(props) {
       .then((p) => {
         setPerditeso(Date.now);
 
+        console.log(p.data);
+
         setOptionsSelected(
           options.filter((item) => item.value == p.data[0].idProduktit)
         );
@@ -317,7 +321,7 @@ function RegjistroFaturen(props) {
           qmimiShitesMeShumic: optionsSelected
             .map((option) => option.item.qmimiMeShumic)
             .join(", "),
-          rabati3: rabati,
+          rabati3: rabati ?? 0,
         },
         authentikimi
       );
@@ -440,7 +444,7 @@ function RegjistroFaturen(props) {
                         ? optionsSelected
                             .map((option) => option.item.emriNjesiaMatese)
                             .join(", ")
-                        : optionsSelected?.item?.emriNjesiaMatese}
+                        : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
                     </Form.Label>
                     <Form.Control
                       id="sasia"
@@ -505,12 +509,12 @@ function RegjistroFaturen(props) {
                     ? optionsSelected
                         .map((option) => option.item.sasiaNeStok)
                         .join(", ")
-                    : optionsSelected?.item?.sasiaNeStok}{" "}
+                    : optionsSelected?.item?.sasiaNeStok ?? 0}{" "}
                   {Array.isArray(optionsSelected)
                     ? optionsSelected
                         .map((option) => option.item.emriNjesiaMatese)
                         .join(", ")
-                    : optionsSelected?.item?.emriNjesiaMatese}
+                    : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
                 </p>
                 <p>
                   <strong>Qmimi Bleres me Shumic + TVSH:</strong>{" "}
@@ -519,7 +523,7 @@ function RegjistroFaturen(props) {
                       ? optionsSelected
                           .map((option) => option.item.qmimiBleres)
                           .join(", ")
-                      : optionsSelected?.item?.qmimiBleres
+                      : optionsSelected?.item?.qmimiBleres ?? 0
                   ).toFixed(2)}{" "}
                   €
                 </p>
@@ -530,7 +534,7 @@ function RegjistroFaturen(props) {
                       ? optionsSelected
                           .map((option) => option.item.qmimiProduktit)
                           .join(", ")
-                      : optionsSelected?.item?.qmimiProduktit
+                      : optionsSelected?.item?.qmimiProduktit ?? 0
                   ).toFixed(2)}{" "}
                   €
                 </p>
@@ -541,7 +545,7 @@ function RegjistroFaturen(props) {
                       ? optionsSelected
                           .map((option) => option.item.qmimiMeShumic)
                           .join(", ")
-                      : optionsSelected?.item?.qmimiMeShumic
+                      : optionsSelected?.item?.qmimiMeShumic ?? 0
                   ).toFixed(2)}{" "}
                   €
                 </p>
@@ -601,6 +605,7 @@ function RegjistroFaturen(props) {
                   setIdTeDhenatKalk(e);
                 }}
                 mosShfaqKerkimin
+                mosShfaqID={true}
               />
             </div>
           </Container>

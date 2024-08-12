@@ -199,6 +199,7 @@ function KalkulimiIMallit(props) {
             llojiKalkulimit: "AS",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
+            idBonusKartela: null,
           },
           authentikimi
         )
