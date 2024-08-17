@@ -21,6 +21,7 @@ import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Select from "react-select";
 
 function KartelaFinanciare(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -33,10 +34,6 @@ function KartelaFinanciare(props) {
   const [produktet, setProduktet] = useState([]);
 
   const [teDhenat, setTeDhenat] = useState([]);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(produktet);
-  const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
 
   const navigate = useNavigate();
 
@@ -105,45 +102,31 @@ function KartelaFinanciare(props) {
     kartelaEProduktit();
   }, [perditeso, produktiID]);
 
-  const handleProduktiChange = async (selectedOption) => {
-    setproduktiID(selectedOption?.idPartneri ?? 0);
-
-    setFilteredItems([]);
-    setInputValue(
-      `${selectedOption?.emriBiznesit ? selectedOption.emriBiznesit : ""}`
-    );
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
   };
-
-  const ndrroField = (e, tjetra) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById(tjetra).focus();
-    }
-  };
-
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleProduktiChange(filteredItems[selectedIndex]);
-      }
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = produktet.filter(
-      (item) =>
-        item.emriBiznesit.toLowerCase().includes(value) ||
-        item.nui.toLowerCase().includes(value) ||
-        item.nrf.toLowerCase().includes(value) ||
-        item.tvsh.toLowerCase().includes(value) ||
-        item.email.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneret")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setproduktiID(partneri.value);
+    setOptionsSelected(partneri);
   };
 
   function FaturaPerRuajtje() {
@@ -248,35 +231,16 @@ function KartelaFinanciare(props) {
                 <Col>
                   <h3>Te dhenat e Partnerit</h3>
                   <Form>
-                    <Form.Group controlId="idDheEmri">
+                  <Form.Group controlId="idDheEmri">
                       <Form.Label>Partneri</Form.Label>
-                      <Form.Control
-                        id={produktiID}
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Search"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        styles={customStyles}
                       />
-
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}>
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.idPartneri}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleProduktiChange(item)}>
-                              {item.emriBiznesit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
                     </Form.Group>
                   </Form>
                   <br />

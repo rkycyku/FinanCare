@@ -183,8 +183,8 @@ function RegjistroFaturen(props) {
                 idPartneri: r.data.regjistrimet.idPartneri,
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
                 stafiID: r.data.regjistrimet.stafiID,
-                totaliPaTVSH: parseFloat(r.data.regjistrimet.totaliPaTVSH),
-                tvsh: parseFloat(r.data.regjistrimet.tvsh),
+                totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
+                tvsh: parseFloat(r.data.totaliMeTVSH - r.data.totaliPaTVSH),
                 statusiPageses: r.data.statusiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
                 nrFatures: r.data.regjistrimet.nrFatures,
@@ -487,20 +487,51 @@ function RegjistroFaturen(props) {
                 </Form>
               </Col>
               <Col>
+              <p>
+                  <strong>Sasia aktuale ne Stok:</strong>{" "}
+                  {Array.isArray(optionsSelected)
+                    ? optionsSelected
+                        .map((option) => option.item.sasiaNeStok)
+                        .join(", ")
+                    : optionsSelected?.item?.sasiaNeStok ?? 0}{" "}
+                  {Array.isArray(optionsSelected)
+                    ? optionsSelected
+                        .map((option) => option.item.emriNjesiaMatese)
+                        .join(", ")
+                    : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
+                </p>
                 <p>
-                  <strong>Sasia aktuale ne Stok:</strong> {sasiaNeStok}{" "}
-                  {njesiaMatese}
+                  <strong>Qmimi Bleres me Shumic + TVSH:</strong>{" "}
+                  {parseFloat(
+                    Array.isArray(optionsSelected)
+                      ? optionsSelected
+                          .map((option) => option.item.qmimiBleres)
+                          .join(", ")
+                      : optionsSelected?.item?.qmimiBleres ?? 0
+                  ).toFixed(2)}{" "}
+                  €
                 </p>
                 <p>
                   <strong>Qmimi Shites me Pakic + TVSH:</strong>{" "}
-                  {parseFloat(qmimiSH).toFixed(2)} €
-                </p>
-                <p>
-                  <strong>Sasia e Shumice :</strong> {sasiaShumices}
+                  {parseFloat(
+                    Array.isArray(optionsSelected)
+                      ? optionsSelected
+                          .map((option) => option.item.qmimiProduktit)
+                          .join(", ")
+                      : optionsSelected?.item?.qmimiProduktit ?? 0
+                  ).toFixed(2)}{" "}
+                  €
                 </p>
                 <p>
                   <strong>Qmimi Shites me Shumic + TVSH:</strong>{" "}
-                  {parseFloat(qmimiSH2).toFixed(2)} €
+                  {parseFloat(
+                    Array.isArray(optionsSelected)
+                      ? optionsSelected
+                          .map((option) => option.item.qmimiMeShumic)
+                          .join(", ")
+                      : optionsSelected?.item?.qmimiMeShumic ?? 0
+                  ).toFixed(2)}{" "}
+                  €
                 </p>
               </Col>
               <Col>

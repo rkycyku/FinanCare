@@ -30,9 +30,9 @@ import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Select from "react-select";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -62,17 +62,8 @@ function KalkulimiIMallit(props) {
   const [idKalkulimitEdit, setIdKalkulimitEdit] = useState(0);
 
   const [edito, setEdito] = useState(false);
-  const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
-
-  const [dataFillestare, setDataFillestare] = useState(null);
-  const [dataFundit, setDataFundit] = useState(null);
-  const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(partneret);
-  const selectedIndex = useKeyboardNavigation(filteredItems);
 
   const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
 
@@ -217,7 +208,6 @@ function KalkulimiIMallit(props) {
             setPerditeso(Date.now());
             setIdKalkulimitEdit(response.data.idRegjistrimit);
             setRegjistroKalkulimin(true);
-            setInputValue("");
             setNrFatures("");
             setDataEFatures(initialDate);
             setLlojiIPageses("Cash");
@@ -272,34 +262,32 @@ function KalkulimiIMallit(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleNdryshoPartneri(filteredItems[selectedIndex]);
-      }
-
-      ndrroField(e, "pershkrimShtese");
-    }
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
   };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = partneret.filter((item) =>
-      item.emriBiznesit.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setPartneri(partneri.value);
+    setOptionsSelected(partneri);
   };
-
-  function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idPartneri);
-
-    setFilteredItems([]);
-    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
-  }
 
   return (
     <>
@@ -357,44 +345,27 @@ function KalkulimiIMallit(props) {
                   <Col>
                     <Form>
                       <Form.Group controlId="idDheEmri">
-                        <Form.Group>
-                          <Form.Label>Nr. Rendor i Kalkulimit</Form.Label>
-                          <Form.Control
-                            id="nrRendorKalkulimit"
-                            type="number"
-                            value={
-                              nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
-                            }
-                            disabled
-                          />
-                        </Form.Group>
-                        <Form.Label>Partneri</Form.Label>
+                        <Form.Label>Nr. Rendor i Kalkulimit</Form.Label>
                         <Form.Control
-                          type="text"
-                          className="form-control styled-input"
-                          placeholder="Zgjedhni Partnerin"
-                          value={inputValue}
-                          onChange={handleInputChange}
-                          onKeyDown={handleInputKeyDown}
-                          onFocus={handleInputChange}
+                          id="nrRendorKalkulimit"
+                          type="number"
+                          value={
+                            nrRendorKalkulimit ? nrRendorKalkulimit + 1 : 1
+                          }
+                          disabled
                         />
-
-                        <div
-                          className="container"
-                          style={{ position: "relative" }}>
-                          <ul className="list-group mt-2 searchBoxi">
-                            {filteredItems.map((item, index) => (
-                              <li
-                                key={item.idPartneri}
-                                className={`list-group-item${
-                                  selectedIndex === index ? " active" : ""
-                                }`}
-                                onClick={() => handleNdryshoPartneri(item)}>
-                                {item.emriBiznesit}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                      </Form.Group>
+                      <Form.Group controlId="idDheEmri">
+                        <Form.Label>Partneri</Form.Label>
+                        <Select
+                          value={optionsSelected}
+                          onChange={handleChange}
+                          options={options}
+                          id="produktiSelect" // Setting the id attribute
+                          inputId="produktiSelect-input" // Setting the input id attribute
+                          isDisabled={edito}
+                          styles={customStyles}
+                        />
                       </Form.Group>
                       <Form.Group>
                         <Form.Label>Nr. Fatures</Form.Label>

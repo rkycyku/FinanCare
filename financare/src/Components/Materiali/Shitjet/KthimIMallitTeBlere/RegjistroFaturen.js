@@ -136,8 +136,8 @@ function RegjistroFaturen(props) {
                 idPartneri: r.data.regjistrimet.idPartneri,
                 dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
                 stafiID: r.data.regjistrimet.stafiID,
-                totaliPaTVSH: parseFloat(r.data.regjistrimet.totaliPaTVSH),
-                tvsh: parseFloat(r.data.regjistrimet.tvsh),
+                totaliPaTVSH: parseFloat(r.data.totaliPaTVSH),
+                tvsh: parseFloat(r.data.totaliMeTVSH - r.data.totaliPaTVSH),
                 statusiPageses: r.data.statusiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
                 nrFatures: r.data.regjistrimet.nrFatures,
@@ -196,7 +196,7 @@ function RegjistroFaturen(props) {
   }, [produktetNeKalkulim]);
 
   const handleSubmit = async (event) => {
-    if (produktiID === 0 || sasia <= 0 || qmimiBleres <= 0) {
+    if (sasia <= 0 || qmimiBleres <= 0) {
       event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
       setTipiMesazhit("danger");
@@ -208,7 +208,7 @@ function RegjistroFaturen(props) {
         "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
         {
           idRegjistrimit: props.nrRendorKalkulimit,
-          idProduktit: produktiID,
+          idProduktit: optionsSelected?.value,
           sasiaStokut: sasia,
           qmimiBleres: -qmimiBleres,
           qmimiShites: optionsSelected?.item?.qmimiProduktit,
@@ -502,7 +502,6 @@ function RegjistroFaturen(props) {
                 </Form>
               </Col>
               <Col>
-                {console.log(optionsSelected)}
                 <p>
                   <strong>Sasia aktuale ne Stok:</strong>{" "}
                   {Array.isArray(optionsSelected)

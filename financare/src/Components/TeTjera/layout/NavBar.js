@@ -203,11 +203,6 @@ function NavBar(props) {
                         <Link to="/Ofertat">
                           <MDBDropdownItem link>Ofertat</MDBDropdownItem>
                         </Link>
-                        <Link to="/Statistika">
-                          <MDBDropdownItem link>
-                            Statistikat e Dyqanit
-                          </MDBDropdownItem>
-                        </Link>
                         <Link to="/AsgjesimiIStokut">
                           <MDBDropdownItem link>
                             Asgjesimi i Stokut
@@ -218,9 +213,15 @@ function NavBar(props) {
                             Kthimi i Mallit te Blere{" "}
                           </MDBDropdownItem>
                         </Link>
+                        <MDBDropdownItem divider />
+                        <Link to="/Statistika">
+                          <MDBDropdownItem link>
+                            Statistikat e Dyqanit
+                          </MDBDropdownItem>
+                        </Link>
                         <Link to="/ListaShitjeveMeParagon">
                           <MDBDropdownItem link>
-                          Lista e shitjeve me Paragon
+                            Lista e shitjeve me Paragon
                           </MDBDropdownItem>
                         </Link>
                         <Link to="/POS">

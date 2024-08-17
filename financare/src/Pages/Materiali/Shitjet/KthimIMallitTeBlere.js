@@ -84,7 +84,7 @@ function KthimIMallitTeBlere(props) {
             ID: k.idRegjistrimit,
             "Nr. Kthimit": k.nrRendorFatures,
             Partneri: k.emriBiznesit,
-            "Pershkrimi Shtese": parseFloat(k.totaliPaTVSH).toFixed(2),
+            "Pershkrimi Shtese": k.pershkrimShtese,
             "Data e Fatures": new Date(k.dataRegjistrimit).toISOString(),
             "Statusi Kalkulimit":
               k.statusiKalkulimit === "true" ? "I Mbyllur" : "I Hapur",
@@ -330,7 +330,7 @@ function KthimIMallitTeBlere(props) {
                       </Form.Group>
                     </Form.Group>
                     <Form.Group controlId="idDheEmri">
-                      <Form.Label>Produkti</Form.Label>
+                      <Form.Label>Partneri</Form.Label>
                       <Select
                         value={optionsSelected}
                         onChange={handleChange}

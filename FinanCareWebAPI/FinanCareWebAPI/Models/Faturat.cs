@@ -10,10 +10,10 @@ public partial class Faturat
     [Key]
     public int IDRegjistrimit { get; set; }
     public DateTime? DataRegjistrimit { get; set; } = DateTime.Now;
-    public int? StafiID { get; set; } = 0;
+    public int? StafiID { get; set; } = null;
     public decimal? TotaliPaTVSH { get; set; } = 0;
     public decimal? TVSH { get; set; } = 0;
-    public int? IDPartneri { get; set; } = 0;
+    public int? IDPartneri { get; set; } = null;
     public string? StatusiPageses { get; set; } = "E Paguar";
     public string? LlojiPageses { get; set; } = "Cash";
     public string? LlojiKalkulimit { get; set; } = "HYRJE";
@@ -23,7 +23,7 @@ public partial class Faturat
     public decimal? Rabati { get; set; } = 0;
     public int? NrRendorFatures { get; set; } = 0;
     public string? EshteFaturuarOferta { get; set; } = "false";
-    public int? IDBonusKartela { get; set; } = 0;
+    public int? IDBonusKartela { get; set; } = null;
 
     [ForeignKey(nameof(IDPartneri))]
     public virtual Partneri? Partneri { get; set; }
