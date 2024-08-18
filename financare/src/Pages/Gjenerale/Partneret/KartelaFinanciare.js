@@ -22,6 +22,7 @@ import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Select from "react-select";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function KartelaFinanciare(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -31,6 +32,7 @@ function KartelaFinanciare(props) {
   const [loading, setLoading] = useState(false);
   const [produktiID, setproduktiID] = useState(0);
   const [kartelaEProduktit, setKartelaEProduktit] = useState([]);
+  const [kartelaEProduktitDetaje, setKartelaEProduktitDetaje] = useState([]);
   const [produktet, setProduktet] = useState([]);
 
   const [teDhenat, setTeDhenat] = useState([]);
@@ -88,14 +90,78 @@ function KartelaFinanciare(props) {
   useEffect(() => {
     const kartelaEProduktit = async () => {
       try {
-        const kartela = await axios.get(
+        setLoading(true); // Show loading indicator
+        const response = await axios.get(
           `https://localhost:7285/api/Partneri/KartelaFinanciare?id=${produktiID}`,
           authentikimi
         );
-        setKartelaEProduktit(kartela.data);
-        console.log(kartela.data);
+
+        const kalkulimet = response.data.kalkulimet || [];
+        let saldo = 0;
+
+        const formattedData = kalkulimet.map((p, index) => {
+          // Calculate price with discounts
+          const qmimiMeTVSHRab = parseFloat(
+            p.qmimiShites -
+              p.qmimiShites * (p.rabati1 / 100) -
+              (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                (p.rabati2 / 100) -
+              (p.qmimiShites -
+                p.qmimiShites * (p.rabati1 / 100) -
+                (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                  (p.rabati2 / 100)) *
+                (p.rabati3 / 100)
+          ).toFixed(3);
+
+          const shumaTotale = parseFloat(
+            qmimiMeTVSHRab * p.sasiaStokut
+          ).toFixed(3);
+
+          let faturimValue = 0;
+          const vlera =
+            p.totaliPaTVSH + p.tvsh - p.rabati < 0
+              ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
+              : p.totaliPaTVSH + p.tvsh - p.rabati;
+
+          if (["FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
+            faturimValue = parseFloat(vlera).toFixed(2);
+            saldo += parseFloat(faturimValue);
+          } else if (
+            ["HYRJE", "FL", "KMSH", "PAGES"].includes(p.llojiKalkulimit)
+          ) {
+            faturimValue = parseFloat(vlera).toFixed(2);
+            saldo -= parseFloat(faturimValue);
+          }
+
+          return {
+            "NR.": index + 1,
+            "Data Fat.": new Date(p.dataRegjistrimit).toLocaleDateString(
+              "en-GB",
+              { dateStyle: "short" }
+            ),
+            "Lloji Fat.": p.llojiKalkulimit,
+            "Nr. Fat": p.nrRendorFatures,
+            Pershkrimi: p.pershkrimShtese,
+            "Faturim €": ["FAT", "AS", "KMB", "PARAGON"].includes(
+              p.llojiKalkulimit
+            )
+              ? faturimValue
+              : "-",
+            "Pagese €": ["HYRJE", "FL", "KMSH", "PAGES"].includes(
+              p.llojiKalkulimit
+            )
+              ? faturimValue
+              : "-",
+            "Saldo €": (saldo * -1).toFixed(2),
+          };
+        });
+
+        setKartelaEProduktit(response.data);
+        setKartelaEProduktitDetaje(formattedData); // Set the formatted data to state
+        setLoading(false); // Hide loading indicator
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching kartela e produktit:", err);
+        setLoading(false);
       }
     };
 
@@ -128,71 +194,6 @@ function KartelaFinanciare(props) {
     setproduktiID(partneri.value);
     setOptionsSelected(partneri);
   };
-
-  function FaturaPerRuajtje() {
-    const kartela = document.querySelector(".kartela");
-    const kthejButonat = [];
-
-    const largoButonat = kartela.querySelectorAll("button");
-    largoButonat.forEach((button) => {
-      const parent = button.parentNode;
-      const position = Array.from(parent.children).indexOf(button);
-      kthejButonat.push({ button, parent, position });
-      button.remove();
-    });
-
-    html2canvas(kartela, { useCORS: true })
-      .then((invoiceCanvas) => {
-        var contentWidth = invoiceCanvas.width;
-        var contentHeight = invoiceCanvas.height;
-        var pageHeight = (contentWidth / 592.28) * 841.89;
-        var leftHeight = contentHeight;
-        var position = 0;
-        var imgWidth = 555.28;
-        var imgHeight = (imgWidth / contentWidth) * contentHeight;
-        var invoicePageData = invoiceCanvas.toDataURL("image/jpeg", 1.0);
-        var pdf = new jsPDF("", "pt", "a4");
-
-        if (leftHeight < pageHeight) {
-          pdf.addImage(invoicePageData, "JPEG", 20, 20, imgWidth, imgHeight);
-        } else {
-          while (leftHeight > 0) {
-            pdf.addImage(
-              invoicePageData,
-              "JPEG",
-              20,
-              position + 5,
-              imgWidth,
-              imgHeight
-            );
-            leftHeight -= pageHeight;
-            position -= 841.89;
-            if (leftHeight > 0) {
-              pdf.addPage();
-            }
-          }
-        }
-
-        kthejButonat.forEach(({ button, parent, position }) => {
-          parent.insertBefore(button, parent.children[position]);
-        });
-
-        ruajFaturen(pdf);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  function ruajFaturen(pdf) {
-    pdf.save(
-      "Kartela Financiare - " +
-        (kartelaEProduktit && kartelaEProduktit?.emriBiznesit) +
-        " - " +
-        (kartelaEProduktit && kartelaEProduktit?.nui) +
-        ".pdf"
-    );
-  }
 
   return (
     <>
@@ -231,7 +232,7 @@ function KartelaFinanciare(props) {
                 <Col>
                   <h3>Te dhenat e Partnerit</h3>
                   <Form>
-                  <Form.Group controlId="idDheEmri">
+                    <Form.Group controlId="idDheEmri">
                       <Form.Label>Partneri</Form.Label>
                       <Select
                         value={optionsSelected}
@@ -312,13 +313,13 @@ function KartelaFinanciare(props) {
                       €
                     </p>
                     <p>
-                    <strong>Saldo :</strong>{" "}
-                    {parseFloat(
-                      (kartelaEProduktit && kartelaEProduktit?.totaliDalese) -
-                        (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
-                    ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                    €
-                  </p>
+                      <strong>Saldo :</strong>{" "}
+                      {parseFloat(
+                        (kartelaEProduktit && kartelaEProduktit?.totaliDalese) -
+                          (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
+                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
+                      €
+                    </p>
                     <hr />
                     <Col
                       style={{
@@ -328,159 +329,20 @@ function KartelaFinanciare(props) {
                       <Link to="/TabelaEPartnereve">
                         <Button className="mb-3 Butoni">Partneret</Button>
                       </Link>
-                      <Button
-                        className="mb-3 Butoni"
-                        onClick={() => FaturaPerRuajtje()}>
-                        Ruaj Kartelen <FontAwesomeIcon icon={faDownload} />
-                      </Button>
                     </Col>
                   </Row>
                 </Col>
               </Row>
               <hr />
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>NR.</th>
-                    <th>Data Fat.</th>
-                    <th>Lloji Fat.</th>
-                    <th>Nr. Fat.</th>
-                    <th>Pershkrimi</th>
-                    <th>Faturim</th>
-                    <th>Pagese</th>
-                    <th>Saldo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {kartelaEProduktit &&
-                    kartelaEProduktit.kalkulimet &&
-                    (() => {
-                      let saldo = 0;
-                      return kartelaEProduktit.kalkulimet.map((p, index) => {
-                        const qmimiMeTVSHRab = parseFloat(
-                          p.qmimiShites -
-                            p.qmimiShites * (p.rabati1 / 100) -
-                            (p.qmimiShites -
-                              p.qmimiShites * (p.rabati1 / 100)) *
-                              (p.rabati2 / 100) -
-                            (p.qmimiShites -
-                              p.qmimiShites * (p.rabati1 / 100) -
-                              (p.qmimiShites -
-                                p.qmimiShites * (p.rabati1 / 100)) *
-                                (p.rabati2 / 100)) *
-                              (p.rabati3 / 100)
-                        ).toFixed(3);
-                        const ShumaToT = parseFloat(
-                          qmimiMeTVSHRab * p.sasiaStokut
-                        ).toFixed(3);
-
-                        let faturimValue = 0;
-                        let vlera =
-                          p.totaliPaTVSH + p.tvsh - p.rabati < 0
-                            ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
-                            : p.totaliPaTVSH + p.tvsh - p.rabati;
-                        if (
-                          p.llojiKalkulimit == "FAT" ||
-                          p.llojiKalkulimit == "AS" ||
-                          p.llojiKalkulimit == "KMB"
-                        ) {
-                          faturimValue = parseFloat(vlera).toFixed(2);
-                          saldo += parseFloat(faturimValue);
-                        } else if (
-                          p.llojiKalkulimit == "HYRJE" ||
-                          p.llojiKalkulimit == "FL" ||
-                          p.llojiKalkulimit == "KMSH"||
-                          p.llojiKalkulimit == "PAGES"
-                        ) {
-                          faturimValue = parseFloat(vlera).toFixed(2);
-                          saldo -= parseFloat(faturimValue);
-                        }
-
-                        return (
-                          p && (
-                            <tr key={p.id}>
-                              <td>{index + 1}</td>
-                              <td>
-                                {new Date(
-                                  p.dataRegjistrimit
-                                ).toLocaleDateString("en-GB", {
-                                  dateStyle: "short",
-                                })}
-                              </td>
-                              <td>{p.llojiKalkulimit}</td>
-                              <td>{p.nrRendorFatures}</td>
-                              <td>
-                                <span
-                                  dangerouslySetInnerHTML={{
-                                    __html: p.pershkrimShtese,
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                {p.llojiKalkulimit === "FAT" ||
-                                p.llojiKalkulimit === "AS" ||
-                                p.llojiKalkulimit === "KMB"
-                                  ? faturimValue < 0
-                                    ? (faturimValue * -1).toFixed(2)
-                                    : faturimValue
-                                  : "-"}
-                              </td>
-                              <td>
-                                {p.llojiKalkulimit === "HYRJE" ||
-                                p.llojiKalkulimit === "FL" ||
-                                p.llojiKalkulimit === "KMSH"||
-                          p.llojiKalkulimit == "PAGES"
-                                  ? faturimValue < 0
-                                    ? (faturimValue * -1).toFixed(2) + " €"
-                                    : faturimValue + " €"
-                                  : "-"}
-                              </td>
-                              <td>{saldo.toFixed(2) * -1 + " €"}</td>
-                            </tr>
-                          )
-                        );
-                      });
-                    })()}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {(kartelaEProduktit &&
-                        kartelaEProduktit?.kalkulimet &&
-                        kartelaEProduktit?.kalkulimet.length) ??
-                        0}
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliHyrese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliDalese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>{parseFloat((
-                        kartelaEProduktit && kartelaEProduktit?.totaliDalese) - (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €</td>
-                  </tr>
-                </tbody>
-              </Table>
+              <div className="mt-2">
+                <Tabela
+                  data={kartelaEProduktitDetaje}
+                  tableName={"Kartela Financiare per " + optionsSelected?.label}
+                  dateField="Data Fat." // The field in your data that contains the date values
+                  kontrolloStatusin
+                  mosShfaqID={true}
+                />
+              </div>
             </Container>
           </div>
         )}

@@ -136,8 +136,8 @@ function TabelaEKompanive(props) {
                                     <td>{p.adresa !== null && p.adresa.trim() !== '' ? p.adresa : "Nuk Ka Adrese"}</td>
                                     <td>{p.llojiPartnerit}</td>
                                     <td >
-                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(p.idpartneri)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                        <Button variant="danger" onClick={() => handleFshij(p.idpartneri)}><FontAwesomeIcon icon={faBan} /></Button>
+                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(p.idPartneri)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
+                                        <Button variant="danger" onClick={() => handleFshij(p.idPartneri)}><FontAwesomeIcon icon={faBan} /></Button>
                                     </td>
                                 </tr>
                             ))}

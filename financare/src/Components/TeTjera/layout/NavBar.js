@@ -290,6 +290,13 @@ function NavBar(props) {
                             Kartela Financiare
                           </MDBDropdownItem>
                         </Link>
+                        
+                        <MDBDropdownItem divider />
+                        <Link to="/ShtoPagesat">
+                          <MDBDropdownItem link>
+                            Shto Pagesat e Fatures
+                          </MDBDropdownItem>
+                        </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
                   </MDBDropdownMenu>

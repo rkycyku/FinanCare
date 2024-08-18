@@ -162,6 +162,7 @@ namespace FinanCareWebAPI.Controllers
                     (x.LlojiKalkulimit.Equals("FAT")
                     || x.LlojiKalkulimit.Equals("AS")
                     || x.LlojiKalkulimit.Equals("KMB")
+                    || x.LlojiKalkulimit.Equals("PARAGON")
                     ) && x.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();

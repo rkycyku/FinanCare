@@ -57,7 +57,7 @@ function EditoKompanin(props) {
 
     async function handleSubmit() {
         try {
-            await axios.put(`https://localhost:7285/api/Partneri/perditesoPartnerin?id=${partneri.idpartneri}`,
+            await axios.put(`https://localhost:7285/api/Partneri/perditesoPartnerin?id=${props.id}`,
                 {
                     emriBiznesit: partneri.emriBiznesit,
                     nui: partneri.nui,

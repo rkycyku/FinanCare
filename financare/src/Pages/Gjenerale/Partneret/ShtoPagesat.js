@@ -19,8 +19,8 @@ import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import Select from "react-select";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function ShtoPagesat(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -30,6 +30,7 @@ function ShtoPagesat(props) {
   const [loading, setLoading] = useState(false);
   const [produktiID, setproduktiID] = useState(0);
   const [kartelaEProduktit, setKartelaEProduktit] = useState([]);
+  const [kartelaEProduktitDetaje, setKartelaEProduktitDetaje] = useState([]);
   const [produktet, setProduktet] = useState([]);
 
   const [teDhenat, setTeDhenat] = useState([]);
@@ -37,10 +38,6 @@ function ShtoPagesat(props) {
   const [pershkrimiPageses, setPershkrimiPageses] = useState("");
   const [shumaPageses, setShumaPageses] = useState(0);
   const [llojiIPageses, setLlojiIPageses] = useState("Cash");
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(produktet);
-  const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
 
   const navigate = useNavigate();
 
@@ -95,28 +92,83 @@ function ShtoPagesat(props) {
   useEffect(() => {
     const kartelaEProduktit = async () => {
       try {
-        const kartela = await axios.get(
+        setLoading(true); // Show loading indicator
+        const response = await axios.get(
           `https://localhost:7285/api/Partneri/KartelaFinanciare?id=${produktiID}`,
           authentikimi
         );
-        setKartelaEProduktit(kartela.data);
-        console.log(kartela.data);
+
+        const kalkulimet = response.data.kalkulimet || [];
+        let saldo = 0;
+
+        const formattedData = kalkulimet.map((p, index) => {
+          // Calculate price with discounts
+          const qmimiMeTVSHRab = parseFloat(
+            p.qmimiShites -
+              p.qmimiShites * (p.rabati1 / 100) -
+              (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                (p.rabati2 / 100) -
+              (p.qmimiShites -
+                p.qmimiShites * (p.rabati1 / 100) -
+                (p.qmimiShites - p.qmimiShites * (p.rabati1 / 100)) *
+                  (p.rabati2 / 100)) *
+                (p.rabati3 / 100)
+          ).toFixed(3);
+
+          const shumaTotale = parseFloat(
+            qmimiMeTVSHRab * p.sasiaStokut
+          ).toFixed(3);
+
+          let faturimValue = 0;
+          const vlera =
+            p.totaliPaTVSH + p.tvsh - p.rabati < 0
+              ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
+              : p.totaliPaTVSH + p.tvsh - p.rabati;
+
+          if (["FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
+            faturimValue = parseFloat(vlera).toFixed(2);
+            saldo += parseFloat(faturimValue);
+          } else if (
+            ["HYRJE", "FL", "KMSH", "PAGES"].includes(p.llojiKalkulimit)
+          ) {
+            faturimValue = parseFloat(vlera).toFixed(2);
+            saldo -= parseFloat(faturimValue);
+          }
+
+          return {
+            "NR.": index + 1,
+            "Data Fat.": new Date(p.dataRegjistrimit).toLocaleDateString(
+              "en-GB",
+              { dateStyle: "short" }
+            ),
+            "Lloji Fat.": p.llojiKalkulimit,
+            "Nr. Fat": p.nrRendorFatures,
+            Pershkrimi: p.pershkrimShtese,
+            "Faturim €": ["FAT", "AS", "KMB", "PARAGON"].includes(
+              p.llojiKalkulimit
+            )
+              ? faturimValue
+              : "-",
+            "Pagese €": ["HYRJE", "FL", "KMSH", "PAGES"].includes(
+              p.llojiKalkulimit
+            )
+              ? faturimValue
+              : "-",
+            "Saldo €": (saldo * -1).toFixed(2),
+          };
+        });
+
+        setKartelaEProduktit(response.data);
+        setKartelaEProduktitDetaje(formattedData); // Set the formatted data to state
+        setLoading(false); // Hide loading indicator
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching kartela e produktit:", err);
+        setLoading(false);
       }
     };
 
     kartelaEProduktit();
   }, [perditeso, produktiID]);
-
-  const handleProduktiChange = async (selectedOption) => {
-    setproduktiID(selectedOption?.idPartneri ?? 0);
-
-    setFilteredItems([]);
-    setInputValue(
-      `${selectedOption?.emriBiznesit ? selectedOption.emriBiznesit : ""}`
-    );
-  };
 
   const ndrroField = (e, tjetra) => {
     if (e.key === "Enter") {
@@ -124,34 +176,6 @@ function ShtoPagesat(props) {
       document.getElementById(tjetra).focus();
     }
   };
-
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleProduktiChange(filteredItems[selectedIndex]);
-      }
-
-      ndrroField(e, "pershkrimiPageses");
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = produktet.filter(
-      (item) =>
-        item.emriBiznesit.toLowerCase().includes(value) ||
-        item.nui.toLowerCase().includes(value) ||
-        item.nrf.toLowerCase().includes(value) ||
-        item.tvsh.toLowerCase().includes(value) ||
-        item.email.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
-  };
-
   async function handleRegjistroKalkulimin() {
     try {
       await axios
@@ -184,6 +208,34 @@ function ShtoPagesat(props) {
     }
   }
 
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
+  };
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneret")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setproduktiID(partneri.value);
+    setOptionsSelected(partneri);
+    document.getElementById("pershkrimiPageses").focus();
+  };
+
   return (
     <>
       <Helmet>
@@ -214,7 +266,7 @@ function ShtoPagesat(props) {
           </div>
         ) : (
           <div className="kartela">
-            <h1 className="title">Kartela Financiare</h1>
+            <h1 className="title">Pagesat e Fatures</h1>
 
             <Container fluid>
               <Row>
@@ -223,33 +275,14 @@ function ShtoPagesat(props) {
                   <Form>
                     <Form.Group controlId="idDheEmri">
                       <Form.Label>Partneri</Form.Label>
-                      <Form.Control
-                        id={produktiID}
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Search"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        styles={customStyles}
                       />
-
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}>
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.idPartneri}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleProduktiChange(item)}>
-                              {item.emriBiznesit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
                     </Form.Group>
                   </Form>
                   <br />
@@ -353,156 +386,15 @@ function ShtoPagesat(props) {
                 </Col>
               </Row>
               <hr />
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>NR.</th>
-                    <th>Data Fat.</th>
-                    <th>Lloji Fat.</th>
-                    <th>Nr. Fat.</th>
-                    <th>Pershkrimi</th>
-                    <th>Faturim</th>
-                    <th>Pagese</th>
-                    <th>Saldo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {kartelaEProduktit &&
-                    kartelaEProduktit.kalkulimet &&
-                    (() => {
-                      let saldo = 0;
-                      return kartelaEProduktit.kalkulimet.map((p, index) => {
-                        const qmimiMeTVSHRab = parseFloat(
-                          p.qmimiShites -
-                            p.qmimiShites * (p.rabati1 / 100) -
-                            (p.qmimiShites -
-                              p.qmimiShites * (p.rabati1 / 100)) *
-                              (p.rabati2 / 100) -
-                            (p.qmimiShites -
-                              p.qmimiShites * (p.rabati1 / 100) -
-                              (p.qmimiShites -
-                                p.qmimiShites * (p.rabati1 / 100)) *
-                                (p.rabati2 / 100)) *
-                              (p.rabati3 / 100)
-                        ).toFixed(3);
-                        const ShumaToT = parseFloat(
-                          qmimiMeTVSHRab * p.sasiaStokut
-                        ).toFixed(3);
-
-                        let faturimValue = 0;
-                        let vlera =
-                          p.totaliPaTVSH + p.tvsh - p.rabati < 0
-                            ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
-                            : p.totaliPaTVSH + p.tvsh - p.rabati;
-                        if (
-                          p.llojiKalkulimit == "FAT" ||
-                          p.llojiKalkulimit == "AS" ||
-                          p.llojiKalkulimit == "KMB"
-                        ) {
-                          faturimValue = parseFloat(vlera).toFixed(2);
-                          saldo += parseFloat(faturimValue);
-                        } else if (
-                          p.llojiKalkulimit == "HYRJE" ||
-                          p.llojiKalkulimit == "FL" ||
-                          p.llojiKalkulimit == "KMSH" ||
-                          p.llojiKalkulimit == "PAGES"
-                        ) {
-                          faturimValue = parseFloat(vlera).toFixed(2);
-                          saldo -= parseFloat(faturimValue);
-                        }
-
-                        return (
-                          p && (
-                            <tr key={p.id}>
-                              <td>{index + 1}</td>
-                              <td>
-                                {new Date(
-                                  p.dataRegjistrimit
-                                ).toLocaleDateString("en-GB", {
-                                  dateStyle: "short",
-                                })}
-                              </td>
-                              <td>{p.llojiKalkulimit}</td>
-                              <td>
-                                {p.nrRendorFatures === 0
-                                  ? "-"
-                                  : p.nrRendorFatures}
-                              </td>
-                              <td>
-                                <span
-                                  dangerouslySetInnerHTML={{
-                                    __html: p.pershkrimShtese,
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                {p.llojiKalkulimit === "FAT" ||
-                                p.llojiKalkulimit === "AS" ||
-                                p.llojiKalkulimit === "KMB"
-                                  ? faturimValue < 0
-                                    ? (faturimValue * -1).toFixed(2)
-                                    : faturimValue
-                                  : "-"}
-                              </td>
-                              <td>
-                                {p.llojiKalkulimit === "HYRJE" ||
-                                p.llojiKalkulimit === "FL" ||
-                                p.llojiKalkulimit === "KMSH" ||
-                                p.llojiKalkulimit === "PAGES"
-                                  ? faturimValue < 0
-                                    ? (faturimValue * -1).toFixed(2) + " €"
-                                    : faturimValue + " €"
-                                  : "-"}
-                              </td>
-                              <td>{saldo.toFixed(2) * -1 + " €"}</td>
-                            </tr>
-                          )
-                        );
-                      });
-                    })()}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {(kartelaEProduktit &&
-                        kartelaEProduktit?.kalkulimet &&
-                        kartelaEProduktit?.kalkulimet.length) ??
-                        0}
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliHyrese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>
-                      {parseFloat(
-                        kartelaEProduktit && kartelaEProduktit?.totaliDalese
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </td>
-                    <td>
-                      {parseFloat(
-                        (kartelaEProduktit && kartelaEProduktit?.totaliDalese) -
-                          (kartelaEProduktit && kartelaEProduktit?.totaliHyrese)
-                      ).toFixed(2) ?? parseFloat(0).toFixed(2)}{" "}
-                      €
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <div className="mt-2">
+                <Tabela
+                  data={kartelaEProduktitDetaje}
+                  tableName={"Kartela Financiare per " + optionsSelected?.label}
+                  dateField="Data Fat." // The field in your data that contains the date values
+                  kontrolloStatusin
+                  mosShfaqID={true}
+                />
+              </div>
             </Container>
           </div>
         )}
