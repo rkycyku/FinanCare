@@ -3,7 +3,6 @@ import "./App.css";
 import Dashboard from "./Pages/Dashboard";
 
 import LogIn from "./Pages/LogIn";
-import SignUp from "./Pages/SignUp";
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
@@ -17,7 +16,6 @@ import TabelaEPerdoruesve from "./Pages/Gjenerale/Stafi/TabelaEPerdoruesve";
 import Rolet from "./Pages/Gjenerale/Stafi/Rolet";
 import KalkulimiIMallit from "./Pages/Materiali/Hyrjet/KalkulimiIMallit";
 import PerditesoTeDhenat from "./Pages/Gjenerale/TeDhenat/PerditesoTeDhenat";
-import ShtoPartnerin from "./Pages/Gjenerale/Partneret/ShtoPartnerin";
 import KthimiMallitTeShitur from "./Pages/Materiali/Hyrjet/KthimiMallitTeShitur";
 import AsgjesimiIStokut from "./Pages/Materiali/Shitjet/AsgjesimIStokut";
 import KthimIMallitTeBlere from "./Pages/Materiali/Shitjet/KthimIMallitTeBlere";
@@ -31,6 +29,7 @@ import POS from "./Pages/Materiali/Shitjet/POS";
 import KartelaFinanciare from "./Pages/Gjenerale/Partneret/KartelaFinanciare";
 import ShtoPagesat from "./Pages/Gjenerale/Partneret/ShtoPagesat";
 import ListaShitjeveMeParagon from "./Pages/Materiali/Shitjet/ListaShitjeveMeParagon";
+import LlogaritBankareBiznesit from "./Pages/Gjenerale/TeDhenat/LlogaritBankareBiznesit";
 
 function App() {
   useEffect(() => {
@@ -50,7 +49,6 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Dashboard" element={<Dashboard key={Date.now()} />} />
         <Route path="/LogIn" element={<LogIn />} />
-        <Route path="/SignUp" element={<SignUp />} />
         <Route path="/Statistika" element={<Statistika />} />
         <Route path="/TeDhenatEBiznesit" element={<TeDhenatEBiznesit />} />
         <Route path="/Produktet" element={<ListaEProdukteve />} />
@@ -61,7 +59,6 @@ function App() {
         <Route path="/Rolet" element={<Rolet />} />
         <Route path="/KalkulimiIMallit" element={<KalkulimiIMallit />} />
         <Route path="/PerditesoTeDhenat" element={<PerditesoTeDhenat />} />
-        <Route path="/ShtoPartnerin" element={<ShtoPartnerin />} />
         <Route
           path="/KthimiMallitTeShitur"
           element={<KthimiMallitTeShitur />}
@@ -78,6 +75,7 @@ function App() {
         <Route path="/KartelaFinanciare" element={<KartelaFinanciare />} />
         <Route path="/ShtoPagesat" element={<ShtoPagesat />} />
         <Route path="/ListaShitjeveMeParagon" element={<ListaShitjeveMeParagon />} />
+        <Route path="/LlogaritBankareBiznesit" element={<LlogaritBankareBiznesit />} />
       </Routes>
     </div>
   );

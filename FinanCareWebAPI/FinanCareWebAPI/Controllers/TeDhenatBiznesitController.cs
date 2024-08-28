@@ -49,18 +49,29 @@ namespace WebAPI.Controllers
             teDhenat.NrTVSH = k.NrTVSH;
             teDhenat.Adresa = k.Adresa;
             teDhenat.Logo = k.Logo;
+            teDhenat.EmailDomain = k.EmailDomain;
 
             _context.SaveChanges();
 
             return Ok(teDhenat);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("ShfaqBankat")]
         public async Task<IActionResult> ShfaqBankat()
         {
             var bankat = await _context.Bankat.OrderBy(x => x.EmriBankes).ToListAsync();
+
+            return Ok(bankat);
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("ShfaqLlogaritEBiznesit")]
+        public async Task<IActionResult> ShfaqLlogaritEBiznesit()
+        {
+            var bankat = await _context.LlogaritEBiznesit.Include(x => x.Banka).ToListAsync();
 
             return Ok(bankat);
         }
@@ -81,7 +92,23 @@ namespace WebAPI.Controllers
             return Ok(bankaNgaID);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
+        [HttpGet]
+        [Route("ShfaqLlogarineNgaID")]
+        public async Task<IActionResult> ShfaqLlogarineNgaID(int id)
+        {
+            var bankaNgaID = await _context.LlogaritEBiznesit
+                .Where(x => x.IDLlogariaBankare == id).Include(x => x.Banka).ToListAsync();
+
+            if (bankaNgaID == null)
+            {
+                return BadRequest("Llogaria nuk Egziston");
+            }
+
+            return Ok(bankaNgaID);
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("ShtoBanken")]
         public async Task<IActionResult> ShtoBanken(Bankat banka)
@@ -90,6 +117,17 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("get", banka.BankaID, banka);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("ShtoLlogarineBankareBiznesit")]
+        public async Task<IActionResult> ShtoLlogarineBankareBiznesit(LlogaritEBiznesit banka)
+        {
+            await _context.LlogaritEBiznesit.AddAsync(banka);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("get", banka.IDLlogariaBankare, banka);
         }
 
         [Authorize(Roles = "Admin, Menaxher")]
@@ -110,6 +148,24 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpDelete]
+        [Route("FshijLlogarinBankareBiznesit")]
+        public async Task<IActionResult> FshijLlogarinBankareBiznesit(int id)
+        {
+            var banka = await _context.LlogaritEBiznesit.FirstOrDefaultAsync(x => x.IDLlogariaBankare == id);
+
+            if (banka == null)
+            {
+                return BadRequest("Llogaria nuk egziston!");
+            }
+
+            _context.LlogaritEBiznesit.Remove(banka);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpPut]
         [Route("PerditesoBanken")]
@@ -125,20 +181,46 @@ namespace WebAPI.Controllers
             {
                 banka.EmriBankes = b.EmriBankes;
             }
-            if (!b.Valuta.IsNullOrEmpty())
+            if (!b.LokacioniBankes.IsNullOrEmpty())
             {
-                banka.Valuta = b.Valuta;
+                banka.LokacioniBankes = b.LokacioniBankes;
+            }
+
+            _context.Bankat.Update(banka);
+            await _context.SaveChangesAsync();
+
+            return Ok(banka);
+        }
+
+        [Authorize(Roles = "Admin, Menaxher")]
+        [HttpPut]
+        [Route("PerditesoLlogarineBankare")]
+        public async Task<IActionResult> PerditesoLlogarineBankare(int id, [FromBody] LlogaritEBiznesit b)
+        {
+            var banka = _context.LlogaritEBiznesit.FirstOrDefault(x => x.IDLlogariaBankare == id);
+            if (banka == null)
+            {
+                return BadRequest("Llogaria nuk egziston");
+            }
+
+            if (!b.NumriLlogaris.IsNullOrEmpty())
+            {
+                banka.NumriLlogaris = b.NumriLlogaris;
             }
             if (!b.AdresaBankes.IsNullOrEmpty())
             {
                 banka.AdresaBankes = b.AdresaBankes;
             }
-            if (!b.NumriLlogaris.IsNullOrEmpty())
+            if (!b.Valuta.IsNullOrEmpty())
             {
-                banka.NumriLlogaris = b.NumriLlogaris;
+                banka.Valuta = b.Valuta;
+            }
+            if (b.BankaID != banka.BankaID && b.BankaID > 0)
+            {
+                banka.BankaID = b.BankaID;
             }
 
-            _context.Bankat.Update(banka);
+            _context.LlogaritEBiznesit.Update(banka);
             await _context.SaveChangesAsync();
 
             return Ok(banka);

@@ -17,10 +17,19 @@ namespace WebAPI.Auth
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 
-        public string? Adresa { get; set; }
-        public string? Qyteti { get; set; }
-        public string? Shteti { get; set; }
-        public int? ZipKodi { get; set; }
         public string? NrTelefonit { get; set; }
+        public string? Adresa { get; set; }
+        public string? EmailPrivat { get; set; }
+        public DateTime? Datelindja { get; set; }
+        public DateTime? DataFillimitKontrates { get; set; }
+        public DateTime? DataMbarimitKontrates { get; set; }
+        public decimal? Paga { get; set; }
+        public string? Profesioni { get; set; }
+        public string? Specializimi { get; set; }
+        public string? Kualifikimi { get; set; }
+        public int? BankaID { get; set; }
+        public string? NumriLlogarisBankare { get; set; }
+        public string? NrPersonal { get; set; }
+        public string? EshtePuntorAktive { get; set; }
     }
 }

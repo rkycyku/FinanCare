@@ -9,7 +9,7 @@ public partial class Kartelat
 {
     [Key]
     public int IDKartela { get; set; }
-    public int? KodiKartela { get; set; }
+    public string? KodiKartela { get; set; }
     public string? LlojiKarteles { get; set; } = "Bonus";
     public decimal? Rabati { get; set; } = 0;
     public int? StafiID { get; set; }

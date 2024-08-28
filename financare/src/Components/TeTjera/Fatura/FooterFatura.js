@@ -26,7 +26,7 @@ function FooterFatura(props) {
           authentikimi
         );
         const bankat = await axios.get(
-          `https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat`,
+          `https://localhost:7285/api/TeDhenatBiznesit/ShfaqLlogaritEBiznesit`,
           authentikimi
         );
         const apiKonvertimiValutave = await axios.get(
@@ -75,7 +75,7 @@ function FooterFatura(props) {
                   {bankat &&
                     bankat.map((x) => (
                       <tr style={{ fontSize: "12px" }} key={x.bankaID}>
-                        <td><strong>{x.emriBankes}</strong></td>
+                        <td><strong>{x.banka && x.banka.emriBankes}</strong></td>
                         <td><strong>{x.numriLlogaris}</strong></td>
                         <td><strong>{x.valuta}</strong></td>
                       </tr>

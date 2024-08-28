@@ -67,7 +67,11 @@ builder.Services.AddCors(opt =>
     });
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireUppercase = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
         .AddEntityFrameworkStores<FinanCareDbContext>()
         .AddDefaultTokenProviders();
 

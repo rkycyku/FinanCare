@@ -47,7 +47,7 @@ function ShtoRolin(props) {
                             onChange={(e) => handleEmriChange(e.target.value)}
                             value={emri}
                             type="text"
-                            placeholder="Emri Kompanis"
+                            placeholder="Emri Rolit"
                             autoFocus
                         />
                     </Form.Group>

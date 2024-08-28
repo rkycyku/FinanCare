@@ -30,16 +30,10 @@ namespace FinanCareWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BankaID"));
 
-                    b.Property<string>("AdresaBankes")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EmriBankes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NumriLlogaris")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Valuta")
+                    b.Property<string>("LokacioniBankes")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BankaID");
@@ -139,8 +133,8 @@ namespace FinanCareWebAPI.Migrations
                     b.Property<DateTime?>("DataKrijimit")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("KodiKartela")
-                        .HasColumnType("int");
+                    b.Property<string>("KodiKartela")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LlojiKarteles")
                         .HasColumnType("nvarchar(max)");
@@ -161,6 +155,33 @@ namespace FinanCareWebAPI.Migrations
                     b.HasIndex("StafiID");
 
                     b.ToTable("Kartelat");
+                });
+
+            modelBuilder.Entity("FinanCareWebAPI.Models.LlogaritEBiznesit", b =>
+                {
+                    b.Property<int>("IDLlogariaBankare")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IDLlogariaBankare"));
+
+                    b.Property<string>("AdresaBankes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BankaID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NumriLlogaris")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Valuta")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IDLlogariaBankare");
+
+                    b.HasIndex("BankaID");
+
+                    b.ToTable("LlogaritEBiznesit");
                 });
 
             modelBuilder.Entity("FinanCareWebAPI.Models.NjesiaMatese", b =>
@@ -335,6 +356,9 @@ namespace FinanCareWebAPI.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EmailDomain")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EmriIBiznesit")
                         .HasColumnType("nvarchar(max)");
 
@@ -413,19 +437,48 @@ namespace FinanCareWebAPI.Migrations
                     b.Property<string>("Adresa")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("BankaID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataFillimitKontrates")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataMbarimitKontrates")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Datelindja")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailPrivat")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EshtePuntorAktive")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Kualifikimi")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NrKontaktit")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Qyteti")
+                    b.Property<string>("NrPersonal")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Shteti")
+                    b.Property<string>("NumriLlogarisBankare")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ZipKodi")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("Paga")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Profesioni")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specializimi")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("BankaID");
 
                     b.ToTable("TeDhenatPerdoruesit");
                 });
@@ -683,6 +736,17 @@ namespace FinanCareWebAPI.Migrations
                     b.Navigation("Stafi");
                 });
 
+            modelBuilder.Entity("FinanCareWebAPI.Models.LlogaritEBiznesit", b =>
+                {
+                    b.HasOne("FinanCareWebAPI.Models.Bankat", "Banka")
+                        .WithMany()
+                        .HasForeignKey("BankaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Banka");
+                });
+
             modelBuilder.Entity("FinanCareWebAPI.Models.Perdoruesi", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AspNetUser")
@@ -745,11 +809,17 @@ namespace FinanCareWebAPI.Migrations
 
             modelBuilder.Entity("FinanCareWebAPI.Models.TeDhenatPerdoruesit", b =>
                 {
+                    b.HasOne("FinanCareWebAPI.Models.Bankat", "Banka")
+                        .WithMany()
+                        .HasForeignKey("BankaID");
+
                     b.HasOne("FinanCareWebAPI.Models.Perdoruesi", "User")
                         .WithOne("TeDhenatPerdoruesit")
                         .HasForeignKey("FinanCareWebAPI.Models.TeDhenatPerdoruesit", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Banka");
 
                     b.Navigation("User");
                 });

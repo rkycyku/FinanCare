@@ -27,4 +27,5 @@ public partial class FinanCareDbContext : IdentityDbContext
     public DbSet<ZbritjaQmimitProduktit> ZbritjaQmimitProduktit { get; set; }
     public DbSet<Bankat> Bankat { get; set; }
     public DbSet<Kartelat> Kartelat { get; set; }
+    public DbSet<LlogaritEBiznesit> LlogaritEBiznesit { get; set; }
 }

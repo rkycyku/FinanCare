@@ -41,21 +41,21 @@ namespace FinanCareWebAPI.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("shfaqKartelenSipasKodit")]
-        public async Task<IActionResult> ShfaqKartelenSipasKodit(int kodiKarteles)
+        public async Task<IActionResult> ShfaqKartelenSipasKodit(string kodiKarteles)
         {
-                var kartela = await _context.Kartelat.Include(x => x.Partneri)
-                    .Include(x => x.Stafi).FirstOrDefaultAsync(x => x.KodiKartela == kodiKarteles);
+            var kartela = await _context.Kartelat.Include(x => x.Partneri)
+                .Include(x => x.Stafi).FirstOrDefaultAsync(x => x.KodiKartela.Equals(kodiKarteles));
 
-                if(kartela != null)
-                {
+            if (kartela != null)
+            {
 
-                    return Ok(kartela);
-                }
-                else
-                {
+                return Ok(kartela);
+            }
+            else
+            {
 
-                    return BadRequest();
-                }
+                return BadRequest();
+            }
         }
 
         [AllowAnonymous]
@@ -97,7 +97,7 @@ namespace FinanCareWebAPI.Controllers
                 kartela.LlojiKarteles = k.LlojiKarteles;
             }
 
-            if (k.KodiKartela > 0)
+            if (k.KodiKartela.IsNullOrEmpty())
             {
                 kartela.KodiKartela = k.KodiKartela;
             }
@@ -145,6 +145,32 @@ namespace FinanCareWebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Kartela u fshi me sukses!");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("ShtoKartelenBonus")]
+        public async Task<IActionResult> ShtoKartelenBonus(int idPartneri, int stafiID, int rabati)
+        {
+            var kartelaCount = await _context.Kartelat.CountAsync();
+
+            var kodiKartela = $"B{idPartneri.ToString().PadLeft(6, '0')}{(kartelaCount+1).ToString().PadLeft(6, '0')}";
+
+            Kartelat kartela = new Kartelat
+            {
+                DataKrijimit = DateTime.Now,
+                LlojiKarteles = "Bonus",
+                Rabati = rabati,
+                PartneriID = idPartneri,
+                KodiKartela = kodiKartela,
+                StafiID = stafiID,
+            };
+
+            _context.Kartelat.Add(kartela);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(kartela);
         }
     }
 }

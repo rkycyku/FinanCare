@@ -8,9 +8,7 @@ import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function ShtoBanken(props) {
   const [emriBankes, setEmriBankes] = useState("");
-  const [numriLlogaris, setNumriLlogaris] = useState("");
-  const [adresaBankes, setAdresaBankes] = useState("");
-  const [valuta, setValuta] = useState("");
+  const [lokacioniBankes, setLokacioniBankes] = useState("Kombetare");
 
   const [perditeso, setPerditeso] = useState("");
   const [bankat, setBankat] = useState([]);
@@ -47,8 +45,8 @@ function ShtoBanken(props) {
     setState(event.target.value);
   };
 
-  const handleValutaChange = (event) => {
-    setValuta(event);
+  const handlelokacioniBankesChange = (event) => {
+    setLokacioniBankes(event);
   };
 
   function isNullOrEmpty(value) {
@@ -61,9 +59,7 @@ function ShtoBanken(props) {
         "https://localhost:7285/api/TeDhenatBiznesit/ShtoBanken",
         {
           emriBankes: emriBankes,
-          numriLlogaris: numriLlogaris,
-          adresaBankes: adresaBankes,
-          valuta: valuta,
+          lokacioniBankes: lokacioniBankes,
         },
         authentikimi
       )
@@ -88,8 +84,7 @@ function ShtoBanken(props) {
         bankat.filter(
           (item) =>
             (item.emriBankes === emriBankes &&
-              item.numriLlogaris == numriLlogaris) ||
-            item.numriLlogaris == numriLlogaris
+              item.lokacioniBankes == lokacioniBankes)
         ).length !== 0
       ) {
         setKontrolloBankat(true);
@@ -183,44 +178,21 @@ function ShtoBanken(props) {
                 autoFocus
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>
-                Numri i Llogaris<span style={{ color: "red" }}>*</span>
-              </Form.Label>
-              <Form.Control
-                onChange={handleChange(setNumriLlogaris)}
-                value={numriLlogaris}
-                type="text"
-                placeholder="Numri i Llogaris"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>
-                Adresa e Bankes<span style={{ color: "red" }}>*</span>
-              </Form.Label>
-              <Form.Control
-                onChange={handleChange(setAdresaBankes)}
-                value={adresaBankes}
-                type="text"
-                placeholder="Adresa e Bankes"
-              />
-            </Form.Group>
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1">
               <Form.Label>
-                Valuta<span style={{ color: "red" }}>*</span>
+                Lokacioni Bankes<span style={{ color: "red" }}>*</span>
               </Form.Label>
               <select
-                placeholder="Valuta"
+                placeholder="lokacioniBankes"
                 className="form-select"
-                value={valuta}
-                onChange={(e) => handleValutaChange(e.target.value)}>
-                <option defaultValue selected value="Euro">
-                  Euro - €
+                value={lokacioniBankes}
+                onChange={(e) => handlelokacioniBankesChange(e.target.value)}>
+                <option defaultValue selected value="Kombetare">
+                  Kombetare
                 </option>
-                <option value="Dollar">Dollar - $</option>
-                <option value="Franga Zvicerane">Franga Zvicerane - CHF</option>
+                <option value="Nderkombtare">Nderkombtare</option>
               </select>
             </Form.Group>
           </Form>

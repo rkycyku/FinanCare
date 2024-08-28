@@ -106,10 +106,10 @@ function Tabela({
                 <tr>
                   <th colSpan={filteredHeaders.length + 1}>
                     <Row className="align-items-center">
-                      <Col xs="auto" className="pe-0">
+                      <Col xs="auto" className="pe-0 mx-1">
                         {funksionButonShto && (
                           <Button
-                            variant="outline-success"
+                            variant="success"
                             onClick={() => funksionButonShto()}>
                             <FontAwesomeIcon icon={faPlus} />
                           </Button>

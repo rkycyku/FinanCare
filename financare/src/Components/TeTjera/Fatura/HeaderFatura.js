@@ -72,7 +72,7 @@ function HeaderFatura(props) {
             <strong>NUI: </strong>
             {teDhenatBiznesit && teDhenatBiznesit.nui} / <strong>NF: </strong>
             {teDhenatBiznesit && teDhenatBiznesit.nf} / <strong>TVSH: </strong>
-            {teDhenatBiznesit && teDhenatBiznesit.nrtvsh}
+            {teDhenatBiznesit && teDhenatBiznesit.nrTVSH}
           </p>
 
           <p>

@@ -83,10 +83,19 @@ namespace WebAPI.Controllers
                     {
                         UserID = perdoruesi.UserID,
                         Adresa = !registerModel.Adresa.IsNullOrEmpty() ? registerModel.Adresa : null,
-                        Qyteti = !registerModel.Qyteti.IsNullOrEmpty() ? registerModel.Qyteti : null,
-                        Shteti = !registerModel.Shteti.IsNullOrEmpty() ? registerModel.Shteti : null,
-                        ZipKodi = registerModel.ZipKodi > 0 ? registerModel.ZipKodi : 0,
-                        NrKontaktit = !registerModel.NrTelefonit.IsNullOrEmpty() ? registerModel.NrTelefonit : null
+                        NrKontaktit = !registerModel.NrTelefonit.IsNullOrEmpty() ? registerModel.NrTelefonit : null,
+                        BankaID = !registerModel.BankaID.HasValue? registerModel.BankaID : null,
+                        DataFillimitKontrates = !registerModel.DataFillimitKontrates.HasValue? registerModel.DataFillimitKontrates : null,
+                        DataMbarimitKontrates = !registerModel.DataMbarimitKontrates.HasValue ? registerModel.DataMbarimitKontrates : null,
+                        Datelindja = !registerModel.Datelindja.HasValue ? registerModel.Datelindja : null,
+                        EmailPrivat = !registerModel.EmailPrivat.IsNullOrEmpty() ? registerModel.EmailPrivat : null,
+                        EshtePuntorAktive = !registerModel.EshtePuntorAktive.IsNullOrEmpty() ? registerModel.EshtePuntorAktive : "true",
+                        Kualifikimi = !registerModel.Kualifikimi.IsNullOrEmpty() ? registerModel.Kualifikimi : null,
+                        NrPersonal = !registerModel.NrPersonal.IsNullOrEmpty() ? registerModel.NrPersonal : null,
+                        NumriLlogarisBankare = !registerModel.NumriLlogarisBankare.IsNullOrEmpty() ? registerModel.NumriLlogarisBankare : null,
+                        Paga = !registerModel.Paga.HasValue ? registerModel.Paga : null,
+                        Profesioni = !registerModel.Profesioni.IsNullOrEmpty() ? registerModel.Profesioni : null,
+                        Specializimi = !registerModel.Specializimi.IsNullOrEmpty() ? registerModel.Specializimi : null
                     };
                     await _context.TeDhenatPerdoruesit.AddAsync(teDhenatPerdoruesit);
                     await _context.SaveChangesAsync();

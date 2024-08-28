@@ -18,9 +18,10 @@ import LargoBanken from "../../../Components/Gjenerale/TeDhenat/Bankat/LargoBank
 import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function Bankat(props) {
-  const [njesiteMatese, setNjesiteMatese] = useState([]);
+  const [bankat, setBankat] = useState([]);
   const [perditeso, setPerditeso] = useState("");
   const [shto, setShto] = useState(false);
   const [edito, setEdito] = useState(false);
@@ -40,14 +41,21 @@ function Bankat(props) {
   };
 
   useEffect(() => {
-    const shfaqNjesiteMatese = async () => {
+    const shfaqbankat = async () => {
       try {
         setLoading(true);
         const Bankat = await axios.get(
           "https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat",
           authentikimi
         );
-        setNjesiteMatese(Bankat.data);
+
+        setBankat(
+          Bankat.data.map((k) => ({
+            ID: k.bankaID,
+            "Emri Bankes": k.emriBankes,
+            "Lokacioni Bankes": k.lokacioniBankes,
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -55,7 +63,7 @@ function Bankat(props) {
       }
     };
 
-    shfaqNjesiteMatese();
+    shfaqbankat();
   }, [perditeso]);
 
   const handleClose = () => {
@@ -135,49 +143,25 @@ function Bankat(props) {
           </div>
         ) : (
           <>
-            <h1 className="title">Bankat</h1>
-
-            <MDBBtn className="mb-3 Butoni" onClick={handleShow}>
-              Shtoni Banken <FontAwesomeIcon icon={faPlus} />
-            </MDBBtn>
-
-            <MDBTable>
-              <MDBTableHead>
-                <tr>
-                  <th scope="col">ID Banka</th>
-                  <th scope="col">Emri Bankes</th>
-                  <th scope="col">Numri i Llogaris</th>
-                  <th scope="col">Adresa</th>
-                  <th scope="col">Valuta</th>
-                  <th scope="col">Funksione</th>
-                </tr>
-              </MDBTableHead>
-
-              <MDBTableBody>
-                {njesiteMatese.map((k) => (
-                  <tr key={k.bankaID}>
-                    <td>{k.bankaID}</td>
-                    <td>{k.emriBankes}</td>
-                    <td>{k.numriLlogaris}</td>
-                    <td>{k.adresaBankes}</td>
-                    <td>{k.valuta}</td>
-                    <td>
-                      <Button
-                        style={{ marginRight: "0.5em" }}
-                        variant="success"
-                        onClick={() => handleEdito(k.bankaID)}>
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleFshij(k.bankaID)}>
-                        <FontAwesomeIcon icon={faBan} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </MDBTableBody>
-            </MDBTable>
+            <div className="mt-2">
+              <Tabela
+                data={bankat}
+                tableName="Lista e Bankave ne Sistem"
+                kaButona={true}
+                funksionButonShto={() => {
+                  handleShow();
+                }}
+                funksionButonFshij={(e) => {
+                  setId(e);
+                  handleFshij(e);
+                }}
+                funksionButonEdit={(e) => {
+                  setId(e);
+                  handleEdito(e);
+                }}
+                mosShfaqID={true}
+              />
+            </div>
           </>
         )}
       </div>

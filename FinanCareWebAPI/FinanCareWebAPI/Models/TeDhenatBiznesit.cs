@@ -17,4 +17,5 @@ public partial class TeDhenatBiznesit
     public string? NrKontaktit { get; set; }
     public string? Email { get; set; }
     public string? Logo { get; set; }
+    public string? EmailDomain { get; set; }
 }

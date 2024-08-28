@@ -68,8 +68,8 @@ function EditoBanken(props) {
     console.log(banka);
   };
 
-  const handleValutaChange = (event) => {
-    setBanka((prev) => ({ ...prev, valuta: event }));
+  const handlelokacioniBankesChange = (event) => {
+    setBanka((prev) => ({ ...prev, lokacioniBankes: event }));
   };
 
   function isNullOrEmpty(value) {
@@ -104,8 +104,7 @@ function EditoBanken(props) {
   const handleKontrolli = () => {
     if (
       isNullOrEmpty(banka.emriBankes) ||
-      isNullOrEmpty(banka.numriLlogaris) ||
-      isNullOrEmpty(banka.valuta)
+      isNullOrEmpty(banka.lokacioniBankes)
     ) {
       setFushatEZbrazura(true);
     } else {
@@ -114,8 +113,7 @@ function EditoBanken(props) {
         bankat.filter(
           (item) =>
             (item.emriBankes === banka.emriBankes &&
-              item.numriLlogaris == banka.numriLlogaris) ||
-            item.numriLlogaris == banka.numriLlogaris
+              item.lokacioniBankes == banka.lokacioniBankes)
         ).length !== 0
       ) {
         setKontrolloBanken(true);
@@ -210,43 +208,21 @@ function EditoBanken(props) {
                 autoFocus
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>
-                Numri Llogaris<span style={{ color: "red" }}>*</span>
-              </Form.Label>
-              <Form.Control
-                onChange={handleChange("numriLlogaris")}
-                value={banka.numriLlogaris}
-                type="text"
-                placeholder="Numri Llogaris"
-                autoFocus
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Adresa Bankes</Form.Label>
-              <Form.Control
-                onChange={handleChange("adresaBankes")}
-                value={banka.adresaBankes}
-                as="textarea"
-                placeholder="Adresa Bankes"
-              />
-            </Form.Group>
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1">
               <Form.Label>
-                Valuta<span style={{ color: "red" }}>*</span>
+                Lokacioni Bankes<span style={{ color: "red" }}>*</span>
               </Form.Label>
               <select
-                placeholder="Valuta"
+                placeholder="lokacioniBankes"
                 className="form-select"
-                value={banka.valuta}
-                onChange={(e) => handleValutaChange(e.target.value)}>
-                <option defaultValue selected value="Euro">
-                  Euro - €
+                value={banka.lokacioniBankes}
+                onChange={(e) => handlelokacioniBankesChange(e.target.value)}>
+                 <option defaultValue selected value="Kombetare">
+                  Kombetare
                 </option>
-                <option value="Dollar">Dollar - $</option>
-                <option value="Franga Zvicerane">Franga Zvicerane - CHF</option>
+                <option value="Nderkombtare">Nderkombtare</option>
               </select>
             </Form.Group>
           </Form>

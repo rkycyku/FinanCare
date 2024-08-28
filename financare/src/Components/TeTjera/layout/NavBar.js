@@ -252,8 +252,13 @@ function NavBar(props) {
                             Te Dhenat e Biznesit
                           </MDBDropdownItem>
                         </Link>
+                        
+                        <MDBDropdownItem divider />
                         <Link to="/Bankat">
                           <MDBDropdownItem link>Bankat</MDBDropdownItem>
+                        </Link>
+                        <Link to="/LlogaritBankareBiznesit">
+                          <MDBDropdownItem link>Llogarit e Biznesit</MDBDropdownItem>
                         </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
@@ -280,17 +285,11 @@ function NavBar(props) {
                             Lista e Partnereve
                           </MDBDropdownItem>
                         </Link>
-                        <Link to="/ShtoPartnerin">
-                          <MDBDropdownItem link>
-                            Shtoni Partnerin
-                          </MDBDropdownItem>
-                        </Link>
                         <Link to="/KartelaFinanciare">
                           <MDBDropdownItem link>
                             Kartela Financiare
                           </MDBDropdownItem>
                         </Link>
-                        
                         <MDBDropdownItem divider />
                         <Link to="/ShtoPagesat">
                           <MDBDropdownItem link>

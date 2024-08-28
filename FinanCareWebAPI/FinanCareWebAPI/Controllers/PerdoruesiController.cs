@@ -104,21 +104,9 @@ namespace WebAPI.Controllers
 
             var teDhenatUser = await _context.TeDhenatPerdoruesit.FirstOrDefaultAsync(x => x.UserID == id);
 
-            if (!p.TeDhenatPerdoruesit.Qyteti.IsNullOrEmpty())
-            {
-                teDhenatUser.Qyteti = p.TeDhenatPerdoruesit.Qyteti;
-            }
-            if (!p.TeDhenatPerdoruesit.Shteti.IsNullOrEmpty())
-            {
-                teDhenatUser.Shteti = p.TeDhenatPerdoruesit.Shteti;
-            }
             if (!p.TeDhenatPerdoruesit.Adresa.IsNullOrEmpty())
             {
                 teDhenatUser.Adresa = p.TeDhenatPerdoruesit.Adresa;
-            }
-            if (p.TeDhenatPerdoruesit.ZipKodi > 0)
-            {
-                teDhenatUser.ZipKodi = p.TeDhenatPerdoruesit.ZipKodi;
             }
             if (!p.TeDhenatPerdoruesit.NrKontaktit.IsNullOrEmpty())
             {
@@ -209,7 +197,40 @@ namespace WebAPI.Controllers
 
             return Ok(passwodiINdryshuar);
         }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GjeneroTeDhenatPerHyrje")]
+        public async Task<IActionResult> GjeneroTeDhenatPerHyrje(string e, string m, string domain)
+        {
+            var emri = e.ToLower();
+            var mbiemri = m.ToLower();
+
+            var UsernameGjeneruar = emri.ToString() + "." + mbiemri.ToString();
+            var EmailGjeneruar = UsernameGjeneruar.ToString() + "@" + domain.ToString().ToLower();
+
+            var ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
+
+            if (ekziston.Count > 0)
+            {
+                UsernameGjeneruar = emri.ToString() + "." + mbiemri.ToString() + "." + (ekziston.Count + 1).ToString();
+                EmailGjeneruar = UsernameGjeneruar.ToString() + "@" + domain.ToString().ToLower();
+            }
+
+            var PasswordiGjeneruar = emri.ToString() + mbiemri.ToString() + "1@";
+
+            var teDhenat = new
+            {
+                EmailGjeneruar,
+                UsernameGjeneruar,
+                PasswordiGjeneruar
+            };
+
+
+            return Ok(teDhenat);
+        }
     }
+
     public class RoletEPerdoruesit
     {
         public Perdoruesi Perdoruesi { get; set; }
