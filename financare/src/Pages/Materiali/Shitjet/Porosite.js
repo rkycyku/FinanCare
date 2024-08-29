@@ -54,6 +54,7 @@ function KthimIMallitTeBlere(props) {
   const [statusiIPageses, setStatusiIPageses] = useState("E Paguar");
   const [totPaTVSH, setTotPaTVSH] = useState("0.00");
   const [TVSH, setTVSH] = useState("0.00");
+  const [kartela, setKartela] = useState(null);
 
   const [kalkulimet, setKalkulimet] = useState([]);
   const [regjistroKalkulimin, setRegjistroKalkulimin] = useState(false);
@@ -206,7 +207,7 @@ function KthimIMallitTeBlere(props) {
             llojiKalkulimit: "FAT",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
-            idBonusKartela: null,
+            idBonusKartela: kartela,
           },
           authentikimi
         )
@@ -279,6 +280,7 @@ function KthimIMallitTeBlere(props) {
         const fetchedoptions = response.data.map((item) => ({
           value: item.idPartneri,
           label: item.emriBiznesit,
+          item: item,
         }));
         setOptions(fetchedoptions);
       })
@@ -289,6 +291,7 @@ function KthimIMallitTeBlere(props) {
   const handleChange = async (partneri) => {
     setPartneri(partneri.value);
     setOptionsSelected(partneri);
+    setKartela(partneri?.item?.kartela?.idKartela ?? null)
 
     document.getElementById("pershkrimShtese").focus();
   };

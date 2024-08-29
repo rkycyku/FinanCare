@@ -24,6 +24,8 @@ import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import FaturoOferten from "../../../Components/Materiali/Shitjet/Ofertat/FaturoOferten";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
+import Select from "react-select";
+
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
@@ -43,6 +45,7 @@ function KthimIMallitTeBlere(props) {
   const [statusiIPageses, setStatusiIPageses] = useState("E Paguar");
   const [totPaTVSH, setTotPaTVSH] = useState("0.00");
   const [TVSH, setTVSH] = useState("0.00");
+  const [kartela, setKartela] = useState(null);
 
   const [kalkulimet, setKalkulimet] = useState([]);
   const [regjistroKalkulimin, setRegjistroKalkulimin] = useState(false);
@@ -185,7 +188,6 @@ function KthimIMallitTeBlere(props) {
 
   async function handleRegjistroKalkulimin() {
     try {
-      console.log(nrRendorKalkulimit);
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
@@ -201,7 +203,7 @@ function KthimIMallitTeBlere(props) {
             llojiKalkulimit: "OFERTE",
             pershkrimShtese: pershkrimShtese,
             nrRendorFatures: nrRendorKalkulimit + 1,
-            idBonusKartela: null,
+            idBonusKartela: kartela,
           },
           authentikimi
         )
@@ -259,39 +261,6 @@ function KthimIMallitTeBlere(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(partneret);
-  const selectedIndex = useKeyboardNavigation(filteredItems);
-
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleNdryshoPartneri(filteredItems[selectedIndex]);
-      }
-
-      ndrroField(e, "pershkrimShtese");
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = partneret.filter((item) =>
-      item.emriBiznesit.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
-  };
-
-  function handleNdryshoPartneri(partneri) {
-    setPartneri(partneri.idPartneri);
-
-    setFilteredItems([]);
-    setInputValue(`${partneri?.emriBiznesit ? partneri.emriBiznesit : ""}`);
-  }
-
   function shfaqImportoNgaOferta(shfaq) {
     if (shfaq === true) {
       setImportoNgaOferta(true);
@@ -300,6 +269,38 @@ function KthimIMallitTeBlere(props) {
     }
     setPerditeso(Date.now());
   }
+
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
+  };
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+          item: item,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setPartneri(partneri.value);
+    setOptionsSelected(partneri);
+    setKartela(partneri?.item?.kartela?.idKartela ?? null);
+
+
+    document.getElementById("pershkrimShtese").focus();
+  };
 
   return (
     <>
@@ -381,32 +382,15 @@ function KthimIMallitTeBlere(props) {
                     </Form.Group>
                     <Form.Group controlId="idDheEmri">
                       <Form.Label>Partneri</Form.Label>
-                      <Form.Control
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Zgjedhni Partnerin"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        isDisabled={edito}
+                        styles={customStyles}
                       />
-
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}>
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.idPartneri}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleNdryshoPartneri(item)}>
-                              {item.emriBiznesit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
                     </Form.Group>
                   </Col>
                   <Col>

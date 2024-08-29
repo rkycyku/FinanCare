@@ -21,4 +21,5 @@ public partial class Partneri
     public virtual ICollection<Faturat> Faturat { get; } = new List<Faturat>();
 
     public virtual ICollection<Produkti> Produkti { get; } = new List<Produkti>();
+    public virtual Kartelat? Kartela { get; set; }
 }

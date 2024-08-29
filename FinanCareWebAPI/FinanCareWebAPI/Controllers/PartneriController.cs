@@ -26,17 +26,24 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneri.FirstOrDefaultAsync(x => x.IDPartneri == id);
+                var partneri = await _context.Partneri
+                    .Include(p => p.Kartela) 
+                    .FirstOrDefaultAsync(x => x.IDPartneri == id);
+
+                if (partneri == null)
+                {
+                    return NotFound("Partneri nuk ekziston");
+                }
 
                 return Ok(partneri);
             }
             catch (Exception ex)
             {
-
-                return BadRequest("Partneri nuk egziston");
-                throw new Exception(ex.Message);
+                return BadRequest("Ndodhi një gabim: " + ex.Message);
             }
         }
+
+
 
         [AllowAnonymous]
         [HttpGet]
@@ -45,7 +52,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit == llojiPartnerit).ToListAsync();
+                var partneri = await _context.Partneri.Include(p => p.Kartela).Where(x => x.LlojiPartnerit == llojiPartnerit).ToListAsync();
 
                 return Ok(partneri);
             }
@@ -62,7 +69,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit != "B").ToListAsync();
+                var partneri = await _context.Partneri.Include(p => p.Kartela).Where(x => x.LlojiPartnerit != "B").ToListAsync();
 
                 return Ok(partneri);
             }
@@ -79,7 +86,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneri = await _context.Partneri.Where(x => x.LlojiPartnerit != "F").ToListAsync();
+                var partneri = await _context.Partneri.Include(p => p.Kartela).Where(x => x.LlojiPartnerit != "F").ToListAsync();
 
                 return Ok(partneri);
             }
@@ -96,7 +103,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var partneret = await _context.Partneri.ToArrayAsync();
+                var partneret = await _context.Partneri.Include(p => p.Kartela).ToArrayAsync();
 
                 return Ok(partneret);
             }

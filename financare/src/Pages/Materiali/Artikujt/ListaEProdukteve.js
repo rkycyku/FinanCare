@@ -7,15 +7,23 @@ import axios from "axios";
 import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import ShtoProduktin from "../../../Components/Materiali/Artikujt/Produktet/ShtoProduktin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faPenToSquare, faPlus, faXmark, faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBan,
+  faPenToSquare,
+  faPlus,
+  faXmark,
+  faCheck,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import EditoProduktin from "../../../Components/Materiali/Artikujt/Produktet/EditoProduktin";
 import Modal from "react-bootstrap/Modal";
-import { TailSpin } from 'react-loader-spinner';
+import { TailSpin } from "react-loader-spinner";
 import ZbritjetEProduktit from "./ZbritjetEProduktit";
 import TabelaEKategorive from "./NjesiaMatese";
 import TabelaEKompanive from "../../Gjenerale/Partneret/TabelaEPartnereve";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 const ProductTables = () => {
   const [produkti, setProdukti] = useState([]);
@@ -27,9 +35,6 @@ const ProductTables = () => {
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mbyllZbritjen, setMbyllZbritjen] = useState(true);
-  const [mbyllKompanit, setMbyllKompanit] = useState(true);
-  const [mbyllKategorite, setMbyllKategorite] = useState(true);
 
   const getToken = localStorage.getItem("token");
 
@@ -44,9 +49,26 @@ const ProductTables = () => {
       try {
         setLoading(true);
         const produkti = await axios.get(
-          "https://localhost:7285/api/Produkti/Products", authentikimi
+          "https://localhost:7285/api/Produkti/Products",
+          authentikimi
         );
-        setProdukti(produkti.data);
+        console.log(produkti.data);
+        setProdukti(
+          produkti.data.map((k) => ({
+            ID: k.produktiId,
+            "Barkodi / Kodi Produktit": k.barkodi + " / " + k.kodiProduktit,
+            "Emri i Produktit": k.emriProduktit,
+            Partneri: k.emriBiznesit,
+            "Njesia Matese": k.emriNjesiaMatese,
+            "Grupi i Produktit": k.grupiIProduktit,
+            "Lloji TVSH %": k.llojiTVSH,
+            "Qmimi i Produktit Me Pakic €":
+              parseFloat(k.qmimiProduktit)?.toFixed(2) ?? 0,
+            "Qmimi i Produktit Me Shumic €":
+              parseFloat(k.qmimiMeShumic)?.toFixed(2) ?? 0,
+            "Sasia e Shumices": k.sasiaShumices,
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -63,8 +85,8 @@ const ProductTables = () => {
   const handleShow = () => setShow(true);
 
   const handleEdito = (id) => {
-    setEdito(true);
     setId(id);
+    setEdito(true);
   };
 
   const [showD, setShowD] = useState(false);
@@ -79,7 +101,10 @@ const ProductTables = () => {
 
   async function handleDelete() {
     try {
-      await axios.delete(`https://localhost:7285/api/Produkti/` + id, authentikimi);
+      await axios.delete(
+        `https://localhost:7285/api/Produkti/` + id,
+        authentikimi
+      );
       setTipiMesazhit("success");
       setPershkrimiMesazhit("Produkti u fshi me sukses!");
       setPerditeso(Date.now());
@@ -94,22 +119,6 @@ const ProductTables = () => {
     }
   }
 
-  const handleMbyllZbritjen = () => {
-    setMbyllZbritjen(true);
-    setMbyllKompanit(true);
-    setMbyllKategorite(true);
-  }
-  const handleMbyllKompanit = () => {
-    setMbyllKompanit(true);
-    setMbyllZbritjen(true);
-    setMbyllKategorite(true);
-  }
-  const handleMbyllKategorite = () => {
-    setMbyllKategorite(true);
-    setMbyllZbritjen(true);
-    setMbyllKompanit(true);
-  }
-
   return (
     <>
       <Helmet>
@@ -118,25 +127,6 @@ const ProductTables = () => {
       <NavBar />
 
       <div className="containerDashboardP">
-
-        {(mbyllZbritjen == false && mbyllKategorite && mbyllKompanit) &&
-          <ZbritjetEProduktit
-            setMbyllZbritjen={handleMbyllZbritjen}
-            setPerditeso={setPerditeso}
-          />
-        }
-        {(mbyllZbritjen && mbyllKategorite == false && mbyllKompanit) &&
-          <TabelaEKategorive
-            setMbyllKategorite={handleMbyllKategorite}
-            setPerditeso={setPerditeso}
-          />
-        }
-        {(mbyllZbritjen && mbyllKategorite && mbyllKompanit == false) &&
-          <TabelaEKompanive
-            setMbyllKompanit={handleMbyllKompanit}
-            setPerditeso={setPerditeso}
-          />
-        }
         {show && (
           <ShtoProduktin
             show={handleShow}
@@ -194,66 +184,29 @@ const ProductTables = () => {
               visible={true}
             />
           </div>
-        ) : (mbyllZbritjen && mbyllKategorite && mbyllKompanit) && <>
-          <h1 className="title">Tabela e Produkteve</h1>
-          <Button className="mb-3 Butoni" onClick={handleShow}>
-            Shto Produktin <FontAwesomeIcon icon={faPlus} />
-          </Button>
-          <Link to="/ZbritjetEProduktit"><MDBBtn className="Butoni">Zbritjet e Produkteve <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
-          <Link to="/TabelaEPartnereve"><MDBBtn className="Butoni">Partneret <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
-          <Link to="/NjesiaMatese"><MDBBtn className="Butoni">Njesia Matese <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
-          <Link to="/GrupetEProduktit"><MDBBtn className="Butoni">Grupet e Produktit <FontAwesomeIcon icon={faInfoCircle} /></MDBBtn></Link>
-          <MDBTable>
-            <MDBTableHead>
-              <tr>
-                <th scope="col">Barkodi / Kodi Produktit</th>
-                <th scope="col">Emri i Produktit</th>
-                <th scope="col">Partneri</th>
-                <th scope="col">Njesia Matese</th>
-                <th scope="col">Grupi i Produktit</th>
-                <th scope="col">Lloji TVSH %</th>
-                <th scope="col">Qmimi i Produktit Me Pakic</th>
-                <th scope="col">Qmimi i Produktit Me Shumic</th>
-                <th scope="col">Sasia e Shumices</th>
-                <th scope="col">Funksione</th>
-              </tr>
-            </MDBTableHead>
-
-            <MDBTableBody>
-              {produkti.map((p) => {
-                return (
-                  <tr key={p.produktiId}>
-                    <td>{p.barkodi} / {p.kodiProduktit}</td>
-                    <td>{p.emriProduktit}</td>
-                    <td>{p.emriBiznesit}</td>
-                    <td>{p.emriNjesiaMatese}</td>
-                    <td>{p.grupiIProduktit}</td>
-                    <td>{p.llojiTVSH}</td>
-                    <td>{(p.qmimiProduktit).toFixed(2)} €</td>
-                    <td>{(p.qmimiMeShumic).toFixed(2)} €</td>
-                    <td>{p.sasiaShumices}</td>
-                    <td>
-                      <Button
-                        style={{ marginRight: "0.5em" }}
-                        variant="success"
-                        onClick={() => handleEdito(p.produktiId)}
-                      >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleShowD(p.produktiId)}
-                      >
-                        <FontAwesomeIcon icon={faBan} />
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </MDBTableBody>
-          </MDBTable>
-        </>
-        }
+        ) : (
+          <>
+            <div className="mt-2">
+              <Tabela
+                data={produkti}
+                tableName="Tabela e Produkteve"
+                kaButona={true}
+                funksionButonShto={handleShow}
+                funksionButonEdit={(e) => {
+                  setId(e);
+                  handleEdito(e);
+                }}
+                funksionButonFshij={(e) => {
+                  setId(e);
+                  handleShowD(e);
+                }}
+                dateField="Data e Fatures" // The field in your data that contains the date values
+                kontrolloStatusin
+                mosShfaqID={true}
+              />
+            </div>
+          </>
+        )}
       </div>
     </>
   );

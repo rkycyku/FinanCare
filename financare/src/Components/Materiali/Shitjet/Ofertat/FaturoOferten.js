@@ -133,15 +133,8 @@ function FaturoOferten(props) {
           `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.nrRendorKalkulimit}`,
           authentikimi
         );
-        const ofertat = kalkulimet.data.filter(
-          (item) =>
-            item.llojiKalkulimit === "OFERTE" &&
-            item.statusiKalkulimit === "true"
-        );
-        const ofertatPerPartnerin = ofertat.filter(
-          (item) => item.idPartneri === props.partneri
-        );
-        setKalkulimet(ofertatPerPartnerin);
+
+        setKalkulimet(kalkulimet);
       } catch (err) {
         console.log(err);
       }
@@ -156,68 +149,73 @@ function FaturoOferten(props) {
       authentikimi
     );
 
-    await axios.post(
-      `https://localhost:7285/api/Faturat/ruajKalkulimin`,
-      {
-        dataRegjistrimit: detajetRegjistrimi.regjistrimet.dataRegjistrimit,
-        stafiID: detajetRegjistrimi.regjistrimet.stafiID,
-        totaliPaTVSH: parseFloat(detajetRegjistrimi.totaliPaTVSH),
-        tvsh: parseFloat(detajetRegjistrimi.tvsH18 + detajetRegjistrimi.tvsH8),
-        idPartneri: detajetRegjistrimi.regjistrimet.idPartneri,
-        statusiPageses: "Pa Paguar",
-        llojiPageses: detajetRegjistrimi.regjistrimet.llojiPageses,
-        nrFatures: (nrRendorKalkulimitFat + 1).toString(),
-        pershkrimShtese:
-          detajetRegjistrimi.regjistrimet.pershkrimShtese +
-          " Referenti: " +
-          detajetRegjistrimi.regjistrimet.username +
-          ", Nr. Ofertes: " +
-          barkodiOferte,
-        rabati: parseFloat(detajetRegjistrimi.rabati),
-        nrRendorFatures: nrRendorKalkulimitFat + 1,
-        statusiKalkulimit: "true",
-        llojiKalkulimit: "FAT",
-        idBonusKartela: null,
-      },
-      authentikimi
-    );
-    for (let produktet of kalkulimi.data) {
-      await axios.put(
-        `https://localhost:7285/api/Faturat/FaturoOferten/PerditesoStokun?id=${produktet.idProduktit}&lloji=FAT&stoku=${produktet.sasiaStokut}`,
-        {},
+    await axios
+      .post(
+        `https://localhost:7285/api/Faturat/ruajKalkulimin`,
+        {
+          dataRegjistrimit: detajetRegjistrimi.regjistrimet.dataRegjistrimit,
+          stafiID: detajetRegjistrimi.regjistrimet.stafiID,
+          totaliPaTVSH: parseFloat(detajetRegjistrimi.totaliPaTVSH),
+          tvsh: parseFloat(
+            detajetRegjistrimi.tvsH18 + detajetRegjistrimi.tvsH8
+          ),
+          idPartneri: detajetRegjistrimi.regjistrimet.idPartneri,
+          statusiPageses: "Pa Paguar",
+          llojiPageses: detajetRegjistrimi.regjistrimet.llojiPageses,
+          nrFatures: (nrRendorKalkulimitFat + 1).toString(),
+          pershkrimShtese:
+            detajetRegjistrimi.regjistrimet.pershkrimShtese +
+            " Referenti: " +
+            detajetRegjistrimi.regjistrimet.username +
+            ", Nr. Ofertes: " +
+            barkodiOferte,
+          rabati: parseFloat(detajetRegjistrimi.rabati),
+          nrRendorFatures: nrRendorKalkulimitFat + 1,
+          statusiKalkulimit: "true",
+          llojiKalkulimit: "FAT",
+          idBonusKartela: detajetRegjistrimi.regjistrimet.idBonusKartela,
+        },
         authentikimi
-      );
-      await axios
-        .post(
-          `https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat`,
-          {
-            idRegjistrimit: props.nrRendorKalkulimit + 1,
-            idProduktit: produktet.idProduktit,
-            qmimiBleres: produktet.qmimiBleres,
-            qmimiShites: produktet.qmimiShites,
-            sasiaStokut: produktet.sasiaStokut,
-            qmimiShitesMeShumic: produktet.qmimiShitesMeShumic,
-            rabati1: produktet.rabati1,
-            rabati2: produktet.rabati2,
-            rabati3: produktet.rabati3,
-          },
-          authentikimi
-        )
-        .then(async () => {
-          props.setPerditeso();
-          if (produktet.sasiaStokut > produktet.sasiaAktualeNeStok) {
-            setProduktetPerFletLejim((prev) => {
-              return [...prev, produktet];
-            });
-            setKaFleteLejim(true);
-          }
+      )
+      .then(async (response) => {
+        for (let produktet of kalkulimi.data) {
           await axios.put(
-            `https://localhost:7285/api/Faturat/FaturoOferten?id=${idRegjistrimit}`,
+            `https://localhost:7285/api/Faturat/FaturoOferten/PerditesoStokun?id=${produktet.idProduktit}&lloji=FAT&stoku=${produktet.sasiaStokut}`,
             {},
             authentikimi
           );
-        });
-    }
+          await axios
+            .post(
+              `https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat`,
+              {
+                idRegjistrimit: response?.data?.idRegjistrimit,
+                idProduktit: produktet.idProduktit,
+                qmimiBleres: produktet.qmimiBleres,
+                qmimiShites: produktet.qmimiShites,
+                sasiaStokut: produktet.sasiaStokut,
+                qmimiShitesMeShumic: produktet.qmimiShitesMeShumic,
+                rabati1: produktet.rabati1,
+                rabati2: produktet.rabati2,
+                rabati3: produktet.rabati3,
+              },
+              authentikimi
+            )
+            .then(async () => {
+              props.setPerditeso();
+              if (produktet.sasiaStokut > produktet.sasiaAktualeNeStok) {
+                setProduktetPerFletLejim((prev) => {
+                  return [...prev, produktet];
+                });
+                setKaFleteLejim(true);
+              }
+              await axios.put(
+                `https://localhost:7285/api/Faturat/FaturoOferten?id=${idRegjistrimit}`,
+                {},
+                authentikimi
+              );
+            });
+        }
+      });
 
     setImportoOfertenKonfirmimi(false);
     setEPara(false);
@@ -273,12 +271,10 @@ function FaturoOferten(props) {
     let totalFat =
       (qmimiShites -
         qmimiShites * (rabati1 / 100) -
-        (qmimiShites - qmimiShites * (rabati1 / 100)) *
-          (rabati2 / 100) -
+        (qmimiShites - qmimiShites * (rabati1 / 100)) * (rabati2 / 100) -
         (qmimiShites -
           qmimiShites * (rabati1 / 100) -
-          (qmimiShites - qmimiShites * (rabati1 / 100)) *
-            (rabati2 / 100)) *
+          (qmimiShites - qmimiShites * (rabati1 / 100)) * (rabati2 / 100)) *
           (rabati3 / 100)) *
       sasiaStokut;
     let totTVSHProdukt = totalFat * (1 + llojiTVSH / 100) - totalFat;
@@ -386,7 +382,7 @@ function FaturoOferten(props) {
             pershkrimShtese: kalkulimet.data.regjistrimet.pershkrimShtese,
             rabati: parseFloat(kalkulimet.data.rabati),
             nrRendorFatures: kalkulimet.data.regjistrimet.nrRendorFatures,
-            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela
+            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela,
           },
           authentikimi
         );
@@ -414,7 +410,7 @@ function FaturoOferten(props) {
             totaliPaTVSH: parseFloat(-totalPaTVSH),
             tvsh: parseFloat(-totalTVSH),
             rabati: parseFloat(-totalRabati),
-            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela
+            idBonusKartela: kalkulimet.data.regjistrimet.idBonusKartela,
           },
           authentikimi
         );

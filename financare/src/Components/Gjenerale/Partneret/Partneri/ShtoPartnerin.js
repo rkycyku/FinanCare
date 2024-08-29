@@ -25,7 +25,7 @@ function ShtoPartnerin(props) {
   const [email, setEmail] = useState(null);
   const [rabati, setRabati] = useState(0);
 
-  const [key, setKey] = useState("bleres");
+  const [key, setKey] = useState("klientPrivat");
 
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
 
@@ -117,7 +117,9 @@ function ShtoPartnerin(props) {
             "https://localhost:7285/api/Partneri/shtoPartnerin",
             {
               emriBiznesit: emri + " " + mbiemri,
-              shkurtesaPartnerit: `${emri.charAt(0).toUpperCase()}${mbiemri.charAt(0).toUpperCase()}`,
+              shkurtesaPartnerit: `${emri.charAt(0).toUpperCase()}${mbiemri
+                .charAt(0)
+                .toUpperCase()}`,
               nui: "0",
               nrf: "0",
               tvsh: "0",
@@ -156,7 +158,12 @@ function ShtoPartnerin(props) {
   async function ShtoPartnerinFurnitor(e) {
     e.preventDefault();
 
-    if (isNullOrEmpty(emriPartnerit) || isNullOrEmpty(shkurtesaEmrit) || isNullOrEmpty(NUI) || isNullOrEmpty(adresa)) {
+    if (
+      isNullOrEmpty(emriPartnerit) ||
+      isNullOrEmpty(shkurtesaEmrit) ||
+      isNullOrEmpty(NUI) ||
+      isNullOrEmpty(adresa)
+    ) {
       props.setPershkrimiMesazhit(
         "<strong>Ju lutemi plotesoni te gjitha fushat me *</strong>"
       );
@@ -184,12 +191,19 @@ function ShtoPartnerin(props) {
               email: email,
               adresa: adresa,
               nrKontaktit: nrKontaktit,
-              llojiPartnerit: "F",
+              llojiPartnerit: key == "furnitor" ? "F" : "B",
               shkurtesaPartnerit: shkurtesaEmrit,
             },
             authentikimi
           )
-          .then(() => {
+          .then((response) => {
+            if (key == "klientBiznesi") {
+              axios.post(
+                `https://localhost:7285/api/Kartelat/ShtoKartelenBonus?idPartneri=${response.data.idPartneri}&stafiID=${teDhenat.perdoruesi.userID}&rabati=${rabati}`,
+                {},
+                authentikimi
+              );
+            }
             PastroTeDhenat();
             props.largo();
             props.setPershkrimiMesazhit("Partneri u Shtua me Sukses");
@@ -220,7 +234,7 @@ function ShtoPartnerin(props) {
           activeKey={key}
           onSelect={(k) => setKey(k)}
           className="mb-3">
-          <Tab eventKey="bleres" title="Partner Bleres">
+          <Tab eventKey="klientPrivat" title="Klient Privat">
             <Form>
               <Form.Group className="mb-3" controlId="emriBiznesit">
                 <Row>
@@ -276,7 +290,7 @@ function ShtoPartnerin(props) {
                     <Form.Label>Rabati</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="example@email.com"
+                      placeholder="0"
                       onChange={(e) => setRabati(e.target.value)}
                     />
                   </Col>
@@ -284,8 +298,7 @@ function ShtoPartnerin(props) {
               </Form.Group>
             </Form>
           </Tab>
-
-          <Tab eventKey="furnitor" title="Partner Furnitor">
+          <Tab eventKey="klientBiznesi" title="Klient Biznesor">
             <Form>
               <Form.Group className="mb-3" controlId="nui">
                 <Row>
@@ -320,7 +333,7 @@ function ShtoPartnerin(props) {
                     </Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="+38344111222"
+                      placeholder="111222333"
                       onChange={(e) => setNUI(e.target.value)}
                     />
                   </Col>
@@ -328,7 +341,7 @@ function ShtoPartnerin(props) {
                     <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
                     <Form.Control
                       type="number"
-                      placeholder="example@email.com"
+                      placeholder="111222333"
                       onChange={(e) => setNF(e.target.value)}
                     />
                   </Col>
@@ -336,7 +349,104 @@ function ShtoPartnerin(props) {
                     <Form.Label>Numri TVSH: NRTVSH</Form.Label>
                     <Form.Control
                       type="number"
+                      placeholder="111222333"
+                      onChange={(e) => setNRTVSH(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="nui">
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Adresa<span style={{ color: "red" }}>*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
+                      onChange={(e) => setAdresa(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>Nr. Kontaktit</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="+38344111222"
+                      onChange={(e) => setNrKontaktit(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="text"
                       placeholder="example@email.com"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>Rabati</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="0"
+                      onChange={(e) => setRabati(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </Form.Group>
+            </Form>
+          </Tab>
+          <Tab eventKey="furnitor" title="Furnitor">
+            <Form>
+              <Form.Group className="mb-3" controlId="nui">
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Emri Biznesit<span style={{ color: "red" }}>*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="FinanCare SH.P.K."
+                      onChange={(e) => setEmriPartnerit(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>
+                      Shkurtesa Partnerit<span style={{ color: "red" }}>*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="FC"
+                      onChange={(e) => setShkurtesaEmrit(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="nui">
+                <Row>
+                  <Col>
+                    <Form.Label>
+                      Numri Unik Identifikues: NUI
+                      <span style={{ color: "red" }}>*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="111222333"
+                      onChange={(e) => setNUI(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="111222333"
+                      onChange={(e) => setNF(e.target.value)}
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Label>Numri TVSH: NRTVSH</Form.Label>
+                    <Form.Control
+                      type="number"
+                      placeholder="111222333"
                       onChange={(e) => setNRTVSH(e.target.value)}
                     />
                   </Col>
@@ -383,7 +493,9 @@ function ShtoPartnerin(props) {
         <Button
           className="Butoni"
           onClick={(e) =>
-            key == "bleres" ? ShtoPartnerinBleres(e) : ShtoPartnerinFurnitor(e)
+            key == "klientPrivat"
+              ? ShtoPartnerinBleres(e)
+              : ShtoPartnerinFurnitor(e)
           }>
           Shto Partnerin <FontAwesomeIcon icon={faPenToSquare} />
         </Button>

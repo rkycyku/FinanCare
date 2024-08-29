@@ -21,6 +21,8 @@ import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Select from "react-select";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function KartelaEArtikullit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -30,13 +32,12 @@ function KartelaEArtikullit(props) {
   const [loading, setLoading] = useState(false);
   const [produktiID, setproduktiID] = useState(0);
   const [kartelaEProduktit, setKartelaEProduktit] = useState([]);
+  const [kalkulimetKartelaProduktit, setKalkulimetKartelaProduktit] = useState(
+    []
+  );
   const [produktet, setProduktet] = useState([]);
 
   const [teDhenat, setTeDhenat] = useState([]);
-
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(produktet);
-  const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
 
   const navigate = useNavigate();
 
@@ -96,6 +97,45 @@ function KartelaEArtikullit(props) {
           authentikimi
         );
         setKartelaEProduktit(kartela.data);
+        setKalkulimetKartelaProduktit(
+          kartela?.data?.kalkulimet?.map((p, index) => ({
+            ID: p.id,
+            "NR.": index + 1,
+            "Data Fatures": new Date(p.dataRegjistrimit).toISOString(),
+            "Lloji Fat.": p.llojiKalkulimit,
+            "Nr. Fat.": p.nrRendorFatures,
+            Partneri: p.emriBiznesit,
+            "Sas. Hyrese":
+              p.llojiKalkulimit === "HYRJE" ||
+              p.llojiKalkulimit === "FL" ||
+              p.llojiKalkulimit === "KMSH"
+                ? p.sasiaStokut
+                : "-",
+            "Sas. Dalese":
+              p.llojiKalkulimit === "FAT" ||
+              p.llojiKalkulimit === "AS" ||
+              p.llojiKalkulimit === "KMB" ||
+              p.llojiKalkulimit === "PARAGON"
+                ? p.sasiaStokut
+                : "-",
+            "Qmimi Hyres €":
+              p.llojiKalkulimit === "HYRJE" ||
+              p.llojiKalkulimit === "FL" ||
+              p.llojiKalkulimit === "KMSH"
+                ? parseFloat(p.qmimiBleres).toFixed(3)
+                : "-",
+            "Qmimi Dales €":
+              p.llojiKalkulimit === "FAT" ||
+              p.llojiKalkulimit === "AS" ||
+              p.llojiKalkulimit === "KMB" ||
+              p.llojiKalkulimit === "PARAGON"
+                ? parseFloat(p.qmimiShites).toFixed(3)
+                : "-",
+            "R. 1 %": parseFloat(p.rabati1 ?? 0).toFixed(2),
+            "R. 2 %": parseFloat(p.rabati2 ?? 0).toFixed(2),
+            "R. 3 %": parseFloat(p.rabati3 ?? 0).toFixed(2),
+          }))
+        );
         console.log(kartela.data);
       } catch (err) {
         console.log(err);
@@ -105,123 +145,32 @@ function KartelaEArtikullit(props) {
     kartelaEProduktit();
   }, [perditeso, produktiID]);
 
-  const handleProduktiChange = async (selectedOption) => {
-    setproduktiID(selectedOption?.produktiID ?? 0);
-
-    setFilteredItems([]);
-    setInputValue(
-      `${
-        selectedOption?.emriProduktit
-          ? selectedOption.emriProduktit + " - "
-          : ""
-      }` +
-        `${
-          selectedOption?.kodiProduktit
-            ? selectedOption.kodiProduktit + " - "
-            : ""
-        }` +
-        `${selectedOption?.barkodi ? selectedOption.barkodi : ""}`
-    );
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
   };
-
-  const ndrroField = (e, tjetra) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById(tjetra).focus();
-    }
-  };
-
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredItems.length > 0) {
-        handleProduktiChange(filteredItems[selectedIndex]);
-      }
-
-      ndrroField(e, "sasia");
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setInputValue(value);
-
-    const filtered = produktet.filter(
-      (item) =>
-        item.emriProduktit.toLowerCase().includes(value) ||
-        item.barkodi.toLowerCase().includes(value) ||
-        item.kodiProduktit.toLowerCase().includes(value)
-    );
-
-    setFilteredItems(filtered);
-  };
-
-  function FaturaPerRuajtje() {
-    const kartela = document.querySelector(".kartela");
-    const kthejButonat = [];
-
-    const largoButonat = kartela.querySelectorAll("button");
-    largoButonat.forEach((button) => {
-      const parent = button.parentNode;
-      const position = Array.from(parent.children).indexOf(button);
-      kthejButonat.push({ button, parent, position });
-      button.remove();
-    });
-
-    html2canvas(kartela, { useCORS: true })
-      .then((invoiceCanvas) => {
-        var contentWidth = invoiceCanvas.width;
-        var contentHeight = invoiceCanvas.height;
-        var pageHeight = (contentWidth / 592.28) * 841.89;
-        var leftHeight = contentHeight;
-        var position = 0;
-        var imgWidth = 555.28;
-        var imgHeight = (imgWidth / contentWidth) * contentHeight;
-        var invoicePageData = invoiceCanvas.toDataURL("image/jpeg", 1.0);
-        var pdf = new jsPDF("", "pt", "a4");
-
-        if (leftHeight < pageHeight) {
-          pdf.addImage(invoicePageData, "JPEG", 20, 20, imgWidth, imgHeight);
-        } else {
-          while (leftHeight > 0) {
-            pdf.addImage(
-              invoicePageData,
-              "JPEG",
-              20,
-              position + 5,
-              imgWidth,
-              imgHeight
-            );
-            leftHeight -= pageHeight;
-            position -= 841.89;
-            if (leftHeight > 0) {
-              pdf.addPage();
-            }
-          }
-        }
-
-        kthejButonat.forEach(({ button, parent, position }) => {
-          parent.insertBefore(button, parent.children[position]);
-        });
-
-        ruajFaturen(pdf);
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .then((response) => {
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.produktiID,
+          label: item.emriProduktit,
+        }));
+        setOptions(fetchedoptions);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error fetching data:", error);
       });
-  }
-
-  function ruajFaturen(pdf) {
-    pdf.save(
-      "Kartela e Produktit - " +
-        (kartelaEProduktit && kartelaEProduktit?.produkti?.emriProduktit) +
-        " - " +
-        (kartelaEProduktit && kartelaEProduktit?.produkti?.kodiProduktit) +
-        " - " +
-        (kartelaEProduktit && kartelaEProduktit?.produkti?.barkodi) +
-        ".pdf"
-    );
-  }
+  }, []);
+  const handleChange = async (partneri) => {
+    setOptionsSelected(partneri);
+    setproduktiID(partneri.value);
+  };
 
   return (
     <>
@@ -261,33 +210,14 @@ function KartelaEArtikullit(props) {
                   <Form>
                     <Form.Group controlId="idDheEmri">
                       <Form.Label>Produkti</Form.Label>
-                      <Form.Control
-                        id={produktiID}
-                        type="text"
-                        className="form-control styled-input"
-                        placeholder="Search"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={handleInputKeyDown}
-                        onFocus={handleInputChange}
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        styles={customStyles}
                       />
-
-                      <div
-                        className="container"
-                        style={{ position: "relative" }}>
-                        <ul className="list-group mt-2 searchBoxi">
-                          {filteredItems.map((item, index) => (
-                            <li
-                              key={item.produktiID}
-                              className={`list-group-item${
-                                selectedIndex === index ? " active" : ""
-                              }`}
-                              onClick={() => handleProduktiChange(item)}>
-                              {item.emriProduktit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
                     </Form.Group>
                   </Form>
                   <br />
@@ -338,6 +268,16 @@ function KartelaEArtikullit(props) {
                         0
                     ).toFixed(2)}{" "}
                     €
+                  </p>
+                  <p>
+                    <strong>Sasia Hyrese:</strong>{" "}
+                    {(kartelaEProduktit && kartelaEProduktit?.totaliHyrese) ??
+                      0}
+                  </p>
+                  <p>
+                    <strong>Sasia Dalese:</strong>{" "}
+                    {(kartelaEProduktit && kartelaEProduktit?.totaliDalese) ??
+                      0}
                   </p>
                 </Col>
                 <Col>
@@ -391,126 +331,19 @@ function KartelaEArtikullit(props) {
                       <Link to="/Produktet">
                         <Button className="mb-3 Butoni">Produktet</Button>
                       </Link>
-                      <Button
-                        className="mb-3 Butoni"
-                        onClick={() => FaturaPerRuajtje()}>
-                        Ruaj Kartelen <FontAwesomeIcon icon={faDownload} />
-                      </Button>
                     </Col>
                   </Row>
                 </Col>
               </Row>
               <hr />
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>NR.</th>
-                    <th>Data Fat.</th>
-                    <th>Lloji Fat.</th>
-                    <th>Nr. Fat.</th>
-                    <th>Partneri</th>
-                    <th>Sas. Hyrese</th>
-                    <th>Sas. Dalese</th>
-                    <th>Qmimi Hyres</th>
-                    <th>Qmimi Dales</th>
-                    <th>R. 1</th>
-                    <th>R. 2</th>
-                    <th>R. 3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {kartelaEProduktit &&
-                    kartelaEProduktit.kalkulimet &&
-                    kartelaEProduktit.kalkulimet.map((p, index) => (
-                      <tr key={p.id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          {new Date(p.dataRegjistrimit).toLocaleDateString(
-                            "en-GB",
-                            {
-                              dateStyle: "short",
-                            }
-                          )}
-                        </td>
-                        <td>{p.llojiKalkulimit}</td>
-                        <td>{p.nrRendorFatures}</td>
-                        <td>{p.emriBiznesit}</td>
-                        <td>
-                          {p.llojiKalkulimit === "HYRJE" ||
-                          p.llojiKalkulimit === "FL" ||
-                          p.llojiKalkulimit === "KMSH"
-                            ? p.sasiaStokut
-                            : "-"}
-                        </td>
-                        <td>
-                          {p.llojiKalkulimit === "FAT" ||
-                          p.llojiKalkulimit === "AS" ||
-                          p.llojiKalkulimit === "KMB" ||
-                          p.llojiKalkulimit === "PARAGON"
-                            ? p.sasiaStokut
-                            : "-"}
-                        </td>
-                        <td>
-                          {p.llojiKalkulimit === "HYRJE" ||
-                          p.llojiKalkulimit === "FL" ||
-                          p.llojiKalkulimit === "KMSH"
-                            ? parseFloat(p.qmimiBleres).toFixed(3) + " €"
-                            : "-"}
-                        </td>
-                        <td>
-                          {p.llojiKalkulimit === "FAT" ||
-                          p.llojiKalkulimit === "AS" ||
-                          p.llojiKalkulimit === "KMB" ||
-                          p.llojiKalkulimit === "PARAGON"
-                            ? parseFloat(p.qmimiShites).toFixed(3) + " €"
-                            : "-"}
-                        </td>
-                        <td>{parseFloat(p.rabati1 ?? 0).toFixed(2)} %</td>
-                        <td>{parseFloat(p.rabati2 ?? 0).toFixed(2)} %</td>
-                        <td>{parseFloat(p.rabati3 ?? 0).toFixed(2)} %</td>
-                      </tr>
-                    ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {(kartelaEProduktit &&
-                        kartelaEProduktit?.kalkulimet &&
-                        kartelaEProduktit?.kalkulimet.length) ??
-                        0}
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      {(kartelaEProduktit && kartelaEProduktit?.totaliHyrese) ??
-                        0}
-                    </td>
-                    <td>
-                      {(kartelaEProduktit && kartelaEProduktit?.totaliDalese) ??
-                        0}
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </Table>
+              <div className="mt-2">
+                <Tabela
+                  data={kalkulimetKartelaProduktit}
+                  tableName="Lista e Hyrje / Dalje"
+                  dateField="Data Fatures" // The field in your data that contains the date values
+                  mosShfaqID={true}
+                />
+              </div>
             </Container>
           </div>
         )}

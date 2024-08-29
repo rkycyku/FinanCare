@@ -32,7 +32,7 @@ function RegjistroFaturen(props) {
   const [sasia, setSasia] = useState("");
   const [qmimiShites, setQmimiShites] = useState("");
   const [rabati1, setRabati1] = useState("");
-  const [rabati2, setRabati2] = useState("");
+  const [rabati2, setRabati2] = useState(null);
   const [rabati3, setRabati3] = useState(null);
   const [njesiaMatese, setNjesiaMatese] = useState("Cope");
   const [totProdukteve, setTotProdukteve] = useState(0);
@@ -107,6 +107,7 @@ function RegjistroFaturen(props) {
             `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
             authentikimi
           );
+          setRabati2(teDhenatFatures?.data?.regjistrimet?.bonusKartela?.rabati ?? null);
           setProduktetNeKalkulim(teDhenatKalkulimit.data.map((k, index) => ({
             
             ID: k.id,
@@ -251,6 +252,7 @@ function RegjistroFaturen(props) {
             qmimiShites: optionsSelected?.item?.qmimiProduktit,
             qmimiShitesMeShumic: optionsSelected?.item?.qmimiMeShumic,
             rabati1: optionsSelected?.item?.rabati ?? 0,
+            rabati2: rabati2 ?? 0,
             rabati3: rabati3 ?? 0,
           },
           authentikimi
@@ -316,7 +318,7 @@ function RegjistroFaturen(props) {
       });
   }
 
-  async function handleEdit(id, index) {
+  async function handleEdit(id) {
     await axios
       .get(
         `https://localhost:7285/api/Faturat/ruajKalkulimin/getKalkulimi?idKalkulimit=${id}`,
@@ -328,7 +330,7 @@ function RegjistroFaturen(props) {
 
         setEdito(true);
         setproduktiID(p.data[0].idProduktit);
-        setInputValue(index + 1 + " - " + p.data[0].emriProduktit);
+        setOptionsSelected(options.filter((item) => item.value == p.data[0].idProduktit))
         setEmriProduktit(p.data[0].emriProduktit);
         setSasiaNeStok(p.data[0].sasiaNeStok);
         setSasia(p.data[0].sasiaStokut);
@@ -502,16 +504,6 @@ function RegjistroFaturen(props) {
                       onKeyDown={(e) => {
                         ndrroField(e, "rabati");
                       }}
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Qmimi Shites €</Form.Label>
-                    <Form.Control
-                      id="qmimiShites"
-                      type="number"
-                      placeholder={"0.00 €"}
-                      value={qmimiSH}
-                      disabled
                     />
                   </Form.Group>
                   <Form.Group>
