@@ -55,7 +55,7 @@ const ProductTables = () => {
         console.log(produkti.data);
         setProdukti(
           produkti.data.map((k) => ({
-            ID: k.produktiId,
+            ID: k.produktiID,
             "Barkodi / Kodi Produktit": k.barkodi + " / " + k.kodiProduktit,
             "Emri i Produktit": k.emriProduktit,
             Partneri: k.emriBiznesit,
@@ -93,7 +93,6 @@ const ProductTables = () => {
 
   const handleCloseD = () => setShowD(false);
   const handleShowD = (id) => {
-    setId(id);
     setShowD(true);
   };
 
@@ -200,8 +199,6 @@ const ProductTables = () => {
                   setId(e);
                   handleShowD(e);
                 }}
-                dateField="Data e Fatures" // The field in your data that contains the date values
-                kontrolloStatusin
                 mosShfaqID={true}
               />
             </div>

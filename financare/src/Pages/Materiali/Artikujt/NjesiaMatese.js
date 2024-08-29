@@ -6,155 +6,209 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import ShtoKategori from "../../../Components/Materiali/Artikujt/NjesiaMatese/ShtoNjesineMatese";
 import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faPenToSquare, faPlus, faClose } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBan,
+  faPenToSquare,
+  faPlus,
+  faClose,
+} from "@fortawesome/free-solid-svg-icons";
 import EditoKategorin from "../../../Components/Materiali/Artikujt/NjesiaMatese/EditoNjesineMatese";
 import LargoKategorin from "../../../Components/Materiali/Artikujt/NjesiaMatese/LargoNjesineMatese";
-import { TailSpin } from 'react-loader-spinner';
+import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function TabelaEKategorive(props) {
-    const [njesiteMatese, setNjesiteMatese] = useState([]);
-    const [perditeso, setPerditeso] = useState('');
-    const [shto, setShto] = useState(false);
-    const [edito, setEdito] = useState(false);
-    const [fshij, setFshij] = useState(false);
-    const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
-    const [tipiMesazhit, setTipiMesazhit] = useState("");
-    const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
-    const [id, setId] = useState(0);
-    const [loading, setLoading] = useState(false);
+  const [njesiteMatese, setNjesiteMatese] = useState([]);
+  const [perditeso, setPerditeso] = useState("");
+  const [shto, setShto] = useState(false);
+  const [edito, setEdito] = useState(false);
+  const [fshij, setFshij] = useState(false);
+  const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
+  const [tipiMesazhit, setTipiMesazhit] = useState("");
+  const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
+  const [id, setId] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-    const getToken = localStorage.getItem("token");
+  const getToken = localStorage.getItem("token");
 
-    const authentikimi = {
-        headers: {
-            Authorization: `Bearer ${getToken}`,
-        },
+  const authentikimi = {
+    headers: {
+      Authorization: `Bearer ${getToken}`,
+    },
+  };
+
+  useEffect(() => {
+    const shfaqNjesiteMatese = async () => {
+      try {
+        setLoading(true);
+        const njesiaMatese = await axios.get(
+          "https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese",
+          authentikimi
+        );
+        setNjesiteMatese(
+          njesiaMatese.data.map((k) => ({
+            ID: k.idNjesiaMatese,
+            "Njesia Matese": k.njesiaMatese,
+            "Totali Produkteve": k.totaliProdukteve,
+          }))
+        );
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
     };
 
-    useEffect(() => {
-        const shfaqNjesiteMatese = async () => {
-            try {
-                setLoading(true);
-                const njesiaMatese = await axios.get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese", authentikimi);
-                setNjesiteMatese(njesiaMatese.data);
-                setLoading(false);
-            } catch (err) {
-                console.log(err);
-                setLoading(false);
-            }
-        };
+    shfaqNjesiteMatese();
+  }, [perditeso]);
 
-        shfaqNjesiteMatese();
-    }, [perditeso]);
+  const handleClose = () => {
+    setShto(false);
+  };
+  const handleShow = () => setShto(true);
 
-    const handleClose = () => {
-        setShto(false);
-    }
-    const handleShow = () => setShto(true);
+  const handleEdito = (id) => {
+    setId(id);
+    setEdito(true);
+  };
+  const handleEditoMbyll = () => setEdito(false);
 
-    const handleEdito = (id) => {
-        setEdito(true)
-        setId(id)
-    };
-    const handleEditoMbyll = () => setEdito(false);
+  const handleFshij = (id) => {
+    setId(id);
+    setFshij(true);
+  };
+  const handleFshijMbyll = () => setFshij(false);
 
-    const handleFshij = (id) => {
-        setFshij(true)
-        setId(id)
-    };
-    const handleFshijMbyll = () => setFshij(false);
+  return (
+    <>
+      <Helmet>
+        <title>Dashboard | Tech Store</title>
+      </Helmet>
+      <NavBar />
 
-    return (
-        <>
-            <Helmet>
-                <title>Dashboard | Tech Store</title>
-            </Helmet>
-            <NavBar />
+      <div className="containerDashboardP">
+        {shto && (
+          <ShtoKategori
+            shfaq={handleShow}
+            largo={handleClose}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
+        {shfaqMesazhin && (
+          <Mesazhi
+            setShfaqMesazhin={setShfaqMesazhin}
+            pershkrimi={pershkrimiMesazhit}
+            tipi={tipiMesazhit}
+          />
+        )}
+        {edito && (
+          <EditoKategorin
+            largo={handleEditoMbyll}
+            id={id}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
+        {fshij && (
+          <LargoKategorin
+            largo={handleFshijMbyll}
+            id={id}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
+        {loading ? (
+          <div className="Loader">
+            <TailSpin
+              height="80"
+              width="80"
+              color="#009879"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </div>
+        ) : (
+          <>
+            <h1 className="title">Njesite Matese</h1>
 
-            <div className="containerDashboardP">
-                {shto && <ShtoKategori
-                    shfaq={handleShow}
-                    largo={handleClose}
-                    shfaqmesazhin={() => setShfaqMesazhin(true)}
-                    perditesoTeDhenat={() => setPerditeso(Date.now())}
-                    setTipiMesazhit={setTipiMesazhit}
-                    setPershkrimiMesazhit={setPershkrimiMesazhit}
-                />}
-                {shfaqMesazhin && <Mesazhi
-                    setShfaqMesazhin={setShfaqMesazhin}
-                    pershkrimi={pershkrimiMesazhit}
-                    tipi={tipiMesazhit}
-                />}
-                {edito && <EditoKategorin
-                    largo={handleEditoMbyll}
-                    id={id}
-                    shfaqmesazhin={() => setShfaqMesazhin(true)}
-                    perditesoTeDhenat={() => setPerditeso(Date.now())}
-                    setTipiMesazhit={setTipiMesazhit}
-                    setPershkrimiMesazhit={setPershkrimiMesazhit}
-                />}
-                {fshij && <LargoKategorin
-                    largo={handleFshijMbyll}
-                    id={id}
-                    shfaqmesazhin={() => setShfaqMesazhin(true)}
-                    perditesoTeDhenat={() => setPerditeso(Date.now())}
-                    setTipiMesazhit={setTipiMesazhit}
-                    setPershkrimiMesazhit={setPershkrimiMesazhit}
-                />}
-                {loading ? (
-                    <div className="Loader">
-                        <TailSpin
-                            height="80"
-                            width="80"
-                            color="#009879"
-                            ariaLabel="tail-spin-loading"
-                            radius="1"
-                            wrapperStyle={{}}
-                            wrapperClass=""
-                            visible={true}
-                        />
-                    </div>
-                ) : (<>
-                    <h1 className="title">
-                        Njesite Matese
-                    </h1>
+            <Link to="/Produktet">
+              <MDBBtn className="Butoni">
+                Mbyllni Njesine Matese <FontAwesomeIcon icon={faClose} />
+              </MDBBtn>
+            </Link>
+            <MDBBtn className="mb-3 Butoni" onClick={handleShow}>
+              Shtoni Njesine Matese <FontAwesomeIcon icon={faPlus} />
+            </MDBBtn>
 
-                    <Link to="/Produktet"><MDBBtn className="Butoni">Mbyllni Njesine Matese <FontAwesomeIcon icon={faClose} /></MDBBtn></Link>
-                    <MDBBtn className="mb-3 Butoni" onClick={handleShow}>Shtoni Njesine Matese <FontAwesomeIcon icon={faPlus} /></MDBBtn>
+            <div className="mt-2">
+              <Tabela
+                data={njesiteMatese}
+                tableName="Lista e Njesive Matese"
+                kaButona={true}
+                funksionButonShto={handleShow}
+                funksionButonEdit={(e) => {
+                  setId(e);
+                  handleEdito(e);
+                }}
+                funksionButonFshij={(e) => {
+                  setId(e);
+                  handleFshij(e);
+                }}
+                mosShfaqID={true}
+              />
+            </div>
 
+            <MDBTable>
+              <MDBTableHead>
+                <tr>
+                  <th scope="col">ID e Njesis Matese</th>
+                  <th scope="col">Njesia Matese</th>
+                  <th scope="col">Totali Produkteve</th>
+                  <th scope="col">Funksione</th>
+                </tr>
+              </MDBTableHead>
 
-                    <MDBTable>
-                        <MDBTableHead>
-                            <tr>
-                                <th scope="col">ID e Njesis Matese</th>
-                                <th scope="col">Njesia Matese</th>
-                                <th scope="col">Totali Produkteve</th>
-                                <th scope="col">Funksione</th>
-                            </tr>
-                        </MDBTableHead>
-
-                        <MDBTableBody>
-                            {njesiteMatese.map((k) => (
-                                <tr key={k.idNjesiaMatese}>
-                                    <td>{k.idNjesiaMatese}</td>
-                                    <td>{k.njesiaMatese}</td>
-                                    <td>{k.totaliProdukteve}</td>
-                                    <td >
-                                        <Button style={{ marginRight: "0.5em" }} variant="success" onClick={() => handleEdito(k.idNjesiaMatese)}><FontAwesomeIcon icon={faPenToSquare} /></Button>
-                                        <Button variant="danger" onClick={() => handleFshij(k.idNjesiaMatese)}><FontAwesomeIcon icon={faBan} /></Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </MDBTableBody>
-                    </MDBTable>
-                </>
-                )}
-            </div >
-        </>
-    );
-};
+              <MDBTableBody>
+                {njesiteMatese.map((k) => (
+                  <tr key={k.idNjesiaMatese}>
+                    <td>{k.idNjesiaMatese}</td>
+                    <td>{k.njesiaMatese}</td>
+                    <td>{k.totaliProdukteve}</td>
+                    <td>
+                      <Button
+                        style={{ marginRight: "0.5em" }}
+                        variant="success"
+                        onClick={() => handleEdito(k.idNjesiaMatese)}>
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleFshij(k.idNjesiaMatese)}>
+                        <FontAwesomeIcon icon={faBan} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </MDBTableBody>
+            </MDBTable>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
 
 export default TabelaEKategorive;

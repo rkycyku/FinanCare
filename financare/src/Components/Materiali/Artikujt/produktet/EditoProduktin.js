@@ -3,9 +3,10 @@ import axios from "axios";
 import { Col, Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
 import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
+import Select from "react-select";
 
 function EditoProduktin(props) {
   const [produkti, setProdukti] = useState([]);
@@ -19,15 +20,14 @@ function EditoProduktin(props) {
   const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
   const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
 
-  const [inputGrupiProduktit, setInputGrupiProduktit] = useState('');
-  const [inputPartneri, setInputPartneri] = useState('');
-  const [inputNjesiaMatese, setInputNjesiaMatese] = useState('');
-  const [filtrimiGrupiProduktit, setFiltrimiGrupiProduktit] = useState(produktet);
+  const [inputGrupiProduktit, setInputGrupiProduktit] = useState("");
+  const [inputPartneri, setInputPartneri] = useState("");
+  const [inputNjesiaMatese, setInputNjesiaMatese] = useState("");
+  const [filtrimiGrupiProduktit, setFiltrimiGrupiProduktit] =
+    useState(produktet);
   const [filtrimiPartneri, setFiltrimiPartneri] = useState(partneret);
-  const [filtrimiNjesiaMatese, setFiltrimiNjesiaMatese] = useState(njesitMatese);
-  const grupiProduktitZgjedhur = useKeyboardNavigation(filtrimiGrupiProduktit);
-  const partneriZgjedhur = useKeyboardNavigation(filtrimiPartneri);
-  const njesiaMateseZgjedhur = useKeyboardNavigation(filtrimiNjesiaMatese);
+  const [filtrimiNjesiaMatese, setFiltrimiNjesiaMatese] =
+    useState(njesitMatese);
 
   const getToken = localStorage.getItem("token");
 
@@ -41,22 +41,10 @@ function EditoProduktin(props) {
     const vendosTeDhenat = async () => {
       try {
         const produktet = await axios.get(
-          `https://localhost:7285/api/Produkti/Products`, authentikimi
-        );
-        const grupetEProduktev = await axios.get(
-          `https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit`, authentikimi
-        );
-        const partneret = await axios.get(
-          `https://localhost:7285/api/Partneri/shfaqPartneretFurntiore`, authentikimi
-        );
-        const njesitMatese = await axios.get(
-          `https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese`, authentikimi
+          `https://localhost:7285/api/Produkti/Products`,
+          authentikimi
         );
         setProduktet(produktet.data);
-        setGrupetEProduktev(grupetEProduktev.data);
-        setPartneret(partneret.data);
-        setNjesitMatese(njesitMatese.data);
-
       } catch (err) {
         console.log(err);
       }
@@ -65,50 +53,93 @@ function EditoProduktin(props) {
     vendosTeDhenat();
   }, [perditeso]);
 
+  const [optionsGrupiProduktit, setOptionsGrupiProduktit] = useState([]);
+  const [optionsSelectedGrupiProduktit, setOptionsSelectedGrupiProduktit] =
+    useState(null);
+  const [optionsPartneri, setOptionsPartneri] = useState([]);
+  const [optionsSelectedPartneri, setOptionsSelectedPartneri] = useState(null);
+  const [optionsNjesiaMatese, setOptionsNjesiaMatese] = useState([]);
+  const [optionsSelectedNjesiaMatese, setOptionsSelectedNjesiaMatese] =
+    useState(null);
+  const [optionsLlojiTVSH, setOptionsLlojiTVSH] = useState([]);
+  const [optionsSelectedLlojiTVSH, setOptionsSelectedLlojiTVSH] =
+    useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
+  };
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit")
+      .then((response) => {
+        console.log(response);
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idGrupiProduktit,
+          label: item.grupiIProduktit,
+        }));
+        setOptionsGrupiProduktit(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    axios
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .then((response) => {
+        console.log(response);
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idPartneri,
+          label: item.emriBiznesit,
+        }));
+        setOptionsPartneri(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    axios
+      .get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese")
+      .then((response) => {
+        console.log(response);
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.idNjesiaMatese,
+          label: item.njesiaMatese,
+        }));
+        setOptionsNjesiaMatese(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    setOptionsLlojiTVSH([
+      { label: "0%", value: "0" },
+      { label: "8%", value: "8" },
+      { label: "18%", value: "18" },
+    ]);
+  }, []);
+
   useEffect(() => {
     const shfaqProduktin = async () => {
       try {
-        const produkti = await axios.get(`https://localhost:7285/api/Produkti/` + props.id, authentikimi);
+        const produkti = await axios.get(
+          `https://localhost:7285/api/Produkti/ShfaqProduktinNgaID?id=${props.id}`,
+          authentikimi
+        );
         setProdukti(produkti.data);
-        setInputGrupiProduktit(produkti.data.grupiIProduktit);
-        setInputPartneri(produkti.data.emriBiznesit);
-        setInputNjesiaMatese(produkti.data.njesiaMatese1);
+        console.log(produkti)
+        setOptionsSelectedGrupiProduktit(optionsGrupiProduktit.filter((item) => item.value == produkti?.data?.idGrupiProduktit));
+        setOptionsSelectedNjesiaMatese(optionsNjesiaMatese.filter((item) => item.value == produkti?.data?.idNjesiaMatese));
+        setOptionsSelectedPartneri(optionsPartneri.filter((item) => item.value == produkti?.data?.idPartneri));
+        setOptionsSelectedLlojiTVSH(optionsLlojiTVSH.filter((item) => item.value == produkti?.data?.llojiTVSH));
       } catch (err) {
         console.log(err);
       }
     };
 
     shfaqProduktin();
-  }, []);
+  }, [optionsLlojiTVSH, optionsPartneri, optionsNjesiaMatese, optionsGrupiProduktit]);
 
   const onChange = (e) => {
     setProdukti({ ...produkti, [e.target.name]: e.target.value });
-  };
-
-  const perditesoProduktin = (e, kat) => {
-    console.log(e, kat);
-    if (kat === "GrupiProduktit") {
-      setProdukti({ ...produkti, idgrupiProdukti: e.idGrupiProduktit });
-      setInputGrupiProduktit(e.grupiIProduktit);
-      setFiltrimiGrupiProduktit([]);
-    }
-    if (kat === "Partneri") {
-      axios.get(`https://localhost:7285/api/Produkti/GetKodiProduktitPerRegjistrim?idPartneri=${e.idpartneri}`, authentikimi)
-        .then((response) => {
-          setProdukti((prevProdukti) => ({
-            ...prevProdukti,
-            kodiProduktit: response.data,
-            idpartneri: e.idpartneri,
-          }));
-          setInputPartneri(e.emriBiznesit);
-          setFiltrimiPartneri([]);
-        })
-    }
-    if (kat === "NjesiaMatese") {
-      setProdukti({ ...produkti, idnjesiaMatese: e.idNjesiaMatese });
-      setInputNjesiaMatese(e.njesiaMatese);
-      setFiltrimiNjesiaMatese([]);
-    }
   };
 
   function isNullOrEmpty(value) {
@@ -117,20 +148,26 @@ function EditoProduktin(props) {
 
   async function handleSubmit() {
     try {
-      console.log(produkti)
-      await axios.put(`https://localhost:7285/api/Produkti/` + props.id, produkti, authentikimi)
-        .then(x => {
-
+      console.log(produkti);
+      await axios
+        .put(
+          `https://localhost:7285/api/Produkti/` + props.id,
+          produkti,
+          authentikimi
+        )
+        .then((x) => {
           props.setTipiMesazhit("success");
-          props.setPershkrimiMesazhit("Produkti u Perditesua me sukses!")
+          props.setPershkrimiMesazhit("Produkti u Perditesua me sukses!");
           props.perditesoTeDhenat();
           props.hide();
           props.shfaqmesazhin();
         })
-        .catch(error => {
-          console.error('Error saving the product:', error);
+        .catch((error) => {
+          console.error("Error saving the product:", error);
           props.setTipiMesazhit("danger");
-          props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te produktit!")
+          props.setPershkrimiMesazhit(
+            "Ndodhi nje gabim gjate perditesimit te produktit!"
+          );
           props.perditesoTeDhenat();
           props.shfaqmesazhin();
         });
@@ -140,111 +177,96 @@ function EditoProduktin(props) {
   }
 
   const handleKontrolli = () => {
-    if (
-      isNullOrEmpty(produkti.emriProduktit)
-    ) {
+    if (isNullOrEmpty(produkti.emriProduktit)) {
       setFushatEZbrazura(true);
     } else {
-      if (konfirmoProduktin == false && produktet.filter((item) => item.emriProduktit === produkti.emriProduktit).length !== 0) {
+      if (
+        konfirmoProduktin == false &&
+        produktet.filter(
+          (item) => item.emriProduktit === produkti.emriProduktit
+        ).length !== 0
+      ) {
         setKontrolloProduktin(true);
-      }
-      else {
+      } else {
         handleSubmit();
-      }
-    }
-
-  }
-
-  const handleInputChange = (e, kat) => {
-    const tekstiPerFiltrim = e.target.value.toLowerCase();
-
-    if (kat === "GrupiProduktit") {
-      setInputGrupiProduktit(tekstiPerFiltrim);
-
-      const filtrimi = grupetEProduktev.filter((item) =>
-        item.grupiIProduktit.toLowerCase().includes(tekstiPerFiltrim)
-      );
-
-      setFiltrimiGrupiProduktit(filtrimi);
-    }
-    if (kat === "Partneri") {
-      setInputPartneri(tekstiPerFiltrim);
-
-      console.log(partneret)
-
-      const filtrimi = partneret.filter((item) =>
-        item.emriBiznesit.toLowerCase().includes(tekstiPerFiltrim)
-      );
-
-      setFiltrimiPartneri(filtrimi);
-    }
-    if (kat === "NjesiaMatese") {
-      setInputNjesiaMatese(tekstiPerFiltrim);
-
-      const filtrimi = njesitMatese.filter((item) =>
-        item.njesiaMatese.toLowerCase().includes(tekstiPerFiltrim)
-      );
-
-      setFiltrimiNjesiaMatese(filtrimi);
-    }
-
-  };
-
-  const handleInputKeyDown = (e, kat) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-
-      if (kat === "GrupiProduktit") {
-        if (filtrimiGrupiProduktit.length > 0) {
-          perditesoProduktin(filtrimiGrupiProduktit[grupiProduktitZgjedhur], kat);
-        }
-
-        ndrroField(e, "partneri")
-      }
-      if (kat === "Partneri") {
-        if (filtrimiPartneri.length > 0) {
-          perditesoProduktin(filtrimiPartneri[partneriZgjedhur], kat);
-        }
-
-        ndrroField(e, "njesiaMatese")
-      }
-      if (kat === "NjesiaMatese") {
-        if (filtrimiNjesiaMatese.length > 0) {
-          perditesoProduktin(filtrimiNjesiaMatese[njesiaMateseZgjedhur], kat);
-        }
-
-        ndrroField(e, "llojiTVSH")
       }
     }
   };
 
   const ndrroField = (e, tjetra) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       document.getElementById(tjetra).focus();
     }
-  }
+  };
+
+  const handleChangeGrupiProduktit = async (partneri) => {
+    setOptionsSelectedGrupiProduktit(partneri);
+    setProdukti({ ...produkti, idGrupiProduktit: partneri.value });
+    document.getElementById("partneriSelect-input").focus();
+  };
+  const handleChangePartneri = async (partneri) => {
+    setOptionsSelectedPartneri(partneri);
+
+    await axios
+      .get(
+        `https://localhost:7285/api/Produkti/GetKodiProduktitPerRegjistrim?idPartneri=${partneri.value}`,
+        authentikimi
+      )
+      .then((response) => {
+        setProdukti({
+          ...produkti,
+          idPartneri: partneri.value,
+          kodiProduktit: response.data,
+        });
+      });
+
+    document.getElementById("njesiaMateseSelect-input").focus();
+  };
+  const handleChangeNjesiaMatese = async (partneri) => {
+    setOptionsSelectedNjesiaMatese(partneri);
+    setProdukti({ ...produkti, idNjesiaMatese: partneri.value });
+    document.getElementById("llojiTVSHSelect-input").focus();
+  };
+  const handleChangeLlojiTVSH = async (partneri) => {
+    setOptionsSelectedLlojiTVSH(partneri);
+    setProdukti({ ...produkti, llojiTVSH: partneri.value });
+    document.getElementById("sasiaShumices").focus();
+  };
 
   return (
     <>
-      {fushatEZbrazura &&
-        <Modal size="sm" show={fushatEZbrazura} onHide={() => setFushatEZbrazura(false)}>
+      {fushatEZbrazura && (
+        <Modal
+          size="sm"
+          show={fushatEZbrazura}
+          onHide={() => setFushatEZbrazura(false)}>
           <Modal.Header closeButton>
-            <Modal.Title style={{ color: "red" }} as="h6">Ndodhi nje gabim</Modal.Title>
+            <Modal.Title style={{ color: "red" }} as="h6">
+              Ndodhi nje gabim
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <strong style={{ fontSize: "10pt" }}>Ju lutemi plotesoni te gjitha fushat me <span style={{ color: "red" }}>*</span></strong>
+            <strong style={{ fontSize: "10pt" }}>
+              Ju lutemi plotesoni te gjitha fushat me{" "}
+              <span style={{ color: "red" }}>*</span>
+            </strong>
           </Modal.Body>
           <Modal.Footer>
-            <Button size="sm" onClick={() => setFushatEZbrazura(false)} variant="secondary">
+            <Button
+              size="sm"
+              onClick={() => setFushatEZbrazura(false)}
+              variant="secondary">
               Mbylle <FontAwesomeIcon icon={faXmark} />
-            </Button >
+            </Button>
           </Modal.Footer>
-
         </Modal>
-      }
-      {kontrolloProduktin &&
-        <Modal size="sm" show={kontrolloProduktin} onHide={() => setKontrolloProduktin(false)}>
+      )}
+      {kontrolloProduktin && (
+        <Modal
+          size="sm"
+          show={kontrolloProduktin}
+          onHide={() => setKontrolloProduktin(false)}>
           <Modal.Header closeButton>
             <Modal.Title as="h6">Konfirmo vendosjen</Modal.Title>
           </Modal.Header>
@@ -258,26 +280,35 @@ function EditoProduktin(props) {
             </strong>
           </Modal.Body>
           <Modal.Footer>
-            <Button size="sm" variant="secondary" onClick={() => setKontrolloProduktin(false)}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setKontrolloProduktin(false)}>
               Korrigjo <FontAwesomeIcon icon={faXmark} />
             </Button>
             <Button
               size="sm"
               variant="warning"
-              onClick={() => { handleSubmit(); }}
-            >
+              onClick={() => {
+                handleSubmit();
+              }}>
               Vazhdoni
             </Button>
           </Modal.Footer>
         </Modal>
-      }
-      <Modal className="modalEditShto" style={{ marginTop: "3em" }} show={props.show} onHide={props.hide}>
+      )}
+      <Modal
+        className="modalEditShto"
+        size="lg"
+        style={{ marginTop: "3em" }}
+        show={props.show}
+        onHide={props.hide}>
         <Modal.Header closeButton>
           <Modal.Title>Edito Produktin</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <MDBRow className='g-3'>
-            <MDBCol md="6" >
+          <MDBRow className="g-3">
+            <MDBCol md="6">
               <MDBInput
                 onChange={onChange}
                 value={produkti.barkodi}
@@ -287,11 +318,15 @@ function EditoProduktin(props) {
                 placeholder="Barkodi"
                 autoFocus
                 onKeyDown={(e) => ndrroField(e, "emriProduktit")}
-                label={<span>Barkodi<span style={{ color: "red" }}>*</span></span>}
+                label={
+                  <span>
+                    Barkodi<span style={{ color: "red" }}>*</span>
+                  </span>
+                }
                 autoComplete={false}
               />
             </MDBCol>
-            <MDBCol md="6" >
+            <MDBCol md="6">
               <MDBInput
                 onChange={onChange}
                 value={produkti.emriProduktit}
@@ -300,111 +335,72 @@ function EditoProduktin(props) {
                 type="text"
                 placeholder="Emri Produktit"
                 onKeyDown={(e) => ndrroField(e, "grupiproduktit")}
-                label={<span>Emri Produktit<span style={{ color: "red" }}>*</span></span>}
+                label={
+                  <span>
+                    Emri Produktit<span style={{ color: "red" }}>*</span>
+                  </span>
+                }
                 autoComplete={false}
               />
             </MDBCol>
-            <Form.Group as={Col} controlId="grupiproduktit" md="4" >
-              <Form.Control
-                type="text"
-                name="grupiproduktit"
-                className="form-control styled-input"
-                placeholder="Grupi i Produktit"
-                value={inputGrupiProduktit}
-                onChange={(e) => handleInputChange(e, "GrupiProduktit")}
-                onKeyDown={(e) => handleInputKeyDown(e, "GrupiProduktit")}
-                onFocus={(e) => handleInputChange(e, "GrupiProduktit")}
-                autoComplete={false}
+            <Form.Group as={Col} controlId="grupiProduktit" md="4">
+              <Select
+                value={optionsSelectedGrupiProduktit}
+                onChange={handleChangeGrupiProduktit}
+                options={optionsGrupiProduktit}
+                id="grupiProduktitSelect" // Setting the id attribute
+                inputId="grupiProduktitSelect-input" // Setting the input id attribute
+                styles={customStyles}
               />
 
-              <div className="container" style={{ position: 'relative' }}>
-                <ul className="list-group mt-2 searchBoxi">
-                  {filtrimiGrupiProduktit.map((item, index) => (
-                    <li
-                      key={item.idGrupiProduktit}
-                      className={`list-group-item${grupiProduktitZgjedhur === index ? ' active' : ''}`}
-                      onClick={() => perditesoProduktin(item, "GrupiProduktit")}
-                    >
-                      {item.grupiIProduktit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Form.Label>Grupi Produktit<span style={{ color: "red" }}>*</span></Form.Label>
+              <Form.Label>
+                Grupi Produktit<span style={{ color: "red" }}>*</span>
+              </Form.Label>
             </Form.Group>
 
-            <Form.Group as={Col} controlId="partneri" md="4" >
-              <Form.Control
-                type="text"
-                className="form-control styled-input"
-                placeholder="Partneri"
-                name="partneri"
-                value={inputPartneri}
-                onChange={(e) => handleInputChange(e, "Partneri")}
-                onKeyDown={(e) => handleInputKeyDown(e, "Partneri")}
-                onFocus={(e) => handleInputChange(e, "Partneri")}
-                autoComplete={false}
+            <Form.Group as={Col} controlId="partneri" md="4">
+              <Select
+                value={optionsSelectedPartneri}
+                onChange={handleChangePartneri}
+                options={optionsPartneri}
+                id="partneriSelect" // Setting the id attribute
+                inputId="partneriSelect-input" // Setting the input id attribute
+                styles={customStyles}
               />
 
-              <div className="container" style={{ position: 'relative' }}>
-                <ul className="list-group mt-2 searchBoxi">
-                  {filtrimiPartneri.map((item, index) => (
-                    <li
-                      key={item.idpartneri}
-                      className={`list-group-item${partneriZgjedhur === index ? ' active' : ''}`} // Add 'active' class to selected item
-                      onClick={() => perditesoProduktin(item, "Partneri")} // Handle click event
-                    >
-                      {item.emriBiznesit}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <Form.Label>Partneri<span style={{ color: "red" }}>*</span></Form.Label>
+              <Form.Label>
+                Partneri<span style={{ color: "red" }}>*</span>
+              </Form.Label>
             </Form.Group>
-            <Form.Group as={Col} controlId="njesiaMatese" md="4" >
-              <Form.Control
-                type="text"
-                className="form-control styled-input" // Add 'styled-input' class
-                placeholder="Njesia Matese"
-                name="njesiaMatese"
-                value={inputNjesiaMatese}
-                onChange={(e) => handleInputChange(e, "NjesiaMatese")}
-                onKeyDown={(e) => handleInputKeyDown(e, "NjesiaMatese")}
-                onFocus={(e) => handleInputChange(e, "NjesiaMatese")}
-                autoComplete={false}
+            <Form.Group as={Col} controlId="njesiaMatese" md="4">
+              <Select
+                value={optionsSelectedNjesiaMatese}
+                onChange={handleChangeNjesiaMatese}
+                options={optionsNjesiaMatese}
+                id="njesiaMateseSelect" // Setting the id attribute
+                inputId="njesiaMateseSelect-input" // Setting the input id attribute
+                styles={customStyles}
               />
 
-              <div className="container" style={{ position: 'relative' }}>
-                <ul className="list-group mt-2 searchBoxi">
-                  {filtrimiNjesiaMatese.map((item, index) => (
-                    <li
-                      key={item.idNjesiaMatese}
-                      className={`list-group-item${njesiaMateseZgjedhur === index ? ' active' : ''}`} // Add 'active' class to selected item
-                      onClick={() => perditesoProduktin(item, "NjesiaMatese")} // Handle click event
-                    >
-                      {item.njesiaMatese}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <Form.Label>Njesia Matese<span style={{ color: "red" }}>*</span></Form.Label>
+              <Form.Label>
+                Njesia Matese<span style={{ color: "red" }}>*</span>
+              </Form.Label>
             </Form.Group>
-            <MDBCol md="4" >
-              <MDBInput
-                onChange={onChange}
-                value={produkti.llojiTVSH}
-                name="llojiTVSH"
-                id="llojiTVSH"
-                type="number"
-                placeholder="TVSH %"
-                onKeyDown={(e) => ndrroField(e, "sasiaShumices")}
-                label={<span>TVSH %<span style={{ color: "red" }}>*</span></span>}
-                autoComplete={false}
+            <Form.Group as={Col} controlId="partneri" md="4">
+              <Select
+                value={optionsSelectedLlojiTVSH}
+                onChange={handleChangeLlojiTVSH}
+                options={optionsLlojiTVSH}
+                id="llojiTVSHSelect" // Setting the id attribute
+                inputId="llojiTVSHSelect-input" // Setting the input id attribute
+                styles={customStyles}
               />
-            </MDBCol>
-            <MDBCol md="4" >
+
+              <Form.Label>
+                TVSH %<span style={{ color: "red" }}>*</span>
+              </Form.Label>
+            </Form.Group>
+            <MDBCol md="4">
               <MDBInput
                 onChange={onChange}
                 name="sasiaShumices"
@@ -412,7 +408,11 @@ function EditoProduktin(props) {
                 value={produkti.sasiaShumices}
                 type="text"
                 placeholder="Sasia e Shumices"
-                label={<span>Sasia e Shumices<span style={{ color: "red" }}>*</span></span>}
+                label={
+                  <span>
+                    Sasia e Shumices<span style={{ color: "red" }}>*</span>
+                  </span>
+                }
                 autoComplete={false}
               />
             </MDBCol>
@@ -420,8 +420,7 @@ function EditoProduktin(props) {
               <MDBTooltip
                 placement="bottom"
                 title="Gjenerohet automatikisht pas zgjedhjes se partnerit"
-                wrapperClass="mdb-tooltip mdb-tooltip-content"
-              >
+                wrapperClass="mdb-tooltip mdb-tooltip-content">
                 <MDBInput
                   onChange={onChange}
                   value={produkti.kodiProduktit}
@@ -429,7 +428,11 @@ function EditoProduktin(props) {
                   type="text"
                   placeholder="Kodi Produktit"
                   onKeyDown={(e) => ndrroField(e, "llojiTVSH")}
-                  label={<span>Kodi Produktit<span style={{ color: "red" }}>*</span></span>}
+                  label={
+                    <span>
+                      Kodi Produktit<span style={{ color: "red" }}>*</span>
+                    </span>
+                  }
                   disabled
                 />
               </MDBTooltip>
@@ -442,14 +445,13 @@ function EditoProduktin(props) {
           </Button>
           <Button
             style={{ backgroundColor: "#009879", border: "none" }}
-            onClick={handleKontrolli}
-          >
+            onClick={handleKontrolli}>
             Edito Produktin <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </Modal.Footer>
       </Modal>
     </>
-  )
+  );
 }
 
 export default EditoProduktin;

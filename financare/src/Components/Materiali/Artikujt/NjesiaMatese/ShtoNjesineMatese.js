@@ -50,7 +50,7 @@ function ShtoNjesineMatese(props) {
 
     function handleSubmit() {
         axios.post('https://localhost:7285/api/NjesiaMatese/shtoNjesineMatese', {
-            njesiaMatese1: njesiaMatese,
+            emriNjesiaMatese: njesiaMatese,
         }, authentikimi)
             .then((response) => {
                 props.setTipiMesazhit("success");

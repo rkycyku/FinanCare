@@ -45,6 +45,7 @@ function EditoNjesineMatese(props) {
             try {
                 const njesiaMatese = await axios.get(`https://localhost:7285/api/NjesiaMatese/shfaqNjesineMateseSipasIDs?id=${props.id}`, authentikimi);
                 setNjesiaMatese(njesiaMatese.data);
+                console.log(njesiaMatese.data)
 
             } catch (err) {
                 console.log(err);
@@ -55,7 +56,7 @@ function EditoNjesineMatese(props) {
     }, []);
 
     const handleNjesiaMateseChange = (value) => {
-        setNjesiaMatese((prev) => ({ ...prev, njesiaMatese1: value }));
+        setNjesiaMatese((prev) => ({ ...prev, emriNjesiaMatese: value }));
     };
 
     function isNullOrEmpty(value) {
@@ -63,7 +64,7 @@ function EditoNjesineMatese(props) {
     }
 
     function handleSubmit() {
-        axios.put(`https://localhost:7285/api/NjesiaMatese/perditesoNjesineMatese?id=${njesiaMatese.idnjesiaMatese}`, njesiaMatese, authentikimi)
+        axios.put(`https://localhost:7285/api/NjesiaMatese/perditesoNjesineMatese?id=${njesiaMatese.idNjesiaMatese}`, njesiaMatese, authentikimi)
             .then(x => {
                 props.setTipiMesazhit("success");
                 props.setPershkrimiMesazhit("Njesia Matese u Perditesua me sukses!")
@@ -82,12 +83,12 @@ function EditoNjesineMatese(props) {
 
     const handleKontrolli = () => {
         if (
-            isNullOrEmpty(njesiaMatese.njesiaMatese1)
+            isNullOrEmpty(njesiaMatese.emriNjesiaMatese)
         ) {
             setFushatEZbrazura(true);
         } else {
 
-            if (konfirmoNjesineMatese == false && njesiteMatese.filter((item) => item.njesiaMatese === njesiaMatese.njesiaMatese1).length !== 0) {
+            if (konfirmoNjesineMatese == false && njesiteMatese.filter((item) => item.njesiaMatese === njesiaMatese.emriNjesiaMatese).length !== 0) {
                 setKontrolloNjesineMatese(true);
             }
             else {
@@ -151,15 +152,15 @@ function EditoNjesineMatese(props) {
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Label>ID Njesia Matese</Form.Label>
                             <Form.Control
-                                value={njesiaMatese.idnjesiaMatese}
+                                value={njesiaMatese.idNjesiaMatese}
                                 disabled
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>NjesiaMatese<span style={{ color: "red" }}>*</span></Form.Label>
+                            <Form.Label>Njesia Matese<span style={{ color: "red" }}>*</span></Form.Label>
                             <Form.Control
                                 onChange={(e) => handleNjesiaMateseChange(e.target.value)}
-                                value={njesiaMatese.njesiaMatese1}
+                                value={njesiaMatese.emriNjesiaMatese}
                                 type="text"
                                 placeholder="Njesia Matese"
                                 autoFocus
