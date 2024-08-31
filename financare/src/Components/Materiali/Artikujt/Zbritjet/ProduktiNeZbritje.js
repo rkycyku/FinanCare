@@ -3,16 +3,19 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Mesazhi from "../../../TeTjera/layout/Mesazhi";
+import Select from "react-select";
 
 function ProduktiNeZbritje(props) {
   const [produkti, setProdukti] = useState("");
-  const [qmimiBleresProduktit, setQmimiBleresProduktit] = useState(0.00);
-  const [qmimiShitesProduktit, setQmimiShitesProduktit] = useState(0.00);
-  const [rabati, setRabati] = useState(0.00);
-  const [dataSkadimit, setDataSkadimit] = useState(new Date().toISOString().substring(0, 10));
+  const [qmimiBleresProduktit, setQmimiBleresProduktit] = useState(0.0);
+  const [qmimiShitesProduktit, setQmimiShitesProduktit] = useState(0.0);
+  const [rabati, setRabati] = useState(0.0);
+  const [dataSkadimit, setDataSkadimit] = useState(
+    new Date().toISOString().substring(0, 10)
+  );
   const [produktet, setProduktet] = useState([]);
   const [perditeso, setPerditeso] = useState("");
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
@@ -33,10 +36,10 @@ function ProduktiNeZbritje(props) {
     const vendosProduktet = async () => {
       try {
         const produktet = await axios.get(
-          `https://localhost:7285/api/Produkti/Products`, authentikimi
+          `https://localhost:7285/api/Produkti/Products`,
+          authentikimi
         );
         setProduktet(produktet.data);
-
       } catch (err) {
         console.log(err);
       }
@@ -44,38 +47,6 @@ function ProduktiNeZbritje(props) {
 
     vendosProduktet();
   }, [perditeso]);
-
-  useEffect(() => {
-    const vendosDetajetProduktit = async () => {
-      try {
-        await axios.get(
-          `https://localhost:7285/api/Produkti/ShfaqProduktinNgaID?id=${produkti}`, authentikimi
-        ).then((response) => {
-          setQmimiBleresProduktit((response.data.qmimiBleres).toFixed(2));
-          setQmimiShitesProduktit((response.data.qmimiProduktit).toFixed(2));
-          if (response.data.qmimiMeZbritjeProduktit != null) {
-            setRabati(response.data.qmimiMeZbritjeProduktit);
-            setKaZbritje(true);
-            setPershkrimiMesazhit("Ky produkt ka Zbritje!");
-            setTipiMesazhit("danger");
-            setShfaqMesazhin(true);
-          }
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    vendosDetajetProduktit();
-  }, [perditeso, produkti]);
-
-  const handleProduktiChange = (value) => {
-    setProdukti(value);
-    setKaZbritje(false);
-    setRabati(0);
-    const element = document.getElementById("dataSkadimit");
-    element.focus();
-  };
 
   const handleZbritja = (value) => {
     const element = document.getElementById("rabati");
@@ -89,23 +60,29 @@ function ProduktiNeZbritje(props) {
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
       setZbritjaNeRregull(false);
+      setRabati(0);
       element.focus();
     } else {
       setRabati(value);
       setZbritjaNeRregull(true);
     }
-  }
+  };
 
   function handleSubmit() {
     if (zbritjaNeRregull === true && kaZbritje === false) {
-      axios.post('https://localhost:7285/api/ZbritjaQmimitProduktit/shtoZbritjenProduktit', {
-        produktiID: produkti,
-        rabati: rabati,
-        dataSkadimit: dataSkadimit
-      }, authentikimi)
+      axios
+        .post(
+          "https://localhost:7285/api/ZbritjaQmimitProduktit/shtoZbritjenProduktit",
+          {
+            produktiID: optionsSelected.value,
+            rabati: rabati,
+            dataSkadimit: dataSkadimit,
+          },
+          authentikimi
+        )
         .then(() => {
           props.setTipiMesazhit("success");
-          props.setPershkrimiMesazhit("Zbritja u shtua me sukses!")
+          props.setPershkrimiMesazhit("Zbritja u shtua me sukses!");
           props.setPerditeso(Date.now());
           props.mbyllZbritjen();
           props.shfaqmesazhin();
@@ -117,48 +94,86 @@ function ProduktiNeZbritje(props) {
       setPershkrimiMesazhit("Ky produkt ka Zbritje!");
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
-    }
-    else {
+    } else {
       handleZbritja(rabati);
     }
   }
+
+  const [options, setOptions] = useState([]);
+  const [optionsSelected, setOptionsSelected] = useState(null);
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 1050, // Ensure this is higher than the z-index of the thead
+    }),
+  };
+  useEffect(() => {
+    axios
+      .get("https://localhost:7285/api/Produkti/Products")
+      .then((response) => {
+        console.log(response);
+        const fetchedoptions = response.data.map((item) => ({
+          value: item.produktiID,
+          label: item.emriProduktit,
+          item: item,
+        }));
+        setOptions(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  const handleChange = async (partneri) => {
+    setKaZbritje(false);
+    setRabati(0);
+    setOptionsSelected(partneri);
+    setQmimiBleresProduktit(partneri.item.qmimiBleres.toFixed(2));
+    setQmimiShitesProduktit(partneri.item.qmimiProduktit.toFixed(2));
+    if (partneri.item.rabati != null) {
+      setRabati(partneri.item.rabati);
+      setKaZbritje(true);
+      setPershkrimiMesazhit("Ky produkt ka Zbritje!");
+      setTipiMesazhit("danger");
+      setShfaqMesazhin(true);
+    } else {
+      const element = document.getElementById("dataSkadimit");
+      element.focus();
+    }
+  };
+
   return (
     <>
-      {shfaqMesazhin &&
+      {shfaqMesazhin && (
         <Mesazhi
           setShfaqMesazhin={setShfaqMesazhin}
           pershkrimi={pershkrimiMesazhit}
           tipi={tipiMesazhit}
         />
-      }
-      <Modal className="modalEditShto" show={props.shfaq} onHide={() => props.mbyllZbritjen()} size="lg">
+      )}
+      <Modal
+        className="modalEditShto"
+        show={props.shfaq}
+        onHide={() => props.mbyllZbritjen()}
+        size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Shto Zbritjen</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+            <Form.Group controlId="idDheEmri">
               <Form.Label>Vlen per</Form.Label>
-              <select
-                placeholder="Produkti"
-                className="form-select"
-                value={produkti}
-                onChange={(e) => handleProduktiChange(e.target.value)}
-              >
-                {produktet.map((item) => {
-                  return (
-                    <option key={item.produktiID} value={item.produktiID}>{item.emriProduktit}</option>
-                  );
-                })}
-              </select>
+              <Select
+                value={optionsSelected}
+                onChange={handleChange}
+                options={options}
+                id="produktiSelect" // Setting the id attribute
+                inputId="produktiSelect-input" // Setting the input id attribute
+                styles={customStyles}
+              />
             </Form.Group>
             <Form.Group
               className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+              controlId="exampleForm.ControlTextarea1">
               <Form.Label>Qmimi Bleres</Form.Label>
               <Form.Control
                 value={qmimiBleresProduktit + " €"}
@@ -169,8 +184,7 @@ function ProduktiNeZbritje(props) {
             </Form.Group>
             <Form.Group
               className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
+              controlId="exampleForm.ControlTextarea1">
               <Form.Label>Qmimi Shites</Form.Label>
               <Form.Control
                 value={qmimiShitesProduktit + " €"}
@@ -198,15 +212,10 @@ function ProduktiNeZbritje(props) {
               />
             </Form.Group>
 
-            <Form.Group
-              className="mb-3"
-              controlId="rabati"
-            >
+            <Form.Group className="mb-3" controlId="rabati">
               <Form.Label>Rabati</Form.Label>
               <Form.Control
-                onChange={(e) =>
-                  handleZbritja(e.target.value)
-                }
+                onChange={(e) => handleZbritja(e.target.value)}
                 onFocus={(e) => e.target.select()}
                 value={rabati}
                 type="number"
@@ -217,22 +226,34 @@ function ProduktiNeZbritje(props) {
                 disabled={kaZbritje}
               />
             </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Qmimi Shites - Rabati</Form.Label>
+              <Form.Control
+                value={
+                  parseFloat(
+                    qmimiShitesProduktit - (rabati / 100) * qmimiShitesProduktit
+                  ).toFixed(3) + " €"
+                }
+                type="text"
+                placeholder="Qmimi Shites"
+                disabled
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => props.mbyllZbritjen()}>
             Anulo <FontAwesomeIcon icon={faXmark} />
           </Button>
-          <Button
-            className="Butoni"
-            onClick={handleSubmit}
-          >
+          <Button className="Butoni" onClick={handleSubmit}>
             Vendosni Zbritjen <FontAwesomeIcon icon={faPlus} />
           </Button>
         </Modal.Footer>
       </Modal>
     </>
-  )
+  );
 }
 
 export default ProduktiNeZbritje;

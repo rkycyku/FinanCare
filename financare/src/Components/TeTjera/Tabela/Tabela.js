@@ -34,7 +34,9 @@ function Tabela({
   funksioniEditoStokunQmimin,
   funksionNdryshoStatusinEFatures,
   funksionFaturoOferten,
-  dateField,
+  dateField, // Field for single date filtering
+  startDateField, // Start date field for range filtering
+  endDateField, // End date field for range filtering
   mosShfaqID,
   mosShfaqKerkimin,
 }) {
@@ -49,7 +51,7 @@ function Tabela({
       perditeso,
       searchQuery,
       itemsPerPage,
-      dateField,
+      dateField || startDateField, // Choose field based on available props
       startDate,
       endDate
     );
@@ -84,10 +86,42 @@ function Tabela({
     }
   };
 
+  // Filter the items based on date or date range
+  const filteredItems = items.filter((item) => {
+    if (dateField) {
+      // Single date field filtering using the same field for start and end date
+      const itemDate = item[dateField] ? parseISO(item[dateField]) : null;
+
+      if (startDate && itemDate && itemDate < startDate) {
+        return false; // Item's date is before selected start date
+      }
+      if (endDate && itemDate && itemDate > endDate) {
+        return false; // Item's date is after selected end date
+      }
+    } else if (startDateField && endDateField) {
+      // Date range filtering with different fields for start and end date
+      const itemStartDate = item[startDateField]
+        ? parseISO(item[startDateField])
+        : null;
+      const itemEndDate = item[endDateField]
+        ? parseISO(item[endDateField])
+        : null;
+
+      if (startDate && itemEndDate && itemEndDate >= endDate) {
+        return false; // Item ends before selected start date
+      }
+      if (endDate && itemStartDate && itemStartDate <= startDate) {
+        return false; // Item starts after selected end date
+      }
+    }
+
+    return true;
+  });
+
   useEffect(() => {
-    const tabelaDiv = document.querySelector(".tabelaDiv"); // Select the element with the class 'tabelaDiv'
+    const tabelaDiv = document.querySelector(".tabelaDiv");
     if (tabelaDiv) {
-      tabelaDiv.style.zoom = "80%"; // Zoom out to 80% of the normal size
+      tabelaDiv.style.zoom = "80%";
     }
   }, []);
 
@@ -140,22 +174,20 @@ function Tabela({
                 <tr>
                   <th colSpan={filteredHeaders.length + 1}>
                     <InputGroup style={{ width: "60%" }}>
-                      {dateField && (
-                        <div className="mx-1">
-                          <CustomDatePicker
-                            selectedDate={startDate}
-                            onDateChange={setStartDate}
-                            placeholderText="Data fillimit"
-                            maxDate={endDate}
-                          />
-                          <CustomDatePicker
-                            selectedDate={endDate}
-                            onDateChange={setEndDate}
-                            minDate={startDate}
-                            placeholderText="Data përfundimit"
-                          />
-                        </div>
-                      )}
+                      <div className="mx-1">
+                        <CustomDatePicker
+                          selectedDate={startDate}
+                          onDateChange={setStartDate}
+                          placeholderText="Data fillimit"
+                          maxDate={endDate}
+                        />
+                        <CustomDatePicker
+                          selectedDate={endDate}
+                          onDateChange={setEndDate}
+                          minDate={startDate}
+                          placeholderText="Data përfundimit"
+                        />
+                      </div>
                       <Form.Select
                         value={itemsPerPage}
                         onChange={(e) => {
@@ -206,12 +238,14 @@ function Tabela({
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <tr key={item.ID}>
                 {filteredHeaders.map((header) => (
                   <td key={`${item.ID}-${header}`}>
-                    {header === dateField
-                      ? formatDate(item[header]) // Format date field
+                    {(header === dateField ||
+                      header === startDateField ||
+                      header === endDateField)
+                      ? formatDate(item[header]) // Format date fields
                       : renderCellContent(item[header])}
                   </td>
                 ))}
@@ -240,93 +274,54 @@ function Tabela({
                       <Button
                         variant="outline-info"
                         size="sm"
+                        disabled={item["Statusi Kalkulimit"] === "I Mbyllur"}
                         style={{ marginRight: "0.5em" }}
-                        onClick={() => funksioniEditoStokunQmimin(item.ID)}>
+                        onClick={() =>
+                          funksioniEditoStokunQmimin(item.ID, item)
+                        }>
                         <FontAwesomeIcon icon={faMoneyBill} />
                       </Button>
                     )}
                     {funksionButonFshij && (
                       <Button
-                        size="sm"
-                        style={{ marginRight: "0.5em" }}
                         variant="outline-danger"
+                        size="sm"
+                        disabled={item["Statusi Kalkulimit"] === "I Mbyllur"}
+                        style={{ marginRight: "0.5em" }}
                         onClick={() => funksionButonFshij(item.ID)}>
                         <FontAwesomeIcon icon={faBan} />
                       </Button>
                     )}
                     {funksionFaturoOferten && (
                       <Button
-                        style={{ marginRight: "0.5em" }}
-                        variant="success"
+                        variant="outline-primary"
                         size="sm"
-                        disabled={
-                          item["Statusi Kalkulimit"] === "I Hapur" ||
-                          item["Eshte Faturuar"] === "Po"
-                        }
-                        onClick={() => {
-                          funksionFaturoOferten(item.ID);
-                        }}>
-                        Faturo Oferten <FontAwesomeIcon icon={faFileImport} />
+                        style={{ marginRight: "0.5em" }}
+                        onClick={() => funksionFaturoOferten(item.ID)}>
+                        <FontAwesomeIcon icon={faFileImport} />
                       </Button>
                     )}
                   </td>
                 )}
               </tr>
             ))}
-            <tr>
-              <td colSpan={filteredHeaders.length + 1}>
-                <Pagination>
-                  <Pagination.Prev
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage === 0}
-                  />
-                  {Array.from({ length: pageCount }, (_, index) => (
-                    <Pagination.Item
-                      key={index}
-                      active={index === currentPage}
-                      onClick={() => goToPage(index)}>
-                      {index + 1}
-                    </Pagination.Item>
-                  ))}
-                  <Pagination.Next
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage === pageCount - 1}
-                  />
-                </Pagination>
-              </td>
-            </tr>
           </tbody>
         </Table>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>
-                <h1 style={{ textAlign: "center" }}>{tableName}</h1>
-              </th>
-            </tr>
-            <tr>
-              <th colSpan={filteredHeaders.length + 1}>
-                <Row className="align-items-center">
-                  <Col xs="auto" className="pe-0">
-                    {funksionButonShto && (
-                      <Button
-                        variant="outline-success"
-                        onClick={() => funksionButonShto()}>
-                        <FontAwesomeIcon icon={faPlus} />
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Nuk ka te dhena</td>
-            </tr>
-          </tbody>
-        </Table>
+        <p>No data available</p>
+      )}
+
+      {pageCount > 1 && (
+        <Pagination className="justify-content-center">
+          {Array.from({ length: pageCount }, (_, i) => (
+            <Pagination.Item
+              key={i}
+              active={i === currentPage}
+              onClick={() => goToPage(i)}>
+              {i + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
       )}
     </div>
   );

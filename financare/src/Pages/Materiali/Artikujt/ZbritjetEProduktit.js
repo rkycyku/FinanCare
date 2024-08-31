@@ -12,6 +12,7 @@ import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import FshijZbritjen from "../../../Components/Materiali/Artikujt/Zbritjet/FshijZbritjen";
 import { Link } from "react-router-dom";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
+import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 function ZbritjetEProduktit(props) {
   const [zbritjet, setZbritjet] = useState([]);
@@ -41,7 +42,26 @@ function ZbritjetEProduktit(props) {
           "https://localhost:7285/api/ZbritjaQmimitProduktit/shfaqZbritjet",
           authentikimi
         );
-        setZbritjet(zbritja.data);
+
+        console.log(zbritja.data);
+
+        setZbritjet(
+          zbritja.data.map((k, index) => ({
+            ID: k.produktiID,
+            "Nr. Zbritjes": index + 1,
+            "Emri Produktit": k.emriProduktit,
+            "Qmimi €": parseFloat(k.qmimiProduktit).toFixed(3),
+            "Rabati %": parseFloat(k.rabati).toFixed(2),
+            "Qmimi - Rab €": parseFloat(
+              k.qmimiProduktit - (k.rabati / 100) * k.qmimiProduktit
+            ).toFixed(3),
+            "Rabati €": parseFloat((k.rabati / 100) * k.qmimiProduktit).toFixed(
+              3
+            ),
+            "Data e Zbritjes": new Date(k.dataZbritjes).toISOString(),
+            "Data e Skadimit": new Date(k.dataSkadimit).toISOString(),
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -130,58 +150,21 @@ function ZbritjetEProduktit(props) {
         ) : (
           mbyllFature && (
             <>
-              <h1 className="title">Zbritjet e Produkteve</h1>
-              <MDBBtn className="Butoni">
-                <Link to="/Produktet">
-                  Mbyll Zbritjet <FontAwesomeIcon icon={faClose} />
-                </Link>
-              </MDBBtn>
-              <MDBBtn
-                className="mb-3 Butoni"
-                onClick={() => setShtoZbritjen(true)}>
-                Shto Zbritjen <FontAwesomeIcon icon={faPlus} />
-              </MDBBtn>
-
-              <MDBTable align="middle">
-                <MDBTableHead>
-                  <tr>
-                    <th scope="col">Nr. Zbritjes</th>
-                    <th scope="col">ID dhe Emri Produktit</th>
-                    <th scope="col">Rabati</th>
-                    <th scope="col">Data e Zbritjes</th>
-                    <th scope="col">Data e Skadimit</th>
-                    <th scope="col">Funksione</th>
-                  </tr>
-                </MDBTableHead>
-
-                <MDBTableBody>
-                  {zbritjet.map((z, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{z.produktiID + " - " + z.emriProduktit}</td>
-                      <td>{parseFloat(z.rabati).toFixed(2)} % </td>
-                      <td>
-                        {new Date(z.dataZbritjes).toLocaleDateString("en-GB", {
-                          dateStyle: "short",
-                        })}
-                      </td>
-                      <td>
-                        {new Date(z.dataSkadimit).toLocaleDateString("en-GB", {
-                          dateStyle: "short",
-                        })}
-                      </td>
-                      <td>
-                        <Button
-                          style={{ marginRight: "0.5em" }}
-                          variant="danger"
-                          onClick={() => handleFshij(z.produktiID)}>
-                          <FontAwesomeIcon icon={faClose} />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </MDBTableBody>
-              </MDBTable>
+              <div className="mt-2">
+                <Tabela
+                  data={zbritjet}
+                  tableName="Lista e Zbritjeve"
+                  kaButona={true}
+                  funksionButonShto={() => setShtoZbritjen(true)}
+                  funksionButonFshij={(e) => {
+                    setId(e);
+                    handleFshij(e);
+                  }}
+                  startDateField="Data e Zbritjes"
+                  endDateField="Data e Skadimit"
+                  mosShfaqID={true}
+                />
+              </div>
             </>
           )
         )}

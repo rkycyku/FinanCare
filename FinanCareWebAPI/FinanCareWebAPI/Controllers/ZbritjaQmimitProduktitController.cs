@@ -24,6 +24,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> get()
         {
             var prodMeZbritje = await _context.Produkti
+
                 .Where(x => x.ZbritjaQmimitProduktit.Rabati != null)
                 .Select(x => new
                 {
@@ -31,7 +32,8 @@ namespace WebAPI.Controllers
                     x.ZbritjaQmimitProduktit.ProduktiID,
                     x.ZbritjaQmimitProduktit.Rabati,
                     x.ZbritjaQmimitProduktit.DataZbritjes,
-                    x.ZbritjaQmimitProduktit.DataSkadimit
+                    x.ZbritjaQmimitProduktit.DataSkadimit,
+                    x.StokuQmimiProduktit.QmimiProduktit,
                 }).ToListAsync();
 
             return Ok(prodMeZbritje);

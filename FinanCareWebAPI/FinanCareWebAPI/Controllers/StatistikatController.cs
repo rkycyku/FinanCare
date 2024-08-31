@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FinanCareWebAPI.Migrations;
+using FinanCareWebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -140,30 +141,56 @@ namespace WebAPI.Controllers
             return Ok(totalet);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        /*[Authorize(Roles = "Admin, Menaxher")]*/
+        [AllowAnonymous]
         [HttpGet]
-        [Route("15PerdoruesitMeSeShumtiBlerje")]
-        public async Task<IActionResult> GetTop15()
+        [Route("15BleresitQytetarMeSeShumtiBlerje")]
+        public async Task<IActionResult> BleresitQytetarMeSeShumtiBlerje()
         {
-            var bleresit = await _context.Perdoruesi
-                .Select(e => new
+            var topBuyers = await _context.Partneri
+                .Where(p => p.IDPartneri != 1 && p.IDPartneri != 2 && p.IDPartneri != 3)  // Exclude partner with ID 1
+                .Include(x => x.Kartela)        // Include related Kartela
+                .Select(p => new
                 {
-                    User = new
-                    {
-                        id = e.UserID,
-                        emri = e.Emri,
-                        mbiemri = e.Mbiemri,
-                    },
-                    TotaliPorosive = e.Faturat.Where(x => x.LlojiKalkulimit == "FAT").Count(),
-                    TotaliBlerjeve = e.Faturat.Where(x => x.LlojiKalkulimit == "FAT").Sum(q => q.TotaliPaTVSH),
+                    Partneri = p,
+                    NumriBlerjeve = p.Faturat.Count(f => f.LlojiKalkulimit == "PARAGON"),
+                    TotaliBlerjeveEuro = p.Faturat
+                        .Where(f => f.LlojiKalkulimit == "PARAGON")
+                        .Sum(f => f.TotaliPaTVSH + f.TVSH)
                 })
-                .OrderByDescending(g => g.TotaliPorosive)
-                .ThenByDescending(g => g.TotaliBlerjeve)
-                .Take(15)
+                .Where(x => x.NumriBlerjeve > 0) // Only include partners with more than 0 purchases
+                .OrderByDescending(x => x.TotaliBlerjeveEuro)
+                .Take(15)  // Take up to 15, will return fewer if less available
                 .ToListAsync();
 
-            return Ok(bleresit);
+            return Ok(topBuyers);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("15BleresitBiznesorMeSeShumtiBlerje")]
+        public async Task<IActionResult> BleresitBiznesorMeSeShumtiBlerje()
+        {
+            var topBuyers = await _context.Partneri
+                .Where(p => p.IDPartneri != 1 && p.IDPartneri != 2 && p.IDPartneri != 3)  // Exclude partner with ID 1
+                .Select(p => new
+                {
+                    Partneri = p,
+                    NumriBlerjeve = p.Faturat.Count(f => f.LlojiKalkulimit == "FAT"),
+                    TotaliBlerjeveEuro = p.Faturat
+                        .Where(f => f.LlojiKalkulimit == "FAT")
+                        .Sum(f => f.TotaliPaTVSH + f.TVSH)
+                })
+                .Where(x => x.NumriBlerjeve > 0) // Only include partners with more than 0 purchases
+                .OrderByDescending(x => x.TotaliBlerjeveEuro)
+                .Take(15)  // Take up to 15, will return fewer if less available
+                .ToListAsync();
+
+            return Ok(topBuyers);
+        }
+
+
+
 
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]

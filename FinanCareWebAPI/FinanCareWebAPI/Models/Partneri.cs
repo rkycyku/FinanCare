@@ -18,7 +18,7 @@ public partial class Partneri
     public string? LlojiPartnerit { get; set; }
     public string? ShkurtesaPartnerit { get; set; }
 
-    public virtual ICollection<Faturat> Faturat { get; } = new List<Faturat>();
+    public virtual ICollection<Faturat> Faturat { get; set; } = new List<Faturat>();
 
     public virtual ICollection<Produkti> Produkti { get; } = new List<Produkti>();
     public virtual Kartelat? Kartela { get; set; }

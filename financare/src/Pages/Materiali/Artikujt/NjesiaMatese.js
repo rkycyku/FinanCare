@@ -142,17 +142,6 @@ function TabelaEKategorive(props) {
           </div>
         ) : (
           <>
-            <h1 className="title">Njesite Matese</h1>
-
-            <Link to="/Produktet">
-              <MDBBtn className="Butoni">
-                Mbyllni Njesine Matese <FontAwesomeIcon icon={faClose} />
-              </MDBBtn>
-            </Link>
-            <MDBBtn className="mb-3 Butoni" onClick={handleShow}>
-              Shtoni Njesine Matese <FontAwesomeIcon icon={faPlus} />
-            </MDBBtn>
-
             <div className="mt-2">
               <Tabela
                 data={njesiteMatese}
@@ -170,40 +159,6 @@ function TabelaEKategorive(props) {
                 mosShfaqID={true}
               />
             </div>
-
-            <MDBTable>
-              <MDBTableHead>
-                <tr>
-                  <th scope="col">ID e Njesis Matese</th>
-                  <th scope="col">Njesia Matese</th>
-                  <th scope="col">Totali Produkteve</th>
-                  <th scope="col">Funksione</th>
-                </tr>
-              </MDBTableHead>
-
-              <MDBTableBody>
-                {njesiteMatese.map((k) => (
-                  <tr key={k.idNjesiaMatese}>
-                    <td>{k.idNjesiaMatese}</td>
-                    <td>{k.njesiaMatese}</td>
-                    <td>{k.totaliProdukteve}</td>
-                    <td>
-                      <Button
-                        style={{ marginRight: "0.5em" }}
-                        variant="success"
-                        onClick={() => handleEdito(k.idNjesiaMatese)}>
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        onClick={() => handleFshij(k.idNjesiaMatese)}>
-                        <FontAwesomeIcon icon={faBan} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </MDBTableBody>
-            </MDBTable>
           </>
         )}
       </div>
