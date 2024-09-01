@@ -189,6 +189,31 @@ namespace WebAPI.Controllers
             return Ok(topBuyers);
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ShitjetDitoreMeParagon")]
+        public async Task<IActionResult> ShitjetDitoreMeParagon()
+        {
+            var topBuyers = await _context.Faturat
+                .Where(x => x.LlojiKalkulimit == "PARAGON" && x.DataRegjistrimit == DateTime.Today) // Exclude partner with ID 1
+                .Include(x => x.Stafi)
+                .GroupBy(p => p.Stafi)
+                .Select(g => new
+                {
+                    Stafi = g.Key,
+                    NumriBlerjeve = g.Count(),
+                    TotaliBlerjeveEuro = g.Where(x => x.LlojiKalkulimit == "PARAGON" && x.DataRegjistrimit == DateTime.Today)
+                                          .Sum(f => (f.TotaliPaTVSH ?? 0) + (f.TVSH ?? 0))
+                })
+                .Where(x => x.NumriBlerjeve > 0) // Only include partners with more than 0 purchases
+                .OrderByDescending(x => x.TotaliBlerjeveEuro)
+                .Take(15)  // Take up to 15, will return fewer if less available
+                .ToListAsync();
+
+            return Ok(topBuyers);
+        }
+
+
 
 
 

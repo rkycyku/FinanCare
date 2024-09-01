@@ -7,6 +7,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import ChartComponent from "../../../Components/TeTjera/Chart/ChartComponent";
+import { Col, Row } from "react-bootstrap";
 
 function Statistika() {
   const [totaleTeNdryshme, setTotaleTeNdryshme] = useState([]);
@@ -103,13 +104,14 @@ function Statistika() {
   }
 
   const produktetData = {
-    labels: top15Produktet && top15Produktet.map((k) => k.produkti.emriProduktit),
+    labels:
+      top15Produktet && top15Produktet.map((k) => k.produkti.emriProduktit),
     datasets: [
       {
         label: "Totali Shitjeve €",
-        data: top15Produktet && top15Produktet.map((k) =>
-          parseFloat(k.totaliBlerjeve).toFixed(2)
-        ),
+        data:
+          top15Produktet &&
+          top15Produktet.map((k) => parseFloat(k.totaliBlerjeve).toFixed(2)),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -119,7 +121,8 @@ function Statistika() {
 
   // Data for Top 15 Clients Chart
   const klientetData = {
-    labels: top15Bleresit && top15Bleresit.map((k) => `${k.partneri.emriBiznesit}`),
+    labels:
+      top15Bleresit && top15Bleresit.map((k) => `${k.partneri.emriBiznesit}`),
     datasets: [
       {
         label: "Totali Porosive",
@@ -130,7 +133,9 @@ function Statistika() {
       },
       {
         label: "Shuma Totale Porosive €",
-        data: top15Bleresit && top15Bleresit.map((k) => parseFloat(k.totaliBlerjeveEuro).toFixed(2)),
+        data:
+          top15Bleresit &&
+          top15Bleresit.map((k) => parseFloat(k.totaliBlerjeveEuro).toFixed(2)),
         backgroundColor: "rgba(255, 159, 64, 0.6)",
         borderColor: "rgba(255, 159, 64, 1)",
         borderWidth: 1,
@@ -140,22 +145,31 @@ function Statistika() {
 
   // Data for Weekly Sales Chart
   const shitjetJavoreData = {
-    labels: shitjetJavore && shitjetJavore.totaletDitore && shitjetJavore.totaletDitore.map((k) =>
-      new Date(k.data).toLocaleDateString("en-GB", { dateStyle: "short" })
-    ),
+    labels:
+      shitjetJavore &&
+      shitjetJavore.totaletDitore &&
+      shitjetJavore.totaletDitore.map((k) =>
+        new Date(k.data).toLocaleDateString("en-GB", { dateStyle: "short" })
+      ),
     datasets: [
       {
         label: "Shitjet Ditore €",
-        data: shitjetJavore && shitjetJavore.totaletDitore && shitjetJavore.totaletDitore.map((k) =>
-          parseFloat(k.totaliShitjeveDitore).toFixed(2)
-        ),
+        data:
+          shitjetJavore &&
+          shitjetJavore.totaletDitore &&
+          shitjetJavore.totaletDitore.map((k) =>
+            parseFloat(k.totaliShitjeveDitore).toFixed(2)
+          ),
         backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderColor: "rgba(255, 99, 132, 1)",
         fill: false,
       },
       {
         label: "Porosite Ditore",
-        data: shitjetJavore && shitjetJavore.totaletDitore && shitjetJavore.totaletDitore.map((k) => k.totaliPorosiveDitore),
+        data:
+          shitjetJavore &&
+          shitjetJavore.totaletDitore &&
+          shitjetJavore.totaletDitore.map((k) => k.totaliPorosiveDitore),
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         fill: false,
@@ -430,7 +444,12 @@ function Statistika() {
         </div>
         <div className="cardStatisitkat">
           <Card border="dark">
-            <Card.Header>Bleresit Qytetar me se Shumti Blerje</Card.Header>
+            <Card.Header>
+              Bleresit Qytetar me se Shumti Blerje{" "}
+              <span style={{ fontStyle: "italic", fontWeight: "bold" }}>
+                (Nuk zbriten Kthimet)
+              </span>
+            </Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -438,19 +457,19 @@ function Statistika() {
                     <tr>
                       <th scope="col">Kartela Klientit</th>
                       <th scope="col">Partneri</th>
-                      <th scope="col">Totali Porosive</th>
-                      <th scope="col">Shuma Totale Porosive</th>
+                      <th scope="col">Totali Blerjeve</th>
+                      <th scope="col">Shuma Totale Blerjes</th>
                     </tr>
                   </MDBTableHead>
                   <MDBTableBody>
                     {top15Bleresit.map((k) => (
                       <tr key={k?.partneri?.kartela?.kodiKartela}>
                         <td>{k?.partneri?.kartela?.kodiKartela}</td>
-                        <td>
-                          {k?.partneri?.emriBiznesit}
-                        </td>
+                        <td>{k?.partneri?.emriBiznesit}</td>
                         <td>{k?.numriBlerjeve}</td>
-                        <td>{parseFloat(k?.totaliBlerjeveEuro).toFixed(2)} €</td>
+                        <td>
+                          {parseFloat(k?.totaliBlerjeveEuro).toFixed(2)} €
+                        </td>
                       </tr>
                     ))}
                   </MDBTableBody>
@@ -459,7 +478,12 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card border="dark">
-            <Card.Header>Bleresit Qytetar me se Shumti Blerje</Card.Header>
+            <Card.Header>
+              Bizneset me se Shumti Blerje{" "}
+              <span style={{ fontStyle: "italic", fontWeight: "bold" }}>
+                (Nuk zbriten Flete Lejimet)
+              </span>
+            </Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -473,11 +497,11 @@ function Statistika() {
                   <MDBTableBody>
                     {top15Bizneset.map((k) => (
                       <tr key={k?.partneri?.idPartneri}>
-                        <td>
-                          {k?.partneri?.emriBiznesit}
-                        </td>
+                        <td>{k?.partneri?.emriBiznesit}</td>
                         <td>{k?.numriBlerjeve}</td>
-                        <td>{parseFloat(k?.totaliBlerjeveEuro).toFixed(2)} €</td>
+                        <td>
+                          {parseFloat(k?.totaliBlerjeveEuro).toFixed(2)} €
+                        </td>
                       </tr>
                     ))}
                   </MDBTableBody>
@@ -487,42 +511,47 @@ function Statistika() {
           </Card>
         </div>
         <h1 className="title">Statistikat Charts</h1>
-
-        {/* Card for Top 15 Products */}
-          <Card border="dark">
-            <Card.Header>Produktet me Te Shitura</Card.Header>
-            <Card.Body>
-              <ChartComponent
-                chartType="bar"
-                chartData={produktetData}
-                chartOptions={chartOptions}
-              />
-            </Card.Body>
-          </Card>
-
-        {/* Card for Top 15 Clients */}
-          <Card border="dark">
-            <Card.Header>Klientet me se Shumti Blerje</Card.Header>
-            <Card.Body>
-              <ChartComponent
-                chartType="bar"
-                chartData={klientetData}
-                chartOptions={chartOptions}
-              />
-            </Card.Body>
-          </Card>
-
-        {/* Card for Weekly Sales */}
-          <Card border="dark">
-            <Card.Header>Statistikat Javore</Card.Header>
-            <Card.Body>
-              <ChartComponent
-                chartType="line"
-                chartData={shitjetJavoreData}
-                chartOptions={chartOptions}
-              />
-            </Card.Body>
-          </Card>
+        <Row>
+          <Col md="4">
+            {/* Card for Top 15 Products */}
+            <Card border="dark">
+              <Card.Header>Produktet me Te Shitura</Card.Header>
+              <Card.Body>
+                <ChartComponent
+                  chartType="bar"
+                  chartData={produktetData}
+                  chartOptions={chartOptions}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md="4">
+            {/* Card for Top 15 Clients */}
+            <Card border="dark">
+              <Card.Header>Klientet me se Shumti Blerje</Card.Header>
+              <Card.Body>
+                <ChartComponent
+                  chartType="bar"
+                  chartData={klientetData}
+                  chartOptions={chartOptions}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md="4">
+            {/* Card for Weekly Sales */}
+            <Card border="dark">
+              <Card.Header>Statistikat Javore</Card.Header>
+              <Card.Body>
+                <ChartComponent
+                  chartType="line"
+                  chartData={shitjetJavoreData}
+                  chartOptions={chartOptions}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </div>
     </>
   );
