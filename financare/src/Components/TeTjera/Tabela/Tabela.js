@@ -295,6 +295,7 @@ function Tabela({
                     {funksionFaturoOferten && (
                       <Button
                         variant="outline-primary"
+                        disabled={item["Statusi Kalkulimit"] === "I Hapur" || item["Eshte Faturuar"] === "Po"}
                         size="sm"
                         style={{ marginRight: "0.5em" }}
                         onClick={() => funksionFaturoOferten(item.ID)}>
@@ -308,7 +309,20 @@ function Tabela({
           </tbody>
         </Table>
       ) : (
-        <p>No data available</p>
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th colSpan={filteredHeaders.length + 1}>
+                <h1 style={{ textAlign: "center" }}>{tableName}</h1>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nuk ka te dhena</td>
+            </tr>
+          </tbody>
+        </Table>
       )}
 
       {pageCount > 1 && (

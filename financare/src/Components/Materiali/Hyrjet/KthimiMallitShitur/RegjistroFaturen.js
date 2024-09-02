@@ -233,20 +233,22 @@ function RegjistroFaturen(props) {
             (item) => item.emriProduktit == produkti["Emri Produktit"]
           );
 
+          console.log(prod);
+          console.log(produkti)
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
-              qmimiBleres: produkti.qmimiBleres,
-              qmimiProduktit: produkti.qmimiShites,
-              sasiaNeStok: produkti.sasiaStokut,
-              qmimiMeShumic: produkti.qmimiShitesMeShumic,
+              qmimiBleres: prod.qmimiBleres,
+              qmimiProduktit: prod.qmimiProduktit,
+              sasiaNeStok: parseFloat(produkti.sasiaStokut),
+              qmimiMeShumic: prod.qmimiMeShumic,
             },
             authentikimi
-          );
+          ).then((response) => console.log(response));
         }
 
-        props.setPerditeso();
-        props.mbyllKalkulimin();
+        // props.setPerditeso();
+        // props.mbyllKalkulimin();
       }
     } catch (error) {
       console.error(error);

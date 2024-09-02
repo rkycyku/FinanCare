@@ -50,8 +50,9 @@ namespace WebAPI.Controllers
             var totPorosiveParagon = await paragonQuery.CountAsync();
 
             /* Today's Totals */
-            var todayFatQuery = fatQuery.Where(p => p.DataRegjistrimit == today);
-            var todayFlQuery = flQuery.Where(p => p.DataRegjistrimit == today);
+            var tomorrow = today.AddDays(1);
+            var todayFatQuery = fatQuery.Where(p => p.DataRegjistrimit >= today && p.DataRegjistrimit < tomorrow);
+            var todayFlQuery = flQuery.Where(p => p.DataRegjistrimit >= today && p.DataRegjistrimit < tomorrow);
 
             var totPorosiveSotme = await todayFatQuery.CountAsync();
             var totShitjeveSotmePaTVSHFat = await todayFatQuery.SumAsync(p => p.TotaliPaTVSH);
@@ -70,8 +71,9 @@ namespace WebAPI.Controllers
             var totShitjeveMujoreVetemTVSHFl = await monthFlQuery.SumAsync(p => p.TVSH);
 
             /* Yesterday's Totals */
-            var yesterdayFatQuery = fatQuery.Where(p => p.DataRegjistrimit == yesterday);
-            var yesterdayFlQuery = flQuery.Where(p => p.DataRegjistrimit == yesterday);
+            var todayStart = today;
+            var yesterdayFatQuery = fatQuery.Where(p => p.DataRegjistrimit >= yesterday && p.DataRegjistrimit < todayStart);
+            var yesterdayFlQuery = flQuery.Where(p => p.DataRegjistrimit >= yesterday && p.DataRegjistrimit < todayStart);
 
             var totPorosiveDjeshme = await yesterdayFatQuery.CountAsync();
             var totShitjeveDjeshmePaTVSHFat = await yesterdayFatQuery.SumAsync(p => p.TotaliPaTVSH);
@@ -92,7 +94,7 @@ namespace WebAPI.Controllers
             var totalet = new
             {
                 /* General */
-                TotaliShitjeve = totShitjevePaTVSHFat + totShitjeveVetemTVSHFat - totShitjevePaTVSHFl - totShitjeveVetemTVSHFl ,
+                TotaliShitjeve = totShitjevePaTVSHFat + totShitjeveVetemTVSHFat - totShitjevePaTVSHFl - totShitjeveVetemTVSHFl,
                 TotaliKlient = totKlient,
                 TotaliKlientBiznesi = totKlientBiznesi,
                 TotaliProdukteve = totProdukteve,
@@ -114,11 +116,12 @@ namespace WebAPI.Controllers
 
                 /* Last Month's Totals */
                 TotaliPorosiveMuajinKaluar = totPorosiveMujoreKaluar,
-                TotaliShitjeveMuajinKaluar = totShitjeveMujoreKaluarPaTVSHFat + totShitjeveMujoreKaluarVetemTVSHFat - totShitjeveMujoreKaluarPaTVSHFl - totShitjeveMujoreKaluarVetemTVSHFl
+                TotaliShitjeveMuajinKaluar = totShitjeveMujoreKaluarPaTVSHFat + totShitjeveMujoreKaluarVetemTVSHFat - totShitjeveMujoreKaluarPaTVSHFl - totShitjeveMujoreKaluarVetemTVSHFl,
             };
 
             return Ok(totalet);
         }
+
 
 
 
@@ -283,8 +286,12 @@ namespace WebAPI.Controllers
                 ShitjetDitore,
                 ShitjetJavore,
                 ShitjetMujore,
-                startOfWeek
-            });
+                startOfWeek,
+                today ,
+                endOfWeek,
+            startOfMonth ,
+            endOfMonth 
+        });
         }
 
 

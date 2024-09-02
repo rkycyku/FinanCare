@@ -38,9 +38,6 @@ function KthimIMallitTeBlere(props) {
   const [pershkrimShtese, setPershkrimShtese] = useState("");
   const [Partneri, setPartneri] = useState(0);
   const [nrFatures, setNrFatures] = useState("");
-  const today = new Date();
-  const initialDate = today.toISOString().split("T")[0]; // Format as 'yyyy-MM-dd'
-  const [dataEFatures, setDataEFatures] = useState(initialDate);
   const [llojiIPageses, setLlojiIPageses] = useState("Cash");
   const [statusiIPageses, setStatusiIPageses] = useState("E Paguar");
   const [totPaTVSH, setTotPaTVSH] = useState("0.00");
@@ -57,15 +54,7 @@ function KthimIMallitTeBlere(props) {
 
   const [edito, setEdito] = useState(false);
   const [importoNgaOferta, setImportoNgaOferta] = useState(false);
-  const [konfirmoMbylljenFatures, setKonfirmoMbylljenFatures] = useState(false);
-
-  const [teDhenatFatures, setTeDhenatFatures] = useState([]);
-
   const [nrRendorFat, setNrRendorFat] = useState(0);
-
-  const [dataFillestare, setDataFillestare] = useState(null);
-  const [dataFundit, setDataFundit] = useState(null);
-  const [filtroStatusi, setFiltroStatusi] = useState("Te Gjitha");
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -192,7 +181,6 @@ function KthimIMallitTeBlere(props) {
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin",
           {
-            dataRegjistrimit: dataEFatures,
             stafiID: teDhenat.perdoruesi.userID,
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
@@ -282,7 +270,8 @@ function KthimIMallitTeBlere(props) {
     axios
       .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres")
       .then((response) => {
-        const fetchedoptions = response.data.map((item) => ({
+        console.log(response)
+        const fetchedoptions = response.data.filter((item) => item.nui != 0).map((item) => ({
           value: item.idPartneri,
           label: item.emriBiznesit,
           item: item,
@@ -439,15 +428,6 @@ function KthimIMallitTeBlere(props) {
                     </Form.Group>
                   </Col>
                   <Col>
-                    <Form.Group>
-                      <Form.Label>Data e Ofertes</Form.Label>
-                      <Form.Control
-                        id="dataEFatures"
-                        type="date"
-                        value={dataEFatures}
-                        disabled
-                      />
-                    </Form.Group>
                     <br />
                     <Button
                       className="mb-3 Butoni"

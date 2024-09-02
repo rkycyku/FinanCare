@@ -122,37 +122,22 @@ function Statistika() {
     labels:
       top15Produktet && top15Produktet.map((k) => k.produkti.emriProduktit),
     datasets: [
+      
       {
+        label: "Totali Porosive",
+        data:
+        top15Produktet &&
+        top15Produktet.map((k) => k.totaliPorosive),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        fill: false,
+      },{
         label: "Totali Shitjeve €",
         data:
           top15Produktet &&
           top15Produktet.map((k) => parseFloat(k.totaliBlerjeve).toFixed(2)),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Data for Top 15 Clients Chart
-  const klientetData = {
-    labels:
-      top15Bleresit && top15Bleresit.map((k) => `${k.partneri.emriBiznesit}`),
-    datasets: [
-      {
-        label: "Totali Porosive",
-        data: top15Bleresit && top15Bleresit.map((k) => k.numriBlerjeve),
-        backgroundColor: "rgba(153, 102, 255, 0.6)",
-        borderColor: "rgba(153, 102, 255, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Shuma Totale Porosive €",
-        data:
-          top15Bleresit &&
-          top15Bleresit.map((k) => parseFloat(k.totaliBlerjeveEuro).toFixed(2)),
-        backgroundColor: "rgba(255, 159, 64, 0.6)",
-        borderColor: "rgba(255, 159, 64, 1)",
         borderWidth: 1,
       },
     ],
@@ -466,7 +451,7 @@ function Statistika() {
         </div>
         <div className="cardStatisitkat">
           <Card border="dark">
-            <Card.Header>Shitjet Ditore</Card.Header>
+            <Card.Header>Shitjet Ditore | {new Date(shitjetMeParagon?.today).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -516,7 +501,7 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card border="dark">
-            <Card.Header>Shitjet Javore</Card.Header>
+            <Card.Header>Shitjet Javore | {new Date(shitjetMeParagon?.startOfWeek).toLocaleDateString("en-GB", { dateStyle: "short" })} - {new Date(shitjetMeParagon?.endOfWeek).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -566,7 +551,7 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card border="dark">
-            <Card.Header>Shitjet Mujore</Card.Header>
+            <Card.Header>Shitjet Mujore | {new Date(shitjetMeParagon?.startOfMonth).toLocaleDateString("en-GB", { dateStyle: "short" })} - {new Date(shitjetMeParagon?.endOfMonth).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -704,19 +689,6 @@ function Statistika() {
             </Card>
           </Col>
 
-          <Col md="6">
-            {/* Card for Top 15 Clients */}
-            <Card border="dark">
-              <Card.Header>Klientet me se Shumti Blerje</Card.Header>
-              <Card.Body>
-                <ChartComponent
-                  chartType="bar"
-                  chartData={klientetData}
-                  chartOptions={chartOptions}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
           <Col md="6">
             {/* Card for Weekly Sales */}
             <Card border="dark">
