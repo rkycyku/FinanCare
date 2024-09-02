@@ -15,6 +15,8 @@ function Statistika() {
   const [top15Bizneset, setTop15Bizneset] = useState([]);
   const [top15Produktet, setTop15Produktet] = useState([]);
   const [shitjetJavore, setShitjetJavore] = useState([]);
+  const [shitjetMeParagon, setShitjetMeParagon] = useState([]);
+
   const getToken = localStorage.getItem("token");
 
   const authentikimi = {
@@ -84,11 +86,24 @@ function Statistika() {
       }
     };
 
+    const vendosShitjetMeParagon = async () => {
+      try {
+        const dita = await axios.get(
+          "https://localhost:7285/api/Statistikat/ShitjetMeParagonSipasOperatorit",
+          authentikimi
+        );
+        setShitjetMeParagon(dita.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
     vendosTotalinPerdoruesve();
     vendosTop15Bleresit();
     vendosTop15Produktet();
     vendosTop15Bizneset();
     vendosShitjetJavore();
+    vendosShitjetMeParagon();
   }, []);
 
   function shfaqDiten(data) {
@@ -197,22 +212,12 @@ function Statistika() {
         <hr />
         <h1 className="title">Statistikat e Pergjithshme</h1>
         <div className="cardStatisitkat">
-          <Card className="KartaStatistikave" border="dark">
+        <Card className="KartaStatistikave" border="dark">
             <Card.Header>Totali Shitjeve</Card.Header>
             <Card.Body>
               <Card.Text>
                 <span className="TekstiStatistika">
-                  {parseFloat(totaleTeNdryshme.totaliShitjeve).toFixed(2)} €
-                </span>
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card className="KartaStatistikave" border="dark">
-            <Card.Header>Totali Porosive</Card.Header>
-            <Card.Body>
-              <Card.Text>
-                <span className="TekstiStatistika">
-                  {totaleTeNdryshme.totaliPorosive}
+                  {parseFloat(totaleTeNdryshme?.totaliShitjeve + totaleTeNdryshme?.totaliShitjeveParagonEuro).toFixed(2)} €
                 </span>
               </Card.Text>
             </Card.Body>
@@ -228,11 +233,64 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card className="KartaStatistikave" border="dark">
-            <Card.Header>Totali Klienteve</Card.Header>
+            <Card.Header>Totali Bleresve Qytetar</Card.Header>
             <Card.Body>
               <Card.Text>
                 <span className="TekstiStatistika">
                   {totaleTeNdryshme.totaliKlient}
+                </span>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card className="KartaStatistikave" border="dark">
+            <Card.Header>Totali Bleresve Biznesor</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <span className="TekstiStatistika">
+                  {totaleTeNdryshme.totaliKlientBiznesi}
+                </span>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </div>
+
+        <div className="cardStatisitkat">
+          <Card className="KartaStatistikave" border="dark">
+            <Card.Header>Totali Shitjeve me Fatura</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <span className="TekstiStatistika">
+                  {parseFloat(totaleTeNdryshme.totaliShitjeve).toFixed(2)} €
+                </span>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card className="KartaStatistikave" border="dark">
+            <Card.Header>Totali Porosive me Fatura</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <span className="TekstiStatistika">
+                  {totaleTeNdryshme.totaliPorosive}
+                </span>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card className="KartaStatistikave" border="dark">
+            <Card.Header>Totali Shitjeve me Paragon</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <span className="TekstiStatistika">
+                  {parseFloat(totaleTeNdryshme?.totaliShitjeveParagonEuro).toFixed(2)} €
+                </span>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card className="KartaStatistikave" border="dark">
+            <Card.Header>Totali Paragonave</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <span className="TekstiStatistika">
+                  {totaleTeNdryshme.totaliShitjeveParagon}
                 </span>
               </Card.Text>
             </Card.Body>
@@ -406,42 +464,162 @@ function Statistika() {
             </Card.Body>
           </Card>
         </div>
-        <hr />
-        <h1 className="title">Statistikat Tabelare</h1>
-
         <div className="cardStatisitkat">
           <Card border="dark">
-            <Card.Header>Produktet me Te Shitura</Card.Header>
+            <Card.Header>Shitjet Ditore</Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
                   <MDBTableHead>
                     <tr>
-                      <th scope="col">ID Produktit</th>
-                      <th scope="col">Emri Produktit</th>
-                      <th scope="col">Qmimi Shites €</th>
-                      <th scope="col">Totali i Porosive</th>
+                      <th scope="col">Operatori</th>
+                      <th scope="col">Totali Paragonave</th>
                       <th scope="col">Totali Shitjeve €</th>
                     </tr>
                   </MDBTableHead>
                   <MDBTableBody>
-                    {top15Produktet.map((k) => (
-                      <tr key={k.produkti.produktiId}>
-                        <td>{k.produkti.produktiId}</td>
-                        <td>{k.produkti.emriProduktit}</td>
-                        <td>
-                          {parseFloat(k.produkti.qmimiProduktit).toFixed(2)} €
-                        </td>
-                        <td>{k.totaliPorosive}</td>
-                        <td>{parseFloat(k.totaliBlerjeve).toFixed(2)} €</td>
-                      </tr>
-                    ))}
+                    {shitjetMeParagon?.shitjetDitore?.shitjetDitoreSipasOperatorit.map(
+                      (k) => (
+                        <tr key={k?.stafi?.userID}>
+                          <td>{k?.stafi?.username}</td>
+                          <td>{k.numriBlerjeve}</td>
+                          <td>
+                            {parseFloat(k.totaliBlerjeveEuro).toFixed(2)} €
+                          </td>
+                        </tr>
+                      )
+                    )}
+                    <tr>
+                      <td>
+                        <strong>-</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {
+                            shitjetMeParagon?.shitjetDitore
+                              ?.shitjetDitoreParagon
+                          }
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {parseFloat(
+                            shitjetMeParagon?.shitjetDitore?.shitjetDitoreEuro
+                          ).toFixed(2)}{" "}
+                          €
+                        </strong>
+                      </td>
+                    </tr>
+                  </MDBTableBody>
+                </MDBTable>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card border="dark">
+            <Card.Header>Shitjet Javore</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <MDBTable align="middle">
+                  <MDBTableHead>
+                    <tr>
+                      <th scope="col">Operatori</th>
+                      <th scope="col">Totali Paragonave</th>
+                      <th scope="col">Totali Shitjeve €</th>
+                    </tr>
+                  </MDBTableHead>
+                  <MDBTableBody>
+                    {shitjetMeParagon?.shitjetJavore?.shitjetJavoreSipasOperatorit?.map(
+                      (k) => (
+                        <tr key={k?.stafi?.userID}>
+                          <td>{k?.stafi?.username}</td>
+                          <td>{k.numriBlerjeve}</td>
+                          <td>
+                            {parseFloat(k.totaliBlerjeveEuro).toFixed(2)} €
+                          </td>
+                        </tr>
+                      )
+                    )}
+                    <tr>
+                      <td>
+                        <strong>-</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {
+                            shitjetMeParagon?.shitjetJavore
+                              ?.shitjetJavoreParagon
+                          }
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {parseFloat(
+                            shitjetMeParagon?.shitjetJavore?.shitjetJavoreEuro
+                          ).toFixed(2)}{" "}
+                          €
+                        </strong>
+                      </td>
+                    </tr>
+                  </MDBTableBody>
+                </MDBTable>
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card border="dark">
+            <Card.Header>Shitjet Mujore</Card.Header>
+            <Card.Body>
+              <Card.Text>
+                <MDBTable align="middle">
+                  <MDBTableHead>
+                    <tr>
+                      <th scope="col">Operatori</th>
+                      <th scope="col">Totali Paragonave</th>
+                      <th scope="col">Totali Shitjeve €</th>
+                    </tr>
+                  </MDBTableHead>
+                  <MDBTableBody>
+                    {shitjetMeParagon?.shitjetMujore?.shitjetMujoreSipasOperatorit?.map(
+                      (k) => (
+                        <tr key={k?.stafi?.userID}>
+                          <td>{k?.stafi?.username}</td>
+                          <td>{k.numriBlerjeve}</td>
+                          <td>
+                            {parseFloat(k.totaliBlerjeveEuro).toFixed(2)} €
+                          </td>
+                        </tr>
+                      )
+                    )}
+                    <tr>
+                      <td>
+                        <strong>-</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {
+                            shitjetMeParagon?.shitjetMujore
+                              ?.shitjetMujoreParagon
+                          }
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {parseFloat(
+                            shitjetMeParagon?.shitjetMujore?.shitjetMujoreEuro
+                          ).toFixed(2)}{" "}
+                          €
+                        </strong>
+                      </td>
+                    </tr>
                   </MDBTableBody>
                 </MDBTable>
               </Card.Text>
             </Card.Body>
           </Card>
         </div>
+        <hr />
+        <h1 className="title">Statistikat Tabelare</h1>
+
+        <div className="cardStatisitkat"></div>
         <div className="cardStatisitkat">
           <Card border="dark">
             <Card.Header>
@@ -511,8 +689,8 @@ function Statistika() {
           </Card>
         </div>
         <h1 className="title">Statistikat Charts</h1>
-        <Row>
-          <Col md="4">
+        <Row className="mb-3">
+          <Col md="6">
             {/* Card for Top 15 Products */}
             <Card border="dark">
               <Card.Header>Produktet me Te Shitura</Card.Header>
@@ -525,7 +703,8 @@ function Statistika() {
               </Card.Body>
             </Card>
           </Col>
-          <Col md="4">
+
+          <Col md="6">
             {/* Card for Top 15 Clients */}
             <Card border="dark">
               <Card.Header>Klientet me se Shumti Blerje</Card.Header>
@@ -538,7 +717,7 @@ function Statistika() {
               </Card.Body>
             </Card>
           </Col>
-          <Col md="4">
+          <Col md="6">
             {/* Card for Weekly Sales */}
             <Card border="dark">
               <Card.Header>Statistikat Javore</Card.Header>
