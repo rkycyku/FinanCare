@@ -377,6 +377,9 @@ namespace TechStoreWebAPI.Controllers
                 })
                 .ToListAsync();
 
+            var hisotriaZbritjes = await _context.HistoriaZbritjeveProduktit
+                .Where(x => x.ProduktiID == id).ToListAsync();
+
 
             if (produkti == null)
             {
@@ -389,7 +392,8 @@ namespace TechStoreWebAPI.Controllers
                 kalkulimet,
                 zbritjet,
                 TotaliHyrese,
-                TotaliDalese
+                TotaliDalese,
+                hisotriaZbritjes
             });
         }
 

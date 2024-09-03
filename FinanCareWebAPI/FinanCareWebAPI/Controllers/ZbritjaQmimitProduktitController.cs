@@ -45,6 +45,14 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> post(ZbritjaQmimitProduktit zbritja)
         {
             await _context.ZbritjaQmimitProduktit.AddAsync(zbritja);
+            HistoriaZbritjeveProduktit historiaZbritjeveProduktit = new()
+            {
+                DataSkadimit = zbritja.DataSkadimit,
+                DataZbritjes = zbritja.DataZbritjes,
+                ProduktiID = zbritja.ProduktiID,
+                Rabati = zbritja.Rabati,
+            };
+            await _context.HistoriaZbritjeveProduktit.AddAsync(historiaZbritjeveProduktit);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("get", zbritja.ProduktiID, zbritja);

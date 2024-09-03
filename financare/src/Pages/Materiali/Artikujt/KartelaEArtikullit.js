@@ -292,9 +292,8 @@ function KartelaEArtikullit(props) {
                         </tr>
                       </thead>
                       <tbody>
-                        {kartelaEProduktit &&
-                          kartelaEProduktit.zbritjet &&
-                          kartelaEProduktit.zbritjet.map((p) => (
+                        {
+                          kartelaEProduktit?.hisotriaZbritjes?.map((p) => (
                             <tr>
                               <td>
                                 {new Date(p.dataZbritjes).toLocaleDateString(

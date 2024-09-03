@@ -295,12 +295,6 @@ namespace WebAPI.Controllers
         }
 
 
-
-
-
-
-
-
         [Authorize(Roles = "Admin, Menaxher")]
         [HttpGet]
         [Route("15ProduktetMeTeShitura")]

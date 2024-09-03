@@ -5,10 +5,14 @@ import "./Styles/Dashboard.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import Mesazhi from "../Components/TeTjera/layout/Mesazhi";
-import PerditesoTeDhenat from "./Gjenerale/TeDhenat/PerditesoTeDhenat";
+import {
+  Tab,
+  Tabs,
+  Form,
+  InputGroup,
+  Row,
+  Col,
+} from "react-bootstrap";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
@@ -28,11 +32,11 @@ const Dashboard = () => {
   const [adresa, setAdresa] = useState("");
   const [nrKontaktit, setNrKontaktit] = useState("");
   const [id, setId] = useState();
-  const [mbyllPerditesoTeDhenat, setMbyllPerditesoTeDhenat] = useState(true)
+  const [mbyllPerditesoTeDhenat, setMbyllPerditesoTeDhenat] = useState(true);
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
-
+  const [key, setKey] = useState("kryesore");
   const navigate = useNavigate();
 
   const getID = localStorage.getItem("id");
@@ -50,9 +54,11 @@ const Dashboard = () => {
       const vendosTeDhenat = async () => {
         try {
           const perdoruesi = await axios.get(
-            `https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${getID}`, authentikimi
+            `https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${getID}`,
+            authentikimi
           );
           setTeDhenat(perdoruesi.data);
+          console.log(perdoruesi.data);
         } catch (err) {
           console.log(err);
         } finally {
@@ -65,60 +71,6 @@ const Dashboard = () => {
       navigate("/login");
     }
   }, [perditeso]);
-
-  const perditesoTeDhenat = async () => {
-    try {
-      const info = {
-        emri: emri,
-        mbiemri: mbiemri,
-        email: email,
-        username: username,
-        teDhenatPerdoruesit: {
-          nrKontaktit: nrKontaktit,
-          adresa: adresa,
-        },
-      }
-      fetch("https://localhost:7285/api/Perdoruesi/perditesoPerdorues/" + id, {
-        method: 'PUT',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(info)
-      })
-
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleShfaqPorosite = () => {
-    setShfaqAdmin(false);
-    setShfaqDetajet(false);
-    setShfaqPorosite(true);
-    setShfaqMesazhet(false);
-  };
-
-  const handleShfaqAdminDashboard = () => {
-    setShfaqAdmin(true);
-    setShfaqDetajet(false);
-    setShfaqPorosite(false);
-    setShfaqMesazhet(false);
-  };
-
-  const handleShfaqMesazhet = () => {
-    setShfaqAdmin(false);
-    setShfaqDetajet(false);
-    setShfaqPorosite(false);
-    setShfaqMesazhet(true);
-  };
-
-  const handleEditoMbyll = () => setEdito(false);
-
-  const handleShow = (ID) => {
-    setId(ID);
-    setMbyllPerditesoTeDhenat(false);
-  };
-
 
   return (
     <>
@@ -143,58 +95,205 @@ const Dashboard = () => {
           </div>
         ) : (
           <div class="containerDashboard">
-            <h3 class="titulliPershkrim">
-            Te dhenat personale
-            </h3>
-            <table>
-              <tr>
-                <td>
-                  <strong>Emri:</strong>
-                </td>
-                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.emri}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Mbiemri:</strong>
-                </td>
-                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.mbiemri}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Username:</strong>
-                </td>
-                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.username}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Email:</strong>
-                </td>
-                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.email}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Numri Kontaktit:</strong>
-                </td>
-                <td>{teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.nrKontaktit}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Pozita: </strong>
-                </td>
-                <td>{teDhenat.rolet && teDhenat.rolet.join(', ')}</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Adresa: </strong>
-                </td>
-                <td>
-                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.adresa},{" "}
-                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.qyteti},{" "}
-                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.shteti}{" "}
-                  {teDhenat.perdoruesi && teDhenat.perdoruesi.teDhenatPerdoruesit && teDhenat.perdoruesi.teDhenatPerdoruesit.zipKodi}
-                </td>
-              </tr>
-            </table>
+            <h3 class="titulliPershkrim">Te dhenat personale</h3>
+            <Tabs
+              id="shenime-tabs"
+              activeKey={key}
+              onSelect={(k) => setKey(k)}
+              className="mb-3">
+              {/* Shënimet Kryesore */}
+              <Tab eventKey="kryesore" title="Shënimet Kryesore">
+                <Form>
+                  <Form.Group className="mb-3" controlId="emriBiznesit">
+                    <Row>
+                      <Col>
+                        <Form.Label>Emri</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.emri}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Mbiemri</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.mbiemri}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="adresa">
+                    <Row>
+                      <Col>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.email}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.username}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="adresa">
+                    <Row>
+                      <Col>
+                        <Form.Label>Data e fillimit te kontrates</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.dataFillimitKontrates}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Data e mbarimit te kontrates</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.dataMbarimitKontrates}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="adresa">
+                    <Row>
+                      <Col>
+                        <Form.Label>Nr. Personal</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.nrPersonal}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Paga Bruto</Form.Label>
+                        <InputGroup className="mb-3">
+                          <Form.Control
+                            type="text"
+                            value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.paga}
+                            disabled
+                          />
+                          <InputGroup.Text id="basic-addon2">€</InputGroup.Text>
+                        </InputGroup>
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                </Form>
+              </Tab>
+
+              {/* Shënimet Ndihmëse */}
+              <Tab eventKey="ndihmese" title="Shënimet Ndihmëse">
+                <Form>
+                  <Form.Group className="mb-3" controlId="nui">
+                    <Row>
+                      <Col>
+                        <Form.Label>Adresa</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.adresa}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Datelindja</Form.Label>
+                        <br />
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.datelindja}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="nui">
+                    <Row>
+                      <Col>
+                        <Form.Label>Nr. Kontaktit</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.nrKontaktit}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Email Privat</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.emailPrivat}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="nui">
+                    <Row>
+                      <Col>
+                        <Form.Label>Profesioni</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.profesioni}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Specializimi</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.specializimi}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Kualifikimi</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.kualifikimi}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="nui">
+                    <Row>
+                      <Col>
+                        <Form.Label>Banka</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.banka}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Nr. Llogaris Bankare</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.numriLlogarisBankare}
+                          disabled
+                        />
+                      </Col>
+                      <Col>
+                        <Form.Label>Statusi Puntorit</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.eshtePuntorAktive}
+                          disabled
+                        />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+                </Form>
+              </Tab>
+            </Tabs>
           </div>
         )}
       </div>
