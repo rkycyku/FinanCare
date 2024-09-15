@@ -19,7 +19,7 @@ namespace FinanCareWebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPartnerinSipasIDs")]
         public async Task<IActionResult> Get(int id)
@@ -45,7 +45,7 @@ namespace FinanCareWebAPI.Controllers
 
 
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPartneretSipasLlojit")]
         public async Task<IActionResult> GetSipasLlojit(string llojiPartnerit)
@@ -62,7 +62,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPartneretFurntiore")]
         public async Task<IActionResult> GetFurnitoret()
@@ -79,7 +79,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPartneretBleres")]
         public async Task<IActionResult> GetBleresit()
@@ -96,7 +96,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPartneret")]
         public async Task<IActionResult> Get()
@@ -113,7 +113,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("KartelaFinanciare")]
         public async Task<ActionResult> GetById(int id)
@@ -209,7 +209,7 @@ namespace FinanCareWebAPI.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoPartnerin")]
         public async Task<IActionResult> Put(int id, [FromBody] Partneri k)
@@ -263,7 +263,7 @@ namespace FinanCareWebAPI.Controllers
             return Ok(partneri);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoPartnerin")]
         public async Task<IActionResult> Post(Partneri partneri)
@@ -274,7 +274,7 @@ namespace FinanCareWebAPI.Controllers
             return CreatedAtAction("Get", partneri.IDPartneri, partneri);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijPartnerin")]
         public async Task<IActionResult> Delete(int id)

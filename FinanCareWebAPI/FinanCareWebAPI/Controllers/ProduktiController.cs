@@ -20,7 +20,7 @@ namespace TechStoreWebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("Products")]
         public async Task<ActionResult> Get()
@@ -54,7 +54,7 @@ namespace TechStoreWebAPI.Controllers
             return Ok(Produkti);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("ShfaqProduktinNgaID")]
         public async Task<ActionResult> ShfaqProduktinNgaID(int id)
@@ -93,7 +93,7 @@ namespace TechStoreWebAPI.Controllers
             return Ok(Produkti);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("ProduktetPerKalkulim")]
         public async Task<ActionResult> ProduktetPerKalkulim()
@@ -127,7 +127,7 @@ namespace TechStoreWebAPI.Controllers
             return Ok(Produkti);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("GetStokuProduktit")]
         public async Task<ActionResult> GetStokuProduktit(int id)
@@ -153,7 +153,7 @@ namespace TechStoreWebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoProdukt")]
         public async Task<IActionResult> Post(Produkti produkti)
@@ -172,7 +172,7 @@ namespace TechStoreWebAPI.Controllers
             return CreatedAtAction("Get", produkti.ProduktiID, produkti);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Produkti p)
         {
@@ -254,7 +254,7 @@ namespace TechStoreWebAPI.Controllers
             return Ok(produkti);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -270,7 +270,7 @@ namespace TechStoreWebAPI.Controllers
         }
 
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("GetKodiProduktitPerRegjistrim")]
         public async Task<IActionResult> GetKodiProduktitPerRegjistrim(int IDPartneri)
@@ -284,7 +284,7 @@ namespace TechStoreWebAPI.Controllers
             return Ok(kodiProduktit);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("KartelaArtikullit")]
         public async Task<ActionResult> GetById(int id)

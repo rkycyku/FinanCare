@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqZbritjet")]
         public async Task<IActionResult> get()
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
             return Ok(prodMeZbritje);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoZbritjenProduktit")]
         public async Task<IActionResult> post(ZbritjaQmimitProduktit zbritja)
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
             return CreatedAtAction("get", zbritja.ProduktiID, zbritja);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijZbritjenProduktit")]
         public async Task<IActionResult> Delete(int id)

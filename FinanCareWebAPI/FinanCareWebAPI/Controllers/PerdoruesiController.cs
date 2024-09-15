@@ -24,13 +24,14 @@ namespace WebAPI.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqPerdoruesit")]
         public async Task<IActionResult> Get()
         {
             var perdoruesit = await _context.Perdoruesi
                 .Include(p => p.TeDhenatPerdoruesit)
+                .ThenInclude(x => x.Banka)
                 .ToListAsync();
 
             var perdoruesiList = new List<RoletEPerdoruesit>();
@@ -52,7 +53,7 @@ namespace WebAPI.Controllers
             return Ok(perdoruesiList);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqSipasID")]
         public async Task<IActionResult> GetbyId(string idUserAspNet)
@@ -61,6 +62,7 @@ namespace WebAPI.Controllers
 
             var perdoruesi = await _context.Perdoruesi
                 .Include(p => p.TeDhenatPerdoruesit)
+                .ThenInclude(x => x.Banka)
                 .FirstOrDefaultAsync(x => x.AspNetUserID.Equals(idUserAspNet));
 
             var rolet = await _userManager.GetRolesAsync(user);
@@ -74,12 +76,12 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin, Menaxher, User")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoPerdorues/{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Perdoruesi p)
+        public async Task<IActionResult> Put(string id, [FromBody] Perdoruesi p)
         {
-            var perdouresi = await _context.Perdoruesi.FirstOrDefaultAsync(x => x.UserID == id);
+            var perdouresi = await _context.Perdoruesi.FirstOrDefaultAsync(x => x.AspNetUserID == id);
 
             if (perdouresi == null)
             {
@@ -102,7 +104,7 @@ namespace WebAPI.Controllers
             _context.Perdoruesi.Update(perdouresi);
             await _context.SaveChangesAsync();
 
-            var teDhenatUser = await _context.TeDhenatPerdoruesit.FirstOrDefaultAsync(x => x.UserID == id);
+            var teDhenatUser = await _context.TeDhenatPerdoruesit.FirstOrDefaultAsync(x => x.UserID == perdouresi.UserID);
 
             if (!p.TeDhenatPerdoruesit.Adresa.IsNullOrEmpty())
             {
@@ -119,7 +121,7 @@ namespace WebAPI.Controllers
             return Ok(perdouresi);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("KontrolloEmail")]
         public async Task<IActionResult> KontrolloEmail(string email)
@@ -137,7 +139,7 @@ namespace WebAPI.Controllers
             return Ok(emailIPerdorur);
         }
 
-        [Authorize(Roles = "Admin, Menaxher, User")]
+        [Authorize]
         [HttpPost]
         [Route("NdryshoEmail")]
         public async Task<IActionResult> NdryshoEmail(string emailIVjeter, string emailIRI)
@@ -162,7 +164,7 @@ namespace WebAPI.Controllers
             return Ok(emailINdryshuar);
         }
 
-        [Authorize(Roles = "Admin, Menaxher, User")]
+        [Authorize]
         [HttpGet]
         [Route("KontrolloFjalekalimin")]
         public async Task<IActionResult> KontrolloFjalekalimin(string AspNetID, string fjalekalimi)
@@ -174,7 +176,7 @@ namespace WebAPI.Controllers
             return Ok(kontrolloFjalekalimin);
         }
 
-        [Authorize(Roles = "Admin, Menaxher, User")]
+        [Authorize]
         [HttpPost]
         [Route("NdryshoFjalekalimin")]
         public async Task<IActionResult> NdryshoFjalekalimin(string AspNetID, string fjalekalimiAktual, string fjalekalimiIRi)
@@ -206,18 +208,23 @@ namespace WebAPI.Controllers
             var emri = e.ToLower();
             var mbiemri = m.ToLower();
 
-            var UsernameGjeneruar = emri.ToString() + "." + mbiemri.ToString();
-            var EmailGjeneruar = UsernameGjeneruar.ToString() + "@" + domain.ToString().ToLower();
+            var UsernameGjeneruar = $"{emri}.{mbiemri}";
+            var EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
 
             var ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
 
-            if (ekziston.Count > 0)
+            int counter = 1;
+            while (ekziston.Count > 0)
             {
-                UsernameGjeneruar = emri.ToString() + "." + mbiemri.ToString() + "." + (ekziston.Count + 1).ToString();
-                EmailGjeneruar = UsernameGjeneruar.ToString() + "@" + domain.ToString().ToLower();
+                UsernameGjeneruar = $"{emri}.{mbiemri}.{counter}";
+                EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
+
+                ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
+
+                counter++;
             }
 
-            var PasswordiGjeneruar = emri.ToString() + mbiemri.ToString() + "1@";
+            var PasswordiGjeneruar = $"{emri}{mbiemri}1@";
 
             var teDhenat = new
             {
@@ -225,7 +232,6 @@ namespace WebAPI.Controllers
                 UsernameGjeneruar,
                 PasswordiGjeneruar
             };
-
 
             return Ok(teDhenat);
         }

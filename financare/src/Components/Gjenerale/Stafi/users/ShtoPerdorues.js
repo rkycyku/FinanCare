@@ -20,11 +20,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./Styles/costumStyles.css";
 
 function ShtoPerdorues(props) {
-  const [perdoruesi, setPerdoruesi] = useState([]);
-  const [shfaqRolet, setShfaqRolet] = useState([]);
-  const [roletUseri, setRoletUseri] = useState([]);
-  const [roletSelektim, setRoletSelektim] = useState([]);
-
   const [emri, setEmri] = useState(null);
   const [mbiemri, setMbiemri] = useState(null);
   const [dataFillimitKontrates, setDataFillimitKontrates] = useState(null);
@@ -41,6 +36,7 @@ function ShtoPerdorues(props) {
   const [bankaID, setBankaID] = useState(0);
   const [nrLlogarisBankare, setNrLlogarisBankare] = useState(null);
   const [eshtePuntorAktiv, setEshtePuntorAktiv] = useState(false);
+  const [roli, setRoli] = useState();
 
   const [key, setKey] = useState("kryesore");
 
@@ -72,89 +68,11 @@ function ShtoPerdorues(props) {
     ShfaqTeDhenat();
   }, [perditeso]);
 
-  const handleChange = (roli) => setRoletSelektim(roli);
-
-  useEffect(() => {
-    const vendosPerdoruesin = async () => {
-      try {
-        const user = await axios.get(
-          `https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${props.id}`,
-          authentikimi
-        );
-        setPerdoruesi(user.data);
-
-        setRoletUseri(user.data.rolet);
-        setRoletSelektim(user.data.rolet);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    vendosPerdoruesin();
-  }, []);
-
-  useEffect(() => {
-    const vendosRolet = async () => {
-      try {
-        const rolet = await axios.get(
-          `https://localhost:7285/api/Authenticate/shfaqRolet`,
-          authentikimi
-        );
-        setShfaqRolet(rolet.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    vendosRolet();
-  }, []);
-
-  async function handleSubmit() {
-    try {
-      for (const y of roletUseri) {
-        if (y !== "User") {
-          await axios.delete(
-            `https://localhost:7285/api/Authenticate/FshijRolinUserit?userID=${props.id}&roli=${y}`,
-            authentikimi
-          );
-        }
-      }
-
-      for (const y of roletSelektim) {
-        if (y !== "User") {
-          await axios.post(
-            `https://localhost:7285/api/Authenticate/ShtoRolinPerdoruesit?userID=${props.id}&roli=${y}`,
-            {},
-            authentikimi
-          );
-        }
-      }
-
-      props.perditesoTeDhenat();
-      props.largo();
-      props.setTipiMesazhit("success");
-      props.setPershkrimiMesazhit("Aksesi i perdoruesit u perditesua!");
-      props.shfaqmesazhin();
-    } catch (error) {
-      props.perditesoTeDhenat();
-      props.largo();
-      props.setTipiMesazhit("danger");
-      props.setPershkrimiMesazhit(
-        "Ndodhi nje gabim gjate perditesimit te aksesit!"
-      );
-      props.shfaqmesazhin();
-    }
-  }
-
-  const getToggleButtonStyle = (selected) => {
-    return {
-      backgroundColor: selected ? "#009879" : "white",
-      color: selected ? "white" : "black",
-    };
-  };
 
   const [options, setOptions] = useState([]);
   const [optionsSelected, setOptionsSelected] = useState(null);
+  const [optionsRolet, setOptionsRolet] = useState([]);
+  const [optionsSelectedRolet, setOptionsSelectedRolet] = useState(null);
   const customStyles = {
     menu: (provided) => ({
       ...provided,
@@ -177,10 +95,32 @@ function ShtoPerdorues(props) {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+
+      axios
+      .get(
+        "https://localhost:7285/api/Authenticate/shfaqRolet",
+        authentikimi
+      )
+      .then((response) => {
+        const fetchedoptions = response.data.filter((item) => item.name != "User").map((item) => ({
+          value: item.name,
+          label: item.name,
+        }));
+        setOptionsRolet(fetchedoptions);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, []);
+
   const handleChangeBanka = async (partneri) => {
     setBankaID(partneri.value);
     setOptionsSelected(partneri);
+  };
+
+  const handleChangeRolet = async (partneri) => {
+    setRoli(partneri.value);
+    setOptionsSelectedRolet(partneri);
   };
 
   function isNullOrEmpty(value) {
@@ -204,6 +144,7 @@ function ShtoPerdorues(props) {
     setBankaID(0);
     setNrLlogarisBankare(null);
     setEshtePuntorAktiv(false);
+    setRoli(null);
   }
 
   async function CreateAcc(e) {
@@ -233,6 +174,34 @@ function ShtoPerdorues(props) {
         props.setTipiMesazhit("danger");
         props.shfaqmesazhin();
       } else {
+        console.log({
+          name: emri,
+          lastName: mbiemri,
+          email:
+            gjeneroTeDhenatPerHyrje &&
+            gjeneroTeDhenatPerHyrje.data.emailGjeneruar,
+          username:
+            gjeneroTeDhenatPerHyrje &&
+            gjeneroTeDhenatPerHyrje.data.usernameGjeneruar,
+          password:
+            gjeneroTeDhenatPerHyrje &&
+            gjeneroTeDhenatPerHyrje.data.passwordiGjeneruar,
+          nrTelefonit: nrKontaktit,
+          adresa: adresa,
+          emailPrivat: emailPrivat,
+          datelindja: dataLindjes.toISOString(),
+          dataFillimitKontrates: dataFillimitKontrates.toISOString(),
+          dataMbarimitKontrates: dataMbarimitKontrates.toISOString(),
+          paga: pagaBruto,
+          profesioni: profesioni,
+          specializimi: specializimi,
+          kualifikimi: kualifikimi,
+          bankaID: bankaID,
+          numriLlogarisBankare: nrLlogarisBankare,
+          nrPersonal: nrLeternjoftimit,
+          eshtePuntorAktive: eshtePuntorAktiv.toString(),
+          roli: roli,
+        })
         axios
           .post(
             "https://localhost:7285/api/Authenticate/register",
@@ -251,9 +220,9 @@ function ShtoPerdorues(props) {
               nrTelefonit: nrKontaktit,
               adresa: adresa,
               emailPrivat: emailPrivat,
-              datelindja: dataLindjes,
-              dataFillimitKontrates: dataFillimitKontrates,
-              dataMbarimitKontrates: dataMbarimitKontrates,
+              datelindja: dataLindjes.toISOString(),
+              dataFillimitKontrates: dataFillimitKontrates.toISOString(),
+              dataMbarimitKontrates: dataMbarimitKontrates.toISOString(),
               paga: pagaBruto,
               profesioni: profesioni,
               specializimi: specializimi,
@@ -262,6 +231,7 @@ function ShtoPerdorues(props) {
               numriLlogarisBankare: nrLlogarisBankare,
               nrPersonal: nrLeternjoftimit,
               eshtePuntorAktive: eshtePuntorAktiv.toString(),
+              roli: roli,
             },
             authentikimi
           )
@@ -382,6 +352,17 @@ function ShtoPerdorues(props) {
                       />
                       <InputGroup.Text id="basic-addon2">€</InputGroup.Text>
                     </InputGroup>
+                  </Col>
+                  <Col>
+                  <Form.Label>Pozita</Form.Label>
+                    <Select
+                      value={optionsSelectedRolet}
+                      onChange={handleChangeRolet}
+                      options={optionsRolet}
+                      id="produktiSelect" // Setting the id attribute
+                      inputId="produktiSelect-input" // Setting the input id attribute
+                      styles={customStyles}
+                    />
                   </Col>
                 </Row>
               </Form.Group>

@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("ShfaqTeDhenat")]
         public IActionResult Get()
@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
             return Ok(teDhenat);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoTeDhenat")]
         public IActionResult Put([FromBody] TeDhenatBiznesit k)
@@ -76,7 +76,7 @@ namespace WebAPI.Controllers
             return Ok(bankat);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("ShfaqBankenNgaID")]
         public async Task<IActionResult> ShfaqBankenNgaID(int id)
@@ -130,7 +130,7 @@ namespace WebAPI.Controllers
             return CreatedAtAction("get", banka.IDLlogariaBankare, banka);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("FshijBanken")]
         public async Task<IActionResult> FshijBanken(int id)
@@ -166,7 +166,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("PerditesoBanken")]
         public async Task<IActionResult> PerditesoBanken(int id, [FromBody] Bankat b)
@@ -192,7 +192,7 @@ namespace WebAPI.Controllers
             return Ok(banka);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("PerditesoLlogarineBankare")]
         public async Task<IActionResult> PerditesoLlogarineBankare(int id, [FromBody] LlogaritEBiznesit b)

@@ -17,7 +17,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("PerditesoTeDhenatBiznesit")]
         public async Task<IActionResult> PerditesoTeDhenatBiznesit(IFormFile foto, string logoVjeter)

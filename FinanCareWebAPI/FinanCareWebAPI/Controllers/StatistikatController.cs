@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("totaleTeNdryshme")]
         public async Task<IActionResult> GetTotaleTeNdryshme()
@@ -125,8 +125,8 @@ namespace WebAPI.Controllers
 
 
 
-        /*[Authorize(Roles = "Admin, Menaxher")]*/
-        [AllowAnonymous]
+        /*[Authorize]*/
+        [Authorize]
         [HttpGet]
         [Route("15BleresitQytetarMeSeShumtiBlerje")]
         public async Task<IActionResult> BleresitQytetarMeSeShumtiBlerje()
@@ -150,7 +150,7 @@ namespace WebAPI.Controllers
             return Ok(topBuyers);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("15BleresitBiznesorMeSeShumtiBlerje")]
         public async Task<IActionResult> BleresitBiznesorMeSeShumtiBlerje()
@@ -173,7 +173,7 @@ namespace WebAPI.Controllers
             return Ok(topBuyers);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("ShitjetMeParagonSipasOperatorit")]
         public async Task<IActionResult> ShitjetMeParagonSipasOperatorit()
@@ -295,7 +295,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("15ProduktetMeTeShitura")]
         public async Task<IActionResult> GetTop15Prod()
@@ -323,7 +323,7 @@ namespace WebAPI.Controllers
             return Ok(produktet);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("TotaletJavore")]
         public async Task<IActionResult> GetShitjetJavore()

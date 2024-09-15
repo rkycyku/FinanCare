@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
@@ -66,7 +66,8 @@ namespace WebAPI.Controllers
 
                 if (shtuarMeSukses.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(perdoruesiIRI, "User");
+                    await _userManager.AddToRolesAsync(perdoruesiIRI, new[] { "User", registerModel.Roli });
+
 
                     Perdoruesi perdoruesi = new Perdoruesi
                     {
@@ -84,16 +85,23 @@ namespace WebAPI.Controllers
                         UserID = perdoruesi.UserID,
                         Adresa = !registerModel.Adresa.IsNullOrEmpty() ? registerModel.Adresa : null,
                         NrKontaktit = !registerModel.NrTelefonit.IsNullOrEmpty() ? registerModel.NrTelefonit : null,
-                        BankaID = !registerModel.BankaID.HasValue? registerModel.BankaID : null,
-                        DataFillimitKontrates = !registerModel.DataFillimitKontrates.HasValue? registerModel.DataFillimitKontrates : null,
-                        DataMbarimitKontrates = !registerModel.DataMbarimitKontrates.HasValue ? registerModel.DataMbarimitKontrates : null,
-                        Datelindja = !registerModel.Datelindja.HasValue ? registerModel.Datelindja : null,
+                        BankaID = int.TryParse(registerModel.BankaID.ToString(), out int bankaIdValue)
+              ? bankaIdValue : (int?)null,
+                        DataFillimitKontrates = DateTime.TryParse(registerModel.DataFillimitKontrates.ToString(), out DateTime dataFillimit)
+                            ? dataFillimit : (DateTime?)null,
+
+                        DataMbarimitKontrates = DateTime.TryParse(registerModel.DataMbarimitKontrates.ToString(), out DateTime dataMbarimit)
+                            ? dataMbarimit : (DateTime?)null,
+
+                        Datelindja = DateTime.TryParse(registerModel.Datelindja.ToString(), out DateTime datelindja)
+                 ? datelindja : (DateTime?)null,
                         EmailPrivat = !registerModel.EmailPrivat.IsNullOrEmpty() ? registerModel.EmailPrivat : null,
                         EshtePuntorAktive = !registerModel.EshtePuntorAktive.IsNullOrEmpty() ? registerModel.EshtePuntorAktive : "true",
                         Kualifikimi = !registerModel.Kualifikimi.IsNullOrEmpty() ? registerModel.Kualifikimi : null,
                         NrPersonal = !registerModel.NrPersonal.IsNullOrEmpty() ? registerModel.NrPersonal : null,
                         NumriLlogarisBankare = !registerModel.NumriLlogarisBankare.IsNullOrEmpty() ? registerModel.NumriLlogarisBankare : null,
-                        Paga = !registerModel.Paga.HasValue ? registerModel.Paga : null,
+                        Paga = decimal.TryParse(registerModel.Paga.ToString(), out decimal paga)
+           ? paga : (decimal?)null,
                         Profesioni = !registerModel.Profesioni.IsNullOrEmpty() ? registerModel.Profesioni : null,
                         Specializimi = !registerModel.Specializimi.IsNullOrEmpty() ? registerModel.Specializimi : null
                     };
@@ -174,7 +182,7 @@ namespace WebAPI.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin, Menaxher, User")]
+        [Authorize]
         [HttpPost]
         [Route("NdryshoFjalekalimin")]
         public async Task<IActionResult> NdryshoFjalekalimin(string AspNetID, string fjalekalimiAktual, string fjalekalimiIRi)
@@ -197,7 +205,7 @@ namespace WebAPI.Controllers
             return Ok(passwodiINdryshuar);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoRolinPerdoruesit")]
         public async Task<IActionResult> PerditesoAksesin(string UserID, string roli)
@@ -238,7 +246,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("FshijRolinUserit")]
         public async Task<IActionResult> FshijRolinUserit(string UserID, string roli)
@@ -287,7 +295,7 @@ namespace WebAPI.Controllers
             
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoRolin")]
         public async Task<IActionResult> ShtoRolin(string roli)
@@ -323,7 +331,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijRolin")]
         public async Task<IActionResult> FshijRolet(string emriRolit)
@@ -355,7 +363,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqRolet")]
         public async Task<IActionResult> ShfaqRolet()

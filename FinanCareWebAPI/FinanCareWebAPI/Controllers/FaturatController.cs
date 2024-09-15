@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqRegjistrimet")]
         public async Task<IActionResult> Get()
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqRegjistrimetSipasStatusit")]
         public async Task<IActionResult> GetByStatusi(string statusi)
@@ -89,7 +89,7 @@ namespace WebAPI.Controllers
             return Ok(regjistrimet);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqRegjistrimetNgaID")]
         public async Task<IActionResult> GetRegjistrimin(int id)
@@ -241,7 +241,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("shfaqTeDhenatKalkulimit")]
         public async Task<IActionResult> GetRegjistrimi(int IDRegjistrimit)
@@ -273,7 +273,7 @@ namespace WebAPI.Controllers
             return Ok(teDhenat);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("ShfaqNumrinRendorFatures")]
         public async Task<IActionResult> ShfaqNumrinRendorFatures(int stafiID)
@@ -321,7 +321,7 @@ namespace WebAPI.Controllers
             
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoFaturen")]
         public async Task<IActionResult> PerditesoFaturen(int idKalulimit, [FromBody] Faturat fat)
@@ -404,7 +404,7 @@ namespace WebAPI.Controllers
             return Ok(fatura);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("ruajKalkulimin")]
         public async Task<IActionResult> Post(Faturat regjistrimet)
@@ -415,7 +415,7 @@ namespace WebAPI.Controllers
             return CreatedAtAction("Get", regjistrimet.IDRegjistrimit, regjistrimet);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("ruajKalkulimin/teDhenat")]
         public async Task<IActionResult> Post(TeDhenatFaturat teDhenat)
@@ -426,7 +426,7 @@ namespace WebAPI.Controllers
             return Ok(teDhenat);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("ruajKalkulimin/FshijTeDhenat")]
         public async Task<IActionResult> Delete(int idTeDhenat)
@@ -442,7 +442,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit")]
         public async Task<IActionResult> DeleteByIdKalkulimi(int idKalkulimi)
@@ -462,7 +462,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("ruajKalkulimin/PerditesoTeDhenat")]
         public async Task<IActionResult> Put(int id, [FromBody] TeDhenatFaturat teDhenat)
@@ -493,7 +493,7 @@ namespace WebAPI.Controllers
             return Ok(produkti);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("ruajKalkulimin/perditesoStokunQmimin")]
         public async Task<IActionResult> Put(int id, [FromBody] StokuQmimiProduktit stoku)
@@ -527,7 +527,7 @@ namespace WebAPI.Controllers
             return Ok(produkti);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("ruajKalkulimin/getKalkulimi")]
         public async Task<IActionResult> GetKalkulimi(int idKalkulimit)
@@ -563,7 +563,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
         public async Task<IActionResult> Put(int id, string statusi)
@@ -588,7 +588,7 @@ namespace WebAPI.Controllers
             return Ok(kalkulimi);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("FaturoOferten")]
         public async Task<IActionResult> FaturoOferten(int id)
@@ -613,7 +613,7 @@ namespace WebAPI.Controllers
             return Ok(oferta);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("getNumriFaturesMeRradhe")]
         public async Task<IActionResult> GetNumriFaturesMeRradhe(string llojiKalkulimit)
@@ -634,7 +634,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijKalkulimin")]
         public async Task<IActionResult> fshijKalkulimin(int idKalkulimi)
@@ -654,7 +654,7 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("fshijKalkulimin/perditesoStokunQmimin")]
         public async Task<IActionResult> fshijKalkuliminPerditesoStokun(int idKalkulimi, int idProdukti, int idTeDhenatKalkulimit)
@@ -731,7 +731,7 @@ namespace WebAPI.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpGet]
         [Route("hapAsgjesiminKthimin/perditesoStokunQmimin")]
         public async Task<IActionResult> FshijAsgjesiminPerditesoStokun(int idProdukti, int idTeDhenatKalkulimit, string lloji)
@@ -771,7 +771,7 @@ namespace WebAPI.Controllers
 
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin")]
         public async Task<IActionResult> AsgjesoStokunPerditesoStokunQmimin(int id, [FromBody] StokuQmimiProduktit stoku)
@@ -802,7 +802,7 @@ namespace WebAPI.Controllers
             return Ok(produkti);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("FaturoOferten/PerditesoStokun")]
         public async Task<IActionResult> FaturoOfertenPerditesoStokun(int id, string lloji, double stoku)

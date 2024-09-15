@@ -5,14 +5,7 @@ import "./Styles/Dashboard.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
-import {
-  Tab,
-  Tabs,
-  Form,
-  InputGroup,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Tab, Tabs, Form, InputGroup, Row, Col } from "react-bootstrap";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
@@ -151,7 +144,14 @@ const Dashboard = () => {
                         <Form.Label>Data e fillimit te kontrates</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.dataFillimitKontrates}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.dataFillimitKontrates
+                              ? new Date(
+                                  teDhenat.perdoruesi.teDhenatPerdoruesit.dataFillimitKontrates
+                                ).toLocaleDateString("en-GB")
+                              : ""
+                          }
                           disabled
                         />
                       </Col>
@@ -159,7 +159,14 @@ const Dashboard = () => {
                         <Form.Label>Data e mbarimit te kontrates</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.dataMbarimitKontrates}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.dataMbarimitKontrates
+                              ? new Date(
+                                  teDhenat.perdoruesi.teDhenatPerdoruesit.dataMbarimitKontrates
+                                ).toLocaleDateString("en-GB")
+                              : ""
+                          }
                           disabled
                         />
                       </Col>
@@ -171,7 +178,10 @@ const Dashboard = () => {
                         <Form.Label>Nr. Personal</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.nrPersonal}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.nrPersonal
+                          }
                           disabled
                         />
                       </Col>
@@ -180,7 +190,14 @@ const Dashboard = () => {
                         <InputGroup className="mb-3">
                           <Form.Control
                             type="text"
-                            value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.paga}
+                            value={
+                              teDhenat?.perdoruesi?.teDhenatPerdoruesit?.paga
+                                ? parseFloat(
+                                    teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                                      ?.paga
+                                  ).toFixed(2)
+                                : ""
+                            }
                             disabled
                           />
                           <InputGroup.Text id="basic-addon2">€</InputGroup.Text>
@@ -200,7 +217,9 @@ const Dashboard = () => {
                         <Form.Label>Adresa</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.adresa}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit?.adresa
+                          }
                           disabled
                         />
                       </Col>
@@ -209,7 +228,14 @@ const Dashboard = () => {
                         <br />
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.datelindja}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.datelindja
+                              ? new Date(
+                                  teDhenat.perdoruesi.teDhenatPerdoruesit.datelindja
+                                ).toLocaleDateString("en-GB")
+                              : ""
+                          }
                           disabled
                         />
                       </Col>
@@ -221,7 +247,10 @@ const Dashboard = () => {
                         <Form.Label>Nr. Kontaktit</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.nrKontaktit}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.nrKontaktit
+                          }
                           disabled
                         />
                       </Col>
@@ -229,7 +258,10 @@ const Dashboard = () => {
                         <Form.Label>Email Privat</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.emailPrivat}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.emailPrivat
+                          }
                           disabled
                         />
                       </Col>
@@ -241,7 +273,10 @@ const Dashboard = () => {
                         <Form.Label>Profesioni</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.profesioni}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.profesioni
+                          }
                           disabled
                         />
                       </Col>
@@ -249,7 +284,10 @@ const Dashboard = () => {
                         <Form.Label>Specializimi</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.specializimi}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.specializimi
+                          }
                           disabled
                         />
                       </Col>
@@ -257,7 +295,10 @@ const Dashboard = () => {
                         <Form.Label>Kualifikimi</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.kualifikimi}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.kualifikimi
+                          }
                           disabled
                         />
                       </Col>
@@ -269,7 +310,9 @@ const Dashboard = () => {
                         <Form.Label>Banka</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.banka}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit?.banka?.emriBankes
+                          }
                           disabled
                         />
                       </Col>
@@ -277,7 +320,10 @@ const Dashboard = () => {
                         <Form.Label>Nr. Llogaris Bankare</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.numriLlogarisBankare}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.numriLlogarisBankare
+                          }
                           disabled
                         />
                       </Col>
@@ -285,7 +331,10 @@ const Dashboard = () => {
                         <Form.Label>Statusi Puntorit</Form.Label>
                         <Form.Control
                           type="text"
-                          value={teDhenat?.perdoruesi?.teDhenatPerdoruesit?.eshtePuntorAktive}
+                          value={
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit
+                              ?.eshtePuntorAktive == "true" ? "Aktiv" : "Jo Aktiv" 
+                          }
                           disabled
                         />
                       </Col>

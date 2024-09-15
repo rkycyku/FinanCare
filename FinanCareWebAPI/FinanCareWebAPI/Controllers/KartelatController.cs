@@ -19,7 +19,7 @@ namespace FinanCareWebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqKartelenSipasIDs")]
         public async Task<IActionResult> ShfaqKartelenSipasIDs(int id)
@@ -38,7 +38,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqKartelenSipasKodit")]
         public async Task<IActionResult> ShfaqKartelenSipasKodit(string kodiKarteles)
@@ -58,7 +58,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqKartelat")]
         public async Task<IActionResult> ShfaqKartelat()
@@ -80,7 +80,7 @@ namespace FinanCareWebAPI.Controllers
 
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoKartelen")]
         public async Task<IActionResult> Put(int id, [FromBody] Kartelat k)
@@ -123,7 +123,7 @@ namespace FinanCareWebAPI.Controllers
             return Ok(kartela);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoKartelen")]
         public async Task<IActionResult> Post(Kartelat kartela)
@@ -134,7 +134,7 @@ namespace FinanCareWebAPI.Controllers
             return CreatedAtAction("Get", kartela.IDKartela, kartela);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijKartelen")]
         public async Task<IActionResult> Delete(int id)

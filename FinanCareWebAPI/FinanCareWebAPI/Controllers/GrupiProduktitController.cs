@@ -19,7 +19,7 @@ namespace FinanCareWebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqGrupinEProduktitSipasIDs")]
         public async Task<IActionResult> Get(int id)
@@ -38,7 +38,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqGrupetEProduktit")]
         public async Task<IActionResult> Get()
@@ -66,7 +66,7 @@ namespace FinanCareWebAPI.Controllers
 
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoGrupinEProduktit")]
         public async Task<IActionResult> Put(int id, [FromBody] GrupiProduktit k)
@@ -89,7 +89,7 @@ namespace FinanCareWebAPI.Controllers
             return Ok(grupiIProduktit);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoGrupinEProduktit")]
         public async Task<IActionResult> Post(GrupiProduktit grupiIProduktit)
@@ -100,7 +100,7 @@ namespace FinanCareWebAPI.Controllers
             return CreatedAtAction("Get", grupiIProduktit.IDGrupiProduktit, grupiIProduktit);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijGrupinEProduktit")]
         public async Task<IActionResult> Delete(int id)

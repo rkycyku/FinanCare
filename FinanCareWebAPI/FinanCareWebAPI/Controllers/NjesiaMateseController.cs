@@ -19,7 +19,7 @@ namespace FinanCareWebAPI.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqNjesineMateseSipasIDs")]
         public async Task<IActionResult> Get(int id)
@@ -38,7 +38,7 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet]
         [Route("shfaqNjesiteMatese")]
         public async Task<IActionResult> Get()
@@ -66,7 +66,7 @@ namespace FinanCareWebAPI.Controllers
 
 
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPut]
         [Route("perditesoNjesineMatese")]
         public async Task<IActionResult> Put(int id, [FromBody] NjesiaMatese k)
@@ -89,7 +89,7 @@ namespace FinanCareWebAPI.Controllers
             return Ok(njesiaMatese);
         }
 
-        [Authorize(Roles = "Admin, Menaxher")]
+        [Authorize]
         [HttpPost]
         [Route("shtoNjesineMatese")]
         public async Task<IActionResult> Post(NjesiaMatese njesiaMatese)
@@ -100,7 +100,7 @@ namespace FinanCareWebAPI.Controllers
             return CreatedAtAction("Get", njesiaMatese.IDNjesiaMatese, njesiaMatese);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete]
         [Route("fshijNjesineMatese")]
         public async Task<IActionResult> Delete(int id)

@@ -44,7 +44,7 @@ function TabelaEPerdoruesve() {
           authentikimi
         );
         setPerdoruesit(perdoruesit.data.map((k) => ({
-            ID: k.perdoruesi.userID,
+            ID: k.perdoruesi.aspNetUserID,
             "Emri & Mbiemri": k.perdoruesi.emri+ " " + k.perdoruesi.mbiemri,
             "Email": k.perdoruesi.email,
             Username: k.perdoruesi.username,
@@ -141,6 +141,7 @@ function TabelaEPerdoruesve() {
                   setId(e);
                   handleEdito(e);
                 }}
+                mosShfaqID={true}
               />
             </div>
             </>

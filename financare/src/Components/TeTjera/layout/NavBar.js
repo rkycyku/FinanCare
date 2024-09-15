@@ -309,14 +309,30 @@ function NavBar(props) {
               {token && (
                 <>
                   <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <Link to="/Dashboard">
-                        Miresevini,{" "}
-                        <strong>
-                          {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
-                        </strong>
-                      </Link>
-                    </MDBNavbarLink>
+                  <MDBNavbarLink>
+  <Link to="/Dashboard">
+    <div style={{ display: 'inline-block' }}> {/* Wrap the content inside a block container */}
+      Miresevini,{" "}
+      <strong>
+        {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
+      </strong> - 
+      <small style={{ fontSize: '0.85em', fontStyle: 'italic' }}> {/* Smaller, italic text */}
+        {
+          teDhenat.rolet &&
+          teDhenat.rolet
+            .filter(role => role !== "User") // Exclude the "User" role
+            .map((role, index) => (
+              <span key={index}>
+                {role}
+                {index < teDhenat.rolet.length - 2 ? ', ' : ''} {/* Add comma for separation */}
+              </span>
+            ))
+        }
+      </small>
+    </div>
+  </Link>
+</MDBNavbarLink>
+
                   </MDBNavbarItem>
 
                   <MDBNavbarItem>

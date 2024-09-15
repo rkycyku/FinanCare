@@ -31,5 +31,6 @@ namespace WebAPI.Auth
         public string? NumriLlogarisBankare { get; set; }
         public string? NrPersonal { get; set; }
         public string? EshtePuntorAktive { get; set; }
+        public string? Roli { get; set; }
     }
 }
