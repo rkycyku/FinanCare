@@ -81,22 +81,25 @@ namespace WebAPI.Controllers
         [Route("perditesoPerdorues/{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] Perdoruesi p)
         {
-            var perdouresi = await _context.Perdoruesi.FirstOrDefaultAsync(x => x.AspNetUserID == id);
+            // Fetch the user from Perdoruesi
+            var perdouresi = await _context.Perdoruesi
+                .Include(u => u.TeDhenatPerdoruesit) // Include TeDhenatPerdoruesit for updating
+                .FirstOrDefaultAsync(x => x.AspNetUserID == id);
 
             if (perdouresi == null)
             {
                 return BadRequest("Perdoruesi nuk ekziston");
             }
 
-            if (!p.Email.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(p.Email))
             {
                 perdouresi.Email = p.Email;
             }
-            if (!p.Emri.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(p.Emri))
             {
                 perdouresi.Emri = p.Emri;
             }
-            if (!p.Mbiemri.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(p.Mbiemri))
             {
                 perdouresi.Mbiemri = p.Mbiemri;
             }
@@ -104,15 +107,69 @@ namespace WebAPI.Controllers
             _context.Perdoruesi.Update(perdouresi);
             await _context.SaveChangesAsync();
 
-            var teDhenatUser = await _context.TeDhenatPerdoruesit.FirstOrDefaultAsync(x => x.UserID == perdouresi.UserID);
+            var teDhenatUser = await _context.TeDhenatPerdoruesit
+                .FirstOrDefaultAsync(x => x.UserID == perdouresi.UserID);
 
-            if (!p.TeDhenatPerdoruesit.Adresa.IsNullOrEmpty())
+            if (teDhenatUser == null)
+            {
+                return BadRequest("TeDhenatPerdoruesit nuk ekziston");
+            }
+
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.Adresa))
             {
                 teDhenatUser.Adresa = p.TeDhenatPerdoruesit.Adresa;
             }
-            if (!p.TeDhenatPerdoruesit.NrKontaktit.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.NrKontaktit))
             {
                 teDhenatUser.NrKontaktit = p.TeDhenatPerdoruesit.NrKontaktit;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.EmailPrivat))
+            {
+                teDhenatUser.EmailPrivat = p.TeDhenatPerdoruesit.EmailPrivat;
+            }
+            if (p.TeDhenatPerdoruesit.Datelindja.HasValue)
+            {
+                teDhenatUser.Datelindja = p.TeDhenatPerdoruesit.Datelindja;
+            }
+            if (p.TeDhenatPerdoruesit.DataFillimitKontrates.HasValue)
+            {
+                teDhenatUser.DataFillimitKontrates = p.TeDhenatPerdoruesit.DataFillimitKontrates;
+            }
+            if (p.TeDhenatPerdoruesit.DataMbarimitKontrates.HasValue)
+            {
+                teDhenatUser.DataMbarimitKontrates = p.TeDhenatPerdoruesit.DataMbarimitKontrates;
+            }
+            if (p.TeDhenatPerdoruesit.Paga.HasValue)
+            {
+                teDhenatUser.Paga = p.TeDhenatPerdoruesit.Paga;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.Profesioni))
+            {
+                teDhenatUser.Profesioni = p.TeDhenatPerdoruesit.Profesioni;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.Specializimi))
+            {
+                teDhenatUser.Specializimi = p.TeDhenatPerdoruesit.Specializimi;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.Kualifikimi))
+            {
+                teDhenatUser.Kualifikimi = p.TeDhenatPerdoruesit.Kualifikimi;
+            }
+            if (p.TeDhenatPerdoruesit.BankaID.HasValue)
+            {
+                teDhenatUser.BankaID = p.TeDhenatPerdoruesit.BankaID;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.NumriLlogarisBankare))
+            {
+                teDhenatUser.NumriLlogarisBankare = p.TeDhenatPerdoruesit.NumriLlogarisBankare;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.NrPersonal))
+            {
+                teDhenatUser.NrPersonal = p.TeDhenatPerdoruesit.NrPersonal;
+            }
+            if (!string.IsNullOrEmpty(p.TeDhenatPerdoruesit.EshtePuntorAktive))
+            {
+                teDhenatUser.EshtePuntorAktive = p.TeDhenatPerdoruesit.EshtePuntorAktive;
             }
 
             _context.TeDhenatPerdoruesit.Update(teDhenatUser);
@@ -120,6 +177,7 @@ namespace WebAPI.Controllers
 
             return Ok(perdouresi);
         }
+
 
         [Authorize]
         [HttpGet]

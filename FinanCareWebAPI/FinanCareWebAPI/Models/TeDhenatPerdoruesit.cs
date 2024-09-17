@@ -25,7 +25,7 @@ public partial class TeDhenatPerdoruesit
     public string? EshtePuntorAktive { get; set; }
 
     [ForeignKey(nameof(UserID))]
-    public virtual Perdoruesi User { get; set; }
+    public virtual Perdoruesi? User { get; set; }
     [ForeignKey(nameof(BankaID))]
     public virtual Bankat? Banka { get; set; }
 }

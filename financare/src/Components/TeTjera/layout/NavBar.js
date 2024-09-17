@@ -252,13 +252,15 @@ function NavBar(props) {
                             Te Dhenat e Biznesit
                           </MDBDropdownItem>
                         </Link>
-                        
+
                         <MDBDropdownItem divider />
                         <Link to="/Bankat">
                           <MDBDropdownItem link>Bankat</MDBDropdownItem>
                         </Link>
                         <Link to="/LlogaritBankareBiznesit">
-                          <MDBDropdownItem link>Llogarit e Biznesit</MDBDropdownItem>
+                          <MDBDropdownItem link>
+                            Llogarit e Biznesit
+                          </MDBDropdownItem>
                         </Link>
                       </MDBDropdownMenu>
                     </MDBDropdown>
@@ -300,6 +302,11 @@ function NavBar(props) {
                     </MDBDropdown>
                   </MDBDropdownMenu>
                 </MDBDropdown>
+                <MDBNavbarItem className="btnNav btnNav-primary"> 
+                  <MDBNavbarLink href="ShikimiQmimeve" >
+                    Kontrollo Qmimin e Produktit
+                  </MDBNavbarLink>
+                </MDBNavbarItem>
               </>
             )}
             <MDBNavbarNav
@@ -309,30 +316,36 @@ function NavBar(props) {
               {token && (
                 <>
                   <MDBNavbarItem>
-                  <MDBNavbarLink>
-  <Link to="/Dashboard">
-    <div style={{ display: 'inline-block' }}> {/* Wrap the content inside a block container */}
-      Miresevini,{" "}
-      <strong>
-        {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
-      </strong> - 
-      <small style={{ fontSize: '0.85em', fontStyle: 'italic' }}> {/* Smaller, italic text */}
-        {
-          teDhenat.rolet &&
-          teDhenat.rolet
-            .filter(role => role !== "User") // Exclude the "User" role
-            .map((role, index) => (
-              <span key={index}>
-                {role}
-                {index < teDhenat.rolet.length - 2 ? ', ' : ''} {/* Add comma for separation */}
-              </span>
-            ))
-        }
-      </small>
-    </div>
-  </Link>
-</MDBNavbarLink>
-
+                    <MDBNavbarLink>
+                      <Link to="/Dashboard">
+                        <div style={{ display: "inline-block" }}>
+                          {" "}
+                          {/* Wrap the content inside a block container */}
+                          Miresevini,{" "}
+                          <strong>
+                            {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
+                          </strong>{" "}
+                          -
+                          <small
+                            style={{ fontSize: "0.85em", fontStyle: "italic" }}>
+                            {" "}
+                            {/* Smaller, italic text */}
+                            {teDhenat.rolet &&
+                              teDhenat.rolet
+                                .filter((role) => role !== "User") // Exclude the "User" role
+                                .map((role, index) => (
+                                  <span key={index}>
+                                    {role}
+                                    {index < teDhenat.rolet.length - 2
+                                      ? ", "
+                                      : ""}{" "}
+                                    {/* Add comma for separation */}
+                                  </span>
+                                ))}
+                          </small>
+                        </div>
+                      </Link>
+                    </MDBNavbarLink>
                   </MDBNavbarItem>
 
                   <MDBNavbarItem>

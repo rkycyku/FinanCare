@@ -155,7 +155,7 @@ function KartelaEArtikullit(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim", authentikimi)
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,

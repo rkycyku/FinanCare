@@ -19,6 +19,8 @@ import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
+import Titulli from "../../../Components/TeTjera/Titulli";
 
 function GrupetEProduktit(props) {
   const [njesiteMatese, setNjesiteMatese] = useState([]);
@@ -85,9 +87,12 @@ function GrupetEProduktit(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher"]} />
+
       <Helmet>
         <title>Grupet E Produktit | FinanCare</title>
       </Helmet>
+      <Titulli titulli="Grupet e Produktit" />
       <NavBar />
 
       <div className="containerDashboardP">
@@ -143,7 +148,6 @@ function GrupetEProduktit(props) {
           </div>
         ) : (
           <>
-           
             <div className="mt-2">
               <Tabela
                 data={njesiteMatese}

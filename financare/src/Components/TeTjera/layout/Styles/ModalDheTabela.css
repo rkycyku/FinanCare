@@ -23,6 +23,23 @@
   --bs-btn-active-bg: #10bb9;
 }
 
+.navLinkIThjesht a {
+  color: white;
+}
+
+.navLinkIThjesht:hover {
+  background-color: #10bb99;
+}
+
+.navLinkIThjesht {
+  background-color: #009879;
+  border: #009879;
+}
+
+.navLinkIThjesht-primary {
+  --bs-btn-active-bg: #10bb9;
+}
+
 .btnNav a {
   color: white;
 }

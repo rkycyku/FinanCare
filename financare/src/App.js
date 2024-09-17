@@ -30,6 +30,9 @@ import KartelaFinanciare from "./Pages/Gjenerale/Partneret/KartelaFinanciare";
 import ShtoPagesat from "./Pages/Gjenerale/Partneret/ShtoPagesat";
 import ListaShitjeveMeParagon from "./Pages/Materiali/Shitjet/ListaShitjeveMeParagon";
 import LlogaritBankareBiznesit from "./Pages/Gjenerale/TeDhenat/LlogaritBankareBiznesit";
+import NukKeniAkses from "./Components/TeTjera/ErrorPages/403";
+import NukUGjet from "./Components/TeTjera/ErrorPages/404";
+import ShikimiQmimeve from "./Pages/ShikimiQmimeve";
 
 function App() {
   useEffect(() => {
@@ -76,6 +79,10 @@ function App() {
         <Route path="/ShtoPagesat" element={<ShtoPagesat />} />
         <Route path="/ListaShitjeveMeParagon" element={<ListaShitjeveMeParagon />} />
         <Route path="/LlogaritBankareBiznesit" element={<LlogaritBankareBiznesit />} />
+        <Route path="/ShikimiQmimeve" element={<ShikimiQmimeve />} />
+        
+        <Route path="/403" element={<NukKeniAkses />} />
+        <Route path="/404" element={<NukUGjet />} />
       </Routes>
     </div>
   );
