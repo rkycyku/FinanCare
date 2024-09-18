@@ -291,7 +291,7 @@ function EditoLlogarin(props) {
             Anulo <FontAwesomeIcon icon={faXmark} />
           </Button>
           <Button className="Butoni" onClick={handleKontrolli}>
-            Edito Grupin e Produktit <FontAwesomeIcon icon={faPenToSquare} />
+            Edito Llogarine Bankare <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </Modal.Footer>
       </Modal>

@@ -32,7 +32,7 @@ function FooterFatura(props) {
         const apiKonvertimiValutave = await axios.get(
           `https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_At6H7hASeL41xhqWxRdKNKxduFJPT9VcktC7iM1m&currencies=EUR%2CUSD%2CCHF&base_currency=EUR`,
           authentikimi
-        ); 
+        );
         setteDhenatFat(teDhenat.data);
         setBankat(bankat.data);
         setKonvertimiValutave(apiKonvertimiValutave.data.data);
@@ -67,7 +67,7 @@ function FooterFatura(props) {
                   </strong>
                 </p>
                 <table>
-                <tr style={{ fontSize: "12px" }}>
+                  <tr style={{ fontSize: "12px" }}>
                     <th>Emri Bankes</th>
                     <th>Numri Llogaris</th>
                     <th>Valuta</th>
@@ -75,14 +75,20 @@ function FooterFatura(props) {
                   {bankat &&
                     bankat.map((x) => (
                       <tr style={{ fontSize: "12px" }} key={x.bankaID}>
-                        <td><strong>{x.banka && x.banka.emriBankes}</strong></td>
-                        <td><strong>{x.numriLlogaris}</strong></td>
-                        <td><strong>{x.valuta}</strong></td>
+                        <td>
+                          <strong>{x.banka && x.banka.emriBankes}</strong>
+                        </td>
+                        <td>
+                          <strong>{x.numriLlogaris}</strong>
+                        </td>
+                        <td>
+                          <strong>{x.valuta}</strong>
+                        </td>
                       </tr>
                     ))}
                 </table>
               </>
-            )}  
+            )}
         </div>
 
         <div className="data">
@@ -117,11 +123,27 @@ function FooterFatura(props) {
               {teDhenatFat && parseFloat(teDhenatFat.totaliMeTVSH).toFixed(2)} €
             </strong>
           </p>
-          <p style={{ marginTop: "-1em", fontSize: "13pt", fontWeight: "bold" }}>
-            {teDhenatFat && parseFloat(teDhenatFat.totaliMeTVSH*(konvertimiValutave && konvertimiValutave.USD)).toFixed(2)} $
+          <p
+            style={{ marginTop: "-1em", fontSize: "13pt", fontWeight: "bold" }}>
+            {teDhenatFat &&
+              parseFloat(
+                teDhenatFat.totaliMeTVSH *
+                  (konvertimiValutave && konvertimiValutave.USD)
+              ).toFixed(2)}{" "}
+            $
           </p>
-          <p style={{ marginTop: "-0.7em", fontSize: "13pt", fontWeight: "bold"  }}>
-            {teDhenatFat && parseFloat(teDhenatFat.totaliMeTVSH*(konvertimiValutave && konvertimiValutave.CHF)).toFixed(2)} CHF
+          <p
+            style={{
+              marginTop: "-0.7em",
+              fontSize: "13pt",
+              fontWeight: "bold",
+            }}>
+            {teDhenatFat &&
+              parseFloat(
+                teDhenatFat.totaliMeTVSH *
+                  (konvertimiValutave && konvertimiValutave.CHF)
+              ).toFixed(2)}{" "}
+            CHF
           </p>
         </div>
       </div>

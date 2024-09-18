@@ -275,7 +275,7 @@ function KthimIMallitTeBlere(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres")
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres", authentikimi)
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.idPartneri,

@@ -20,9 +20,7 @@ function HeaderFatura(props) {
     const vendosFature = async () => {
       try {
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${
-            props.faturaID ?? 61
-          }`,
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.faturaID}`,
           authentikimi
         );
 
@@ -91,14 +89,13 @@ function HeaderFatura(props) {
           </p>
           <p>
             <strong>Shenime Shtese: </strong>
-            {teDhenatFat &&
-              teDhenatFat.regjistrimet && (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: teDhenatFat.regjistrimet.pershkrimShtese
-                  }}
-                />
-              )}
+            {teDhenatFat && teDhenatFat.regjistrimet && (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: teDhenatFat.regjistrimet.pershkrimShtese,
+                }}
+              />
+            )}
           </p>
           <strong>
             Faqe: {props.NrFaqes} / {props.NrFaqeve}
@@ -157,22 +154,22 @@ function HeaderFatura(props) {
                       teDhenatFat.regjistrimet &&
                       teDhenatFat.regjistrimet.username}
                   </p>
-                  {teDhenatFat.regjistrimet.llojiKalkulimit === "AS" && 
-                  <p>
-                    <strong>Nr. Asgjesimit: </strong>
-                    {teDhenatFat &&
-                      teDhenatFat.regjistrimet &&
-                      teDhenatFat.regjistrimet.nrRendorFatures}
-                  </p>
-                  }
-                  {teDhenatFat.regjistrimet.llojiKalkulimit === "KMSH" && 
-                  <p>
-                    <strong>Nr. Referencues: </strong>
-                    {teDhenatFat &&
-                      teDhenatFat.regjistrimet &&
-                      teDhenatFat.regjistrimet.nrFatures}
-                  </p>
-                  }
+                  {teDhenatFat.regjistrimet.llojiKalkulimit === "AS" && (
+                    <p>
+                      <strong>Nr. Asgjesimit: </strong>
+                      {teDhenatFat &&
+                        teDhenatFat.regjistrimet &&
+                        teDhenatFat.regjistrimet.nrRendorFatures}
+                    </p>
+                  )}
+                  {teDhenatFat.regjistrimet.llojiKalkulimit === "KMSH" && (
+                    <p>
+                      <strong>Nr. Referencues: </strong>
+                      {teDhenatFat &&
+                        teDhenatFat.regjistrimet &&
+                        teDhenatFat.regjistrimet.nrFatures}
+                    </p>
+                  )}
                 </>
               )}
             {teDhenatFat &&

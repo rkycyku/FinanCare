@@ -1,5 +1,5 @@
 import React from "react";
-import { useBarcode } from 'next-barcode';
+import { useBarcode } from "next-barcode";
 
 const Barkodi = ({ value }) => {
   const { inputRef } = useBarcode({ value });

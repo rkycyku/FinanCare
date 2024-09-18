@@ -3,9 +3,7 @@ import classes from "./Styles/TabelaEKompanive.module.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
 

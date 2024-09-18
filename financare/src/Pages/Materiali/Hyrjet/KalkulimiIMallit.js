@@ -272,12 +272,18 @@ function KalkulimiIMallit(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .get(
+        "https://localhost:7285/api/Partneri/shfaqPartneretFurntiore",
+        authentikimi
+      )
       .then((response) => {
-        const fetchedoptions = response.data.map((item) => ({
-          value: item.idPartneri,
-          label: item.emriBiznesit,
-        }));
+        const fetchedoptions = response.data
+          .filter((item) => item.idPartneri !== 2 && item.idPartneri !== 3)
+          .map((item) => ({
+            value: item.idPartneri,
+            label: item.emriBiznesit,
+          }));
+
         setOptions(fetchedoptions);
       })
       .catch((error) => {

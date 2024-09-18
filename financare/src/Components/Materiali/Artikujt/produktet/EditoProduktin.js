@@ -72,7 +72,10 @@ function EditoProduktin(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit")
+      .get(
+        "https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -85,7 +88,10 @@ function EditoProduktin(props) {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .get(
+        "https://localhost:7285/api/Partneri/shfaqPartneretFurntiore",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -98,7 +104,10 @@ function EditoProduktin(props) {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese")
+      .get(
+        "https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -125,18 +134,39 @@ function EditoProduktin(props) {
           authentikimi
         );
         setProdukti(produkti.data);
-        console.log(produkti)
-        setOptionsSelectedGrupiProduktit(optionsGrupiProduktit.filter((item) => item.value == produkti?.data?.idGrupiProduktit));
-        setOptionsSelectedNjesiaMatese(optionsNjesiaMatese.filter((item) => item.value == produkti?.data?.idNjesiaMatese));
-        setOptionsSelectedPartneri(optionsPartneri.filter((item) => item.value == produkti?.data?.idPartneri));
-        setOptionsSelectedLlojiTVSH(optionsLlojiTVSH.filter((item) => item.value == produkti?.data?.llojiTVSH));
+        console.log(produkti);
+        setOptionsSelectedGrupiProduktit(
+          optionsGrupiProduktit.filter(
+            (item) => item.value == produkti?.data?.idGrupiProduktit
+          )
+        );
+        setOptionsSelectedNjesiaMatese(
+          optionsNjesiaMatese.filter(
+            (item) => item.value == produkti?.data?.idNjesiaMatese
+          )
+        );
+        setOptionsSelectedPartneri(
+          optionsPartneri.filter(
+            (item) => item.value == produkti?.data?.idPartneri
+          )
+        );
+        setOptionsSelectedLlojiTVSH(
+          optionsLlojiTVSH.filter(
+            (item) => item.value == produkti?.data?.llojiTVSH
+          )
+        );
       } catch (err) {
         console.log(err);
       }
     };
 
     shfaqProduktin();
-  }, [optionsLlojiTVSH, optionsPartneri, optionsNjesiaMatese, optionsGrupiProduktit]);
+  }, [
+    optionsLlojiTVSH,
+    optionsPartneri,
+    optionsNjesiaMatese,
+    optionsGrupiProduktit,
+  ]);
 
   const onChange = (e) => {
     setProdukti({ ...produkti, [e.target.name]: e.target.value });

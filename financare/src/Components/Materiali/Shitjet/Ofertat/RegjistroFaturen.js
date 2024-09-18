@@ -322,8 +322,10 @@ function RegjistroFaturen(props) {
         setPerditeso(Date.now);
 
         setproduktiID(p.data[0].idProduktit);
-        console.log(p.data[0].idProduktit)
-        setOptionsSelected(options.filter((item) => item.value == p.data[0].idProduktit))
+        console.log(p.data[0].idProduktit);
+        setOptionsSelected(
+          options.filter((item) => item.value == p.data[0].idProduktit)
+        );
         setEmriProduktit(p.data[0].emriProduktit);
         setSasiaNeStok(p.data[0].sasiaNeStok);
         setSasia(p.data[0].sasiaStokut);
@@ -334,7 +336,7 @@ function RegjistroFaturen(props) {
         setRabati1(p.data[0].rabati1);
         setRabati2(p.data[0].rabati2);
         setRabati3(p.data[0].rabati3);
-        
+
         setEdito(true);
       });
   }
@@ -395,7 +397,7 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim", authentikimi)
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,

@@ -102,18 +102,15 @@ function EditoBanken(props) {
   }
 
   const handleKontrolli = () => {
-    if (
-      isNullOrEmpty(banka.emriBankes) ||
-      isNullOrEmpty(banka.lokacioniBankes)
-    ) {
+    if (isNullOrEmpty(banka.emriBankes)) {
       setFushatEZbrazura(true);
     } else {
       if (
         konfirmoBanken == false &&
         bankat.filter(
           (item) =>
-            (item.emriBankes === banka.emriBankes &&
-              item.lokacioniBankes == banka.lokacioniBankes)
+            item.emriBankes === banka.emriBankes &&
+            item.lokacioniBankes == banka.lokacioniBankes
         ).length !== 0
       ) {
         setKontrolloBanken(true);
@@ -219,7 +216,7 @@ function EditoBanken(props) {
                 className="form-select"
                 value={banka.lokacioniBankes}
                 onChange={(e) => handlelokacioniBankesChange(e.target.value)}>
-                 <option defaultValue selected value="Kombetare">
+                <option defaultValue selected value="Kombetare">
                   Kombetare
                 </option>
                 <option value="Nderkombtare">Nderkombtare</option>
@@ -232,7 +229,7 @@ function EditoBanken(props) {
             Anulo <FontAwesomeIcon icon={faXmark} />
           </Button>
           <Button className="Butoni" onClick={handleKontrolli}>
-            Edito Grupin e Produktit <FontAwesomeIcon icon={faPenToSquare} />
+            Edito Banken <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </Modal.Footer>
       </Modal>

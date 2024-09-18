@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
-import Fatura from "../../../TeTjera/Fatura/Fatura";
 
 function TeDhenatKalkulimit(props) {
   const [perditeso, setPerditeso] = useState("");

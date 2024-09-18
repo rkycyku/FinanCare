@@ -22,18 +22,6 @@ const ShtoProduktin = (props) => {
   const [konfirmoProduktin, setKonfirmoProduktin] = useState(false);
   const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
 
-  const [inputGrupiProduktit, setInputGrupiProduktit] = useState("");
-  const [inputPartneri, setInputPartneri] = useState("");
-  const [inputNjesiaMatese, setInputNjesiaMatese] = useState("");
-  const [filtrimiGrupiProduktit, setFiltrimiGrupiProduktit] =
-    useState(produktet);
-  const [filtrimiPartneri, setFiltrimiPartneri] = useState(partneret);
-  const [filtrimiNjesiaMatese, setFiltrimiNjesiaMatese] =
-    useState(njesitMatese);
-  const grupiProduktitZgjedhur = useKeyboardNavigation(filtrimiGrupiProduktit);
-  const partneriZgjedhur = useKeyboardNavigation(filtrimiPartneri);
-  const njesiaMateseZgjedhur = useKeyboardNavigation(filtrimiNjesiaMatese);
-
   const getToken = localStorage.getItem("token");
 
   const authentikimi = {
@@ -153,7 +141,7 @@ const ShtoProduktin = (props) => {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit")
+      .get("https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit", authentikimi)
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -166,7 +154,7 @@ const ShtoProduktin = (props) => {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore")
+      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore", authentikimi)
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -179,7 +167,7 @@ const ShtoProduktin = (props) => {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese")
+      .get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese", authentikimi)
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({

@@ -24,7 +24,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { useStateValue } from "../../../Context/StateProvider";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -33,7 +32,6 @@ import axios from "axios";
 function NavBar(props) {
   const navigate = useNavigate();
 
-  const [{ cart }, dispatch] = useStateValue();
   const token = localStorage.getItem("token");
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
   const [perditeso, setPerditeso] = useState("");
@@ -302,8 +300,8 @@ function NavBar(props) {
                     </MDBDropdown>
                   </MDBDropdownMenu>
                 </MDBDropdown>
-                <MDBNavbarItem className="btnNav btnNav-primary"> 
-                  <MDBNavbarLink href="ShikimiQmimeve" >
+                <MDBNavbarItem className="btnNav btnNav-primary">
+                  <MDBNavbarLink href="ShikimiQmimeve">
                     Kontrollo Qmimin e Produktit
                   </MDBNavbarLink>
                 </MDBNavbarItem>

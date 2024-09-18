@@ -239,8 +239,12 @@ function TeDhenatKalkulimit(props) {
                                     100
                               ).toFixed(3)}
                             </td>
-                            <td>{parseFloat(produkti.rabati1?? 0).toFixed(2)}</td>
-                            <td>{parseFloat(produkti.rabati2 ?? 0).toFixed(2)}</td>
+                            <td>
+                              {parseFloat(produkti.rabati1 ?? 0).toFixed(2)}
+                            </td>
+                            <td>
+                              {parseFloat(produkti.rabati2 ?? 0).toFixed(2)}
+                            </td>
                             <td>{produkti.llojiTVSH}</td>
                             <td>{parseFloat(qmimiMeTVSHRab).toFixed(3)}</td>
                             <td>

@@ -214,7 +214,7 @@ function RegjistroFaturen(props) {
           qmimiShites: optionsSelected?.item?.qmimiProduktit,
           qmimiShitesMeShumic: optionsSelected?.item?.qmimiMeShumic,
           rabati1: optionsSelected?.item?.rabati1 ?? 0,
-          rabati3: rabati?? 0,
+          rabati3: rabati ?? 0,
         },
         authentikimi
       );
@@ -238,8 +238,10 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          var prod = produktet.find((item) => item.emriProduktit == produkti["Emri Produktit"]);
-          
+          var prod = produktet.find(
+            (item) => item.emriProduktit == produkti["Emri Produktit"]
+          );
+
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
@@ -346,7 +348,10 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,

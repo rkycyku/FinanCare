@@ -1,8 +1,6 @@
 import "./Styles/Fatura.css";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Barkodi from "./Barkodi";
 
 function TeDhenatFatura(props) {
   const [perditeso, setPerditeso] = useState(Date.now());
@@ -40,15 +38,11 @@ function TeDhenatFatura(props) {
     const vendosFature = async () => {
       try {
         const produktet = await axios.get(
-          `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${
-            props.faturaID ?? 61
-          }`,
+          `https://localhost:7285/api/Faturat/shfaqTeDhenatKalkulimit?idRegjistrimit=${props.faturaID}`,
           authentikimi
         );
         const teDhenat = await axios.get(
-          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${
-            props.faturaID ?? 61
-          }`,
+          `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.faturaID}`,
           authentikimi
         );
 

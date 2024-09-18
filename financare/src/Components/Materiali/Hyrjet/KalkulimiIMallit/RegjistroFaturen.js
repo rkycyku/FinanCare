@@ -17,6 +17,7 @@ import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 import Select from "react-select";
 import Tabela from "../../../TeTjera/Tabela/Tabela";
+import PrintLabels from "../../../TeTjera/PrintLabels";
 
 function RegjistroFaturen(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -33,11 +34,6 @@ function RegjistroFaturen(props) {
   const [qmimiShites, setQmimiShites] = useState("");
   const [qmimiShitesMeShumic, setQmimiShitesMeShumic] = useState("");
   const [njesiaMatese, setNjesiaMatese] = useState("Cope");
-  const [totProdukteve, setTotProdukteve] = useState(0);
-  const [totStokut, setTotStokut] = useState(0);
-  const [totFaturesShitese, setTotFaturesShitese] = useState(0);
-  const [totFaturesBlerese, setTotFaturesBlerese] = useState(0);
-  const [mazhaFitimit, setMazhaFitimit] = useState(0);
   const [sasiaNeStok, setSasiaNeStok] = useState(0);
   const [qmimiB, setQmimiB] = useState(0);
   const [qmimiSH, setQmimiSH] = useState(0);
@@ -53,15 +49,8 @@ function RegjistroFaturen(props) {
   const [teDhenat, setTeDhenat] = useState([]);
   const [teDhenatFatures, setTeDhenatFatures] = useState([]);
 
-  const [konifirmoProduktinLista, setKonifirmoProduktinLista] = useState([]);
-
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [filteredProduktet, setFilteredProduktet] = useState(produktet);
-  const [inputValue, setInputValue] = useState("");
-  const [filteredItems, setFilteredItems] = useState(produktet);
-  const [selectedItem, setSelectedItem] = useState(null); // To store the selected item
-  const selectedIndex = useKeyboardNavigation(filteredItems); // Use the custom hook
+  const [siteName, setSiteName] = useState("FinanCare");
+  const [produktetQmimore, setProduktetQmimore] = useState([])
 
   const navigate = useNavigate();
 
@@ -114,6 +103,7 @@ function RegjistroFaturen(props) {
             teDhenatKalkulimit.data.map((k, index) => ({
               ID: k.id,
               "Nr. Rendor": index + 1,
+              Barkodi: k.barkodi,
               "Emri Produktit": k.emriProduktit,
               Sasia: parseFloat(k.sasiaStokut).toFixed(2),
               "Qmimi Bleres + TVSH €": parseFloat(k.qmimiBleres).toFixed(2),
@@ -137,6 +127,16 @@ function RegjistroFaturen(props) {
                   (k.sasiaStokut * k.qmimiBleres)) *
                   100
               ).toFixed(2),
+            }))
+          );
+          setProduktetQmimore(
+            teDhenatKalkulimit.data.map((k, index) => ({
+              name: k.emriProduktit,
+              price: 
+                k.qmimiShites,
+              wholesalePrice: 
+                k.qmimiShitesMeShumic,
+              barcode: k.barkodi,
             }))
           );
           setTeDhenatFatures(teDhenatFatures.data);
@@ -371,7 +371,10 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,
@@ -394,6 +397,22 @@ function RegjistroFaturen(props) {
     setOptionsSelected(partneri);
     document.getElementById("sasia").focus();
   };
+
+  useEffect(() => {
+    const vendosTeDhenatBiznesit = async () => {
+      try {
+        const teDhenat = await axios.get(
+          "https://localhost:7285/api/TeDhenatBiznesit/ShfaqTeDhenat",
+          authentikimi
+        );
+        setSiteName(teDhenat?.data?.emriIBiznesit);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    vendosTeDhenatBiznesit();
+  }, [perditeso]);
 
   return (
     <div className={classes.containerDashboardP}>
@@ -651,6 +670,11 @@ function RegjistroFaturen(props) {
                       <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
                     </Button>
                   </Col>
+
+                  <PrintLabels
+                    storeName={siteName}
+                    products={produktetQmimore}
+                  />
                 </Row>
               </Col>
             </Row>

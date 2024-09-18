@@ -3,7 +3,11 @@ import classes from "./Styles/TabelaEKompanive.module.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus,faFileInvoice,faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faFileInvoice,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -95,8 +99,7 @@ function TeDhenatKalkulimit(props) {
                     </Button>
                     <Button
                       className="mb-3 Butoni"
-                      onClick={() => setShkarkoFaturen(true)}
-                    >
+                      onClick={() => setShkarkoFaturen(true)}>
                       Fatura <FontAwesomeIcon icon={faFileInvoice} />
                     </Button>
                   </h1>

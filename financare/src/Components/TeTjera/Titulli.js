@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import axios from "axios";
 
 function Titulli({ titulli }) {
-  const [siteName, setSiteName] = useState('FinanCare');
+  const [siteName, setSiteName] = useState("FinanCare");
 
   const getToken = localStorage.getItem("token");
   const authentikimi = {
@@ -30,7 +30,9 @@ function Titulli({ titulli }) {
 
   return (
     <Helmet>
-      <title>{titulli} | {siteName}</title>
+      <title>
+        {titulli} | {siteName}
+      </title>
     </Helmet>
   );
 }

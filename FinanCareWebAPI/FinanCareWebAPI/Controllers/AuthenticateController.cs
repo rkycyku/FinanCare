@@ -206,9 +206,72 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
+        [HttpPut]
+        [Route("PerditesoAksesin")]
+        public async Task<IActionResult> PerditesoAksesin(string UserID, string roli)
+        {
+            var user = await _userManager.FindByIdAsync(UserID);
+
+            if (user == null)
+            {
+                return BadRequest(new AuthResults
+                {
+                    Errors = new List<string> { "Perdoruesi nuk ekziston!" }
+                });
+            }
+
+            // Fetch all roles assigned to the user
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            // Remove all roles except "User"
+            foreach (var role in userRoles)
+            {
+                if (role != "User")
+                {
+                    var removeRoleResult = await _userManager.RemoveFromRoleAsync(user, role);
+                    if (!removeRoleResult.Succeeded)
+                    {
+                        return BadRequest(new AuthResults
+                        {
+                            Errors = new List<string> { $"Ndodhi nje gabim gjate heqjes se rolit {role}" }
+                        });
+                    }
+                }
+            }
+
+            // Check if the user already has the new role
+            if (await _userManager.IsInRoleAsync(user, roli))
+            {
+                return BadRequest(new AuthResults
+                {
+                    Errors = new List<string> { "Ky perdorues e ka kete rol!" }
+                });
+            }
+
+            // Assign the new role
+            var perditesoAksesin = await _userManager.AddToRoleAsync(user, roli);
+
+            if (perditesoAksesin.Succeeded)
+            {
+                return Ok(new AuthResults
+                {
+                    Result = true
+                });
+            }
+            else
+            {
+                return BadRequest(new AuthResults
+                {
+                    Errors = new List<string> { "Ndodhi nje gabim gjate perditesimit te Aksesit" }
+                });
+            }
+        }
+
+
+        [Authorize]
         [HttpPost]
         [Route("shtoRolinPerdoruesit")]
-        public async Task<IActionResult> PerditesoAksesin(string UserID, string roli)
+        public async Task<IActionResult> ShtoRolinPerdoruesit(string UserID, string roli)
         {
             var user = await _userManager.FindByIdAsync(UserID);
 

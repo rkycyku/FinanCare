@@ -28,7 +28,7 @@ function Fatura(props) {
 
   const [kaAkses, setKaAkses] = useState(true);
 
-  let barkodi = ""
+  let barkodi = "";
 
   const dataPorosise = new Date(
     teDhenatFat &&
@@ -57,9 +57,10 @@ function Fatura(props) {
     teDhenatFat.regjistrimet.llojiKalkulimit &&
     teDhenatFat.regjistrimet.llojiKalkulimit == "PARAGON"
   ) {
-    barkodi = teDhenatFat &&
-    teDhenatFat.regjistrimet &&
-    teDhenatFat.regjistrimet.nrFatures
+    barkodi =
+      teDhenatFat &&
+      teDhenatFat.regjistrimet &&
+      teDhenatFat.regjistrimet.nrFatures;
   }
 
   const getID = localStorage.getItem("id");
@@ -156,7 +157,9 @@ function Fatura(props) {
             authentikimi
           );
           setTeDhenat(teDhenatUser.data);
-          if (!teDhenatUser.data.rolet.includes("Admin", "Menaxher")) {
+          // Check if at least one of the roles is present
+          const roles = ["Faturist", "Menaxher", "Kalkulant"];
+          if (!teDhenatUser.data.rolet.some((role) => roles.includes(role))) {
             setKaAkses(false);
           }
           console.log(teDhenatUser.data);
@@ -182,7 +185,7 @@ function Fatura(props) {
         }
       }
     }
-  }, [vendosFature]);
+  }, [vendosFature, teDhenat, kaAkses]); // Ensure to include teDhenat and kaAkses in the dependency array
 
   function FaturaPerRuajtje() {
     const mePakSe25Ref = document.querySelector(".mePakSe25");

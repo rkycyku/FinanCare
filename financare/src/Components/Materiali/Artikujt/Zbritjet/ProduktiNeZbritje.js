@@ -109,7 +109,7 @@ function ProduktiNeZbritje(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/Products")
+      .get("https://localhost:7285/api/Produkti/Products", authentikimi)
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({

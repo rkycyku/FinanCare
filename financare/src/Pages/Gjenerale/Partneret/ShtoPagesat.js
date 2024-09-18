@@ -218,7 +218,7 @@ function ShtoPagesat(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneret")
+      .get("https://localhost:7285/api/Partneri/shfaqPartneret", authentikimi)
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.idPartneri,

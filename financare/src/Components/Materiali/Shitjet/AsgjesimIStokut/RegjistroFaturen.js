@@ -108,14 +108,15 @@ function RegjistroFaturen(props) {
             authentikimi
           );
 
-          setProduktetNeKalkulim(teDhenatKalkulimit.data.map((k, index) => ({
-            
-            ID: k.id,
-            "Nr. Rendor": index + 1,
-            "Emri Produktit": k.emriProduktit,
-            Sasia: parseFloat(k.sasiaStokut).toFixed(2),
-            "Qmimi €": parseFloat(k.sasiaStokut * k.qmimiBleres).toFixed(2),
-          })));
+          setProduktetNeKalkulim(
+            teDhenatKalkulimit.data.map((k, index) => ({
+              ID: k.id,
+              "Nr. Rendor": index + 1,
+              "Emri Produktit": k.emriProduktit,
+              Sasia: parseFloat(k.sasiaStokut).toFixed(2),
+              "Qmimi €": parseFloat(k.sasiaStokut * k.qmimiBleres).toFixed(2),
+            }))
+          );
           setTeDhenatFatures(teDhenatFatures.data);
           console.log(teDhenatFatures.data);
           console.log(teDhenatKalkulimit.data);
@@ -151,19 +152,19 @@ function RegjistroFaturen(props) {
     let totalStokut = 0;
     let totalQmimi = 0;
     let totalFat = 0;
-  
+
     produktetNeKalkulim.forEach((produkti) => {
       totalProdukteve += 1;
       totalStokut += parseFloat(produkti.Sasia);
-      totalQmimi += parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi €"]);
+      totalQmimi +=
+        parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi €"]);
     });
-  
+
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut.toFixed(2));
     setTotQmimi(totalQmimi.toFixed(2));
     setTotFat(totalQmimi.toFixed(2));
   }, [produktetNeKalkulim]);
-  
 
   useEffect(() => {
     const perditesoFaturen = async () => {
@@ -205,8 +206,7 @@ function RegjistroFaturen(props) {
   }, [perditeso]);
 
   const handleSubmit = async (event) => {
-    
-    console.log(optionsSelected)
+    console.log(optionsSelected);
     if (sasia <= 0) {
       event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
@@ -214,13 +214,13 @@ function RegjistroFaturen(props) {
       setShfaqMesazhin(true);
     } else {
       event.preventDefault();
-      console.log(optionsSelected)
+      console.log(optionsSelected);
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
           {
             idRegjistrimit: props.nrRendorKalkulimit,
-            idProduktit:  optionsSelected?.value,
+            idProduktit: optionsSelected?.value,
             sasiaStokut: sasia,
             qmimiBleres: -optionsSelected?.item?.qmimiBleres,
             qmimiShites: optionsSelected?.item?.qmimiProduktit,
@@ -259,8 +259,10 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          var prod = produktet.find((item) => item.emriProduktit == produkti["Emri Produktit"]);
-          
+          var prod = produktet.find(
+            (item) => item.emriProduktit == produkti["Emri Produktit"]
+          );
+
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
@@ -368,7 +370,10 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,
@@ -487,7 +492,7 @@ function RegjistroFaturen(props) {
                 </Form>
               </Col>
               <Col>
-              <p>
+                <p>
                   <strong>Sasia aktuale ne Stok:</strong>{" "}
                   {Array.isArray(optionsSelected)
                     ? optionsSelected
@@ -587,7 +592,6 @@ function RegjistroFaturen(props) {
                 mosShfaqID={true}
               />
             </div>
-            
           </Container>
         </>
       )}

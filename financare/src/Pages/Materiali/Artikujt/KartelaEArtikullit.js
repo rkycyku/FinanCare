@@ -155,7 +155,10 @@ function KartelaEArtikullit(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim", authentikimi)
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,
@@ -292,28 +295,27 @@ function KartelaEArtikullit(props) {
                         </tr>
                       </thead>
                       <tbody>
-                        {
-                          kartelaEProduktit?.hisotriaZbritjes?.map((p) => (
-                            <tr>
-                              <td>
-                                {new Date(p.dataZbritjes).toLocaleDateString(
-                                  "en-GB",
-                                  {
-                                    dateStyle: "short",
-                                  }
-                                )}
-                              </td>
-                              <td>
-                                {new Date(p.dataSkadimit).toLocaleDateString(
-                                  "en-GB",
-                                  {
-                                    dateStyle: "short",
-                                  }
-                                )}
-                              </td>
-                              <td>{parseFloat(p.rabati).toFixed(2)}</td>
-                            </tr>
-                          ))}
+                        {kartelaEProduktit?.hisotriaZbritjes?.map((p) => (
+                          <tr>
+                            <td>
+                              {new Date(p.dataZbritjes).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  dateStyle: "short",
+                                }
+                              )}
+                            </td>
+                            <td>
+                              {new Date(p.dataSkadimit).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  dateStyle: "short",
+                                }
+                              )}
+                            </td>
+                            <td>{parseFloat(p.rabati).toFixed(2)}</td>
+                          </tr>
+                        ))}
                         <tr>
                           <td></td>
                           <td></td>

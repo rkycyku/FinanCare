@@ -107,29 +107,31 @@ function RegjistroFaturen(props) {
             `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${props.idKalkulimitEdit}`,
             authentikimi
           );
-          setRabati2(teDhenatFatures?.data?.regjistrimet?.bonusKartela?.rabati ?? null);
-          setProduktetNeKalkulim(teDhenatKalkulimit.data.map((k, index) => ({
-            
-            ID: k.id,
-            "Nr. Rendor": index + 1,
-            "Emri Produktit": k.emriProduktit,
-            Sasia: parseFloat(k.sasiaStokut).toFixed(2),
-            "Qmimi Shites €": parseFloat(k.qmimiShites).toFixed(2),
-            "R. 1 %": parseFloat(k.rabati1).toFixed(2),
-            "R. 2 %": parseFloat(k.rabati2).toFixed(2),
-            "R. 3 %": parseFloat(k.rabati3).toFixed(2),
-            "Qmimi Shites - Rabati": parseFloat(
-              k.qmimiShites -
-                k.qmimiShites * (k.rabati1 / 100) -
-                (k.qmimiShites - k.qmimiShites * (k.rabati1 / 100)) *
-                  (k.rabati2 / 100) -
-                (k.qmimiShites -
+          setRabati2(
+            teDhenatFatures?.data?.regjistrimet?.bonusKartela?.rabati ?? null
+          );
+          setProduktetNeKalkulim(
+            teDhenatKalkulimit.data.map((k, index) => ({
+              ID: k.id,
+              "Nr. Rendor": index + 1,
+              "Emri Produktit": k.emriProduktit,
+              Sasia: parseFloat(k.sasiaStokut).toFixed(2),
+              "Qmimi Shites €": parseFloat(k.qmimiShites).toFixed(2),
+              "R. 1 %": parseFloat(k.rabati1).toFixed(2),
+              "R. 2 %": parseFloat(k.rabati2).toFixed(2),
+              "R. 3 %": parseFloat(k.rabati3).toFixed(2),
+              "Qmimi Shites - Rabati": parseFloat(
+                k.qmimiShites -
                   k.qmimiShites * (k.rabati1 / 100) -
                   (k.qmimiShites - k.qmimiShites * (k.rabati1 / 100)) *
-                    (k.rabati2 / 100)) *
-                  (k.rabati3 / 100)
-            ).toFixed(2),
-            "Totali €": parseFloat(
+                    (k.rabati2 / 100) -
+                  (k.qmimiShites -
+                    k.qmimiShites * (k.rabati1 / 100) -
+                    (k.qmimiShites - k.qmimiShites * (k.rabati1 / 100)) *
+                      (k.rabati2 / 100)) *
+                    (k.rabati3 / 100)
+              ).toFixed(2),
+              "Totali €": parseFloat(
                 (k.qmimiShites -
                   k.qmimiShites * (k.rabati1 / 100) -
                   (k.qmimiShites - k.qmimiShites * (k.rabati1 / 100)) *
@@ -138,9 +140,11 @@ function RegjistroFaturen(props) {
                     k.qmimiShites * (k.rabati1 / 100) -
                     (k.qmimiShites - k.qmimiShites * (k.rabati1 / 100)) *
                       (k.rabati2 / 100)) *
-                    (k.rabati3 / 100)) * k.sasiaStokut
+                    (k.rabati3 / 100)) *
+                  k.sasiaStokut
               ).toFixed(2),
-          })));
+            }))
+          );
           setTeDhenatFatures(teDhenatFatures.data);
           console.log(teDhenatFatures.data);
           console.log(teDhenatKalkulimit.data);
@@ -176,20 +180,20 @@ function RegjistroFaturen(props) {
     let totalStokut = 0;
     let totalQmimi = 0;
     let totalFat = 0;
-  
+
     produktetNeKalkulim.forEach((produkti) => {
       totalProdukteve += 1;
       totalStokut += parseFloat(produkti.Sasia);
-      totalQmimi += parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi Shites €"]);
+      totalQmimi +=
+        parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi Shites €"]);
       totalFat += parseFloat(produkti["Totali €"]);
     });
-  
+
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut.toFixed(2));
     setTotQmimi(totalQmimi.toFixed(2));
     setTotFat(totalFat.toFixed(3));
   }, [produktetNeKalkulim]);
-  
 
   useEffect(() => {
     const perditesoFaturen = async () => {
@@ -231,8 +235,7 @@ function RegjistroFaturen(props) {
   }, [perditeso]);
 
   const handleSubmit = async (event) => {
-    
-    console.log(optionsSelected)
+    console.log(optionsSelected);
     if (sasia <= 0) {
       event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
@@ -240,13 +243,13 @@ function RegjistroFaturen(props) {
       setShfaqMesazhin(true);
     } else {
       event.preventDefault();
-      console.log(optionsSelected)
+      console.log(optionsSelected);
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
           {
             idRegjistrimit: props.nrRendorKalkulimit,
-            idProduktit:  optionsSelected?.value,
+            idProduktit: optionsSelected?.value,
             sasiaStokut: sasia,
             qmimiBleres: optionsSelected?.item?.qmimiBleres,
             qmimiShites: optionsSelected?.item?.qmimiProduktit,
@@ -288,8 +291,10 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          var prod = produktet.find((item) => item.emriProduktit == produkti["Emri Produktit"]);
-          
+          var prod = produktet.find(
+            (item) => item.emriProduktit == produkti["Emri Produktit"]
+          );
+
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
@@ -330,7 +335,9 @@ function RegjistroFaturen(props) {
 
         setEdito(true);
         setproduktiID(p.data[0].idProduktit);
-        setOptionsSelected(options.filter((item) => item.value == p.data[0].idProduktit))
+        setOptionsSelected(
+          options.filter((item) => item.value == p.data[0].idProduktit)
+        );
         setEmriProduktit(p.data[0].emriProduktit);
         setSasiaNeStok(p.data[0].sasiaNeStok);
         setSasia(p.data[0].sasiaStokut);
@@ -400,7 +407,10 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,
@@ -534,7 +544,7 @@ function RegjistroFaturen(props) {
                 </Form>
               </Col>
               <Col>
-              <p>
+                <p>
                   <strong>Sasia aktuale ne Stok:</strong>{" "}
                   {Array.isArray(optionsSelected)
                     ? optionsSelected
@@ -647,7 +657,6 @@ function RegjistroFaturen(props) {
                 mosShfaqID={true}
               />
             </div>
-            
           </Container>
         </>
       )}

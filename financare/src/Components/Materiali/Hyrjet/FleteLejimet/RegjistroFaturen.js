@@ -174,14 +174,15 @@ function RegjistroFaturen(props) {
     let totalStokut = 0;
     let totalQmimi = 0;
     let totalFat = 0;
-  
+
     produktetNeKalkulim.forEach((produkti) => {
       totalProdukteve += 1;
       totalStokut += parseFloat(produkti.Sasia);
-      totalQmimi += parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi Shites €"]);
+      totalQmimi +=
+        parseFloat(produkti.Sasia) * parseFloat(produkti["Qmimi Shites €"]);
       totalFat += parseFloat(produkti["Totali €"]);
     });
-  
+
     setTotProdukteve(totalProdukteve);
     setTotStokut(totalStokut.toFixed(2));
     setTotQmimi(totalQmimi.toFixed(2));
@@ -281,8 +282,10 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          var prod = produktet.find((item) => item.emriProduktit == produkti["Emri Produktit"]);
-          
+          var prod = produktet.find(
+            (item) => item.emriProduktit == produkti["Emri Produktit"]
+          );
+
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
@@ -299,7 +302,6 @@ function RegjistroFaturen(props) {
       console.error(error);
     }
   }
-
 
   async function handleFshij(id) {
     await axios
@@ -392,7 +394,10 @@ function RegjistroFaturen(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.produktiID,
@@ -535,7 +540,7 @@ function RegjistroFaturen(props) {
                 </Form>
               </Col>
               <Col>
-              <p>
+                <p>
                   <strong>Sasia aktuale ne Stok:</strong>{" "}
                   {Array.isArray(optionsSelected)
                     ? optionsSelected

@@ -268,14 +268,19 @@ function KthimIMallitTeBlere(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres")
+      .get(
+        "https://localhost:7285/api/Partneri/shfaqPartneretBleres",
+        authentikimi
+      )
       .then((response) => {
-        console.log(response)
-        const fetchedoptions = response.data.filter((item) => item.nui != 0).map((item) => ({
-          value: item.idPartneri,
-          label: item.emriBiznesit,
-          item: item,
-        }));
+        console.log(response);
+        const fetchedoptions = response.data
+          .filter((item) => item.nui != 0)
+          .map((item) => ({
+            value: item.idPartneri,
+            label: item.emriBiznesit,
+            item: item,
+          }));
         setOptions(fetchedoptions);
       })
       .catch((error) => {
@@ -286,7 +291,6 @@ function KthimIMallitTeBlere(props) {
     setPartneri(partneri.value);
     setOptionsSelected(partneri);
     setKartela(partneri?.item?.kartela?.idKartela ?? null);
-
 
     document.getElementById("pershkrimShtese").focus();
   };

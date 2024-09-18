@@ -33,54 +33,83 @@ function EditoPerdorues(props) {
   useEffect(() => {
     const fetchPerdoruesi = async () => {
       try {
-        const response = await axios.get(`https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${props.id}`, authentikimi);
+        const response = await axios.get(
+          `https://localhost:7285/api/Perdoruesi/shfaqSipasID?idUserAspNet=${props.id}`,
+          authentikimi
+        );
         setPerdoruesi(response.data);
         console.log(response.data);
-  
+
         // Set selected options based on fetched data
-        setSelectedBanka(bankaOptions.find(option => option.value == response.data.perdoruesi.teDhenatPerdoruesit.bankaID));
-        const lastRole = response.data.rolet.length > 0 ? response.data.rolet[response.data.rolet.length - 1] : null;
-        setSelectedRoli(roletOptions.find(option => option.value === lastRole));
+        setSelectedBanka(
+          bankaOptions.find(
+            (option) =>
+              option.value ==
+              response.data.perdoruesi.teDhenatPerdoruesit.bankaID
+          )
+        );
+        const filteredRoles = response.data.rolet.filter(
+          (role) => role !== "User"
+        );
+        const lastRole =
+          filteredRoles.length > 0
+            ? filteredRoles[filteredRoles.length - 1]
+            : null;
+
+        setSelectedRoli(
+          roletOptions.find((option) => option.value === lastRole)
+        );
       } catch (err) {
         console.error(err);
       }
     };
-  
+
     fetchPerdoruesi();
   }, [props.id, bankaOptions, roletOptions]); // Added dependencies to ensure data is fetched correctly
-  
+
   useEffect(() => {
     const fetchBankat = async () => {
       try {
-        const response = await axios.get("https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat", authentikimi);
-        setBankaOptions(response.data.map(item => ({
-          value: item.bankaID,
-          label: item.emriBankes,
-        })));
+        const response = await axios.get(
+          "https://localhost:7285/api/TeDhenatBiznesit/ShfaqBankat",
+          authentikimi
+        );
+        setBankaOptions(
+          response.data.map((item) => ({
+            value: item.bankaID,
+            label: item.emriBankes,
+          }))
+        );
       } catch (err) {
         console.error(err);
       }
     };
-  
+
     fetchBankat();
   }, []); // Fetch bankat only once
-  
+
   useEffect(() => {
     const fetchRolet = async () => {
       try {
-        const response = await axios.get("https://localhost:7285/api/Authenticate/shfaqRolet", authentikimi);
-        setRoletOptions(response.data.filter(item => item.name !== "User").map(item => ({
-          value: item.name,
-          label: item.name,
-        })));
+        const response = await axios.get(
+          "https://localhost:7285/api/Authenticate/shfaqRolet",
+          authentikimi
+        );
+        setRoletOptions(
+          response.data
+            .filter((item) => item.name !== "User")
+            .map((item) => ({
+              value: item.name,
+              label: item.name,
+            }))
+        );
       } catch (err) {
         console.error(err);
       }
     };
-  
+
     fetchRolet();
   }, []); // Fetch rolet only once
-  
 
   const customStyles = {
     menu: (provided) => ({
@@ -90,29 +119,53 @@ function EditoPerdorues(props) {
   };
 
   const handleChange = (field, value) => {
-    setPerdoruesi(prev => ({
-      ...prev,
-      teDhenatPerdoruesit: {
-        ...prev.teDhenatPerdoruesit,
-        [field]: value,
-      },
-    }));
+    if (field in perdoruesi.perdoruesi) {
+      setPerdoruesi((prev) => ({
+        ...prev,
+        perdoruesi: {
+          ...prev.perdoruesi,
+          [field]: value, // Updates top-level fields like 'emri', 'mbiemri'
+        },
+      }));
+    } else {
+      setPerdoruesi((prev) => ({
+        ...prev,
+        perdoruesi: {
+          ...prev.perdoruesi,
+          teDhenatPerdoruesit: {
+            ...prev.perdoruesi.teDhenatPerdoruesit,
+            [field]: value, // Updates nested fields inside 'teDhenatPerdoruesit'
+          },
+        },
+      }));
+    }
   };
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`https://localhost:7285/api/Perdoruesi/perditesoPerdorues/${props.id}`, perdoruesi.perdoruesi, authentikimi);
+      await axios.put(
+        `https://localhost:7285/api/Perdoruesi/perditesoPerdorues/${props.id}`,
+        perdoruesi.perdoruesi,
+        authentikimi
+      );
+      await axios.put(
+        `https://localhost:7285/api/Authenticate/PerditesoAksesin?UserID=${props.id}&roli=${selectedRoli.value}`,
+        {},
+        authentikimi
+      );
       props.perditesoTeDhenat();
       props.largo();
       props.setTipiMesazhit("success");
       props.setPershkrimiMesazhit("Aksesi i perdoruesit u perditesua!");
       props.shfaqmesazhin();
     } catch (error) {
-      console.log(error)
+      console.log(error);
       props.perditesoTeDhenat();
       props.largo();
       props.setTipiMesazhit("danger");
-      props.setPershkrimiMesazhit("Ndodhi nje gabim gjate perditesimit te aksesit!");
+      props.setPershkrimiMesazhit(
+        "Ndodhi nje gabim gjate perditesimit te aksesit!"
+      );
       props.shfaqmesazhin();
     }
   };
@@ -122,12 +175,20 @@ function EditoPerdorues(props) {
   }
 
   return (
-    <Modal size="lg" className="modalEditShto" show={true} onHide={() => props.largo()}>
+    <Modal
+      size="lg"
+      className="modalEditShto"
+      show={true}
+      onHide={() => props.largo()}>
       <Modal.Header closeButton>
         <Modal.Title>Edito Perdoruesin</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Tabs id="shenime-tabs" activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
+        <Tabs
+          id="shenime-tabs"
+          activeKey={key}
+          onSelect={(k) => setKey(k)}
+          className="mb-3">
           <Tab eventKey="kryesore" title="Shënimet Kryesore">
             <Form>
               <Form.Group className="mb-3" controlId="emriBiznesit">
@@ -156,8 +217,17 @@ function EditoPerdorues(props) {
                   <Col>
                     <Form.Label>Data e fillimit te kontrates</Form.Label>
                     <DatePicker
-                      selected={new Date(perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataFillimitKontrates)}
-                      onChange={(date) => handleChange("dataFillimitKontrates", date.toISOString())}
+                      selected={
+                        new Date(
+                          perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataFillimitKontrates
+                        )
+                      }
+                      onChange={(date) =>
+                        handleChange(
+                          "dataFillimitKontrates",
+                          date.toISOString()
+                        )
+                      }
                       dateFormat="dd/MM/yyyy"
                       className="custom-datepicker"
                     />
@@ -165,11 +235,24 @@ function EditoPerdorues(props) {
                   <Col>
                     <Form.Label>Data e mbarimit te kontrates</Form.Label>
                     <DatePicker
-                      selected={new Date(perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataMbarimitKontrates)}
-                      onChange={(date) => handleChange("dataMbarimitKontrates", date.toISOString())}
+                      selected={
+                        new Date(
+                          perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataMbarimitKontrates
+                        )
+                      }
+                      onChange={(date) =>
+                        handleChange(
+                          "dataMbarimitKontrates",
+                          date.toISOString()
+                        )
+                      }
                       dateFormat="dd/MM/yyyy"
                       className="custom-datepicker"
-                      minDate={new Date(perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataFillimitKontrates)}
+                      minDate={
+                        new Date(
+                          perdoruesi?.perdoruesi?.teDhenatPerdoruesit.dataFillimitKontrates
+                        )
+                      }
                     />
                   </Col>
                 </Row>
@@ -181,8 +264,12 @@ function EditoPerdorues(props) {
                     <Form.Label>Nr. Leternjoftimit</Form.Label>
                     <Form.Control
                       type="number"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.nrPersonal}
-                      onChange={(e) => handleChange("nrPersonal", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.nrPersonal
+                      }
+                      onChange={(e) =>
+                        handleChange("nrPersonal", e.target.value)
+                      }
                     />
                   </Col>
                   <Col>
@@ -202,7 +289,6 @@ function EditoPerdorues(props) {
                       value={selectedRoli}
                       onChange={(option) => {
                         setSelectedRoli(option);
-                        handleChange("roli", option.value);
                       }}
                       options={roletOptions}
                       styles={customStyles}
@@ -228,8 +314,14 @@ function EditoPerdorues(props) {
                   <Col>
                     <Form.Label>Datelindja</Form.Label>
                     <DatePicker
-                      selected={new Date(perdoruesi?.perdoruesi?.teDhenatPerdoruesit.datelindja)}
-                      onChange={(date) => handleChange("datelindja", date.toISOString())}
+                      selected={
+                        new Date(
+                          perdoruesi?.perdoruesi?.teDhenatPerdoruesit.datelindja
+                        )
+                      }
+                      onChange={(date) =>
+                        handleChange("datelindja", date.toISOString())
+                      }
                       dateFormat="dd/MM/yyyy"
                       className="custom-datepicker"
                     />
@@ -243,16 +335,24 @@ function EditoPerdorues(props) {
                     <Form.Label>Nr. Kontaktit</Form.Label>
                     <Form.Control
                       type="text"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.nrKontaktit}
-                      onChange={(e) => handleChange("nrKontaktit", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.nrKontaktit
+                      }
+                      onChange={(e) =>
+                        handleChange("nrKontaktit", e.target.value)
+                      }
                     />
                   </Col>
                   <Col>
                     <Form.Label>Email Privat</Form.Label>
                     <Form.Control
                       type="text"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.emailPrivat}
-                      onChange={(e) => handleChange("emailPrivat", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.emailPrivat
+                      }
+                      onChange={(e) =>
+                        handleChange("emailPrivat", e.target.value)
+                      }
                     />
                   </Col>
                 </Row>
@@ -264,24 +364,36 @@ function EditoPerdorues(props) {
                     <Form.Label>Profesioni</Form.Label>
                     <Form.Control
                       type="text"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.profesioni}
-                      onChange={(e) => handleChange("profesioni", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.profesioni
+                      }
+                      onChange={(e) =>
+                        handleChange("profesioni", e.target.value)
+                      }
                     />
                   </Col>
                   <Col>
                     <Form.Label>Specializimi</Form.Label>
                     <Form.Control
                       type="text"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.specializimi}
-                      onChange={(e) => handleChange("specializimi", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.specializimi
+                      }
+                      onChange={(e) =>
+                        handleChange("specializimi", e.target.value)
+                      }
                     />
                   </Col>
                   <Col>
                     <Form.Label>Kualifikimi</Form.Label>
                     <Form.Control
                       type="text"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.kualifikimi}
-                      onChange={(e) => handleChange("kualifikimi", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit.kualifikimi
+                      }
+                      onChange={(e) =>
+                        handleChange("kualifikimi", e.target.value)
+                      }
                     />
                   </Col>
                 </Row>
@@ -305,18 +417,31 @@ function EditoPerdorues(props) {
                     <Form.Label>Nr. Llogaris Bankare</Form.Label>
                     <Form.Control
                       type="number"
-                      value={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.numriLlogarisBankare}
-                      onChange={(e) => handleChange("numriLlogarisBankare", e.target.value)}
+                      value={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit
+                          .numriLlogarisBankare
+                      }
+                      onChange={(e) =>
+                        handleChange("numriLlogarisBankare", e.target.value)
+                      }
                     />
                   </Col>
                   <Col>
                     <Form.Label>Statusi Puntorit</Form.Label>
                     <Form.Check
                       type="checkbox"
-                      id={`eshtePuntorAktiv`}
+                      id="eshtePuntorAktiv"
                       label="Eshte puntor aktiv"
-                      checked={perdoruesi?.perdoruesi?.teDhenatPerdoruesit.eshtePuntorAktive}
-                      onChange={(e) => handleChange("eshtePuntorAktive", e.target.checked)}
+                      checked={
+                        perdoruesi?.perdoruesi?.teDhenatPerdoruesit
+                          ?.eshtePuntorAktive === "true"
+                      }
+                      onChange={(e) =>
+                        handleChange(
+                          "eshtePuntorAktive",
+                          e.target.checked ? "true" : "false"
+                        )
+                      }
                     />
                   </Col>
                 </Row>
