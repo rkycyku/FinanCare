@@ -17,6 +17,7 @@ import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 import Select from "react-select";
 import Tabela from "../../../TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function RegjistroFaturen(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -421,7 +422,15 @@ function RegjistroFaturen(props) {
     document.getElementById("sasia").focus();
   };
 
-  return (
+  return (<>
+    <KontrolloAksesinNeFunksione
+      roletELejuara={["Menaxher", "Kalkulant", "Faturist", "Komercialist"]}
+      largo={() => props.largo()}
+      shfaqmesazhin={() => props.shfaqmesazhin()}
+      perditesoTeDhenat={() => props.perditesoTeDhenat()}
+      setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+      setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+    />
     <div className={classes.containerDashboardP}>
       {shfaqMesazhin && (
         <Mesazhi
@@ -657,6 +666,7 @@ function RegjistroFaturen(props) {
         </>
       )}
     </div>
+    </>
   );
 }
 

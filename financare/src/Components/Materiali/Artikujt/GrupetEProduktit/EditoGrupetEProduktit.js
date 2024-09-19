@@ -112,7 +112,7 @@ function EditoGrupetEProduktit(props) {
   return (
     <>
       <KontrolloAksesinNeFunksione
-        roletELejuara={["Menaxher"]}
+        roletELejuara={["Menaxher", "Kalkulant"]}
         largo={() => props.largo()}
         shfaqmesazhin={() => props.shfaqmesazhin()}
         perditesoTeDhenat={() => props.perditesoTeDhenat()}

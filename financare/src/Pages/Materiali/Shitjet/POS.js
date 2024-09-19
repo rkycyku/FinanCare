@@ -20,7 +20,7 @@ import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Select from "react-select";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function POS(props) {
   const [perditeso, setPerditeso] = useState("");

@@ -12,6 +12,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 function ShtoPartnerin(props) {
   const [emri, setEmri] = useState(null);
   const [mbiemri, setMbiemri] = useState(null);
@@ -224,283 +225,295 @@ function ShtoPartnerin(props) {
   }
 
   return (
-    <Modal size="lg" show={true} onHide={() => props.largo()}>
-      <Modal.Header closeButton>
-        <Modal.Title>Shto Partnerin</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Tabs
-          id="shenime-tabs"
-          activeKey={key}
-          onSelect={(k) => setKey(k)}
-          className="mb-3">
-          <Tab eventKey="klientPrivat" title="Klient Privat">
-            <Form>
-              <Form.Group className="mb-3" controlId="emriBiznesit">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Emri<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Filan"
-                      onChange={(e) => setEmri(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      Mbiemri<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Fisteku"
-                      onChange={(e) => setMbiemri(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>Adresa</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
-                      onChange={(e) => setAdresa(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Nr. Kontaktit</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="+38344111222"
-                      onChange={(e) => setNrKontaktit(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="example@email.com"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Rabati</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="0"
-                      onChange={(e) => setRabati(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-          </Tab>
-          <Tab eventKey="klientBiznesi" title="Klient Biznesor">
-            <Form>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Emri Biznesit<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="FinanCare SH.P.K."
-                      onChange={(e) => setEmriPartnerit(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      Shkurtesa Partnerit<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="FC"
-                      onChange={(e) => setShkurtesaEmrit(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Numri Unik Identifikues: NUI
-                      <span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNUI(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNF(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Numri TVSH: NRTVSH</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNRTVSH(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Adresa<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
-                      onChange={(e) => setAdresa(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Nr. Kontaktit</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="+38344111222"
-                      onChange={(e) => setNrKontaktit(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="example@email.com"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Rabati</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="0"
-                      onChange={(e) => setRabati(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-          </Tab>
-          <Tab eventKey="furnitor" title="Furnitor">
-            <Form>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Emri Biznesit<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="FinanCare SH.P.K."
-                      onChange={(e) => setEmriPartnerit(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      Shkurtesa Partnerit<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="FC"
-                      onChange={(e) => setShkurtesaEmrit(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Numri Unik Identifikues: NUI
-                      <span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNUI(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNF(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Numri TVSH: NRTVSH</Form.Label>
-                    <Form.Control
-                      type="number"
-                      placeholder="111222333"
-                      onChange={(e) => setNRTVSH(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="nui">
-                <Row>
-                  <Col>
-                    <Form.Label>
-                      Adresa<span style={{ color: "red" }}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
-                      onChange={(e) => setAdresa(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Nr. Kontaktit</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="+38344111222"
-                      onChange={(e) => setNrKontaktit(e.target.value)}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="example@email.com"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-          </Tab>
-        </Tabs>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => props.largo()}>
-          Anulo <FontAwesomeIcon icon={faXmark} />
-        </Button>
-        <Button
-          className="Butoni"
-          onClick={(e) =>
-            key == "klientPrivat"
-              ? ShtoPartnerinBleres(e)
-              : ShtoPartnerinFurnitor(e)
-          }>
-          Shto Partnerin <FontAwesomeIcon icon={faPenToSquare} />
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant", "Komercialist"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
+      <Modal size="lg" show={true} onHide={() => props.largo()}>
+        <Modal.Header closeButton>
+          <Modal.Title>Shto Partnerin</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Tabs
+            id="shenime-tabs"
+            activeKey={key}
+            onSelect={(k) => setKey(k)}
+            className="mb-3">
+            <Tab eventKey="klientPrivat" title="Klient Privat">
+              <Form>
+                <Form.Group className="mb-3" controlId="emriBiznesit">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Emri<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Filan"
+                        onChange={(e) => setEmri(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>
+                        Mbiemri<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Fisteku"
+                        onChange={(e) => setMbiemri(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>Adresa</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
+                        onChange={(e) => setAdresa(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Nr. Kontaktit</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="+38344111222"
+                        onChange={(e) => setNrKontaktit(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="example@email.com"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Rabati</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="0"
+                        onChange={(e) => setRabati(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+              </Form>
+            </Tab>
+            <Tab eventKey="klientBiznesi" title="Klient Biznesor">
+              <Form>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Emri Biznesit<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="FinanCare SH.P.K."
+                        onChange={(e) => setEmriPartnerit(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>
+                        Shkurtesa Partnerit
+                        <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="FC"
+                        onChange={(e) => setShkurtesaEmrit(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Numri Unik Identifikues: NUI
+                        <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNUI(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNF(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Numri TVSH: NRTVSH</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNRTVSH(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Adresa<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
+                        onChange={(e) => setAdresa(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Nr. Kontaktit</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="+38344111222"
+                        onChange={(e) => setNrKontaktit(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="example@email.com"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Rabati</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="0"
+                        onChange={(e) => setRabati(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+              </Form>
+            </Tab>
+            <Tab eventKey="furnitor" title="Furnitor">
+              <Form>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Emri Biznesit<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="FinanCare SH.P.K."
+                        onChange={(e) => setEmriPartnerit(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>
+                        Shkurtesa Partnerit
+                        <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="FC"
+                        onChange={(e) => setShkurtesaEmrit(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Numri Unik Identifikues: NUI
+                        <span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNUI(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNF(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Numri TVSH: NRTVSH</Form.Label>
+                      <Form.Control
+                        type="number"
+                        placeholder="111222333"
+                        onChange={(e) => setNRTVSH(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="nui">
+                  <Row>
+                    <Col>
+                      <Form.Label>
+                        Adresa<span style={{ color: "red" }}>*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
+                        onChange={(e) => setAdresa(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Nr. Kontaktit</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="+38344111222"
+                        onChange={(e) => setNrKontaktit(e.target.value)}
+                      />
+                    </Col>
+                    <Col>
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="example@email.com"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Form.Group>
+              </Form>
+            </Tab>
+          </Tabs>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => props.largo()}>
+            Anulo <FontAwesomeIcon icon={faXmark} />
+          </Button>
+          <Button
+            className="Butoni"
+            onClick={(e) =>
+              key == "klientPrivat"
+                ? ShtoPartnerinBleres(e)
+                : ShtoPartnerinFurnitor(e)
+            }>
+            Shto Partnerin <FontAwesomeIcon icon={faPenToSquare} />
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

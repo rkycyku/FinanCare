@@ -12,6 +12,7 @@ import { TailSpin } from "react-loader-spinner";
 import { Table, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Fatura from "../../../TeTjera/Fatura/Fatura";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TeDhenatKalkulimit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -67,6 +68,14 @@ function TeDhenatKalkulimit(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {shkarkoFaturen && (
         <Fatura
           nrFatures={props.id}

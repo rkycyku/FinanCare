@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Select from "react-select";
 import Tabela from "../../../TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function RegjistroFaturen(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -376,246 +377,257 @@ function RegjistroFaturen(props) {
   };
 
   return (
-    <div className={classes.containerDashboardP}>
-      {shfaqMesazhin && (
-        <Mesazhi
-          setShfaqMesazhin={setShfaqMesazhin}
-          pershkrimi={pershkrimiMesazhit}
-          tipi={tipiMesazhit}
-        />
-      )}
-      {konfirmoMbylljenFatures && (
-        <Modal
-          show={konfirmoMbylljenFatures}
-          onHide={() => setKonfirmoMbylljenFatures(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title as="h6">Konfirmo Mbylljen e Fatures</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <strong style={{ fontSize: "10pt" }}>
-              A jeni te sigurt qe deshironi ta mbyllni Faturen?
-            </strong>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setKonfirmoMbylljenFatures(false)}>
-              Edito Faturen <FontAwesomeIcon icon={faPenToSquare} />
-            </Button>
-            <Button variant="warning" onClick={handleMbyllFature}>
-              Konfirmo <FontAwesomeIcon icon={faPlus} />
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
-      {loading ? (
-        <div className="Loader">
-          <TailSpin
-            height="80"
-            width="80"
-            color="#009879"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
+    <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
+      <div className={classes.containerDashboardP}>
+        {shfaqMesazhin && (
+          <Mesazhi
+            setShfaqMesazhin={setShfaqMesazhin}
+            pershkrimi={pershkrimiMesazhit}
+            tipi={tipiMesazhit}
           />
-        </div>
-      ) : (
-        <>
-          <h1 className="title">Kthimi i Mallit te Blere</h1>
+        )}
+        {konfirmoMbylljenFatures && (
+          <Modal
+            show={konfirmoMbylljenFatures}
+            onHide={() => setKonfirmoMbylljenFatures(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title as="h6">Konfirmo Mbylljen e Fatures</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <strong style={{ fontSize: "10pt" }}>
+                A jeni te sigurt qe deshironi ta mbyllni Faturen?
+              </strong>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setKonfirmoMbylljenFatures(false)}>
+                Edito Faturen <FontAwesomeIcon icon={faPenToSquare} />
+              </Button>
+              <Button variant="warning" onClick={handleMbyllFature}>
+                Konfirmo <FontAwesomeIcon icon={faPlus} />
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
+        {loading ? (
+          <div className="Loader">
+            <TailSpin
+              height="80"
+              width="80"
+              color="#009879"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </div>
+        ) : (
+          <>
+            <h1 className="title">Kthimi i Mallit te Blere</h1>
 
-          <Container fluid>
-            <Row>
-              <Col>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="idDheEmri">
-                    <Form.Label>Produkti</Form.Label>
-                    <Select
-                      value={optionsSelected}
-                      onChange={handleChange}
-                      options={options}
-                      id="produktiSelect" // Setting the id attribute
-                      inputId="produktiSelect-input" // Setting the input id attribute
-                      isDisabled={edito}
-                      styles={customStyles}
-                      autoFocus
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>
-                      Sasia -{" "}
-                      {Array.isArray(optionsSelected)
-                        ? optionsSelected
-                            .map((option) => option.item.emriNjesiaMatese)
-                            .join(", ")
-                        : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
-                    </Form.Label>
-                    <Form.Control
-                      id="sasia"
-                      type="number"
-                      placeholder={"0.00 "}
-                      value={sasia}
-                      onChange={(e) => {
-                        setSasia(e.target.value);
-                      }}
-                      onKeyDown={(e) => {
-                        ndrroField(e, "qmimiBleres");
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Qmimi Bleres €</Form.Label>
-                    <Form.Control
-                      id="qmimiBleres"
-                      type="number"
-                      placeholder={"0.00 €"}
-                      value={qmimiBleres}
-                      onChange={(e) => {
-                        setQmimiBleres(e.target.value);
-                      }}
-                      onKeyDown={(e) => {
-                        ndrroField(e, "rabati");
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Rabati %</Form.Label>
-                    <Form.Control
-                      id="rabati"
-                      type="number"
-                      placeholder={"0.00 %"}
-                      value={rabati}
-                      onChange={(e) => {
-                        setRabati(e.target.value);
-                      }}
-                    />
-                  </Form.Group>
-                  <br />
-                  <div style={{ display: "flex", gap: "0.3em" }}>
-                    <Button variant="success" type="submit" disabled={edito}>
-                      Shto Produktin <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    {edito && (
-                      <Button
-                        variant="warning"
-                        onClick={() => handleEdito(idTeDhenatKalk)}>
-                        Edito Produktin <FontAwesomeIcon icon={faPenToSquare} />
+            <Container fluid>
+              <Row>
+                <Col>
+                  <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="idDheEmri">
+                      <Form.Label>Produkti</Form.Label>
+                      <Select
+                        value={optionsSelected}
+                        onChange={handleChange}
+                        options={options}
+                        id="produktiSelect" // Setting the id attribute
+                        inputId="produktiSelect-input" // Setting the input id attribute
+                        isDisabled={edito}
+                        styles={customStyles}
+                        autoFocus
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>
+                        Sasia -{" "}
+                        {Array.isArray(optionsSelected)
+                          ? optionsSelected
+                              .map((option) => option.item.emriNjesiaMatese)
+                              .join(", ")
+                          : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
+                      </Form.Label>
+                      <Form.Control
+                        id="sasia"
+                        type="number"
+                        placeholder={"0.00 "}
+                        value={sasia}
+                        onChange={(e) => {
+                          setSasia(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "qmimiBleres");
+                        }}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Qmimi Bleres €</Form.Label>
+                      <Form.Control
+                        id="qmimiBleres"
+                        type="number"
+                        placeholder={"0.00 €"}
+                        value={qmimiBleres}
+                        onChange={(e) => {
+                          setQmimiBleres(e.target.value);
+                        }}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "rabati");
+                        }}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Rabati %</Form.Label>
+                      <Form.Control
+                        id="rabati"
+                        type="number"
+                        placeholder={"0.00 %"}
+                        value={rabati}
+                        onChange={(e) => {
+                          setRabati(e.target.value);
+                        }}
+                      />
+                    </Form.Group>
+                    <br />
+                    <div style={{ display: "flex", gap: "0.3em" }}>
+                      <Button variant="success" type="submit" disabled={edito}>
+                        Shto Produktin <FontAwesomeIcon icon={faPlus} />
                       </Button>
-                    )}
-                  </div>
-                </Form>
-              </Col>
-              <Col>
-                <p>
-                  <strong>Sasia aktuale ne Stok:</strong>{" "}
-                  {Array.isArray(optionsSelected)
-                    ? optionsSelected
-                        .map((option) => option.item.sasiaNeStok)
-                        .join(", ")
-                    : optionsSelected?.item?.sasiaNeStok ?? 0}{" "}
-                  {Array.isArray(optionsSelected)
-                    ? optionsSelected
-                        .map((option) => option.item.emriNjesiaMatese)
-                        .join(", ")
-                    : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
-                </p>
-                <p>
-                  <strong>Qmimi Bleres me Shumic + TVSH:</strong>{" "}
-                  {parseFloat(
-                    Array.isArray(optionsSelected)
+                      {edito && (
+                        <Button
+                          variant="warning"
+                          onClick={() => handleEdito(idTeDhenatKalk)}>
+                          Edito Produktin{" "}
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                        </Button>
+                      )}
+                    </div>
+                  </Form>
+                </Col>
+                <Col>
+                  <p>
+                    <strong>Sasia aktuale ne Stok:</strong>{" "}
+                    {Array.isArray(optionsSelected)
                       ? optionsSelected
-                          .map((option) => option.item.qmimiBleres)
+                          .map((option) => option.item.sasiaNeStok)
                           .join(", ")
-                      : optionsSelected?.item?.qmimiBleres ?? 0
-                  ).toFixed(2)}{" "}
-                  €
-                </p>
-                <p>
-                  <strong>Qmimi Shites me Pakic + TVSH:</strong>{" "}
-                  {parseFloat(
-                    Array.isArray(optionsSelected)
+                      : optionsSelected?.item?.sasiaNeStok ?? 0}{" "}
+                    {Array.isArray(optionsSelected)
                       ? optionsSelected
-                          .map((option) => option.item.qmimiProduktit)
+                          .map((option) => option.item.emriNjesiaMatese)
                           .join(", ")
-                      : optionsSelected?.item?.qmimiProduktit ?? 0
-                  ).toFixed(2)}{" "}
-                  €
-                </p>
-                <p>
-                  <strong>Qmimi Shites me Shumic + TVSH:</strong>{" "}
-                  {parseFloat(
-                    Array.isArray(optionsSelected)
-                      ? optionsSelected
-                          .map((option) => option.item.qmimiMeShumic)
-                          .join(", ")
-                      : optionsSelected?.item?.qmimiMeShumic ?? 0
-                  ).toFixed(2)}{" "}
-                  €
-                </p>
-              </Col>
-              <Col>
-                <Row>
-                  <h5>
-                    <strong>Nr. Kalkulimit:</strong>{" "}
-                    {teDhenatFatures.regjistrimet &&
-                      teDhenatFatures.regjistrimet.nrRendorFatures}
-                  </h5>
-                  <h5>
-                    <strong>Partneri:</strong>{" "}
-                    {teDhenatFatures.regjistrimet &&
-                      teDhenatFatures.regjistrimet.emriBiznesit}
-                  </h5>
-                  <h5>
-                    <strong>Pershkrim Shtese:</strong>{" "}
-                    {teDhenatFatures.regjistrimet &&
-                      teDhenatFatures.regjistrimet.pershkrimShtese}
-                  </h5>
-                  <h5>
-                    <strong>Totali Produkteve ne Kalkulim:</strong>{" "}
-                    {totProdukteve}
-                  </h5>
-                  <h5>
-                    <strong>Sasia:</strong> {parseFloat(totStokut).toFixed(2)}
-                  </h5>
-                  <h5>
-                    <strong>Totali:</strong> {parseFloat(totFat).toFixed(2)} €
-                  </h5>
+                      : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
+                  </p>
+                  <p>
+                    <strong>Qmimi Bleres me Shumic + TVSH:</strong>{" "}
+                    {parseFloat(
+                      Array.isArray(optionsSelected)
+                        ? optionsSelected
+                            .map((option) => option.item.qmimiBleres)
+                            .join(", ")
+                        : optionsSelected?.item?.qmimiBleres ?? 0
+                    ).toFixed(2)}{" "}
+                    €
+                  </p>
+                  <p>
+                    <strong>Qmimi Shites me Pakic + TVSH:</strong>{" "}
+                    {parseFloat(
+                      Array.isArray(optionsSelected)
+                        ? optionsSelected
+                            .map((option) => option.item.qmimiProduktit)
+                            .join(", ")
+                        : optionsSelected?.item?.qmimiProduktit ?? 0
+                    ).toFixed(2)}{" "}
+                    €
+                  </p>
+                  <p>
+                    <strong>Qmimi Shites me Shumic + TVSH:</strong>{" "}
+                    {parseFloat(
+                      Array.isArray(optionsSelected)
+                        ? optionsSelected
+                            .map((option) => option.item.qmimiMeShumic)
+                            .join(", ")
+                        : optionsSelected?.item?.qmimiMeShumic ?? 0
+                    ).toFixed(2)}{" "}
+                    €
+                  </p>
+                </Col>
+                <Col>
+                  <Row>
+                    <h5>
+                      <strong>Nr. Kalkulimit:</strong>{" "}
+                      {teDhenatFatures.regjistrimet &&
+                        teDhenatFatures.regjistrimet.nrRendorFatures}
+                    </h5>
+                    <h5>
+                      <strong>Partneri:</strong>{" "}
+                      {teDhenatFatures.regjistrimet &&
+                        teDhenatFatures.regjistrimet.emriBiznesit}
+                    </h5>
+                    <h5>
+                      <strong>Pershkrim Shtese:</strong>{" "}
+                      {teDhenatFatures.regjistrimet &&
+                        teDhenatFatures.regjistrimet.pershkrimShtese}
+                    </h5>
+                    <h5>
+                      <strong>Totali Produkteve ne Kalkulim:</strong>{" "}
+                      {totProdukteve}
+                    </h5>
+                    <h5>
+                      <strong>Sasia:</strong> {parseFloat(totStokut).toFixed(2)}
+                    </h5>
+                    <h5>
+                      <strong>Totali:</strong> {parseFloat(totFat).toFixed(2)} €
+                    </h5>
 
-                  <hr />
-                  <Col>
-                    <Button
-                      className="mb-3 Butoni"
-                      onClick={() => setKonfirmoMbylljenFatures(true)}>
-                      Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                    <Button
-                      className="mb-3 Butoni"
-                      onClick={() => KthehuTekFaturat()}>
-                      <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            <div className="mt-2">
-              <Tabela
-                data={produktetNeKalkulim}
-                tableName="Tabela e Produkteve te Fatures"
-                kaButona={true}
-                funksionButonFshij={(e) => handleFshij(e)}
-                funksionButonEdit={(e) => {
-                  handleEdit(e);
-                  setIdTeDhenatKalk(e);
-                }}
-                mosShfaqKerkimin
-                mosShfaqID={true}
-              />
-            </div>
-          </Container>
-        </>
-      )}
-    </div>
+                    <hr />
+                    <Col>
+                      <Button
+                        className="mb-3 Butoni"
+                        onClick={() => setKonfirmoMbylljenFatures(true)}>
+                        Mbyll Faturen <FontAwesomeIcon icon={faPlus} />
+                      </Button>
+                      <Button
+                        className="mb-3 Butoni"
+                        onClick={() => KthehuTekFaturat()}>
+                        <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <div className="mt-2">
+                <Tabela
+                  data={produktetNeKalkulim}
+                  tableName="Tabela e Produkteve te Fatures"
+                  kaButona={true}
+                  funksionButonFshij={(e) => handleFshij(e)}
+                  funksionButonEdit={(e) => {
+                    handleEdit(e);
+                    setIdTeDhenatKalk(e);
+                  }}
+                  mosShfaqKerkimin
+                  mosShfaqID={true}
+                />
+              </div>
+            </Container>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 

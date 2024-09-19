@@ -22,7 +22,7 @@ import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import Select from "react-select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function ShtoPagesat(props) {
   const [perditeso, setPerditeso] = useState("");

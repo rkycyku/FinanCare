@@ -23,7 +23,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Select from "react-select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function KartelaEArtikullit(props) {
   const [perditeso, setPerditeso] = useState("");

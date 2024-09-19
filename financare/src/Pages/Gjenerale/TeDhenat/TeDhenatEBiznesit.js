@@ -9,7 +9,6 @@ import { TailSpin } from "react-loader-spinner";
 
 import { MDBRow, MDBCol, MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TeDhenatEBiznesit(props) {
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);

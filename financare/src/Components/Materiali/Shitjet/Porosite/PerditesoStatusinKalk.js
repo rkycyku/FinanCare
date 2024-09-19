@@ -8,6 +8,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function PerditesoStatusinKalk(props) {
   const [kalkulimet, setKalkulimet] = useState([]);
@@ -176,6 +177,14 @@ function PerditesoStatusinKalk(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant", "Faturist"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {hapKalkulimin && (
         <Modal
           show={hapKalkulimin}

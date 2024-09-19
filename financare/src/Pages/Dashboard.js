@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import { Tab, Tabs, Form, InputGroup, Row, Col } from "react-bootstrap";
 import Titulli from "../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);

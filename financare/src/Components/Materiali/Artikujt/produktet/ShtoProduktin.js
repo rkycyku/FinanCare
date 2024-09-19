@@ -10,6 +10,7 @@ import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
 import { Col } from "react-bootstrap";
 import Select from "react-select";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 const ShtoProduktin = (props) => {
   const [perditeso, setPerditeso] = useState("");
@@ -141,7 +142,10 @@ const ShtoProduktin = (props) => {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit", authentikimi)
+      .get(
+        "https://localhost:7285/api/GrupiProduktit/shfaqGrupetEProduktit",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -154,7 +158,10 @@ const ShtoProduktin = (props) => {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretFurntiore", authentikimi)
+      .get(
+        "https://localhost:7285/api/Partneri/shfaqPartneretFurntiore",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -167,7 +174,10 @@ const ShtoProduktin = (props) => {
         console.error("Error fetching data:", error);
       });
     axios
-      .get("https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese", authentikimi)
+      .get(
+        "https://localhost:7285/api/NjesiaMatese/shfaqNjesiteMatese",
+        authentikimi
+      )
       .then((response) => {
         console.log(response);
         const fetchedoptions = response.data.map((item) => ({
@@ -222,6 +232,14 @@ const ShtoProduktin = (props) => {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {fushatEZbrazura && (
         <Modal
           size="sm"

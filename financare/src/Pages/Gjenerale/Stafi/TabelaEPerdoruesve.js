@@ -16,7 +16,7 @@ import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import ShtoPerdorues from "../../../Components/Gjenerale/Stafi/users/ShtoPerdorues";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function TabelaEPerdoruesve() {
   const [perdoruesit, setPerdoruesit] = useState([]);

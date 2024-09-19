@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Bankat from "../../../../Pages/Gjenerale/TeDhenat/Bankat";
 import Select from "react-select";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function EditoLlogarin(props) {
   const [banka, setBanka] = useState([]);
@@ -85,9 +86,7 @@ function EditoLlogarin(props) {
           authentikimi
         );
         setOptionsSelected(
-          options.filter(
-            (item) => item.value == bankaKerkim.data[0].bankaID
-          )
+          options.filter((item) => item.value == bankaKerkim.data[0].bankaID)
         );
         setBanka(bankaKerkim.data[0]);
         console.log(banka);
@@ -162,6 +161,14 @@ function EditoLlogarin(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Financa"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {fushatEZbrazura && (
         <Modal
           size="sm"
@@ -233,7 +240,7 @@ function EditoLlogarin(props) {
               <Form.Label>ID Banka</Form.Label>
               <Form.Control value={banka.idLlogariaBankare} disabled />
             </Form.Group>
-            <Form.Group  className="mb-3" controlId="idDheEmri">
+            <Form.Group className="mb-3" controlId="idDheEmri">
               <Form.Label>Banka</Form.Label>
               <Select
                 value={optionsSelected}

@@ -33,7 +33,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CustomDatePicker from "../../../Components/TeTjera/layout/CustomDatePicker";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function ListaShitjeveMeParagon(props) {
   const [perditeso, setPerditeso] = useState("");

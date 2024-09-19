@@ -6,6 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function ShtoLlogarin(props) {
   const [bankaID, setBankaID] = useState(0);
@@ -130,6 +131,14 @@ function ShtoLlogarin(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Financa"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {fushatEZbrazura && (
         <Modal
           size="sm"

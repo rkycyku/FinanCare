@@ -24,7 +24,7 @@ import TabelaEKompanive from "../../Gjenerale/Partneret/TabelaEPartnereve";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import LargoProduktin from "../../../Components/Materiali/Artikujt/Produktet/LargoProduktin";
 
 const ProductTables = () => {
   const [produkti, setProdukti] = useState([]);
@@ -32,6 +32,7 @@ const ProductTables = () => {
   const [perditeso, setPerditeso] = useState("");
   const [show, setShow] = useState(false);
   const [edito, setEdito] = useState(false);
+  const [fshij, setFshij] = useState(false);
   const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
@@ -99,25 +100,11 @@ const ProductTables = () => {
 
   const handleEditoMbyll = () => setEdito(false);
 
-  async function handleDelete() {
-    try {
-      await axios.delete(
-        `https://localhost:7285/api/Produkti/` + id,
-        authentikimi
-      );
-      setTipiMesazhit("success");
-      setPershkrimiMesazhit("Produkti u fshi me sukses!");
-      setPerditeso(Date.now());
-      setShfaqMesazhin(true);
-      setShowD(false);
-    } catch (err) {
-      console.error(err);
-      setTipiMesazhit("danger");
-      setPershkrimiMesazhit("Ndodhi nje gabim gjate fshirjes se produkti!");
-      setPerditeso(Date.now());
-      setShfaqMesazhin(true);
-    }
-  }
+  const handleFshij = (id) => {
+    setId(id);
+    setFshij(true);
+  };
+  const handleFshijMbyll = () => setFshij(false);
 
   return (
     <>
@@ -152,22 +139,16 @@ const ProductTables = () => {
             setPershkrimiMesazhit={setPershkrimiMesazhit}
           />
         )}
-        <Modal show={showD} onHide={handleCloseD}>
-          <Modal.Header closeButton>
-            <Modal.Title style={{ color: "red" }}>Largo Produktin</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h6>A jeni te sigurt qe deshironi ta fshini kete produkt?</h6>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseD}>
-              Anulo <FontAwesomeIcon icon={faXmark} />
-            </Button>
-            <Button variant="danger" onClick={handleDelete}>
-              Largo Produktin <FontAwesomeIcon icon={faBan} />
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {fshij && (
+          <LargoProduktin
+            largo={() => handleFshijMbyll()}
+            id={id}
+            shfaqmesazhin={() => setShfaqMesazhin(true)}
+            perditesoTeDhenat={() => setPerditeso(Date.now())}
+            setTipiMesazhit={setTipiMesazhit}
+            setPershkrimiMesazhit={setPershkrimiMesazhit}
+          />
+        )}
         {loading ? (
           <div className="Loader">
             <TailSpin
@@ -195,7 +176,7 @@ const ProductTables = () => {
                 }}
                 funksionButonFshij={(e) => {
                   setId(e);
-                  handleShowD(e);
+                  handleFshij(e);
                 }}
                 mosShfaqID={true}
               />

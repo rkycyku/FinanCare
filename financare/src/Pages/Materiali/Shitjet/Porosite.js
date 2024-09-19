@@ -34,7 +34,7 @@ import FormControl from "@mui/material/FormControl";
 // import Select from "@mui/material/Select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Select from "react-select";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");

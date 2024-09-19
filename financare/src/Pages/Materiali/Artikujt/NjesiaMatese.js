@@ -19,7 +19,7 @@ import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function TabelaEKategorive(props) {
   const [njesiteMatese, setNjesiteMatese] = useState([]);

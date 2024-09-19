@@ -21,7 +21,7 @@ import ShtoPartnerin from "../../../Components/Gjenerale/Partneret/Partneri/Shto
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import { Row } from "react-bootstrap";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function TabelaEKompanive(props) {
   const [partneret, setPartneret] = useState([]);

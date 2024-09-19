@@ -7,6 +7,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { MDBRow, MDBCol, MDBInput, MDBTooltip } from "mdb-react-ui-kit";
 import useKeyboardNavigation from "../../../../Context/useKeyboardNavigation";
 import Select from "react-select";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function EditoProduktin(props) {
   const [produkti, setProdukti] = useState([]);
@@ -266,6 +267,14 @@ function EditoProduktin(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Kalkulant"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {fushatEZbrazura && (
         <Modal
           size="sm"

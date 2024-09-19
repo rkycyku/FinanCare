@@ -16,7 +16,7 @@ import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Select from "react-select";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");

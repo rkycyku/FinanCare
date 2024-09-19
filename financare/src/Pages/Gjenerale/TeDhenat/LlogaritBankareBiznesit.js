@@ -19,7 +19,7 @@ import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import ShtoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/ShtoLlogarin";
 import EditoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/EditoLlogarin";
 import LargoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/LargoLlogarin";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function LlogaritBankareBiznesit(props) {
   const [bankat, setBankat] = useState([]);

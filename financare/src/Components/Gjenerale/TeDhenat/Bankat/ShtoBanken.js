@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function ShtoBanken(props) {
   const [emriBankes, setEmriBankes] = useState("");
@@ -83,8 +84,8 @@ function ShtoBanken(props) {
         konfirmoBanken == false &&
         bankat.filter(
           (item) =>
-            (item.emriBankes === emriBankes &&
-              item.lokacioniBankes == lokacioniBankes)
+            item.emriBankes === emriBankes &&
+            item.lokacioniBankes == lokacioniBankes
         ).length !== 0
       ) {
         setKontrolloBankat(true);
@@ -96,6 +97,14 @@ function ShtoBanken(props) {
 
   return (
     <>
+      <KontrolloAksesinNeFunksione
+        roletELejuara={["Menaxher", "Financa", "Burime Njerzore"]}
+        largo={() => props.largo()}
+        shfaqmesazhin={() => props.shfaqmesazhin()}
+        perditesoTeDhenat={() => props.perditesoTeDhenat()}
+        setTipiMesazhit={(e) => props.setTipiMesazhit(e)}
+        setPershkrimiMesazhit={(e) => props.setPershkrimiMesazhit(e)}
+      />
       {fushatEZbrazura && (
         <Modal
           size="sm"

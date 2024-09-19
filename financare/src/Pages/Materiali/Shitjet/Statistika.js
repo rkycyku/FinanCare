@@ -9,7 +9,7 @@ import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import ChartComponent from "../../../Components/TeTjera/Chart/ChartComponent";
 import { Col, Row } from "react-bootstrap";
 import Titulli from "../../../Components/TeTjera/Titulli";
-import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
 
 function Statistika() {
   const [totaleTeNdryshme, setTotaleTeNdryshme] = useState([]);
