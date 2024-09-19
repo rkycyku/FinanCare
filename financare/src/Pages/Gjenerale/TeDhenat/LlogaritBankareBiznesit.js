@@ -19,6 +19,7 @@ import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import ShtoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/ShtoLlogarin";
 import EditoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/EditoLlogarin";
 import LargoLlogarin from "../../../Components/Gjenerale/TeDhenat/LlogaritBankareBiznesit/LargoLlogarin";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function LlogaritBankareBiznesit(props) {
   const [bankat, setBankat] = useState([]);
@@ -52,11 +53,11 @@ function LlogaritBankareBiznesit(props) {
         setBankat(
           Bankat.data.map((k) => ({
             ID: k.idLlogariaBankare,
-            "Emri Bankes": k.banka  && k.banka.emriBankes,
+            "Emri Bankes": k.banka && k.banka.emriBankes,
             "Nr. Llogaris": k.numriLlogaris,
             "Adresa Bankes": k.adresaBankes,
-            "Valuta": k.valuta,
-            "Lloji Llogaris": k.banka && k.banka.lokacioniBankes
+            Valuta: k.valuta,
+            "Lloji Llogaris": k.banka && k.banka.lokacioniBankes,
           }))
         );
         setLoading(false);
@@ -88,9 +89,6 @@ function LlogaritBankareBiznesit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Llogarit Bankare te Biznesit | FinanCare</title>
-      </Helmet>
       <NavBar />
 
       <div className="containerDashboardP">

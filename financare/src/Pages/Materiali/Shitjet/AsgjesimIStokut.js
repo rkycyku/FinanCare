@@ -33,6 +33,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import dayjs from "dayjs";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -258,9 +259,9 @@ function KalkulimiIMallit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Asgjesimi I Stokut | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Kalkulant"]}
+      />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

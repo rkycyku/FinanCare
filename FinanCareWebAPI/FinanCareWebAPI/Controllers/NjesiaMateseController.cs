@@ -26,7 +26,8 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var njesiaMatese = await _context.NjesiaMatese.FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
+                var njesiaMatese = await _context.NjesiaMatese
+                .Where(x => x.isDeleted == "false").FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
 
                 return Ok(njesiaMatese);
             }
@@ -46,6 +47,8 @@ namespace FinanCareWebAPI.Controllers
             try
             {
                 var njesiaMatese = await _context.NjesiaMatese
+
+                .Where(x => x.isDeleted == "false")
                     .Include(x => x.Produkti)
                     .ToListAsync();
 
@@ -65,6 +68,19 @@ namespace FinanCareWebAPI.Controllers
         }
 
 
+
+        
+
+        [Authorize]
+        [HttpPost]
+        [Route("shtoNjesineMatese")]
+        public async Task<IActionResult> Post(NjesiaMatese njesiaMatese)
+        {
+            await _context.NjesiaMatese.AddAsync(njesiaMatese);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", njesiaMatese.IDNjesiaMatese, njesiaMatese);
+        }
 
         [Authorize]
         [HttpPut]
@@ -90,24 +106,18 @@ namespace FinanCareWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("shtoNjesineMatese")]
-        public async Task<IActionResult> Post(NjesiaMatese njesiaMatese)
-        {
-            await _context.NjesiaMatese.AddAsync(njesiaMatese);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", njesiaMatese.IDNjesiaMatese, njesiaMatese);
-        }
-
-        [Authorize]
         [HttpDelete]
         [Route("fshijNjesineMatese")]
         public async Task<IActionResult> Delete(int id)
         {
             var njesiaMatese = await _context.NjesiaMatese.FirstOrDefaultAsync(x => x.IDNjesiaMatese == id);
 
-            _context.NjesiaMatese.Remove(njesiaMatese);
+            if (njesiaMatese == null)
+                return BadRequest("Invalid id");
+
+            njesiaMatese.isDeleted = "true";
+
+            _context.NjesiaMatese.Update(njesiaMatese);
             await _context.SaveChangesAsync();
 
             return Ok("Njesia Matese u fshi me sukses!");

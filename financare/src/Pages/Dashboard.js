@@ -6,29 +6,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import { Tab, Tabs, Form, InputGroup, Row, Col } from "react-bootstrap";
+import Titulli from "../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
   const [teDhenat, setTeDhenat] = useState([]);
   const [perditeso, setPerditeso] = useState("");
   const [loading, setLoading] = useState(true);
-  const [shfaqPorosite, setShfaqPorosite] = useState(false);
-  const [shfaqDetajet, setShfaqDetajet] = useState(false);
-  const [shfaqMesazhet, setShfaqMesazhet] = useState(false);
-  const [nrFatures, setNumriFatures] = useState(0);
-  const [show, setShow] = useState(false);
-  const [edito, setEdito] = useState(false);
-  const [emri, setEmri] = useState("");
-  const [mbiemri, setMbiemri] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [adresa, setAdresa] = useState("");
-  const [nrKontaktit, setNrKontaktit] = useState("");
-  const [id, setId] = useState();
-  const [mbyllPerditesoTeDhenat, setMbyllPerditesoTeDhenat] = useState(true);
-  const [shfaqMesazhin, setShfaqMesazhin] = useState(false);
-  const [tipiMesazhit, setTipiMesazhit] = useState("");
-  const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
   const [key, setKey] = useState("kryesore");
   const navigate = useNavigate();
 
@@ -67,9 +52,20 @@ const Dashboard = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={[
+          "Financa",
+          "Mbeshtetje e Klientit",
+          "Faturist",
+          "Puntor i Thjeshte",
+          "Burime Njerzore",
+          "Komercialist",
+          "Kalkulant",
+          "Menaxher",
+          "Arkatar",
+        ]}
+      />
+      <Titulli titulli={"Dashboard"} />
       <NavBar />
 
       <div className="dashboard">
@@ -311,7 +307,8 @@ const Dashboard = () => {
                         <Form.Control
                           type="text"
                           value={
-                            teDhenat?.perdoruesi?.teDhenatPerdoruesit?.banka?.emriBankes
+                            teDhenat?.perdoruesi?.teDhenatPerdoruesit?.banka
+                              ?.emriBankes
                           }
                           disabled
                         />
@@ -333,7 +330,9 @@ const Dashboard = () => {
                           type="text"
                           value={
                             teDhenat?.perdoruesi?.teDhenatPerdoruesit
-                              ?.eshtePuntorAktive == "true" ? "Aktiv" : "Jo Aktiv" 
+                              ?.eshtePuntorAktive == "true"
+                              ? "Aktiv"
+                              : "Jo Aktiv"
                           }
                           disabled
                         />

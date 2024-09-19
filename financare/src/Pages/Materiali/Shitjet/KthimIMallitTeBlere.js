@@ -16,6 +16,7 @@ import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Select from "react-select";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -269,9 +270,9 @@ function KthimIMallitTeBlere(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Kthim I Mallit Te Blere | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Kalkulant"]}
+      />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (
@@ -391,7 +392,7 @@ function KthimIMallitTeBlere(props) {
                 <div className="mt-2">
                   <Tabela
                     data={kalkulimet}
-                    tableName="Lista e Kthimeve"
+                    tableName="Lista e Kthimeve te Mallit te Blere"
                     kaButona={true}
                     funksionShfaqFature={(e) => handleShfaqTeDhenat(e)}
                     funksionNdryshoStatusinEFatures={() => setEdito(true)}

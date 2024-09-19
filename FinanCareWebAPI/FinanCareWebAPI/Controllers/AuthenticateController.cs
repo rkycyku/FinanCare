@@ -28,10 +28,38 @@ namespace WebAPI.Controllers
             IConfiguration configuration,
             FinanCareDbContext context)
         {
-            _userManager = userManager; 
+            _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _context = context;
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("shfaqRolet")]
+        public async Task<IActionResult> ShfaqRolet()
+        {
+            var rolet = await _roleManager.Roles.ToListAsync();
+
+            var roletWithUsersCount = new List<object>();
+
+            foreach (var roli in rolet)
+            {
+                var usersCount = await _userManager.GetUsersInRoleAsync(roli.Name);
+
+                var roliWithUsersCount = new
+                {
+                    roli.Id,
+                    roli.Name,
+                    roli.NormalizedName,
+                    roli.ConcurrencyStamp,
+                    TotaliPerdoruesve = usersCount.Count
+                };
+
+                roletWithUsersCount.Add(roliWithUsersCount);
+            }
+
+            return Ok(roletWithUsersCount);
         }
 
         [Authorize]
@@ -133,10 +161,10 @@ namespace WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 var useri_ekziston = await _userManager.FindByEmailAsync(login.Email);
 
-                if(useri_ekziston == null)
+                if (useri_ekziston == null)
                 {
                     return BadRequest(new AuthResults()
                     {
@@ -158,6 +186,20 @@ namespace WebAPI.Controllers
                         {
                             "Invalid Credintials"
                         },
+                        Result = false
+                    });
+                }
+
+                var eshteAktiv = await _context.Perdoruesi.Include(x => x.TeDhenatPerdoruesit).Where(x => x.Email == login.Email && x.TeDhenatPerdoruesit.EshtePuntorAktive == "true").FirstOrDefaultAsync();
+
+                if (eshteAktiv == null)
+                {
+                    return BadRequest(new AuthResults()
+                    {
+                        Errors = new List<string>()
+        {
+            "Llogari deaktive"
+        },
                         Result = false
                     });
                 }
@@ -203,6 +245,42 @@ namespace WebAPI.Controllers
             }
 
             return Ok(passwodiINdryshuar);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("shtoRolin")]
+        public async Task<IActionResult> ShtoRolin(string roli)
+        {
+            var ekziston = await _roleManager.FindByNameAsync(roli);
+
+            if (ekziston != null)
+            {
+                return BadRequest(new AuthResults
+                {
+                    Errors = new List<string> { "Ky role tashme Egziston!" }
+                });
+            }
+            else
+            {
+                var role = new IdentityRole(roli);
+                var result = await _roleManager.CreateAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new AuthResults
+                    {
+                        Result = true
+                    });
+                }
+                else
+                {
+                    return BadRequest(new AuthResults
+                    {
+                        Errors = new List<string> { "Ndodhi nje gabim gjate shtimit te rolit" }
+                    });
+                }
+            }
         }
 
         [Authorize]
@@ -267,132 +345,8 @@ namespace WebAPI.Controllers
             }
         }
 
+        
 
-        [Authorize]
-        [HttpPost]
-        [Route("shtoRolinPerdoruesit")]
-        public async Task<IActionResult> ShtoRolinPerdoruesit(string UserID, string roli)
-        {
-            var user = await _userManager.FindByIdAsync(UserID);
-
-            if (user == null)
-            {
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Perdoruesi nuk ekziston!" }
-                });
-            }
-
-            var perditesoAksesin = await _userManager.AddToRoleAsync(user, roli);
-
-            if (perditesoAksesin.Succeeded)
-            {
-
-                return Ok(new AuthResults
-                {
-                    Result = true
-                });
-            }
-            else if (await _userManager.IsInRoleAsync(user, roli))
-            {
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Ky perdorues e ka kete role!" }
-                });
-            }
-            else
-            {
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Ndodhi nje gabim gjate perditesimit te Aksesit" }
-                });
-            }
-        }
-
-        [Authorize]
-        [HttpDelete]
-        [Route("FshijRolinUserit")]
-        public async Task<IActionResult> FshijRolinUserit(string UserID, string roli)
-        {
-            var perdoruesi = await _userManager.FindByIdAsync(UserID);
-
-            if(perdoruesi == null)
-            {
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Ky perdorues nuk egziston" }
-                });
-            }
-            else
-            {
-                var ekzistonRoli = await _roleManager.FindByNameAsync(roli);
-
-                if(ekzistonRoli != null)
-                {
-                    var eKaRolin = await _userManager.IsInRoleAsync(perdoruesi, roli);
-
-                    if (eKaRolin == true)
-                    {
-                        await _userManager.RemoveFromRoleAsync(perdoruesi, roli);
-
-                        return Ok(new AuthResults
-                        {
-                            Result = true
-                        });
-                    }
-                }
-                else
-                {
-                    return BadRequest(new AuthResults
-                    {
-                        Errors = new List<string> { "Ky role nuk egziston" }
-                    });
-                }
-
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Ndodhi nje gabim!" }
-                });
-            }
-
-            
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("shtoRolin")]
-        public async Task<IActionResult> ShtoRolin(string roli)
-        {
-            var ekziston = await _roleManager.FindByNameAsync(roli);
-
-            if (ekziston != null)
-            {
-                return BadRequest(new AuthResults
-                {
-                    Errors = new List<string> { "Ky role tashme Egziston!" }
-                });
-            }
-            else
-            {
-                var role = new IdentityRole(roli); 
-                var result = await _roleManager.CreateAsync(role); 
-
-                if (result.Succeeded)
-                {
-                    return Ok(new AuthResults
-                    {
-                        Result = true
-                    });
-                }
-                else
-                {
-                    return BadRequest(new AuthResults
-                    {
-                        Errors = new List<string> { "Ndodhi nje gabim gjate shtimit te rolit" }
-                    });
-                }
-            }
-        }
 
         [Authorize]
         [HttpDelete]
@@ -405,7 +359,7 @@ namespace WebAPI.Controllers
             {
                 var roliUFshi = await _roleManager.DeleteAsync(roliEkziston);
 
-                if(roliUFshi.Succeeded)
+                if (roliUFshi.Succeeded)
                 {
                     return Ok(new AuthResults { Result = true });
                 }
@@ -426,33 +380,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("shfaqRolet")]
-        public async Task<IActionResult> ShfaqRolet()
-        {
-            var rolet = await _roleManager.Roles.ToListAsync();
-
-            var roletWithUsersCount = new List<object>();
-
-            foreach (var roli in rolet)
-            {
-                var usersCount = await _userManager.GetUsersInRoleAsync(roli.Name);
-
-                var roliWithUsersCount = new
-                {
-                    roli.Id,
-                    roli.Name,
-                    roli.NormalizedName,
-                    roli.ConcurrencyStamp,
-                    TotaliPerdoruesve = usersCount.Count
-                };
-
-                roletWithUsersCount.Add(roliWithUsersCount);
-            }
-
-            return Ok(roletWithUsersCount);
-        }
+        
 
 
         private string GenerateJwtToken(IdentityUser user, IList<string> roles)
@@ -464,10 +392,10 @@ namespace WebAPI.Controllers
             // Token descriptor
             var TokenDescriptor = new SecurityTokenDescriptor()
             {
-                
+
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("id", user.Id),
+                    new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, value:user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

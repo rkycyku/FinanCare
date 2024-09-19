@@ -19,6 +19,7 @@ import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function Bankat(props) {
   const [bankat, setBankat] = useState([]);
@@ -85,9 +86,7 @@ function Bankat(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Bankat | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Financa", "Burime Njerzore"]} />
       <NavBar />
 
       <div className="containerDashboardP">

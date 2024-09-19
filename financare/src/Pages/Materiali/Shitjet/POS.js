@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Select from "react-select";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function POS(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -410,16 +412,14 @@ function POS(props) {
 
   const handleMenaxhoTastetKartelaZbritjes = (event) => {
     if (event.key === "Enter") {
-      
-    event.preventDefault();
+      event.preventDefault();
       VendosKartelenBleresit();
     }
   };
 
   const handleMenaxhoTastetKartelaFshirjes = (event) => {
     if (event.key === "Enter") {
-      
-    event.preventDefault();
+      event.preventDefault();
       VendosKartelenFshirjesProduktit();
     }
   };
@@ -609,9 +609,10 @@ function POS(props) {
 
   return (
     <>
-      <Helmet>
-        <title>POS | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Arkatar"]}
+      />
+      <Titulli titulli={"POS"} />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

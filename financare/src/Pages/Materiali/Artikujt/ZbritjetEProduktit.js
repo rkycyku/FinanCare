@@ -13,6 +13,7 @@ import FshijZbritjen from "../../../Components/Materiali/Artikujt/Zbritjet/Fshij
 import { Link } from "react-router-dom";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function ZbritjetEProduktit(props) {
   const [zbritjet, setZbritjet] = useState([]);
@@ -102,9 +103,7 @@ function ZbritjetEProduktit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant"]} />
       <NavBar />
       <div className="containerDashboardP">
         {shfaqMesazhin && (

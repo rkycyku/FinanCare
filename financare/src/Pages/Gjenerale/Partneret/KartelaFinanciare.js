@@ -23,6 +23,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Select from "react-select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KartelaFinanciare(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -197,9 +199,7 @@ function KartelaFinanciare(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Kartela Financiare | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Financa", "Mbeshtetje e Klientit"]} />
       <NavBar />
 
       <div className="containerDashboardP">

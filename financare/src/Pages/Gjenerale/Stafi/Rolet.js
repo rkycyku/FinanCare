@@ -13,6 +13,8 @@ import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TabelaEKompanive(props) {
   const [rolet, setRolet] = useState([]);
@@ -41,15 +43,19 @@ function TabelaEKompanive(props) {
           "https://localhost:7285/api/Authenticate/shfaqRolet",
           authentikimi
         );
-        
-        setRolet(roli.data.map((k) => ({
-            ID: k.name,
-            "Roli": k.name,
-            "Totali Perdorueseve ne kete Rol": k.totaliPerdoruesve !== null
-            ? k.totaliPerdoruesve
-            : "Nuk Ka asnje perdorues ne kete role",
-            
-          })));
+
+        setRolet(
+          roli.data
+            .filter((roli) => roli.name != "User")
+            .map((k) => ({
+              ID: k.name,
+              Roli: k.name,
+              "Totali Perdorueseve ne kete Rol":
+                k.totaliPerdoruesve !== null
+                  ? k.totaliPerdoruesve
+                  : "Nuk Ka asnje perdorues ne kete role",
+            }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -73,9 +79,7 @@ function TabelaEKompanive(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher"]} />
       <NavBar />
 
       <div className="containerDashboardP">

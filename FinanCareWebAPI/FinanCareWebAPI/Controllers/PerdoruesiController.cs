@@ -76,6 +76,126 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+
+
+        [Authorize]
+        [HttpGet]
+        [Route("KontrolloEmail")]
+        public async Task<IActionResult> KontrolloEmail(string email)
+        {
+            var perdoruesi = await _userManager.FindByEmailAsync(email);
+
+            var emailIPerdorur = false;
+
+            if(perdoruesi != null)
+            {
+                emailIPerdorur = true;
+            }
+
+
+            return Ok(emailIPerdorur);
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        [Route("KontrolloFjalekalimin")]
+        public async Task<IActionResult> KontrolloFjalekalimin(string AspNetID, string fjalekalimi)
+        {
+            var perdoruesi = await _userManager.FindByIdAsync(AspNetID);
+
+            var kontrolloFjalekalimin = await _userManager.CheckPasswordAsync(perdoruesi, fjalekalimi);
+
+            return Ok(kontrolloFjalekalimin);
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GjeneroTeDhenatPerHyrje")]
+        public async Task<IActionResult> GjeneroTeDhenatPerHyrje(string e, string m, string domain)
+        {
+            var emri = e.ToLower();
+            var mbiemri = m.ToLower();
+
+            var UsernameGjeneruar = $"{emri}.{mbiemri}";
+            var EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
+
+            var ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
+
+            int counter = 1;
+            while (ekziston.Count > 0)
+            {
+                UsernameGjeneruar = $"{emri}.{mbiemri}.{counter}";
+                EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
+
+                ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
+
+                counter++;
+            }
+
+            var PasswordiGjeneruar = $"{emri}{mbiemri}1@";
+
+            var teDhenat = new
+            {
+                EmailGjeneruar,
+                UsernameGjeneruar,
+                PasswordiGjeneruar
+            };
+
+            return Ok(teDhenat);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("NdryshoEmail")]
+        public async Task<IActionResult> NdryshoEmail(string emailIVjeter, string emailIRI)
+        {
+            var perdoruesi = await _userManager.FindByEmailAsync(emailIVjeter);
+
+            if (perdoruesi == null)
+            {
+                return BadRequest("Perdoreusi nuk egziston");
+            }
+
+            var tokeniPerNderrimEmail = await _userManager.GenerateChangeEmailTokenAsync(perdoruesi, emailIRI);
+
+            var emailINdryshuar = await _userManager.ChangeEmailAsync(perdoruesi, emailIRI, tokeniPerNderrimEmail);
+
+            if (!emailINdryshuar.Succeeded)
+            {
+                return BadRequest("Ndodhi nje gabim gjate perditesimit te email");
+            }
+
+
+            return Ok(emailINdryshuar);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("NdryshoFjalekalimin")]
+        public async Task<IActionResult> NdryshoFjalekalimin(string AspNetID, string fjalekalimiAktual, string fjalekalimiIRi)
+        {
+            var perdoruesi = await _userManager.FindByIdAsync(AspNetID);
+
+
+            if (perdoruesi == null)
+            {
+                return BadRequest("Perdoreusi nuk egziston");
+            }
+
+            var passwodiINdryshuar = await _userManager.ChangePasswordAsync(perdoruesi, fjalekalimiAktual, fjalekalimiIRi);
+
+            if (!passwodiINdryshuar.Succeeded)
+            {
+                return BadRequest("Ndodhi nje gabim gjate perditesimit te fjalekalimit");
+            }
+
+
+            return Ok(passwodiINdryshuar);
+        }
+
+
         [Authorize]
         [HttpPut]
         [Route("perditesoPerdorues/{id}")]
@@ -176,122 +296,6 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(perdouresi);
-        }
-
-
-        [Authorize]
-        [HttpGet]
-        [Route("KontrolloEmail")]
-        public async Task<IActionResult> KontrolloEmail(string email)
-        {
-            var perdoruesi = await _userManager.FindByEmailAsync(email);
-
-            var emailIPerdorur = false;
-
-            if(perdoruesi != null)
-            {
-                emailIPerdorur = true;
-            }
-
-
-            return Ok(emailIPerdorur);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("NdryshoEmail")]
-        public async Task<IActionResult> NdryshoEmail(string emailIVjeter, string emailIRI)
-        {
-            var perdoruesi = await _userManager.FindByEmailAsync(emailIVjeter);
-
-            if (perdoruesi == null)
-            {
-                return BadRequest("Perdoreusi nuk egziston");
-            }
-
-            var tokeniPerNderrimEmail = await _userManager.GenerateChangeEmailTokenAsync(perdoruesi, emailIRI);
-
-            var emailINdryshuar = await _userManager.ChangeEmailAsync(perdoruesi, emailIRI, tokeniPerNderrimEmail);
-
-            if (!emailINdryshuar.Succeeded)
-            {
-                return BadRequest("Ndodhi nje gabim gjate perditesimit te email");
-            }
-
-
-            return Ok(emailINdryshuar);
-        }
-
-        [Authorize]
-        [HttpGet]
-        [Route("KontrolloFjalekalimin")]
-        public async Task<IActionResult> KontrolloFjalekalimin(string AspNetID, string fjalekalimi)
-        {
-            var perdoruesi = await _userManager.FindByIdAsync(AspNetID);
-
-            var kontrolloFjalekalimin = await _userManager.CheckPasswordAsync(perdoruesi, fjalekalimi);
-
-            return Ok(kontrolloFjalekalimin);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("NdryshoFjalekalimin")]
-        public async Task<IActionResult> NdryshoFjalekalimin(string AspNetID, string fjalekalimiAktual, string fjalekalimiIRi)
-        {
-            var perdoruesi = await _userManager.FindByIdAsync(AspNetID);
-
-
-            if (perdoruesi == null)
-            {
-                return BadRequest("Perdoreusi nuk egziston");
-            }
-
-            var passwodiINdryshuar = await _userManager.ChangePasswordAsync(perdoruesi, fjalekalimiAktual, fjalekalimiIRi);
-
-            if (!passwodiINdryshuar.Succeeded)
-            {
-                return BadRequest("Ndodhi nje gabim gjate perditesimit te fjalekalimit");
-            }
-
-
-            return Ok(passwodiINdryshuar);
-        }
-
-        [Authorize]
-        [HttpGet]
-        [Route("GjeneroTeDhenatPerHyrje")]
-        public async Task<IActionResult> GjeneroTeDhenatPerHyrje(string e, string m, string domain)
-        {
-            var emri = e.ToLower();
-            var mbiemri = m.ToLower();
-
-            var UsernameGjeneruar = $"{emri}.{mbiemri}";
-            var EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
-
-            var ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
-
-            int counter = 1;
-            while (ekziston.Count > 0)
-            {
-                UsernameGjeneruar = $"{emri}.{mbiemri}.{counter}";
-                EmailGjeneruar = $"{UsernameGjeneruar}@{domain.ToLower()}";
-
-                ekziston = await _context.Perdoruesi.Where(x => x.Email == EmailGjeneruar).ToListAsync();
-
-                counter++;
-            }
-
-            var PasswordiGjeneruar = $"{emri}{mbiemri}1@";
-
-            var teDhenat = new
-            {
-                EmailGjeneruar,
-                UsernameGjeneruar,
-                PasswordiGjeneruar
-            };
-
-            return Ok(teDhenat);
         }
     }
 

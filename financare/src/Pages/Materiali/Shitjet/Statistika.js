@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import ChartComponent from "../../../Components/TeTjera/Chart/ChartComponent";
 import { Col, Row } from "react-bootstrap";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function Statistika() {
   const [totaleTeNdryshme, setTotaleTeNdryshme] = useState([]);
@@ -122,16 +124,14 @@ function Statistika() {
     labels:
       top15Produktet && top15Produktet.map((k) => k.produkti.emriProduktit),
     datasets: [
-      
       {
         label: "Totali Porosive",
-        data:
-        top15Produktet &&
-        top15Produktet.map((k) => k.totaliPorosive),
+        data: top15Produktet && top15Produktet.map((k) => k.totaliPorosive),
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         fill: false,
-      },{
+      },
+      {
         label: "Totali Shitjeve €",
         data:
           top15Produktet &&
@@ -188,21 +188,26 @@ function Statistika() {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher"]}
+      />
+      <Titulli titulli={"Statistika"} />
       <NavBar />
       <div className="containerDashboardP">
         <h1 className="title">Statistikat e Dyqanit</h1>
         <hr />
         <h1 className="title">Statistikat e Pergjithshme</h1>
         <div className="cardStatisitkat">
-        <Card className="KartaStatistikave" border="dark">
+          <Card className="KartaStatistikave" border="dark">
             <Card.Header>Totali Shitjeve</Card.Header>
             <Card.Body>
               <Card.Text>
                 <span className="TekstiStatistika">
-                  {parseFloat(totaleTeNdryshme?.totaliShitjeve + totaleTeNdryshme?.totaliShitjeveParagonEuro).toFixed(2)} €
+                  {parseFloat(
+                    totaleTeNdryshme?.totaliShitjeve +
+                      totaleTeNdryshme?.totaliShitjeveParagonEuro
+                  ).toFixed(2)}{" "}
+                  €
                 </span>
               </Card.Text>
             </Card.Body>
@@ -265,7 +270,10 @@ function Statistika() {
             <Card.Body>
               <Card.Text>
                 <span className="TekstiStatistika">
-                  {parseFloat(totaleTeNdryshme?.totaliShitjeveParagonEuro).toFixed(2)} €
+                  {parseFloat(
+                    totaleTeNdryshme?.totaliShitjeveParagonEuro
+                  ).toFixed(2)}{" "}
+                  €
                 </span>
               </Card.Text>
             </Card.Body>
@@ -451,7 +459,12 @@ function Statistika() {
         </div>
         <div className="cardStatisitkat">
           <Card border="dark">
-            <Card.Header>Shitjet Ditore | {new Date(shitjetMeParagon?.today).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
+            <Card.Header>
+              Shitjet Ditore |{" "}
+              {new Date(shitjetMeParagon?.today).toLocaleDateString("en-GB", {
+                dateStyle: "short",
+              })}
+            </Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -501,7 +514,18 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card border="dark">
-            <Card.Header>Shitjet Javore | {new Date(shitjetMeParagon?.startOfWeek).toLocaleDateString("en-GB", { dateStyle: "short" })} - {new Date(shitjetMeParagon?.endOfWeek).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
+            <Card.Header>
+              Shitjet Javore |{" "}
+              {new Date(shitjetMeParagon?.startOfWeek).toLocaleDateString(
+                "en-GB",
+                { dateStyle: "short" }
+              )}{" "}
+              -{" "}
+              {new Date(shitjetMeParagon?.endOfWeek).toLocaleDateString(
+                "en-GB",
+                { dateStyle: "short" }
+              )}
+            </Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">
@@ -551,7 +575,18 @@ function Statistika() {
             </Card.Body>
           </Card>
           <Card border="dark">
-            <Card.Header>Shitjet Mujore | {new Date(shitjetMeParagon?.startOfMonth).toLocaleDateString("en-GB", { dateStyle: "short" })} - {new Date(shitjetMeParagon?.endOfMonth).toLocaleDateString("en-GB", { dateStyle: "short" })}</Card.Header>
+            <Card.Header>
+              Shitjet Mujore |{" "}
+              {new Date(shitjetMeParagon?.startOfMonth).toLocaleDateString(
+                "en-GB",
+                { dateStyle: "short" }
+              )}{" "}
+              -{" "}
+              {new Date(shitjetMeParagon?.endOfMonth).toLocaleDateString(
+                "en-GB",
+                { dateStyle: "short" }
+              )}
+            </Card.Header>
             <Card.Body>
               <Card.Text>
                 <MDBTable align="middle">

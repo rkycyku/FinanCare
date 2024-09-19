@@ -19,6 +19,7 @@ import { TailSpin } from "react-loader-spinner";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TabelaEKategorive(props) {
   const [njesiteMatese, setNjesiteMatese] = useState([]);
@@ -84,9 +85,7 @@ function TabelaEKategorive(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant"]} />
       <NavBar />
 
       <div className="containerDashboardP">

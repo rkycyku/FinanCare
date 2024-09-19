@@ -33,6 +33,7 @@ import FormControl from "@mui/material/FormControl";
 import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Select from "react-select";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KalkulimiIMallit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -293,9 +294,7 @@ function KalkulimiIMallit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Flete Lejimet | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant", "Komercialist", "Faturist"]} />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

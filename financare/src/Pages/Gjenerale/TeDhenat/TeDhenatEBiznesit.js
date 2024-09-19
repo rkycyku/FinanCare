@@ -8,6 +8,8 @@ import Mesazhi from "../../../Components/TeTjera/layout/Mesazhi";
 import { TailSpin } from "react-loader-spinner";
 
 import { MDBRow, MDBCol, MDBInput, MDBBtn } from "mdb-react-ui-kit";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TeDhenatEBiznesit(props) {
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
@@ -148,9 +150,7 @@ function TeDhenatEBiznesit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <Titulli titulli={"Te Dhenat e Biznesit"} />
       <NavBar />
 
       <div className="containerDashboardP">

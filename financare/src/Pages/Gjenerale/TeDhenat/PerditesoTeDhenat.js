@@ -170,9 +170,7 @@ function PerditesoTeDhenat(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <titulli titulli={"Perditesimi i Fjalekalimit"} />
       <NavBar />
 
       <div className="containerDashboardP">

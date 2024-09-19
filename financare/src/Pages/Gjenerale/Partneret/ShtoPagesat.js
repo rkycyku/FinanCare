@@ -21,6 +21,8 @@ import { Helmet } from "react-helmet";
 import NavBar from "../../../Components/TeTjera/layout/NavBar";
 import Select from "react-select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function ShtoPagesat(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -238,9 +240,7 @@ function ShtoPagesat(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Pagesat e Fatures | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Financa"]} />
       <NavBar />
 
       <div className="containerDashboardP">

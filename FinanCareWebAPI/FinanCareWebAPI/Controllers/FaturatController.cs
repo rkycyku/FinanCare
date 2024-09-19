@@ -322,212 +322,6 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPut]
-        [Route("perditesoFaturen")]
-        public async Task<IActionResult> PerditesoFaturen(int idKalulimit, [FromBody] Faturat fat)
-        {
-            var fatura = await _context.Faturat.FindAsync(idKalulimit);
-            if (fatura == null)
-            {
-                return NotFound();
-            }
-
-            if (fat.Rabati != null)
-            {
-                fatura.Rabati = fat.Rabati;
-            }
-            if (fat.NrFatures != null)
-            {
-                fatura.NrFatures = fat.NrFatures;
-            }
-            if (fat.NrRendorFatures != null)
-            {
-                fatura.NrRendorFatures = fat.NrRendorFatures;
-            }
-            if (fat.StatusiPageses != null)
-            {
-                fatura.StatusiPageses = fat.StatusiPageses;
-            }
-            if (fat.StatusiKalkulimit != null)
-            {
-                fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
-            }
-            if (fat.IDPartneri != null)
-            {
-                fatura.IDPartneri = fat.IDPartneri;
-            }
-            if (fat.LlojiKalkulimit != null)
-            {
-                fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
-            }
-            if (fat.LlojiPageses != null)
-            {
-                fatura.LlojiPageses = fat.LlojiPageses;
-            }
-            if (fat.PershkrimShtese != null)
-            {
-                fatura.PershkrimShtese = fat.PershkrimShtese;
-            }
-            if (fat.StafiID != null)
-            {
-                fatura.StafiID = fat.StafiID;
-            }
-            if (fat.TotaliPaTVSH != null)
-            {
-                fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
-            }
-            if (fat.TVSH != null)
-            {
-                fatura.TVSH = fat.TVSH;
-            }
-            if (fat.DataRegjistrimit != null)
-            {
-                fatura.DataRegjistrimit = fat.DataRegjistrimit;
-            }
-            if (fat.EshteFaturuarOferta != null)
-            {
-                fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
-            }
-            if (fat.IDBonusKartela != null)
-            {
-                fatura.IDBonusKartela = fat.IDBonusKartela;
-            }
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(fatura);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("ruajKalkulimin")]
-        public async Task<IActionResult> Post(Faturat regjistrimet)
-        {
-            await _context.Faturat.AddAsync(regjistrimet);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", regjistrimet.IDRegjistrimit, regjistrimet);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("ruajKalkulimin/teDhenat")]
-        public async Task<IActionResult> Post(TeDhenatFaturat teDhenat)
-        {
-            await _context.TeDhenatFaturat.AddAsync(teDhenat);
-            await _context.SaveChangesAsync();
-
-            return Ok(teDhenat);
-        }
-
-        [Authorize]
-        [HttpDelete]
-        [Route("ruajKalkulimin/FshijTeDhenat")]
-        public async Task<IActionResult> Delete(int idTeDhenat)
-        {
-            var produkti = await _context.TeDhenatFaturat.FirstOrDefaultAsync(x => x.ID == idTeDhenat);
-
-            if (produkti == null)
-                return BadRequest("Invalid id");
-
-            _context.TeDhenatFaturat.Remove(produkti);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpDelete]
-        [Route("ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit")]
-        public async Task<IActionResult> DeleteByIdKalkulimi(int idKalkulimi)
-        {
-            var teDhenatKalkulimi = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
-
-            if (teDhenatKalkulimi == null)
-                return BadRequest("Invalid id");
-
-            foreach (var produkti in teDhenatKalkulimi)
-            {
-                _context.TeDhenatFaturat.Remove(produkti);
-            }
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpPut]
-        [Route("ruajKalkulimin/PerditesoTeDhenat")]
-        public async Task<IActionResult> Put(int id, [FromBody] TeDhenatFaturat teDhenat)
-        {
-            var produkti = await _context.TeDhenatFaturat.FindAsync(id);
-            if (produkti == null)
-            {
-                return NotFound();
-            }
-
-            produkti.SasiaStokut = teDhenat.SasiaStokut;
-            produkti.QmimiBleres = teDhenat.QmimiBleres;
-            produkti.QmimiShites = teDhenat.QmimiShites;
-            produkti.QmimiShitesMeShumic = teDhenat.QmimiShitesMeShumic;
-            produkti.Rabati1 = teDhenat.Rabati1;
-            produkti.Rabati2 = teDhenat.Rabati2;
-            produkti.Rabati3 = teDhenat.Rabati3;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(produkti);
-        }
-
-        [Authorize]
-        [HttpPut]
-        [Route("ruajKalkulimin/perditesoStokunQmimin")]
-        public async Task<IActionResult> Put(int id, [FromBody] StokuQmimiProduktit stoku)
-        {
-            var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
-            if (produkti == null)
-            {
-                return NotFound();
-            }
-
-            produkti.SasiaNeStok += stoku.SasiaNeStok;
-            produkti.DataPerditsimit = DateTime.Now;
-            produkti.QmimiProduktit = stoku.QmimiProduktit;
-            produkti.QmimiBleres = stoku.QmimiBleres;
-            produkti.QmimiMeShumic = stoku.QmimiMeShumic;
-
-            if (stoku.DataKrijimit == null)
-            {
-                produkti.DataKrijimit = produkti.DataKrijimit;
-            }
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(produkti);
-        }
-
-        [Authorize]
         [HttpGet]
         [Route("ruajKalkulimin/getKalkulimi")]
         public async Task<IActionResult> GetKalkulimi(int idKalkulimit)
@@ -562,57 +356,6 @@ namespace WebAPI.Controllers
             return Ok(kalkulimi);
         }
 
-
-        [Authorize]
-        [HttpPut]
-        [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
-        public async Task<IActionResult> Put(int id, string statusi)
-        {
-            var kalkulimi = await _context.Faturat.FindAsync(id);
-            if (kalkulimi == null)
-            {
-                return NotFound();
-            }
-
-            kalkulimi.StatusiKalkulimit = statusi;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(kalkulimi);
-        }
-
-        [Authorize]
-        [HttpPut]
-        [Route("FaturoOferten")]
-        public async Task<IActionResult> FaturoOferten(int id)
-        {
-            var oferta = await _context.Faturat.FindAsync(id);
-            if (oferta == null)
-            {
-                return NotFound();
-            }
-
-            oferta.EshteFaturuarOferta = "true";
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return Ok(oferta);
-        }
-
         [Authorize]
         [HttpGet]
         [Route("getNumriFaturesMeRradhe")]
@@ -631,27 +374,6 @@ namespace WebAPI.Controllers
             }
 
             return Ok(nrFatures);
-        }
-
-
-        [Authorize]
-        [HttpDelete]
-        [Route("fshijKalkulimin")]
-        public async Task<IActionResult> fshijKalkulimin(int idKalkulimi)
-        {
-            var kalkulimi = await _context.Faturat.FirstOrDefaultAsync(x => x.IDRegjistrimit == idKalkulimi);
-            var teDhenatKalkulimit = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
-
-            foreach (var teDhenat in teDhenatKalkulimit)
-            {
-                _context.TeDhenatFaturat.Remove(teDhenat);
-            }
-
-            _context.Faturat.Remove(kalkulimi);
-
-            await _context.SaveChangesAsync();
-
-            return Ok();
         }
 
         [Authorize]
@@ -771,10 +493,66 @@ namespace WebAPI.Controllers
 
         }
 
+        
+        [Authorize]
+        [HttpPost]
+        [Route("ruajKalkulimin")]
+        public async Task<IActionResult> Post(Faturat regjistrimet)
+        {
+            await _context.Faturat.AddAsync(regjistrimet);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", regjistrimet.IDRegjistrimit, regjistrimet);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("ruajKalkulimin/teDhenat")]
+        public async Task<IActionResult> Post(TeDhenatFaturat teDhenat)
+        {
+            await _context.TeDhenatFaturat.AddAsync(teDhenat);
+            await _context.SaveChangesAsync();
+
+            return Ok(teDhenat);
+        }
+
+        
+
         [Authorize]
         [HttpPut]
-        [Route("ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin")]
-        public async Task<IActionResult> AsgjesoStokunPerditesoStokunQmimin(int id, [FromBody] StokuQmimiProduktit stoku)
+        [Route("ruajKalkulimin/PerditesoTeDhenat")]
+        public async Task<IActionResult> Put(int id, [FromBody] TeDhenatFaturat teDhenat)
+        {
+            var produkti = await _context.TeDhenatFaturat.FindAsync(id);
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaStokut = teDhenat.SasiaStokut;
+            produkti.QmimiBleres = teDhenat.QmimiBleres;
+            produkti.QmimiShites = teDhenat.QmimiShites;
+            produkti.QmimiShitesMeShumic = teDhenat.QmimiShitesMeShumic;
+            produkti.Rabati1 = teDhenat.Rabati1;
+            produkti.Rabati2 = teDhenat.Rabati2;
+            produkti.Rabati3 = teDhenat.Rabati3;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(produkti);
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("ruajKalkulimin/perditesoStokunQmimin")]
+        public async Task<IActionResult> Put(int id, [FromBody] StokuQmimiProduktit stoku)
         {
             var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
             if (produkti == null)
@@ -782,8 +560,11 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            produkti.SasiaNeStok -= stoku.SasiaNeStok;
+            produkti.SasiaNeStok += stoku.SasiaNeStok;
             produkti.DataPerditsimit = DateTime.Now;
+            produkti.QmimiProduktit = stoku.QmimiProduktit;
+            produkti.QmimiBleres = stoku.QmimiBleres;
+            produkti.QmimiMeShumic = stoku.QmimiMeShumic;
 
             if (stoku.DataKrijimit == null)
             {
@@ -836,6 +617,228 @@ namespace WebAPI.Controllers
             }
 
             return Ok(produkti);
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("ruajKalkulimin/perditesoStatusinKalkulimit")]
+        public async Task<IActionResult> Put(int id, string statusi)
+        {
+            var kalkulimi = await _context.Faturat.FindAsync(id);
+            if (kalkulimi == null)
+            {
+                return NotFound();
+            }
+
+            kalkulimi.StatusiKalkulimit = statusi;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(kalkulimi);
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("FaturoOferten")]
+        public async Task<IActionResult> FaturoOferten(int id)
+        {
+            var oferta = await _context.Faturat.FindAsync(id);
+            if (oferta == null)
+            {
+                return NotFound();
+            }
+
+            oferta.EshteFaturuarOferta = "true";
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(oferta);
+        }
+
+        
+
+        [Authorize]
+        [HttpPut]
+        [Route("ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin")]
+        public async Task<IActionResult> AsgjesoStokunPerditesoStokunQmimin(int id, [FromBody] StokuQmimiProduktit stoku)
+        {
+            var produkti = await _context.StokuQmimiProduktit.FindAsync(id);
+            if (produkti == null)
+            {
+                return NotFound();
+            }
+
+            produkti.SasiaNeStok -= stoku.SasiaNeStok;
+            produkti.DataPerditsimit = DateTime.Now;
+
+            if (stoku.DataKrijimit == null)
+            {
+                produkti.DataKrijimit = produkti.DataKrijimit;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(produkti);
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("perditesoFaturen")]
+        public async Task<IActionResult> PerditesoFaturen(int idKalulimit, [FromBody] Faturat fat)
+        {
+            var fatura = await _context.Faturat.FindAsync(idKalulimit);
+            if (fatura == null)
+            {
+                return NotFound();
+            }
+
+            if (fat.Rabati != null)
+            {
+                fatura.Rabati = fat.Rabati;
+            }
+            if (fat.NrFatures != null)
+            {
+                fatura.NrFatures = fat.NrFatures;
+            }
+            if (fat.NrRendorFatures != null)
+            {
+                fatura.NrRendorFatures = fat.NrRendorFatures;
+            }
+            if (fat.StatusiPageses != null)
+            {
+                fatura.StatusiPageses = fat.StatusiPageses;
+            }
+            if (fat.StatusiKalkulimit != null)
+            {
+                fatura.StatusiKalkulimit = fat.StatusiKalkulimit;
+            }
+            if (fat.IDPartneri != null)
+            {
+                fatura.IDPartneri = fat.IDPartneri;
+            }
+            if (fat.LlojiKalkulimit != null)
+            {
+                fatura.LlojiKalkulimit = fat.LlojiKalkulimit;
+            }
+            if (fat.LlojiPageses != null)
+            {
+                fatura.LlojiPageses = fat.LlojiPageses;
+            }
+            if (fat.PershkrimShtese != null)
+            {
+                fatura.PershkrimShtese = fat.PershkrimShtese;
+            }
+            if (fat.StafiID != null)
+            {
+                fatura.StafiID = fat.StafiID;
+            }
+            if (fat.TotaliPaTVSH != null)
+            {
+                fatura.TotaliPaTVSH = fat.TotaliPaTVSH;
+            }
+            if (fat.TVSH != null)
+            {
+                fatura.TVSH = fat.TVSH;
+            }
+            if (fat.DataRegjistrimit != null)
+            {
+                fatura.DataRegjistrimit = fat.DataRegjistrimit;
+            }
+            if (fat.EshteFaturuarOferta != null)
+            {
+                fatura.EshteFaturuarOferta = fat.EshteFaturuarOferta;
+            }
+            if (fat.IDBonusKartela != null)
+            {
+                fatura.IDBonusKartela = fat.IDBonusKartela;
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(fatura);
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("fshijKalkulimin")]
+        public async Task<IActionResult> fshijKalkulimin(int idKalkulimi)
+        {
+            var kalkulimi = await _context.Faturat.FirstOrDefaultAsync(x => x.IDRegjistrimit == idKalkulimi);
+            var teDhenatKalkulimit = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
+
+            foreach (var teDhenat in teDhenatKalkulimit)
+            {
+                _context.TeDhenatFaturat.Remove(teDhenat);
+            }
+
+            _context.Faturat.Remove(kalkulimi);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("ruajKalkulimin/FshijTeDhenat")]
+        public async Task<IActionResult> Delete(int idTeDhenat)
+        {
+            var produkti = await _context.TeDhenatFaturat.FirstOrDefaultAsync(x => x.ID == idTeDhenat);
+
+            if (produkti == null)
+                return BadRequest("Invalid id");
+
+            _context.TeDhenatFaturat.Remove(produkti);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("ruajKalkulimin/FshijTeDhenatNgaIdKalkulimit")]
+        public async Task<IActionResult> DeleteByIdKalkulimi(int idKalkulimi)
+        {
+            var teDhenatKalkulimi = await _context.TeDhenatFaturat.Where(x => x.IDRegjistrimit == idKalkulimi).ToListAsync();
+
+            if (teDhenatKalkulimi == null)
+                return BadRequest("Invalid id");
+
+            foreach (var produkti in teDhenatKalkulimi)
+            {
+                _context.TeDhenatFaturat.Remove(produkti);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
     }

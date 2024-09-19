@@ -23,6 +23,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Select from "react-select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KartelaEArtikullit(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -177,9 +178,9 @@ function KartelaEArtikullit(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Kalkulant", "Burime Njerzore"]}
+      />
       <NavBar />
 
       <div className="containerDashboardP">
@@ -340,7 +341,7 @@ function KartelaEArtikullit(props) {
               <div className="mt-2">
                 <Tabela
                   data={kalkulimetKartelaProduktit}
-                  tableName="Lista e Hyrje / Dalje"
+                  tableName="Lista e Hyrje / Dalje per Artikullin"
                   dateField="Data Fatures" // The field in your data that contains the date values
                   mosShfaqID={true}
                 />

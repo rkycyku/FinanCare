@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import ShtoPerdorues from "../../../Components/Gjenerale/Stafi/users/ShtoPerdorues";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TabelaEPerdoruesve() {
   const [perdoruesit, setPerdoruesit] = useState([]);
@@ -43,13 +45,15 @@ function TabelaEPerdoruesve() {
           "https://localhost:7285/api/Perdoruesi/shfaqPerdoruesit",
           authentikimi
         );
-        setPerdoruesit(perdoruesit.data.map((k) => ({
+        setPerdoruesit(
+          perdoruesit.data.map((k) => ({
             ID: k.perdoruesi.aspNetUserID,
-            "Emri & Mbiemri": k.perdoruesi.emri+ " " + k.perdoruesi.mbiemri,
-            "Email": k.perdoruesi.email,
+            "Emri & Mbiemri": k.perdoruesi.emri + " " + k.perdoruesi.mbiemri,
+            Email: k.perdoruesi.email,
             Username: k.perdoruesi.username,
-            "Aksesi": k.rolet.join(", "),
-          })));
+            Aksesi: k.rolet.join(", "),
+          }))
+        );
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -73,9 +77,7 @@ function TabelaEPerdoruesve() {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Burime Njerzore"]} />
       <NavBar />
       <div className="containerDashboardP">
         {mbyllRolet == false && (
@@ -128,22 +130,21 @@ function TabelaEPerdoruesve() {
         ) : (
           mbyllRolet && (
             <>
-
               <div className="mt-2">
-              <Tabela
-                data={perdoruesit}
-                tableName="Lista e Perdoruesve"
-                kaButona={true}
-                funksionButonShto={() => {
-                  handleShow();
-                }}
-                funksionButonEdit={(e) => {
-                  setId(e);
-                  handleEdito(e);
-                }}
-                mosShfaqID={true}
-              />
-            </div>
+                <Tabela
+                  data={perdoruesit}
+                  tableName="Lista e Perdoruesve"
+                  kaButona={true}
+                  funksionButonShto={() => {
+                    handleShow();
+                  }}
+                  funksionButonEdit={(e) => {
+                    setId(e);
+                    handleEdito(e);
+                  }}
+                  mosShfaqID={true}
+                />
+              </div>
             </>
           )
         )}

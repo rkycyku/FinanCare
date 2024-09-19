@@ -33,6 +33,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CustomDatePicker from "../../../Components/TeTjera/layout/CustomDatePicker";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function ListaShitjeveMeParagon(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -182,9 +183,9 @@ function ListaShitjeveMeParagon(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Ofertat | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher"]}
+      />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

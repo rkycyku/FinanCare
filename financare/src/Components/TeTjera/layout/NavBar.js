@@ -98,7 +98,7 @@ function NavBar(props) {
         navigate("/LogIn");
       }
 
-      if (id !== decodedToken.id) {
+      if (id !== decodedToken.Id) {
         localStorage.removeItem("token");
         localStorage.removeItem("id");
         navigate("/LogIn");
@@ -348,7 +348,7 @@ function NavBar(props) {
 
                   <MDBNavbarItem>
                     <MDBNavbarLink>
-                      <Link to="/" onClick={handleSignOut}>
+                      <Link to="/Login" onClick={handleSignOut}>
                         Sign out <FontAwesomeIcon icon={faRightFromBracket} />
                       </Link>
                     </MDBNavbarLink>

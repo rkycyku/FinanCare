@@ -24,6 +24,7 @@ import TabelaEKompanive from "../../Gjenerale/Partneret/TabelaEPartnereve";
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 const ProductTables = () => {
   const [produkti, setProdukti] = useState([]);
@@ -120,9 +121,6 @@ const ProductTables = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
       <NavBar />
 
       <div className="containerDashboardP">
@@ -188,7 +186,7 @@ const ProductTables = () => {
             <div className="mt-2">
               <Tabela
                 data={produkti}
-                tableName="Tabela e Produkteve"
+                tableName="Lista e Produkteve"
                 kaButona={true}
                 funksionButonShto={handleShow}
                 funksionButonEdit={(e) => {

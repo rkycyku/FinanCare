@@ -24,8 +24,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> get()
         {
             var prodMeZbritje = await _context.Produkti
-
-                .Where(x => x.ZbritjaQmimitProduktit.Rabati != null)
+                .Where(x => x.ZbritjaQmimitProduktit.Rabati != null && x.isDeleted == "false")
                 .Select(x => new
                 {
                     x.EmriProduktit,

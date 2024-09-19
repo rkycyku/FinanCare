@@ -26,7 +26,8 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var grupiIProduktit = await _context.GrupiProduktit.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
+                var grupiIProduktit = await _context.GrupiProduktit
+                .Where(x => x.isDeleted == "false").FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
 
                 return Ok(grupiIProduktit);
             }
@@ -45,7 +46,7 @@ namespace FinanCareWebAPI.Controllers
         {
             try
             {
-                var grupiIProduktit = await _context.GrupiProduktit
+                var grupiIProduktit = await _context.GrupiProduktit.Where(x => x.isDeleted == "false")
                     .Include(x => x.Produkti)
                     .ToListAsync();
 
@@ -65,6 +66,19 @@ namespace FinanCareWebAPI.Controllers
         }
 
 
+
+        
+
+        [Authorize]
+        [HttpPost]
+        [Route("shtoGrupinEProduktit")]
+        public async Task<IActionResult> Post(GrupiProduktit grupiIProduktit)
+        {
+            await _context.GrupiProduktit.AddAsync(grupiIProduktit);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", grupiIProduktit.IDGrupiProduktit, grupiIProduktit);
+        }
 
         [Authorize]
         [HttpPut]
@@ -90,24 +104,18 @@ namespace FinanCareWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("shtoGrupinEProduktit")]
-        public async Task<IActionResult> Post(GrupiProduktit grupiIProduktit)
-        {
-            await _context.GrupiProduktit.AddAsync(grupiIProduktit);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", grupiIProduktit.IDGrupiProduktit, grupiIProduktit);
-        }
-
-        [Authorize]
         [HttpDelete]
         [Route("fshijGrupinEProduktit")]
         public async Task<IActionResult> Delete(int id)
         {
             var grupiIProduktit = await _context.GrupiProduktit.FirstOrDefaultAsync(x => x.IDGrupiProduktit == id);
 
-            _context.GrupiProduktit.Remove(grupiIProduktit);
+            if (grupiIProduktit == null)
+                return BadRequest("Invalid id");
+
+            grupiIProduktit.isDeleted = "true";
+
+            _context.GrupiProduktit.Update(grupiIProduktit);
             await _context.SaveChangesAsync();
 
             return Ok("Grupi i Produktit u fshi me sukses!");

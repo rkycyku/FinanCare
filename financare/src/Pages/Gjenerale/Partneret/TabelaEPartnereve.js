@@ -20,6 +20,8 @@ import { Link } from "react-router-dom";
 import ShtoPartnerin from "../../../Components/Gjenerale/Partneret/Partneri/ShtoPartnerin";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import { Row } from "react-bootstrap";
+import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function TabelaEKompanive(props) {
   const [partneret, setPartneret] = useState([]);
@@ -51,7 +53,10 @@ function TabelaEKompanive(props) {
         );
         setPartneret(
           partneri.data
-            .filter((k) => k.idPartneri !== 1 && k.idPartneri !== 2 && k.idPartneri !== 3) // Per te mos shfaqur Bleresin Qytetar, Asgjesimin e Stokut dhe Kthim i Mallit te Shitur
+            .filter(
+              (k) =>
+                k.idPartneri !== 1 && k.idPartneri !== 2 && k.idPartneri !== 3
+            ) // Per te mos shfaqur Bleresin Qytetar, Asgjesimin e Stokut dhe Kthim i Mallit te Shitur
             .map((k) => ({
               ID: k.idPartneri,
               "Emri i Partnerit": k.emriBiznesit,
@@ -59,7 +64,8 @@ function TabelaEKompanive(props) {
               "NUI / NF / NRTVSH": k.nui + " / " + k.nrf + " / " + k.tvsh,
               "NR. Kontaktit": k.nrKontaktit,
               Email: k.email,
-              Adresa: k.adresa && k.adresa.trim() !== "" ? k.adresa : "Nuk Ka Adrese",
+              Adresa:
+                k.adresa && k.adresa.trim() !== "" ? k.adresa : "Nuk Ka Adrese",
               "Lloji Partnerit": k.llojiPartnerit,
             }))
         );
@@ -92,9 +98,7 @@ function TabelaEKompanive(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant", "Komercialist"]} />
       <NavBar />
 
       <div className="containerDashboardP">

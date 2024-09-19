@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import CustomDatePicker from "../layout/CustomDatePicker";
 import { format, parseISO } from "date-fns";
+import Titulli from "../Titulli";
 
 function Tabela({
   data,
@@ -127,6 +128,7 @@ function Tabela({
 
   return (
     <div className="tabelaDiv">
+      <Titulli titulli={tableName} />
       {data.length > 0 ? (
         <Table striped bordered hover responsive>
           <thead>
@@ -242,9 +244,9 @@ function Tabela({
               <tr key={item.ID}>
                 {filteredHeaders.map((header) => (
                   <td key={`${item.ID}-${header}`}>
-                    {(header === dateField ||
-                      header === startDateField ||
-                      header === endDateField)
+                    {header === dateField ||
+                    header === startDateField ||
+                    header === endDateField
                       ? formatDate(item[header]) // Format date fields
                       : renderCellContent(item[header])}
                   </td>
@@ -295,7 +297,10 @@ function Tabela({
                     {funksionFaturoOferten && (
                       <Button
                         variant="outline-primary"
-                        disabled={item["Statusi Kalkulimit"] === "I Hapur" || item["Eshte Faturuar"] === "Po"}
+                        disabled={
+                          item["Statusi Kalkulimit"] === "I Hapur" ||
+                          item["Eshte Faturuar"] === "Po"
+                        }
                         size="sm"
                         style={{ marginRight: "0.5em" }}
                         onClick={() => funksionFaturoOferten(item.ID)}>

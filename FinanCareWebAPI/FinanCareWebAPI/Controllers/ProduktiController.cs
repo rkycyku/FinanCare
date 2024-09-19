@@ -27,6 +27,7 @@ namespace TechStoreWebAPI.Controllers
         {
 
             var Produkti = await _context.Produkti
+                .Where(x => x.isDeleted == "false")
                 .OrderByDescending(p => p.StokuQmimiProduktit.SasiaNeStok)
                 .ThenByDescending(p => p.ProduktiID)
                .Select(p => new
@@ -61,6 +62,7 @@ namespace TechStoreWebAPI.Controllers
         {
 
             var Produkti = await _context.Produkti
+                .Where(x => x.isDeleted == "false")
                 .OrderByDescending(p => p.StokuQmimiProduktit.SasiaNeStok)
                 .ThenByDescending(p => p.ProduktiID)
                .Select(p => new
@@ -100,6 +102,7 @@ namespace TechStoreWebAPI.Controllers
         {
 
             var Produkti = await _context.Produkti
+                .Where(x => x.isDeleted == "false")
                .OrderBy(x => x.StokuQmimiProduktit.SasiaNeStok)
                .ThenByDescending(x => x.ProduktiID)
                .Select(p => new
@@ -151,124 +154,6 @@ namespace TechStoreWebAPI.Controllers
 
             return Ok(Produkti);
         }
-
-
-        [Authorize]
-        [HttpPost]
-        [Route("shtoProdukt")]
-        public async Task<IActionResult> Post(Produkti produkti)
-        {
-            await _context.Produkti.AddAsync(produkti);
-            await _context.SaveChangesAsync();
-
-            StokuQmimiProduktit s = new StokuQmimiProduktit
-            {
-                ProduktiID = produkti.ProduktiID
-            };
-
-            await _context.StokuQmimiProduktit.AddAsync(s);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", produkti.ProduktiID, produkti);
-        }
-
-        [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Produkti p)
-        {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
-            var stokuQmimi = await _context.StokuQmimiProduktit.FirstOrDefaultAsync(x => x.ProduktiID == id);
-
-            if (produkti == null || stokuQmimi == null)
-            {
-                return BadRequest("Produkti me këtë ID nuk ekziston");
-            }
-
-            if (!p.EmriProduktit.IsNullOrEmpty())
-            {
-                produkti.EmriProduktit = p.EmriProduktit;
-            }
-
-            if (p.IDNjesiaMatese != null)
-            {
-                produkti.IDNjesiaMatese = p.IDNjesiaMatese;
-            }
-
-            if (p.IDPartneri != null)
-            {
-                produkti.IDPartneri = p.IDPartneri;
-            }
-
-            if (p.Barkodi != null)
-            {
-                produkti.Barkodi = p.Barkodi;
-            }
-
-            if (p.KodiProduktit != null)
-            {
-                produkti.KodiProduktit = p.KodiProduktit;
-            }
-
-            if (p.LlojiTVSH != null)
-            {
-                produkti.LlojiTVSH = p.LlojiTVSH;
-            }
-
-            if (p.SasiaShumices != null)
-            {
-                produkti.SasiaShumices = p.SasiaShumices;
-            }
-
-            if (p.IDGrupiProduktit != null)
-            {
-                produkti.IDGrupiProduktit = p.IDGrupiProduktit;
-            }
-
-            if (p.StokuQmimiProduktit != null)
-            {
-                if (p.StokuQmimiProduktit.QmimiProduktit != null)
-                {
-                    stokuQmimi.QmimiProduktit = p.StokuQmimiProduktit.QmimiProduktit;
-                }
-
-                if (p.StokuQmimiProduktit.QmimiBleres != null)
-                {
-                    stokuQmimi.QmimiBleres = p.StokuQmimiProduktit.QmimiBleres;
-                }
-
-                if (p.StokuQmimiProduktit.SasiaNeStok != null)
-                {
-                    stokuQmimi.SasiaNeStok = p.StokuQmimiProduktit.SasiaNeStok;
-                }
-
-                if (p.StokuQmimiProduktit.QmimiMeShumic != null)
-                {
-                    stokuQmimi.QmimiMeShumic = p.StokuQmimiProduktit.QmimiMeShumic;
-                }
-            }
-
-            _context.Produkti.Update(produkti);
-            _context.StokuQmimiProduktit.Update(stokuQmimi);
-            await _context.SaveChangesAsync();
-
-            return Ok(produkti);
-        }
-
-        [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
-
-            if (produkti == null)
-                return BadRequest("Invalid id");
-
-            _context.Produkti.Remove(produkti);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
 
         [Authorize]
         [HttpGet]
@@ -396,6 +281,128 @@ namespace TechStoreWebAPI.Controllers
                 hisotriaZbritjes
             });
         }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("shtoProdukt")]
+        public async Task<IActionResult> Post(Produkti produkti)
+        {
+            await _context.Produkti.AddAsync(produkti);
+            await _context.SaveChangesAsync();
+
+            StokuQmimiProduktit s = new StokuQmimiProduktit
+            {
+                ProduktiID = produkti.ProduktiID
+            };
+
+            await _context.StokuQmimiProduktit.AddAsync(s);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", produkti.ProduktiID, produkti);
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Produkti p)
+        {
+            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
+            var stokuQmimi = await _context.StokuQmimiProduktit.FirstOrDefaultAsync(x => x.ProduktiID == id);
+
+            if (produkti == null || stokuQmimi == null)
+            {
+                return BadRequest("Produkti me këtë ID nuk ekziston");
+            }
+
+            if (!p.EmriProduktit.IsNullOrEmpty())
+            {
+                produkti.EmriProduktit = p.EmriProduktit;
+            }
+
+            if (p.IDNjesiaMatese != null)
+            {
+                produkti.IDNjesiaMatese = p.IDNjesiaMatese;
+            }
+
+            if (p.IDPartneri != null)
+            {
+                produkti.IDPartneri = p.IDPartneri;
+            }
+
+            if (p.Barkodi != null)
+            {
+                produkti.Barkodi = p.Barkodi;
+            }
+
+            if (p.KodiProduktit != null)
+            {
+                produkti.KodiProduktit = p.KodiProduktit;
+            }
+
+            if (p.LlojiTVSH != null)
+            {
+                produkti.LlojiTVSH = p.LlojiTVSH;
+            }
+
+            if (p.SasiaShumices != null)
+            {
+                produkti.SasiaShumices = p.SasiaShumices;
+            }
+
+            if (p.IDGrupiProduktit != null)
+            {
+                produkti.IDGrupiProduktit = p.IDGrupiProduktit;
+            }
+
+            if (p.StokuQmimiProduktit != null)
+            {
+                if (p.StokuQmimiProduktit.QmimiProduktit != null)
+                {
+                    stokuQmimi.QmimiProduktit = p.StokuQmimiProduktit.QmimiProduktit;
+                }
+
+                if (p.StokuQmimiProduktit.QmimiBleres != null)
+                {
+                    stokuQmimi.QmimiBleres = p.StokuQmimiProduktit.QmimiBleres;
+                }
+
+                if (p.StokuQmimiProduktit.SasiaNeStok != null)
+                {
+                    stokuQmimi.SasiaNeStok = p.StokuQmimiProduktit.SasiaNeStok;
+                }
+
+                if (p.StokuQmimiProduktit.QmimiMeShumic != null)
+                {
+                    stokuQmimi.QmimiMeShumic = p.StokuQmimiProduktit.QmimiMeShumic;
+                }
+            }
+
+            _context.Produkti.Update(produkti);
+            _context.StokuQmimiProduktit.Update(stokuQmimi);
+            await _context.SaveChangesAsync();
+
+            return Ok(produkti);
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var produkti = await _context.Produkti.FirstOrDefaultAsync(x => x.ProduktiID == id);
+
+            if (produkti == null)
+                return BadRequest("Invalid id");
+
+            produkti.isDeleted = "true";
+
+            _context.Produkti.Update(produkti);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+        
 
     }
 }

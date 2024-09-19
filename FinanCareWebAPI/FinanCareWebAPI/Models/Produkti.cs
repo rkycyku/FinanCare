@@ -18,6 +18,8 @@ public partial class Produkti
     public int? IDGrupiProduktit { get; set; }
     public decimal? SasiaShumices { get; set; }
 
+    public string? isDeleted { get; set; } = "false";
+
     [ForeignKey(nameof(IDNjesiaMatese))]
     public virtual NjesiaMatese? NjesiaMatese { get; set; }
     [ForeignKey(nameof(IDPartneri))]

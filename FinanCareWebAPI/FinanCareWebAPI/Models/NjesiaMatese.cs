@@ -11,5 +11,7 @@ public partial class NjesiaMatese
 
     public string? EmriNjesiaMatese { get; set; }
 
+    public string? isDeleted { get; set; } = "false";
+
     public virtual ICollection<Produkti> Produkti { get; } = new List<Produkti>();
 }

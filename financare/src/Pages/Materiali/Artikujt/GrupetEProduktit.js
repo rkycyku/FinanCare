@@ -87,12 +87,8 @@ function GrupetEProduktit(props) {
 
   return (
     <>
-      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher"]} />
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant"]} />
 
-      <Helmet>
-        <title>Grupet E Produktit | FinanCare</title>
-      </Helmet>
-      <Titulli titulli="Grupet e Produktit" />
       <NavBar />
 
       <div className="containerDashboardP">

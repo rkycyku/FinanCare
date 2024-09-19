@@ -17,7 +17,7 @@ import {
 } from "mdb-react-ui-kit";
 import { Link } from "react-router-dom";
 import Mesazhi from "../Components/TeTjera/layout/Mesazhi";
-
+import Titulli from "../Components/TeTjera/Titulli";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -59,80 +59,96 @@ const LogIn = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://localhost:7285/api/Authenticate/login", {
-        email: email,
-        password: password,
-      }, authentikimi);
+      const response = await axios.post(
+        "https://localhost:7285/api/Authenticate/login",
+        {
+          email: email,
+          password: password,
+        }
+      );
 
-      if (response.status === 200) {
+      if (response.status == 200) {
         const { token } = response.data;
 
         localStorage.setItem("token", token);
 
         const decodedToken = jwt_decode(token);
 
-        localStorage.setItem("id", decodedToken.id);
+        localStorage.setItem("id", decodedToken.Id);
 
-        navigate("/dashboard");
+        navigate("/");
       } else {
-        setPershkrimiMesazhit("<strong>Ju lutemi kontaktoni me stafin pasi ndodhi nje gabim ne server!</strong>");
+        setPershkrimiMesazhit(
+          "<strong>Ju lutemi kontaktoni me stafin pasi ndodhi nje gabim ne server!</strong>"
+        );
         setTipiMesazhit("danger");
         setShfaqMesazhin(true);
       }
     } catch (error) {
-      setPershkrimiMesazhit("<strong>Ju lutemi kontrolloni te dhenat e juaja!</strong>");
+      setPershkrimiMesazhit(
+        "<strong>Ju lutemi kontrolloni te dhenat e juaja!</strong>"
+      );
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
-    }
-  };
 
+      console.log(error);
+    }
+  }
 
   return (
     <>
-      <Helmet>
-        <title>Dashboard | Tech Store</title>
-      </Helmet>
-      <NavBar />
+      <Titulli titulli={"Login"} />
 
       <div className="logIn">
-        {shfaqMesazhin && <Mesazhi
-          setShfaqMesazhin={setShfaqMesazhin}
-          pershkrimi={pershkrimiMesazhit}
-          tipi={tipiMesazhit}
-        />}
-        <MDBContainer fluid >
-              <MDBCard
-                className="bg-white my-5 mx-auto"
-                style={{ border: "none", boxShadow: "0 0 20px #ddd", borderRadius: "2rem", maxWidth: "500px" }}
-              >
-                <MDBCardBody className="p-5 w-100 d-flex flex-column">
-                  <Form.Text className="formTitle">Log In</Form.Text>
-                  <p className="text-white-20 mb-4 p-text">
-                    Please enter your email and password!
-                  </p>
+        {shfaqMesazhin && (
+          <Mesazhi
+            setShfaqMesazhin={setShfaqMesazhin}
+            pershkrimi={pershkrimiMesazhit}
+            tipi={tipiMesazhit}
+          />
+        )}
+        <MDBContainer fluid>
+          <MDBCard
+            className="bg-white my-5 mx-auto"
+            style={{
+              border: "none",
+              boxShadow: "0 0 20px #ddd",
+              borderRadius: "2rem",
+              maxWidth: "500px",
+            }}>
+            <MDBCardBody className="p-5 w-100 d-flex flex-column">
+              <Form.Text className="formTitle">Log In</Form.Text>
+              <p className="text-white-20 mb-4 p-text">
+                Please enter your email and password!
+              </p>
 
-                  <MDBInput
-                    wrapperClass="mb-4 w-100"
-                    label="Email address"
-                    id="formControlEmailAddress"
-                    type="email"
-                    size="lg"
-                    onChange={(e) => vendosEmail(e.target.value)}
-                  />
-                  <MDBInput
-                    wrapperClass="mb-4 w-100"
-                    label="Password"
-                    id="formControlPassword"
-                    type="password"
-                    size="lg"
-                    onChange={(e) => vendosPasswordin(e.target.value)}
-                  />
-                  <Link to="/SignUp" className="text-white-20 mb-4 p-text">Don't have an Account?</Link>
-                  <button class="btn btn-primary btn-lg" role="button" onClick={handleLogIn}>Login</button>
-
-
-                </MDBCardBody>
-              </MDBCard>
+              <MDBInput
+                wrapperClass="mb-4 w-100"
+                label="Email address"
+                id="formControlEmailAddress"
+                type="email"
+                size="lg"
+                onChange={(e) => vendosEmail(e.target.value)}
+              />
+              <MDBInput
+                wrapperClass="mb-4 w-100"
+                label="Password"
+                id="formControlPassword"
+                type="password"
+                size="lg"
+                onChange={(e) => vendosPasswordin(e.target.value)}
+              />
+              <Link to="/SignUp" className="text-white-20 mb-4 p-text">
+                Don't have an Account?
+              </Link>
+              <button
+                class="btn btn-primary btn-lg"
+                role="button"
+                onClick={handleLogIn}>
+                Login
+              </button>
+            </MDBCardBody>
+          </MDBCard>
         </MDBContainer>
       </div>
     </>
@@ -140,4 +156,3 @@ const LogIn = () => {
 };
 
 export default LogIn;
-

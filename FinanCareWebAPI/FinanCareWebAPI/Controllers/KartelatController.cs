@@ -78,7 +78,42 @@ namespace FinanCareWebAPI.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("ShtoKartelenBonus")]
+        public async Task<IActionResult> ShtoKartelenBonus(int idPartneri, int stafiID, int rabati)
+        {
+            var kartelaCount = await _context.Kartelat.CountAsync();
 
+            var kodiKartela = $"B{idPartneri.ToString().PadLeft(6, '0')}{(kartelaCount + 1).ToString().PadLeft(6, '0')}";
+
+            Kartelat kartela = new Kartelat
+            {
+                DataKrijimit = DateTime.Now,
+                LlojiKarteles = "Bonus",
+                Rabati = rabati,
+                PartneriID = idPartneri,
+                KodiKartela = kodiKartela,
+                StafiID = stafiID,
+            };
+
+            _context.Kartelat.Add(kartela);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(kartela);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("shtoKartelen")]
+        public async Task<IActionResult> Post(Kartelat kartela)
+        {
+            await _context.Kartelat.AddAsync(kartela);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Get", kartela.IDKartela, kartela);
+        }
 
         [Authorize]
         [HttpPut]
@@ -124,17 +159,6 @@ namespace FinanCareWebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost]
-        [Route("shtoKartelen")]
-        public async Task<IActionResult> Post(Kartelat kartela)
-        {
-            await _context.Kartelat.AddAsync(kartela);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Get", kartela.IDKartela, kartela);
-        }
-
-        [Authorize]
         [HttpDelete]
         [Route("fshijKartelen")]
         public async Task<IActionResult> Delete(int id)
@@ -147,30 +171,6 @@ namespace FinanCareWebAPI.Controllers
             return Ok("Kartela u fshi me sukses!");
         }
 
-        [Authorize]
-        [HttpPost]
-        [Route("ShtoKartelenBonus")]
-        public async Task<IActionResult> ShtoKartelenBonus(int idPartneri, int stafiID, int rabati)
-        {
-            var kartelaCount = await _context.Kartelat.CountAsync();
-
-            var kodiKartela = $"B{idPartneri.ToString().PadLeft(6, '0')}{(kartelaCount+1).ToString().PadLeft(6, '0')}";
-
-            Kartelat kartela = new Kartelat
-            {
-                DataKrijimit = DateTime.Now,
-                LlojiKarteles = "Bonus",
-                Rabati = rabati,
-                PartneriID = idPartneri,
-                KodiKartela = kodiKartela,
-                StafiID = stafiID,
-            };
-
-            _context.Kartelat.Add(kartela);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(kartela);
-        }
+        
     }
 }

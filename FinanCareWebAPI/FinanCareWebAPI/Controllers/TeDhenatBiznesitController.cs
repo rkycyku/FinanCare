@@ -29,39 +29,15 @@ namespace WebAPI.Controllers
             return Ok(teDhenat);
         }
 
-        [Authorize]
-        [HttpPut]
-        [Route("perditesoTeDhenat")]
-        public IActionResult Put([FromBody] TeDhenatBiznesit k)
-        {
-            var teDhenat = _context.TeDhenatBiznesit.FirstOrDefault(x => x.IDTeDhenatBiznesit == 1);
-            if (teDhenat == null)
-            {
-                return BadRequest("Kategoria nuk egziston");
-            }
-
-            teDhenat.NrKontaktit = k.NrKontaktit;
-            teDhenat.NF = k.NF;
-            teDhenat.NUI = k.NUI;
-            teDhenat.Email = k.Email;
-            teDhenat.EmriIBiznesit  = k.EmriIBiznesit;
-            teDhenat.ShkurtesaEmritBiznesit = k.ShkurtesaEmritBiznesit;
-            teDhenat.NrTVSH = k.NrTVSH;
-            teDhenat.Adresa = k.Adresa;
-            teDhenat.Logo = k.Logo;
-            teDhenat.EmailDomain = k.EmailDomain;
-
-            _context.SaveChanges();
-
-            return Ok(teDhenat);
-        }
+        
 
         [Authorize]
         [HttpGet]
         [Route("ShfaqBankat")]
         public async Task<IActionResult> ShfaqBankat()
         {
-            var bankat = await _context.Bankat.OrderBy(x => x.EmriBankes).ToListAsync();
+            var bankat = await _context.Bankat
+                .Where(x => x.isDeleted == "false").OrderBy(x => x.EmriBankes).ToListAsync();
 
             return Ok(bankat);
         }
@@ -131,42 +107,6 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpDelete]
-        [Route("FshijBanken")]
-        public async Task<IActionResult> FshijBanken(int id)
-        {
-            var banka = await _context.Bankat.FirstOrDefaultAsync(x => x.BankaID == id);
-
-            if (banka == null)
-            {
-                return BadRequest("Banka nuk egziston!");
-            }
-
-            _context.Bankat.Remove(banka);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [Authorize]
-        [HttpDelete]
-        [Route("FshijLlogarinBankareBiznesit")]
-        public async Task<IActionResult> FshijLlogarinBankareBiznesit(int id)
-        {
-            var banka = await _context.LlogaritEBiznesit.FirstOrDefaultAsync(x => x.IDLlogariaBankare == id);
-
-            if (banka == null)
-            {
-                return BadRequest("Llogaria nuk egziston!");
-            }
-
-            _context.LlogaritEBiznesit.Remove(banka);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [Authorize]
         [HttpPut]
         [Route("PerditesoBanken")]
         public async Task<IActionResult> PerditesoBanken(int id, [FromBody] Bankat b)
@@ -225,5 +165,70 @@ namespace WebAPI.Controllers
 
             return Ok(banka);
         }
+
+        [Authorize]
+        [HttpPut]
+        [Route("perditesoTeDhenat")]
+        public IActionResult Put([FromBody] TeDhenatBiznesit k)
+        {
+            var teDhenat = _context.TeDhenatBiznesit.FirstOrDefault(x => x.IDTeDhenatBiznesit == 1);
+            if (teDhenat == null)
+            {
+                return BadRequest("Kategoria nuk egziston");
+            }
+
+            teDhenat.NrKontaktit = k.NrKontaktit;
+            teDhenat.NF = k.NF;
+            teDhenat.NUI = k.NUI;
+            teDhenat.Email = k.Email;
+            teDhenat.EmriIBiznesit = k.EmriIBiznesit;
+            teDhenat.ShkurtesaEmritBiznesit = k.ShkurtesaEmritBiznesit;
+            teDhenat.NrTVSH = k.NrTVSH;
+            teDhenat.Adresa = k.Adresa;
+            teDhenat.Logo = k.Logo;
+            teDhenat.EmailDomain = k.EmailDomain;
+
+            _context.SaveChanges();
+
+            return Ok(teDhenat);
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("FshijBanken")]
+        public async Task<IActionResult> FshijBanken(int id)
+        {
+            var banka = await _context.Bankat.FirstOrDefaultAsync(x => x.BankaID == id);
+
+            if (banka == null)
+                return BadRequest("Invalid id");
+
+            banka.isDeleted = "true";
+
+            _context.Bankat.Update(banka);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("FshijLlogarinBankareBiznesit")]
+        public async Task<IActionResult> FshijLlogarinBankareBiznesit(int id)
+        {
+            var banka = await _context.LlogaritEBiznesit.FirstOrDefaultAsync(x => x.IDLlogariaBankare == id);
+
+            if (banka == null)
+            {
+                return BadRequest("Llogaria nuk egziston!");
+            }
+
+            _context.LlogaritEBiznesit.Remove(banka);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        
     }
 }

@@ -34,6 +34,7 @@ import FormControl from "@mui/material/FormControl";
 // import Select from "@mui/material/Select";
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 import Select from "react-select";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -66,7 +67,6 @@ function KthimIMallitTeBlere(props) {
   const [idKalkulimitEdit, setIdKalkulimitEdit] = useState(0);
 
   const [edito, setEdito] = useState(false);
-
 
   const [teDhenat, setTeDhenat] = useState([]);
 
@@ -275,7 +275,10 @@ function KthimIMallitTeBlere(props) {
   };
   useEffect(() => {
     axios
-      .get("https://localhost:7285/api/Partneri/shfaqPartneretBleres", authentikimi)
+      .get(
+        "https://localhost:7285/api/Partneri/shfaqPartneretBleres",
+        authentikimi
+      )
       .then((response) => {
         const fetchedoptions = response.data.map((item) => ({
           value: item.idPartneri,
@@ -291,16 +294,16 @@ function KthimIMallitTeBlere(props) {
   const handleChange = async (partneri) => {
     setPartneri(partneri.value);
     setOptionsSelected(partneri);
-    setKartela(partneri?.item?.kartela?.idKartela ?? null)
+    setKartela(partneri?.item?.kartela?.idKartela ?? null);
 
     document.getElementById("pershkrimShtese").focus();
   };
 
   return (
     <>
-      <Helmet>
-        <title>Ofertat | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Kalkulant", "Arkatar", "Faturist"]}
+      />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

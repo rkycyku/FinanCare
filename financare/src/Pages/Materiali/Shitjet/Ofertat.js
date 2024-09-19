@@ -25,6 +25,7 @@ import FaturoOferten from "../../../Components/Materiali/Shitjet/Ofertat/FaturoO
 import Tabela from "../../../Components/TeTjera/Tabela/Tabela";
 
 import Select from "react-select";
+import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
 function KthimIMallitTeBlere(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -297,9 +298,9 @@ function KthimIMallitTeBlere(props) {
 
   return (
     <>
-      <Helmet>
-        <title>Ofertat | FinanCare</title>
-      </Helmet>
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Kalkulant", "Komercialist", "Faturist"]}
+      />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (
