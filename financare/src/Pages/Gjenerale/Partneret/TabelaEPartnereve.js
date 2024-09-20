@@ -51,6 +51,7 @@ function TabelaEKompanive(props) {
           "https://localhost:7285/api/Partneri/shfaqPartneret",
           authentikimi
         );
+        console.log(partneri.data)
         setPartneret(
           partneri.data
             .filter(
@@ -67,6 +68,7 @@ function TabelaEKompanive(props) {
               Adresa:
                 k.adresa && k.adresa.trim() !== "" ? k.adresa : "Nuk Ka Adrese",
               "Lloji Partnerit": k.llojiPartnerit,
+              "Kartela": k.kartela?.kodiKartela,
             }))
         );
         setLoading(false);

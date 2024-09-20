@@ -112,272 +112,285 @@ function NavBar(props) {
   };
 
   return (
-    <MDBNavbar sticky expand="lg" light style={{ backgroundColor: "#009879" }}>
-      <MDBContainer fluid>
-        <MDBNavbarBrand href="/">
-          <img
-            src={`${process.env.PUBLIC_URL}/img/web/d144a4e21cb54a7fb9c5a21d4eebdd50.svg`}
-            height="30"
-            alt=""
-            loading="lazy"
-          />
-        </MDBNavbarBrand>
-        <MDBNavbarToggler
-          type="button"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-          onClick={() => setShowNav(!showNav)}>
-          <MDBIcon icon="bars" fas />
-        </MDBNavbarToggler>
-        <MDBCollapse navbar show={showNav}>
-          <MDBNavbarNav className="d-flex mr-auto">
-            {token && (
-              <>
-                <MDBDropdown>
-                  <MDBDropdownToggle className="btnNav btnNav-primary">
-                    Materiali
-                  </MDBDropdownToggle>
-                  <MDBDropdownMenu>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Artikujt
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/Produktet">
-                          <MDBDropdownItem link>
-                            Lista e Produkteve
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/NjesiaMatese">
-                          <MDBDropdownItem link>Njesia Matese</MDBDropdownItem>
-                        </Link>
-                        <Link to="/GrupetEProduktit">
-                          <MDBDropdownItem link>
-                            Grupet e Produktit
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/KartelaEArtikullit">
-                          <MDBDropdownItem link>
-                            Kartela e Artikullit
-                          </MDBDropdownItem>
-                        </Link>
-                        <MDBDropdownItem divider />
-                        <Link to="/ZbritjetEProduktit">
-                          {" "}
-                          <MDBDropdownItem link>
-                            Zbritjet e Produkteve
-                          </MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Hyrjet
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/KalkulimiIMallit">
-                          <MDBDropdownItem link>
-                            Kalkulimi i Mallit
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/KthimiMallitTeShitur">
-                          <MDBDropdownItem link>
-                            Kthim i Mallit te Shitur
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/FleteLejimet">
-                          <MDBDropdownItem link>Flete Lejimet</MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Shitjet
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/Porosite">
-                          <MDBDropdownItem link>Porosite</MDBDropdownItem>
-                        </Link>
-                        <Link to="/Ofertat">
-                          <MDBDropdownItem link>Ofertat</MDBDropdownItem>
-                        </Link>
-                        <Link to="/AsgjesimiIStokut">
-                          <MDBDropdownItem link>
-                            Asgjesimi i Stokut
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/KthimIMallitTeBlere">
-                          <MDBDropdownItem link>
-                            Kthimi i Mallit te Blere{" "}
-                          </MDBDropdownItem>
-                        </Link>
-                        <MDBDropdownItem divider />
-                        <Link to="/Statistika">
-                          <MDBDropdownItem link>
-                            Statistikat e Dyqanit
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/ListaShitjeveMeParagon">
-                          <MDBDropdownItem link>
-                            Lista e shitjeve me Paragon
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/POS">
-                          <MDBDropdownItem link>POS</MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                  </MDBDropdownMenu>
-                </MDBDropdown>
-                <MDBDropdown>
-                  <MDBDropdownToggle className="btnNav btnNav-primary">
-                    Gjenerale
-                  </MDBDropdownToggle>
-                  <MDBDropdownMenu>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Te Dhenat
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/PerditesoTeDhenat">
-                          <MDBDropdownItem link>
-                            Perditeso Te Dhenat
-                          </MDBDropdownItem>
-                        </Link>
-
-                        <Link to="/TeDhenatEBiznesit">
-                          <MDBDropdownItem link>
-                            Te Dhenat e Biznesit
-                          </MDBDropdownItem>
-                        </Link>
-
-                        <MDBDropdownItem divider />
-                        <Link to="/Bankat">
-                          <MDBDropdownItem link>Bankat</MDBDropdownItem>
-                        </Link>
-                        <Link to="/LlogaritBankareBiznesit">
-                          <MDBDropdownItem link>
-                            Llogarit e Biznesit
-                          </MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Stafi
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/Stafi">
-                          <MDBDropdownItem link>Perdoruesit</MDBDropdownItem>
-                        </Link>
-                        <Link to="/Rolet">
-                          <MDBDropdownItem link>Rolet</MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                    <MDBDropdown dropright group className="btnNav-group">
-                      <MDBDropdownToggle className="btnNav btnNav-primary">
-                        Partneret
-                      </MDBDropdownToggle>
-                      <MDBDropdownMenu>
-                        <Link to="/TabelaEPartnereve">
-                          <MDBDropdownItem link>
-                            Lista e Partnereve
-                          </MDBDropdownItem>
-                        </Link>
-                        <Link to="/KartelaFinanciare">
-                          <MDBDropdownItem link>
-                            Kartela Financiare
-                          </MDBDropdownItem>
-                        </Link>
-                        <MDBDropdownItem divider />
-                        <Link to="/ShtoPagesat">
-                          <MDBDropdownItem link>
-                            Shto Pagesat e Fatures
-                          </MDBDropdownItem>
-                        </Link>
-                      </MDBDropdownMenu>
-                    </MDBDropdown>
-                  </MDBDropdownMenu>
-                </MDBDropdown>
-                <MDBNavbarItem className="btnNav btnNav-primary">
-                  <MDBNavbarLink href="ShikimiQmimeve">
-                    Kontrollo Qmimin e Produktit
-                  </MDBNavbarLink>
-                </MDBNavbarItem>
-              </>
-            )}
-            <MDBNavbarNav
-              right={showNav ? false : true}
-              fullWidth={false}
-              className="mb-2 mb-lg-0">
+    <>
+      <MDBNavbar
+        sticky
+        expand="lg"
+        light
+        style={{ backgroundColor: "#009879" }}>
+        <MDBContainer fluid>
+          <MDBNavbarBrand href="/">
+            <img
+              src={`${process.env.PUBLIC_URL}/img/web/d144a4e21cb54a7fb9c5a21d4eebdd50.svg`}
+              height="30"
+              alt=""
+              loading="lazy"
+            />
+          </MDBNavbarBrand>
+          <MDBNavbarToggler
+            type="button"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            onClick={() => setShowNav(!showNav)}>
+            <MDBIcon icon="bars" fas />
+          </MDBNavbarToggler>
+          <MDBCollapse navbar show={showNav}>
+            <MDBNavbarNav className="d-flex mr-auto">
               {token && (
                 <>
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <Link to="/Dashboard">
-                        <div style={{ display: "inline-block" }}>
-                          {" "}
-                          {/* Wrap the content inside a block container */}
-                          Miresevini,{" "}
-                          <strong>
-                            {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
-                          </strong>{" "}
-                          -
-                          <small
-                            style={{ fontSize: "0.85em", fontStyle: "italic" }}>
+                  <MDBDropdown>
+                    <MDBDropdownToggle className="btnNav btnNav-primary">
+                      Materiali
+                    </MDBDropdownToggle>
+                    <MDBDropdownMenu>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Artikujt
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/Produktet">
+                            <MDBDropdownItem link>
+                              Lista e Produkteve
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/NjesiaMatese">
+                            <MDBDropdownItem link>
+                              Njesia Matese
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/GrupetEProduktit">
+                            <MDBDropdownItem link>
+                              Grupet e Produktit
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/KartelaEArtikullit">
+                            <MDBDropdownItem link>
+                              Kartela e Artikullit
+                            </MDBDropdownItem>
+                          </Link>
+                          <MDBDropdownItem divider />
+                          <Link to="/ZbritjetEProduktit">
                             {" "}
-                            {/* Smaller, italic text */}
-                            {teDhenat.rolet &&
-                              teDhenat.rolet
-                                .filter((role) => role !== "User") // Exclude the "User" role
-                                .map((role, index) => (
-                                  <span key={index}>
-                                    {role}
-                                    {index < teDhenat.rolet.length - 2
-                                      ? ", "
-                                      : ""}{" "}
-                                    {/* Add comma for separation */}
-                                  </span>
-                                ))}
-                          </small>
-                        </div>
-                      </Link>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
+                            <MDBDropdownItem link>
+                              Zbritjet e Produkteve
+                            </MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Hyrjet
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/KalkulimiIMallit">
+                            <MDBDropdownItem link>
+                              Kalkulimi i Mallit
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/KthimiMallitTeShitur">
+                            <MDBDropdownItem link>
+                              Kthim i Mallit te Shitur
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/FleteLejimet">
+                            <MDBDropdownItem link>
+                              Flete Lejimet
+                            </MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Shitjet
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/Porosite">
+                            <MDBDropdownItem link>Porosite</MDBDropdownItem>
+                          </Link>
+                          <Link to="/Ofertat">
+                            <MDBDropdownItem link>Ofertat</MDBDropdownItem>
+                          </Link>
+                          <Link to="/AsgjesimiIStokut">
+                            <MDBDropdownItem link>
+                              Asgjesimi i Stokut
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/KthimIMallitTeBlere">
+                            <MDBDropdownItem link>
+                              Kthimi i Mallit te Blere{" "}
+                            </MDBDropdownItem>
+                          </Link>
+                          <MDBDropdownItem divider />
+                          <Link to="/Statistika">
+                            <MDBDropdownItem link>
+                              Statistikat e Dyqanit
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/ListaShitjeveMeParagon">
+                            <MDBDropdownItem link>
+                              Lista e shitjeve me Paragon
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/POS">
+                            <MDBDropdownItem link>POS</MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                    </MDBDropdownMenu>
+                  </MDBDropdown>
+                  <MDBDropdown>
+                    <MDBDropdownToggle className="btnNav btnNav-primary">
+                      Gjenerale
+                    </MDBDropdownToggle>
+                    <MDBDropdownMenu>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Te Dhenat
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/PerditesoTeDhenat">
+                            <MDBDropdownItem link>
+                              Perditeso Te Dhenat
+                            </MDBDropdownItem>
+                          </Link>
 
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <Link to="/Login" onClick={handleSignOut}>
-                        Sign out <FontAwesomeIcon icon={faRightFromBracket} />
-                      </Link>
+                          <Link to="/TeDhenatEBiznesit">
+                            <MDBDropdownItem link>
+                              Te Dhenat e Biznesit
+                            </MDBDropdownItem>
+                          </Link>
+
+                          <MDBDropdownItem divider />
+                          <Link to="/Bankat">
+                            <MDBDropdownItem link>Bankat</MDBDropdownItem>
+                          </Link>
+                          <Link to="/LlogaritBankareBiznesit">
+                            <MDBDropdownItem link>
+                              Llogarit e Biznesit
+                            </MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Stafi
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/Stafi">
+                            <MDBDropdownItem link>Perdoruesit</MDBDropdownItem>
+                          </Link>
+                          <Link to="/Rolet">
+                            <MDBDropdownItem link>Rolet</MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                      <MDBDropdown dropright group className="btnNav-group">
+                        <MDBDropdownToggle className="btnNav btnNav-primary">
+                          Partneret
+                        </MDBDropdownToggle>
+                        <MDBDropdownMenu>
+                          <Link to="/TabelaEPartnereve">
+                            <MDBDropdownItem link>
+                              Lista e Partnereve
+                            </MDBDropdownItem>
+                          </Link>
+                          <Link to="/KartelaFinanciare">
+                            <MDBDropdownItem link>
+                              Kartela Financiare
+                            </MDBDropdownItem>
+                          </Link>
+                          <MDBDropdownItem divider />
+                          <Link to="/ShtoPagesat">
+                            <MDBDropdownItem link>
+                              Shto Pagesat e Fatures
+                            </MDBDropdownItem>
+                          </Link>
+                        </MDBDropdownMenu>
+                      </MDBDropdown>
+                    </MDBDropdownMenu>
+                  </MDBDropdown>
+                  <MDBNavbarItem className="btnNav btnNav-primary">
+                    <MDBNavbarLink href="ShikimiQmimeve">
+                      Kontrollo Qmimin e Produktit
                     </MDBNavbarLink>
                   </MDBNavbarItem>
                 </>
               )}
-              {!token && (
-                <>
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <Link to="/LogIn">
-                        Sign in <FontAwesomeIcon icon={faRightToBracket} />
-                      </Link>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-                  <MDBNavbarItem>
-                    <MDBNavbarLink>
-                      <Link to="/SignUp">
-                        Sign up <FontAwesomeIcon icon={faUserPlus} />
-                      </Link>
-                    </MDBNavbarLink>
-                  </MDBNavbarItem>
-                </>
-              )}
+              <MDBNavbarNav
+                right={showNav ? false : true}
+                fullWidth={false}
+                className="mb-2 mb-lg-0">
+                {token && (
+                  <>
+                    <MDBNavbarItem>
+                      <MDBNavbarLink>
+                        <Link to="/Dashboard">
+                          <div style={{ display: "inline-block" }}>
+                            {" "}
+                            {/* Wrap the content inside a block container */}
+                            Miresevini,{" "}
+                            <strong>
+                              {teDhenat.perdoruesi && teDhenat.perdoruesi.emri}
+                            </strong>{" "}
+                            -
+                            <small
+                              style={{
+                                fontSize: "0.85em",
+                                fontStyle: "italic",
+                              }}>
+                              {" "}
+                              {/* Smaller, italic text */}
+                              {teDhenat.rolet &&
+                                teDhenat.rolet
+                                  .filter((role) => role !== "User") // Exclude the "User" role
+                                  .map((role, index) => (
+                                    <span key={index}>
+                                      {role}
+                                      {index < teDhenat.rolet.length - 2
+                                        ? ", "
+                                        : ""}{" "}
+                                      {/* Add comma for separation */}
+                                    </span>
+                                  ))}
+                            </small>
+                          </div>
+                        </Link>
+                      </MDBNavbarLink>
+                    </MDBNavbarItem>
+
+                    <MDBNavbarItem>
+                      <MDBNavbarLink>
+                        <Link to="/Login" onClick={handleSignOut}>
+                          Sign out <FontAwesomeIcon icon={faRightFromBracket} />
+                        </Link>
+                      </MDBNavbarLink>
+                    </MDBNavbarItem>
+                  </>
+                )}
+                {!token && (
+                  <>
+                    <MDBNavbarItem>
+                      <MDBNavbarLink>
+                        <Link to="/LogIn">
+                          Sign in <FontAwesomeIcon icon={faRightToBracket} />
+                        </Link>
+                      </MDBNavbarLink>
+                    </MDBNavbarItem>
+                    <MDBNavbarItem>
+                      <MDBNavbarLink>
+                        <Link to="/SignUp">
+                          Sign up <FontAwesomeIcon icon={faUserPlus} />
+                        </Link>
+                      </MDBNavbarLink>
+                    </MDBNavbarItem>
+                  </>
+                )}
+              </MDBNavbarNav>
             </MDBNavbarNav>
-          </MDBNavbarNav>
-        </MDBCollapse>
-      </MDBContainer>
-    </MDBNavbar>
+          </MDBCollapse>
+        </MDBContainer>
+      </MDBNavbar>
+    </>
   );
 }
 

@@ -115,9 +115,24 @@ const LogIn = () => {
               boxShadow: "0 0 20px #ddd",
               borderRadius: "2rem",
               maxWidth: "500px",
+              color: "#FFFFFF", // Set text color to white
             }}>
-            <MDBCardBody className="p-5 w-100 d-flex flex-column">
-              <Form.Text className="formTitle">Log In</Form.Text>
+            <MDBCardBody
+              className="p-5 w-100 d-flex flex-column"
+              style={{
+                border: "none",
+                boxShadow: "0 0 20px #ddd",
+                borderRadius: "2rem",
+                maxWidth: "500px",
+                backgroundColor: "#009879",
+              }}>
+              <img
+                src={`${process.env.PUBLIC_URL}/img/web/d144a4e21cb54a7fb9c5a21d4eebdd50.svg`}
+                alt="Logo"
+                className="logo mb-4"
+                style={{ maxWidth: "300px", alignSelf: "center" }}
+              />
+              <h3 className="formTitle">Log In</h3>
               <p className="text-white-20 mb-4 p-text">
                 Please enter your email and password!
               </p>
@@ -138,11 +153,8 @@ const LogIn = () => {
                 size="lg"
                 onChange={(e) => vendosPasswordin(e.target.value)}
               />
-              <Link to="/SignUp" className="text-white-20 mb-4 p-text">
-                Don't have an Account?
-              </Link>
               <button
-                class="btn btn-primary btn-lg"
+                class="button btn btn-primary btn-lg "
                 role="button"
                 onClick={handleLogIn}>
                 Login

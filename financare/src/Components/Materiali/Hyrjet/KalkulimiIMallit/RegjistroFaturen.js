@@ -586,7 +586,7 @@ function RegjistroFaturen(props) {
                       : optionsSelected?.item?.emriNjesiaMatese ?? "Copë"}
                   </p>
                   <p>
-                    <strong>Qmimi Bleres me Shumic + TVSH:</strong>{" "}
+                    <strong>Qmimi Bleres + TVSH:</strong>{" "}
                     {parseFloat(
                       Array.isArray(optionsSelected)
                         ? optionsSelected

@@ -3,11 +3,19 @@ import NavBar from "../Components/TeTjera/layout/NavBar";
 import { Helmet } from "react-helmet";
 import "./Styles/Dashboard.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TailSpin } from "react-loader-spinner";
 import { Tab, Tabs, Form, InputGroup, Row, Col } from "react-bootstrap";
 import Titulli from "../Components/TeTjera/Titulli";
 import KontrolloAksesinNeFaqe from "../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
+import {
+  MDBBtnGroup,
+  MDBContainer,
+  MDBNavbar,
+  MDBNavbarItem,
+  MDBNavbarLink,
+  MDBNavbarNav,
+} from "mdb-react-ui-kit";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
@@ -67,6 +75,41 @@ const Dashboard = () => {
       />
       <Titulli titulli={"Dashboard"} />
       <NavBar />
+      <MDBNavbar expand="lg" light style={{ backgroundColor: "#009879" }}>
+        <MDBContainer fluid>
+          <MDBNavbarNav className="d-flex mr-auto">
+            <MDBNavbarItem>
+              <MDBNavbarLink>
+                <Link to="/Produktet">Produktet</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+
+            <MDBNavbarItem>
+              <MDBNavbarLink>
+                <Link to="/KalkulimiIMallit">Kalkulimi i Mallit</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+
+            <MDBNavbarItem>
+              <MDBNavbarLink>
+                <Link to="/Porosite">Porosite</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+
+            <MDBNavbarItem>
+              <MDBNavbarLink>
+                <Link to="/Statistika">Statistikat</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+
+            <MDBNavbarItem>
+              <MDBNavbarLink>
+                <Link to="/POS">POS</Link>
+              </MDBNavbarLink>
+            </MDBNavbarItem>
+          </MDBNavbarNav>
+        </MDBContainer>
+      </MDBNavbar>
 
       <div className="dashboard">
         {loading ? (
