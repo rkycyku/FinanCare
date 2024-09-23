@@ -157,8 +157,7 @@ namespace FinanCareWebAPI.Controllers
 
             var kalkulimetDalese  = await _context.Faturat
                 .Where(x => x.IDPartneri == id &&
-                    (x.LlojiKalkulimit.Equals("HYRJE")
-                    || x.LlojiKalkulimit.Equals("FL")
+                    (x.LlojiKalkulimit.Equals("FL")
                     || x.LlojiKalkulimit.Equals("KMSH")
                     || x.LlojiKalkulimit.Equals("PAGES")
                     ) && x.StatusiKalkulimit.Equals("true")
@@ -168,10 +167,12 @@ namespace FinanCareWebAPI.Controllers
 
             var kalkulimetHyrese = await _context.Faturat
                 .Where(x => x.IDPartneri == id &&
-                    (x.LlojiKalkulimit.Equals("FAT")
+                    (x.LlojiKalkulimit.Equals("HYRJE")
+                    || x.LlojiKalkulimit.Equals("FAT")
                     || x.LlojiKalkulimit.Equals("AS")
                     || x.LlojiKalkulimit.Equals("KMB")
                     || x.LlojiKalkulimit.Equals("PARAGON")
+                    || x.LlojiKalkulimit.Equals("FATURIM")
                     ) && x.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();

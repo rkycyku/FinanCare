@@ -680,12 +680,11 @@ function RegjistroFaturen(props) {
                         onClick={() => KthehuTekFaturat()}>
                         <FontAwesomeIcon icon={faArrowLeft} /> Kthehu Mbrapa
                       </Button>
+                      <PrintLabels
+                        storeName={siteName}
+                        products={produktetQmimore}
+                      />
                     </Col>
-
-                    <PrintLabels
-                      storeName={siteName}
-                      products={produktetQmimore}
-                    />
                   </Row>
                 </Col>
               </Row>

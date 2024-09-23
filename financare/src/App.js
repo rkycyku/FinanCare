@@ -77,10 +77,16 @@ function App() {
         <Route path="/POS" element={<POS />} />
         <Route path="/KartelaFinanciare" element={<KartelaFinanciare />} />
         <Route path="/ShtoPagesat" element={<ShtoPagesat />} />
-        <Route path="/ListaShitjeveMeParagon" element={<ListaShitjeveMeParagon />} />
-        <Route path="/LlogaritBankareBiznesit" element={<LlogaritBankareBiznesit />} />
+        <Route
+          path="/ListaShitjeveMeParagon"
+          element={<ListaShitjeveMeParagon />}
+        />
+        <Route
+          path="/LlogaritBankareBiznesit"
+          element={<LlogaritBankareBiznesit />}
+        />
         <Route path="/ShikimiQmimeve" element={<ShikimiQmimeve />} />
-        
+
         <Route path="/403" element={<NukKeniAkses />} />
         <Route path="/404" element={<NukUGjet />} />
       </Routes>

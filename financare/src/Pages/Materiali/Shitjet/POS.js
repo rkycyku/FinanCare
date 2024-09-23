@@ -331,7 +331,10 @@ function POS(props) {
   useEffect(() => {
     // Replace with your API endpoint
     axios
-      .get("https://localhost:7285/api/Produkti/ProduktetPerKalkulim")
+      .get(
+        "https://localhost:7285/api/Produkti/ProduktetPerKalkulim",
+        authentikimi
+      )
       .then((response) => {
         // Assuming the response data is an array of objects with `value` and `label` properties
         const fetchedOptionsBarkodi = response.data.map((item) => ({
@@ -357,8 +360,6 @@ function POS(props) {
 
   const handleChange = async (barkodi) => {
     setOptionsBarkodiSelected(barkodi);
-    console.log("Selected option:", barkodi);
-
     await axios
       .post(
         "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
@@ -450,7 +451,8 @@ function POS(props) {
                 stafiID: r.data.regjistrimet.stafiID,
                 totaliPaTVSH: parseFloat(r.data.regjistrimet.totaliPaTVSH),
                 tvsh: parseFloat(r.data.regjistrimet.tvsh),
-                statusiPageses: r.data.statusiPageses,
+                statusiPageses:
+                  llojiPageses !== "Borxh" ? "E Paguar" : "Pa Paguar",
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
                 nrFatures: r.data.regjistrimet.nrFatures,
                 pershkrimShtese: r.data.regjistrimet.pershkrimShtese,
@@ -467,6 +469,34 @@ function POS(props) {
                   `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${produkti.idProduktit}`,
                   {
                     sasiaNeStok: produkti.sasiaStokut,
+                  },
+                  authentikimi
+                );
+              }
+              if (llojiPageses !== "Borxh" && idPartneri !== 1) {
+                await axios.post(
+                  "https://localhost:7285/api/Faturat/ruajKalkulimin",
+                  {
+                    dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+                    stafiID: r.data.regjistrimet.stafiID,
+                    totaliPaTVSH: parseFloat(
+                      r.data.regjistrimet.totaliPaTVSH +
+                        r.data.regjistrimet.tvsh -
+                        r.data.rabati
+                    ),
+                    tvsh: 0,
+                    idPartneri: r.data.regjistrimet.idPartneri,
+                    statusiPageses: "E Paguar",
+                    llojiPageses: llojiPageses,
+                    nrFatures: "PAGES-" + r.data.regjistrimet.nrFatures,
+                    llojiKalkulimit: "PAGES",
+                    pershkrimShtese:
+                      r.data.regjistrimet.pershkrimShtese +
+                      " Pagese per Faturen: " +
+                      r.data.regjistrimet.nrFatures,
+                    nrRendorFatures: r.data.regjistrimet.nrRendorFatures + 1,
+                    idBonusKartela: null,
+                    statusiKalkulimit: "true",
                   },
                   authentikimi
                 );
@@ -609,9 +639,7 @@ function POS(props) {
 
   return (
     <>
-      <KontrolloAksesinNeFaqe
-        roletELejuara={["Menaxher", "Arkatar"]}
-      />
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Arkatar"]} />
       <Titulli titulli={"POS"} />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
@@ -760,6 +788,11 @@ function POS(props) {
                       <option key={2} value="Banke">
                         Banke
                       </option>
+                      {teDhenatKartelaBleresit != null && (
+                        <option key={3} value="Borxh">
+                          Borxh
+                        </option>
+                      )}
                     </select>
                   </Form.Group>
                   <Form.Group className="mt-1">

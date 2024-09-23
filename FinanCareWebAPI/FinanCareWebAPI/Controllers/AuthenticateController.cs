@@ -77,9 +77,9 @@ namespace WebAPI.Controllers
                     {
                         Result = false,
                         Errors = new List<string>()
-                        {
-                            "Email already exists"
-                        }
+                {
+                    "Email already exists"
+                }
                     });
                 }
 
@@ -94,8 +94,8 @@ namespace WebAPI.Controllers
 
                 if (shtuarMeSukses.Succeeded)
                 {
-                    await _userManager.AddToRolesAsync(perdoruesiIRI, new[] { "User", registerModel.Roli });
-
+                    var rolesToAdd = new[] { "User", registerModel.Roli };
+                    await _userManager.AddToRolesAsync(perdoruesiIRI, rolesToAdd);
 
                     Perdoruesi perdoruesi = new Perdoruesi
                     {
@@ -114,45 +114,65 @@ namespace WebAPI.Controllers
                         Adresa = !registerModel.Adresa.IsNullOrEmpty() ? registerModel.Adresa : null,
                         NrKontaktit = !registerModel.NrTelefonit.IsNullOrEmpty() ? registerModel.NrTelefonit : null,
                         BankaID = int.TryParse(registerModel.BankaID.ToString(), out int bankaIdValue)
-              ? bankaIdValue : (int?)null,
+                            ? bankaIdValue : (int?)null,
                         DataFillimitKontrates = DateTime.TryParse(registerModel.DataFillimitKontrates.ToString(), out DateTime dataFillimit)
                             ? dataFillimit : (DateTime?)null,
-
                         DataMbarimitKontrates = DateTime.TryParse(registerModel.DataMbarimitKontrates.ToString(), out DateTime dataMbarimit)
                             ? dataMbarimit : (DateTime?)null,
-
                         Datelindja = DateTime.TryParse(registerModel.Datelindja.ToString(), out DateTime datelindja)
-                 ? datelindja : (DateTime?)null,
+                            ? datelindja : (DateTime?)null,
                         EmailPrivat = !registerModel.EmailPrivat.IsNullOrEmpty() ? registerModel.EmailPrivat : null,
                         EshtePuntorAktive = !registerModel.EshtePuntorAktive.IsNullOrEmpty() ? registerModel.EshtePuntorAktive : "true",
                         Kualifikimi = !registerModel.Kualifikimi.IsNullOrEmpty() ? registerModel.Kualifikimi : null,
                         NrPersonal = !registerModel.NrPersonal.IsNullOrEmpty() ? registerModel.NrPersonal : null,
                         NumriLlogarisBankare = !registerModel.NumriLlogarisBankare.IsNullOrEmpty() ? registerModel.NumriLlogarisBankare : null,
                         Paga = decimal.TryParse(registerModel.Paga.ToString(), out decimal paga)
-           ? paga : (decimal?)null,
+                            ? paga : (decimal?)null,
                         Profesioni = !registerModel.Profesioni.IsNullOrEmpty() ? registerModel.Profesioni : null,
                         Specializimi = !registerModel.Specializimi.IsNullOrEmpty() ? registerModel.Specializimi : null
                     };
                     await _context.TeDhenatPerdoruesit.AddAsync(teDhenatPerdoruesit);
                     await _context.SaveChangesAsync();
 
+                    // Check if the user is a "Menaxher" and create the bonus card directly here
+                    if (registerModel.Roli == "Menaxher")
+                    {
+                        var kartelaCount = await _context.Kartelat.CountAsync();
+                        var kodiKartela = $"M{perdoruesi.UserID.ToString().PadLeft(6, '0')}{(kartelaCount + 1).ToString().PadLeft(6, '0')}";
+
+                        Kartelat kartela = new Kartelat
+                        {
+                            DataKrijimit = DateTime.Now,
+                            LlojiKarteles = "Fshirje",
+                            Rabati = null, // Set appropriate value for Rabati
+                            PartneriID = null, // Set appropriate value for PartneriID
+                            KodiKartela = kodiKartela,
+                            StafiID = perdoruesi.UserID, // Set the appropriate stafiID
+                        };
+
+                        _context.Kartelat.Add(kartela);
+                        await _context.SaveChangesAsync();
+                    }
+
                     return Ok(new AuthResults()
                     {
                         Result = true
                     });
                 }
+
                 return BadRequest(new AuthResults()
                 {
                     Errors = new List<string>
-                    {
-                        "Server Errors"
-                    },
+            {
+                "Server Errors"
+            },
                     Result = false
                 });
-
             }
+
             return BadRequest();
         }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -301,6 +321,41 @@ namespace WebAPI.Controllers
             // Fetch all roles assigned to the user
             var userRoles = await _userManager.GetRolesAsync(user);
 
+            var perdoruesi = await _context.Perdoruesi.Where(x => x.AspNetUserID == UserID).FirstOrDefaultAsync();
+
+            if (!userRoles.Contains("Menaxher") && roli == "Menaxher")
+            {
+                // Create and add a new Kartela for this user
+                var kartelaCount = await _context.Kartelat.CountAsync();
+                var kodiKartela = $"M{perdoruesi.UserID.ToString().PadLeft(6, '0')}{(kartelaCount + 1).ToString().PadLeft(6, '0')}"; // Adjust as needed
+
+                Kartelat kartela = new Kartelat
+                {
+                    DataKrijimit = DateTime.Now,
+                    LlojiKarteles = "Fshirje",
+                    Rabati = null,
+                    PartneriID = null,
+                    KodiKartela = kodiKartela,
+                    StafiID = perdoruesi.UserID,
+                };
+
+                await _context.Kartelat.AddAsync(kartela);
+                await _context.SaveChangesAsync();
+            }
+
+            // Check if the user is being removed from the "Menaxher" role
+            if (userRoles.Contains("Menaxher") && roli != "Menaxher")
+            {
+                // Find and remove the Kartela for this user
+                var kartelaToRemove = await _context.Kartelat.Include(x => x.Stafi).FirstOrDefaultAsync(k => k.StafiID == perdoruesi.UserID); // Adjust based on your ID reference
+
+                if (kartelaToRemove != null)
+                {
+                    _context.Kartelat.Remove(kartelaToRemove);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             // Remove all roles except "User"
             foreach (var role in userRoles)
             {
@@ -345,7 +400,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        
+
+
 
 
         [Authorize]

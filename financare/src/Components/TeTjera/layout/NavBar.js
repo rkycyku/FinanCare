@@ -28,8 +28,9 @@ import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { roleBasedDropdowns } from "./roleBasedDropdowns";
 
-function NavBar(props) {
+function NavBar() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -40,6 +41,8 @@ function NavBar(props) {
 
   const [showNav, setShowNav] = useState(false);
 
+  const [userRoles, setUserRoles] = useState([]);
+
   const getID = localStorage.getItem("id");
   const getToken = localStorage.getItem("token");
 
@@ -48,6 +51,23 @@ function NavBar(props) {
       Authorization: `Bearer ${getToken}`,
     },
   };
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const kohaAktive = new Date(decodedToken.exp * 1000);
+      const kohaTanishme = new Date();
+
+      if (kohaAktive < kohaTanishme) {
+        localStorage.removeItem("token");
+        navigate("/LogIn");
+      } else {
+        setUserRoles(decodedToken.role || []); // Assuming roles are in the decoded token
+      }
+    } else {
+      navigate("/login");
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     const ShfaqTeDhenat = async () => {
@@ -111,6 +131,11 @@ function NavBar(props) {
     localStorage.removeItem("id");
   };
 
+  if (!userRoles || userRoles.length === 0) {
+    console.log("No roles available for the user.");
+    return null; // or a fallback UI
+  }
+
   return (
     <>
       <MDBNavbar
@@ -138,177 +163,105 @@ function NavBar(props) {
             <MDBNavbarNav className="d-flex mr-auto">
               {token && (
                 <>
-                  <MDBDropdown>
-                    <MDBDropdownToggle className="btnNav btnNav-primary">
-                      Materiali
-                    </MDBDropdownToggle>
-                    <MDBDropdownMenu>
-                      <MDBDropdown dropright group className="btnNav-group">
+                  {roleBasedDropdowns.map((dropdown, index) => {
+                    return (
+                      <MDBDropdown key={index}>
                         <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Artikujt
+                          {dropdown.label}
                         </MDBDropdownToggle>
                         <MDBDropdownMenu>
-                          <Link to="/Produktet">
-                            <MDBDropdownItem link>
-                              Lista e Produkteve
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/NjesiaMatese">
-                            <MDBDropdownItem link>
-                              Njesia Matese
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/GrupetEProduktit">
-                            <MDBDropdownItem link>
-                              Grupet e Produktit
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/KartelaEArtikullit">
-                            <MDBDropdownItem link>
-                              Kartela e Artikullit
-                            </MDBDropdownItem>
-                          </Link>
-                          <MDBDropdownItem divider />
-                          <Link to="/ZbritjetEProduktit">
-                            {" "}
-                            <MDBDropdownItem link>
-                              Zbritjet e Produkteve
-                            </MDBDropdownItem>
-                          </Link>
-                        </MDBDropdownMenu>
-                      </MDBDropdown>
-                      <MDBDropdown dropright group className="btnNav-group">
-                        <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Hyrjet
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu>
-                          <Link to="/KalkulimiIMallit">
-                            <MDBDropdownItem link>
-                              Kalkulimi i Mallit
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/KthimiMallitTeShitur">
-                            <MDBDropdownItem link>
-                              Kthim i Mallit te Shitur
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/FleteLejimet">
-                            <MDBDropdownItem link>
-                              Flete Lejimet
-                            </MDBDropdownItem>
-                          </Link>
-                        </MDBDropdownMenu>
-                      </MDBDropdown>
-                      <MDBDropdown dropright group className="btnNav-group">
-                        <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Shitjet
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu>
-                          <Link to="/Porosite">
-                            <MDBDropdownItem link>Porosite</MDBDropdownItem>
-                          </Link>
-                          <Link to="/Ofertat">
-                            <MDBDropdownItem link>Ofertat</MDBDropdownItem>
-                          </Link>
-                          <Link to="/AsgjesimiIStokut">
-                            <MDBDropdownItem link>
-                              Asgjesimi i Stokut
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/KthimIMallitTeBlere">
-                            <MDBDropdownItem link>
-                              Kthimi i Mallit te Blere{" "}
-                            </MDBDropdownItem>
-                          </Link>
-                          <MDBDropdownItem divider />
-                          <Link to="/Statistika">
-                            <MDBDropdownItem link>
-                              Statistikat e Dyqanit
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/ListaShitjeveMeParagon">
-                            <MDBDropdownItem link>
-                              Lista e shitjeve me Paragon
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/POS">
-                            <MDBDropdownItem link>POS</MDBDropdownItem>
-                          </Link>
-                        </MDBDropdownMenu>
-                      </MDBDropdown>
-                    </MDBDropdownMenu>
-                  </MDBDropdown>
-                  <MDBDropdown>
-                    <MDBDropdownToggle className="btnNav btnNav-primary">
-                      Gjenerale
-                    </MDBDropdownToggle>
-                    <MDBDropdownMenu>
-                      <MDBDropdown dropright group className="btnNav-group">
-                        <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Te Dhenat
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu>
-                          <Link to="/PerditesoTeDhenat">
-                            <MDBDropdownItem link>
-                              Perditeso Te Dhenat
-                            </MDBDropdownItem>
-                          </Link>
+                          {dropdown.items.map((item, itemIndex) => {
+                            const hasAccess = item.roles
+                              ? item.roles.some((role) =>
+                                  userRoles.includes(role)
+                                )
+                              : false;
 
-                          <Link to="/TeDhenatEBiznesit">
-                            <MDBDropdownItem link>
-                              Te Dhenat e Biznesit
-                            </MDBDropdownItem>
-                          </Link>
+                            return (
+                              <MDBDropdown key={itemIndex} dropright>
+                                <MDBDropdownToggle
+                                  className="btnNav btnNav-primary"
+                                  disabled={!hasAccess} // Disable the dropdown if no access
+                                >
+                                  {item.label}
+                                </MDBDropdownToggle>
+                                <MDBDropdownMenu>
+                                  {item.subItems &&
+                                    item.subItems.map(
+                                      (subItem, subItemIndex) => {
+                                        const hasSubAccess = subItem.roles
+                                          ? subItem.roles.some((role) =>
+                                              userRoles.includes(role)
+                                            )
+                                          : false;
 
-                          <MDBDropdownItem divider />
-                          <Link to="/Bankat">
-                            <MDBDropdownItem link>Bankat</MDBDropdownItem>
-                          </Link>
-                          <Link to="/LlogaritBankareBiznesit">
-                            <MDBDropdownItem link>
-                              Llogarit e Biznesit
-                            </MDBDropdownItem>
-                          </Link>
+                                        if (subItem.isDivider) {
+                                          return (
+                                            <MDBDropdownItem
+                                              divider
+                                              key={subItemIndex}
+                                            />
+                                          );
+                                        }
+
+                                        return (
+                                          <MDBDropdownItem
+                                            key={subItemIndex}
+                                            disabled={!hasSubAccess}>
+                                            {hasSubAccess ? (
+                                              <Link
+                                                onMouseOver={(e) => {
+                                                  e.currentTarget.style.color =
+                                                    "#009879"; // Hover effect for disabled
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  e.currentTarget.style.color =
+                                                    "black"; // Reset background
+                                                }}
+                                                style={{
+                                                  padding: "3px 3px", // Adjust padding as needed
+                                                  display: "inline-block", // Ensures the padding is applied correctly
+                                                  transition:
+                                                    "background-color 0.3s", // Smooth transition for hover
+                                                }}
+                                                to={subItem.path}>
+                                                {subItem.label}
+                                              </Link>
+                                            ) : (
+                                              <span
+                                                style={{
+                                                  color: "rgba(0, 0, 0, 0.38)",
+                                                  pointerEvents: "none",
+                                                  textDecoration: "none",
+                                                  padding: "3px 3px", // Adjust padding as needed
+                                                  display: "inline-block", // Ensures the padding is applied correctly
+                                                  transition:
+                                                    "background-color 0.3s", // Smooth transition for hover
+                                                }}
+                                                onMouseOver={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "#f0f0f0"; // Change to your desired hover color
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  e.currentTarget.style.backgroundColor =
+                                                    "transparent"; // Reset to transparent
+                                                }}>
+                                                {subItem.label}
+                                              </span>
+                                            )}
+                                          </MDBDropdownItem>
+                                        );
+                                      }
+                                    )}
+                                </MDBDropdownMenu>
+                              </MDBDropdown>
+                            );
+                          })}
                         </MDBDropdownMenu>
                       </MDBDropdown>
-                      <MDBDropdown dropright group className="btnNav-group">
-                        <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Stafi
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu>
-                          <Link to="/Stafi">
-                            <MDBDropdownItem link>Perdoruesit</MDBDropdownItem>
-                          </Link>
-                          <Link to="/Rolet">
-                            <MDBDropdownItem link>Rolet</MDBDropdownItem>
-                          </Link>
-                        </MDBDropdownMenu>
-                      </MDBDropdown>
-                      <MDBDropdown dropright group className="btnNav-group">
-                        <MDBDropdownToggle className="btnNav btnNav-primary">
-                          Partneret
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu>
-                          <Link to="/TabelaEPartnereve">
-                            <MDBDropdownItem link>
-                              Lista e Partnereve
-                            </MDBDropdownItem>
-                          </Link>
-                          <Link to="/KartelaFinanciare">
-                            <MDBDropdownItem link>
-                              Kartela Financiare
-                            </MDBDropdownItem>
-                          </Link>
-                          <MDBDropdownItem divider />
-                          <Link to="/ShtoPagesat">
-                            <MDBDropdownItem link>
-                              Shto Pagesat e Fatures
-                            </MDBDropdownItem>
-                          </Link>
-                        </MDBDropdownMenu>
-                      </MDBDropdown>
-                    </MDBDropdownMenu>
-                  </MDBDropdown>
+                    );
+                  })}
+
                   <MDBNavbarItem className="btnNav btnNav-primary">
                     <MDBNavbarLink href="ShikimiQmimeve">
                       Kontrollo Qmimin e Produktit

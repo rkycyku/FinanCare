@@ -125,11 +125,11 @@ function KartelaFinanciare(props) {
               ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
               : p.totaliPaTVSH + p.tvsh - p.rabati;
 
-          if (["FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
+          if (["HYRJE", "FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
             faturimValue = parseFloat(vlera).toFixed(2);
             saldo += parseFloat(faturimValue);
           } else if (
-            ["HYRJE", "FL", "KMSH", "PAGES"].includes(p.llojiKalkulimit)
+            ["FL", "KMSH", "PAGES"].includes(p.llojiKalkulimit)
           ) {
             faturimValue = parseFloat(vlera).toFixed(2);
             saldo -= parseFloat(faturimValue);
@@ -144,12 +144,12 @@ function KartelaFinanciare(props) {
             "Lloji Fat.": p.llojiKalkulimit,
             "Nr. Fat": p.nrRendorFatures,
             Pershkrimi: p.pershkrimShtese,
-            "Faturim €": ["FAT", "AS", "KMB", "PARAGON"].includes(
+            "Faturim €": ["HYRJE", "FAT", "AS", "KMB", "PARAGON"].includes(
               p.llojiKalkulimit
             )
               ? faturimValue
               : "-",
-            "Pagese €": ["HYRJE", "FL", "KMSH", "PAGES"].includes(
+            "Pagese €": ["FL", "KMSH", "PAGES"].includes(
               p.llojiKalkulimit
             )
               ? faturimValue
@@ -182,10 +182,17 @@ function KartelaFinanciare(props) {
     axios
       .get("https://localhost:7285/api/Partneri/shfaqPartneret", authentikimi)
       .then((response) => {
-        const fetchedoptions = response.data.map((item) => ({
-          value: item.idPartneri,
-          label: item.emriBiznesit,
-        }));
+        const fetchedoptions = response.data
+          .filter(
+            (item) =>
+              item.idPartneri !== 1 &&
+              item.idPartneri !== 2 &&
+              item.idPartneri !== 3
+          )
+          .map((item) => ({
+            value: item.idPartneri,
+            label: item.emriBiznesit,
+          }));
         setOptions(fetchedoptions);
       })
       .catch((error) => {
@@ -199,7 +206,9 @@ function KartelaFinanciare(props) {
 
   return (
     <>
-      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Financa", "Mbeshtetje e Klientit"]} />
+      <KontrolloAksesinNeFaqe
+        roletELejuara={["Menaxher", "Financa", "Mbeshtetje e Klientit"]}
+      />
       <NavBar />
 
       <div className="containerDashboardP">

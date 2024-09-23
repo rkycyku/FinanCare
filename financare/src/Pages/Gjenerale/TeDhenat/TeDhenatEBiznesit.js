@@ -9,6 +9,9 @@ import { TailSpin } from "react-loader-spinner";
 
 import { MDBRow, MDBCol, MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import Titulli from "../../../Components/TeTjera/Titulli";
+import KontrolloAksesinNeFunksione from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
+import jwtDecode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 function TeDhenatEBiznesit(props) {
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState([]);
@@ -20,6 +23,8 @@ function TeDhenatEBiznesit(props) {
   const [loading, setLoading] = useState(false);
   const [foto, setFoto] = useState(null);
 
+  const navigate = useNavigate();
+
   const [formValue, setFormValue] = useState({
     emriIBiznesit: "",
     shkurtesaEmrit: "",
@@ -29,6 +34,7 @@ function TeDhenatEBiznesit(props) {
     adresa: "",
     nrKontaktit: "",
     email: "",
+    emailDomain: "",
   });
 
   const getToken = localStorage.getItem("token");
@@ -67,9 +73,38 @@ function TeDhenatEBiznesit(props) {
   }, [perditeso]);
 
   const handleEdito = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form behavior
 
-    setEdito(true);
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+
+        // Define allowed roles for editing
+        const allowedRoles = ["Menaxher"];
+
+        // Check if the user has at least one allowed role
+        const hasAccess = allowedRoles.some((role) =>
+          decodedToken.role.includes(role)
+        );
+
+        if (hasAccess) {
+          // Grant access: allow editing
+          setEdito(true);
+        } else {
+          // Deny access: show message and prevent editing
+          setTipiMesazhit("danger");
+          setPershkrimiMesazhit("<h2>403 - Nuk keni akses!</h2>");
+          setShfaqMesazhin(true); // Show access denied message
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    } else {
+      // If no token is found, navigate to login
+      navigate("/login");
+    }
   };
 
   async function handleRuaj(e) {
@@ -98,6 +133,7 @@ function TeDhenatEBiznesit(props) {
                 adresa: formValue.adresa,
                 nrKontaktit: formValue.nrKontaktit,
                 email: formValue.email,
+                emailDomain: formValue.emailDomain,
                 logo: response.data,
               },
               authentikimi
@@ -122,6 +158,7 @@ function TeDhenatEBiznesit(props) {
           nrKontaktit: formValue.nrKontaktit,
           email: formValue.email,
           logo: teDhenatBiznesit.logo,
+          emailDomain: formValue.emailDomain,
         },
         authentikimi
       );
@@ -143,6 +180,7 @@ function TeDhenatEBiznesit(props) {
         adresa: teDhenatBiznesit.adresa,
         nrKontaktit: teDhenatBiznesit.nrKontaktit,
         email: teDhenatBiznesit.email,
+        emailDomain: teDhenatBiznesit.emailDomain,
       });
     }
   }, [teDhenatBiznesit]);
@@ -233,7 +271,7 @@ function TeDhenatEBiznesit(props) {
                   disabled={!edito}
                 />
               </MDBCol>
-              <MDBCol md="4">
+              <MDBCol md="3">
                 <MDBInput
                   value={formValue.email ?? ""}
                   name="email"
@@ -244,7 +282,18 @@ function TeDhenatEBiznesit(props) {
                   disabled={!edito}
                 />
               </MDBCol>
-              <MDBCol md="4">
+              <MDBCol md="3">
+                <MDBInput
+                  value={formValue.emailDomain ?? ""}
+                  name="emailDomain"
+                  onChange={onChange}
+                  id="validationCustom02"
+                  required
+                  label="Email Domain"
+                  disabled={!edito}
+                />
+              </MDBCol>
+              <MDBCol md="3">
                 <MDBInput
                   value={formValue.adresa ?? ""}
                   name="adresa"
@@ -255,7 +304,7 @@ function TeDhenatEBiznesit(props) {
                   disabled={!edito}
                 />
               </MDBCol>
-              <MDBCol md="4">
+              <MDBCol md="3">
                 <MDBInput
                   value={formValue.nrKontaktit ?? ""}
                   name="nrKontaktit"

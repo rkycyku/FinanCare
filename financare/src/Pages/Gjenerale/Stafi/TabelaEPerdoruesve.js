@@ -52,8 +52,10 @@ function TabelaEPerdoruesve() {
             Email: k.perdoruesi.email,
             Username: k.perdoruesi.username,
             Aksesi: k.rolet.join(", "),
+            Kartela: k.perdoruesi?.kartelat?.kodiKartela ?? " - ",
           }))
         );
+
         setLoading(false);
       } catch (err) {
         console.log(err);

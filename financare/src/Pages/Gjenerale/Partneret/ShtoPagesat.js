@@ -40,6 +40,7 @@ function ShtoPagesat(props) {
   const [pershkrimiPageses, setPershkrimiPageses] = useState("");
   const [shumaPageses, setShumaPageses] = useState(0);
   const [llojiIPageses, setLlojiIPageses] = useState("Cash");
+  const [lloji, setLloji] = useState("PAGES");
 
   const navigate = useNavigate();
 
@@ -127,7 +128,7 @@ function ShtoPagesat(props) {
               ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
               : p.totaliPaTVSH + p.tvsh - p.rabati;
 
-          if (["FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
+          if (["FAT", "AS", "KMB", "PARAGON", "FATURIM"].includes(p.llojiKalkulimit)) {
             faturimValue = parseFloat(vlera).toFixed(2);
             saldo += parseFloat(faturimValue);
           } else if (
@@ -146,7 +147,7 @@ function ShtoPagesat(props) {
             "Lloji Fat.": p.llojiKalkulimit,
             "Nr. Fat": p.nrRendorFatures,
             Pershkrimi: p.pershkrimShtese,
-            "Faturim €": ["FAT", "AS", "KMB", "PARAGON"].includes(
+            "Faturim €": ["FAT", "AS", "KMB", "PARAGON", "FATURIM"].includes(
               p.llojiKalkulimit
             )
               ? faturimValue
@@ -189,7 +190,7 @@ function ShtoPagesat(props) {
             idPartneri: produktiID,
             llojiPageses: llojiIPageses,
             pershkrimShtese: pershkrimiPageses,
-            llojiKalkulimit: "PAGES",
+            llojiKalkulimit: lloji,
             statusiKalkulimit: "true",
           },
           authentikimi
@@ -321,9 +322,33 @@ function ShtoPagesat(props) {
                         setPershkrimiPageses(e.target.value);
                       }}
                       onKeyDown={(e) => {
-                        ndrroField(e, "llojiIPageses");
+                        ndrroField(e, "lloji");
                       }}
                     />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Lloji</Form.Label>
+                    <select
+                      id="lloji"
+                      placeholder="Lloji"
+                      className="form-select"
+                      value={lloji ? lloji : ""}
+                      onChange={(e) => {
+                        setLloji(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        ndrroField(e, "llojiIPageses");
+                      }}>
+                      <option defaultValue value={0} key={0} disabled>
+                        Zgjedhni Llojin
+                      </option>
+                      <option key={1} value="PAGES">
+                        Pages
+                      </option>
+                      <option key={2} value="FATURIM">
+                        Faturim
+                      </option>
+                    </select>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Lloji i Pageses</Form.Label>

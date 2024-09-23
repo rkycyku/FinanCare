@@ -26,6 +26,10 @@ function ZbritjetEProduktit(props) {
   const [fshij, setFshij] = useState(false);
   const [tipiMesazhit, setTipiMesazhit] = useState("");
   const [pershkrimiMesazhit, setPershkrimiMesazhit] = useState("");
+  const [teDhenatBiznesit, setTedhenatBiznesit] = useState([]);
+
+  const [siteName, setSiteName] = useState("FinanCare");
+  const [produktetQmimore, setProduktetQmimore] = useState([]);
 
   const getToken = localStorage.getItem("token");
 
@@ -63,7 +67,29 @@ function ZbritjetEProduktit(props) {
             "Data e Skadimit": new Date(k.dataSkadimit).toISOString(),
           }))
         );
+        setProduktetQmimore(
+          zbritja.data.map((k, index) => ({
+            name: k.emriProduktit,
+            normalPrice: k.qmimiProduktit,
+            salePrice: k.qmimiProduktit - (k.rabati / 100) * k.qmimiProduktit,
+            barcode: k.barkodi,
+            dataZbritjes: new Date(k.dataZbritjes).toLocaleDateString(
+              "Gr-br",
+              "short"
+            ),
+            dataSkadimit: new Date(k.dataSkadimit).toLocaleDateString(
+              "Gr-br",
+              "short"
+            ),
+          }))
+        );
         setLoading(false);
+
+        const teDhenat = await axios.get(
+          "https://localhost:7285/api/TeDhenatBiznesit/ShfaqTeDhenat",
+          authentikimi
+        );
+        setSiteName(teDhenat?.data?.emriIBiznesit);
       } catch (err) {
         console.log(err);
         setLoading(false);
@@ -75,17 +101,20 @@ function ZbritjetEProduktit(props) {
 
   useEffect(() => {
     const currentDate = new Date();
+    // Resetting time to midnight to focus only on the date
     currentDate.setHours(0, 0, 0, 0);
+
     zbritjet.forEach((zbritja) => {
-      const dataSkadimit = new Date(zbritja.dataSkadimit);
-      if (dataSkadimit < currentDate) {
-        fshijZbritjen(zbritja.produktiID);
+      // Convert "Data e Skadimit" to a Date object
+      const dataSkadimit = new Date(zbritja["Data e Skadimit"]);
+      dataSkadimit.setHours(0, 0, 0, 0); // Reset to midnight for date-only comparison
+
+      // If the expiration date is earlier than the current date, remove the discount
+      if (dataSkadimit.getTime() < currentDate.getTime()) {
+        fshijZbritjen(zbritja.ID); // Assuming zbritja.ID is the correct product identifier
       }
-      console.log(zbritja);
-      console.log(dataSkadimit);
-      console.log(currentDate);
     });
-  }, [zbritjet]);
+  }, [zbritjet]); // zbritjet is the only dependency
 
   const fshijZbritjen = (id) => {
     axios.delete(
@@ -100,6 +129,22 @@ function ZbritjetEProduktit(props) {
     setId(id);
   };
   const handleFshijMbyll = () => setFshij(false);
+
+  useEffect(() => {
+    const vendosTeDhenatBiznesit = async () => {
+      try {
+        const teDhenat = await axios.get(
+          "https://localhost:7285/api/TeDhenatBiznesit/ShfaqTeDhenat",
+          authentikimi
+        );
+        setSiteName(teDhenat?.data?.emriIBiznesit);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    vendosTeDhenatBiznesit();
+  }, [perditeso]);
 
   return (
     <>
@@ -162,6 +207,9 @@ function ZbritjetEProduktit(props) {
                   startDateField="Data e Zbritjes"
                   endDateField="Data e Skadimit"
                   mosShfaqID={true}
+                  butoniShtypZbritjet={true}
+                  products={produktetQmimore}
+                  storeName={siteName}
                 />
               </div>
             </>

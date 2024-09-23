@@ -16,6 +16,8 @@ import {
   MDBNavbarLink,
   MDBNavbarNav,
 } from "mdb-react-ui-kit";
+import { roleBasedDropdowns } from "../Components/TeTjera/layout/roleBasedDropdowns";
+import jwtDecode from "jwt-decode";
 
 const Dashboard = () => {
   const [shfaqAdmin, setShfaqAdmin] = useState(false);
@@ -25,9 +27,13 @@ const Dashboard = () => {
   const [key, setKey] = useState("kryesore");
   const navigate = useNavigate();
 
+  const [userRoles, setUserRoles] = useState([]);
+
   const getID = localStorage.getItem("id");
 
   const getToken = localStorage.getItem("token");
+
+  const token = localStorage.getItem("token");
 
   const authentikimi = {
     headers: {
@@ -58,6 +64,24 @@ const Dashboard = () => {
     }
   }, [perditeso]);
 
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const kohaAktive = new Date(decodedToken.exp * 1000);
+      const kohaTanishme = new Date();
+
+      if (kohaAktive < kohaTanishme) {
+        localStorage.removeItem("token");
+        navigate("/LogIn");
+      } else {
+        setUserRoles(decodedToken.role || []); // Assuming roles are in the decoded token
+        console.log(decodedToken.role);
+      }
+    } else {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
   return (
     <>
       <KontrolloAksesinNeFaqe
@@ -78,35 +102,24 @@ const Dashboard = () => {
       <MDBNavbar expand="lg" light style={{ backgroundColor: "#009879" }}>
         <MDBContainer fluid>
           <MDBNavbarNav className="d-flex mr-auto">
-            <MDBNavbarItem>
-              <MDBNavbarLink>
-                <Link to="/Produktet">Produktet</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink>
-                <Link to="/KalkulimiIMallit">Kalkulimi i Mallit</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink>
-                <Link to="/Porosite">Porosite</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink>
-                <Link to="/Statistika">Statistikat</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink>
-                <Link to="/POS">POS</Link>
-              </MDBNavbarLink>
-            </MDBNavbarItem>
+            {roleBasedDropdowns.map((category) =>
+              category.items.map(
+                (item) =>
+                  item.roles.some((role) => userRoles.includes(role)) &&
+                  item.subItems.map((subItem) =>
+                    subItem.shfaqNeDashboard &&
+                    subItem.roles.some((role) =>
+                      userRoles.includes(role)
+                    ) ? (
+                      <MDBNavbarItem key={subItem.path}>
+                        <MDBNavbarLink>
+                          <Link to={subItem.path}>{subItem.label}</Link>
+                        </MDBNavbarLink>
+                      </MDBNavbarItem>
+                    ) : null
+                  )
+              )
+            )}
           </MDBNavbarNav>
         </MDBContainer>
       </MDBNavbar>

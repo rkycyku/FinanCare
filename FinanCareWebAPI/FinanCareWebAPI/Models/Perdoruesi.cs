@@ -27,4 +27,5 @@ public partial class Perdoruesi
     public virtual ICollection<Faturat> Faturat { get; } = new List<Faturat>();
 
     public virtual TeDhenatPerdoruesit? TeDhenatPerdoruesit { get; set; }
+    public virtual Kartelat? Kartelat { get; set; }
 }

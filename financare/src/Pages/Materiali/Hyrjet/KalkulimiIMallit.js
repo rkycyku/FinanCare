@@ -233,8 +233,38 @@ function KalkulimiIMallit(props) {
           {},
           authentikimi
         )
-        .then(() => {
+        .then(async () => {
           setRegjistroKalkulimin(false);
+          var r = await axios.get(
+            `https://localhost:7285/api/Faturat/shfaqRegjistrimetNgaID?id=${idKalkulimitEdit}`,
+            authentikimi
+          );
+          if (r.data.regjistrimet.llojiPageses !== "Borxh") {
+            await axios.post(
+              "https://localhost:7285/api/Faturat/ruajKalkulimin",
+              {
+                dataRegjistrimit: r.data.regjistrimet.dataRegjistrimit,
+                stafiID: r.data.regjistrimet.stafiID,
+                totaliPaTVSH: parseFloat(
+                  r.data.regjistrimet.totaliPaTVSH +
+                    r.data.regjistrimet.tvsh -
+                    r.data.rabati
+                ),
+                tvsh: 0,
+                idPartneri: r.data.regjistrimet.idPartneri,
+                statusiPageses: "E Paguar",
+                llojiPageses: r.data.regjistrimet.llojiPageses,
+                nrFatures: "PAGES-" + r.data.regjistrimet.nrFatures,
+                llojiKalkulimit: "PAGES",
+                pershkrimShtese:
+                  "Pagese per Faturen: " + r.data.regjistrimet.nrFatures,
+                nrRendorFatures: r.data.regjistrimet.nrRendorFatures + 1,
+                idBonusKartela: null,
+                statusiKalkulimit: "true",
+              },
+              authentikimi
+            );
+          }
         });
     } catch (error) {
       console.error(error);
@@ -298,9 +328,7 @@ function KalkulimiIMallit(props) {
 
   return (
     <>
-      <KontrolloAksesinNeFaqe
-        roletELejuara={["Menaxher", "Kalkulant"]}
-      />
+      <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant"]} />
       <NavBar />
       <div className="containerDashboardP" style={{ width: "90%" }}>
         {shfaqMesazhin && (

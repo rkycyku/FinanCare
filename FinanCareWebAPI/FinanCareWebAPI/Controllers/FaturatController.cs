@@ -502,6 +502,8 @@ namespace WebAPI.Controllers
             await _context.Faturat.AddAsync(regjistrimet);
             await _context.SaveChangesAsync();
 
+            
+
             return CreatedAtAction("Get", regjistrimet.IDRegjistrimit, regjistrimet);
         }
 
@@ -773,6 +775,8 @@ namespace WebAPI.Controllers
             {
                 fatura.IDBonusKartela = fat.IDBonusKartela;
             }
+
+
             try
             {
                 await _context.SaveChangesAsync();

@@ -56,6 +56,7 @@ function TabelaEKompanive(props) {
                   : "Nuk Ka asnje perdorues ne kete role",
             }))
         );
+        console.log(roli.data)
         setLoading(false);
       } catch (err) {
         console.log(err);

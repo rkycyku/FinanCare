@@ -200,7 +200,7 @@ function KthimIMallitTeBlere(props) {
             stafiID: teDhenat.perdoruesi.userID,
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
-            idpartneri: Partneri,
+            idPartneri: Partneri,
             statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: parseInt(nrRendorKalkulimit + 1).toString(),

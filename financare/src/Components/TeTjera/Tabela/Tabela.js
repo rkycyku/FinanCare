@@ -23,6 +23,7 @@ import {
 import CustomDatePicker from "../layout/CustomDatePicker";
 import { format, parseISO } from "date-fns";
 import Titulli from "../Titulli";
+import SalesLabel from "../SalesLabel";
 
 function Tabela({
   data,
@@ -40,6 +41,9 @@ function Tabela({
   endDateField, // End date field for range filtering
   mosShfaqID,
   mosShfaqKerkimin,
+  butoniShtypZbritjet,
+  storeName,
+  products,
 }) {
   const [perditeso, setPerditeso] = useState(Date.now());
   const [searchQuery, setSearchQuery] = useState("");
@@ -125,7 +129,7 @@ function Tabela({
       tabelaDiv.style.zoom = "80%";
     }
   }, []);
-
+//Rregullimi printo zbritjen
   return (
     <div className="tabelaDiv">
       <Titulli titulli={tableName} />
@@ -167,6 +171,14 @@ function Tabela({
                             Ndrysho Statusin e Fatures{" "}
                             <FontAwesomeIcon icon={faPenToSquare} />
                           </Button>
+                        </Col>
+                      )}
+                      {butoniShtypZbritjet && (
+                        <Col xs="auto" className="ps-1">
+                          <SalesLabel
+                            products={products}
+                            storeName={storeName}
+                          />
                         </Col>
                       )}
                     </Row>

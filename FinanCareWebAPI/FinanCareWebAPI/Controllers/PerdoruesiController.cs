@@ -32,6 +32,8 @@ namespace WebAPI.Controllers
             var perdoruesit = await _context.Perdoruesi
                 .Include(p => p.TeDhenatPerdoruesit)
                 .ThenInclude(x => x.Banka)
+                .Include(x => x.Kartelat)
+                .Where(x => x.Kartelat.LlojiKarteles == "Fshirje" || x.Kartelat == null)
                 .ToListAsync();
 
             var perdoruesiList = new List<RoletEPerdoruesit>();
