@@ -188,7 +188,7 @@ function RegjistroFaturen(props) {
       setShfaqMesazhin(true);
     } else {
       event.preventDefault();
-
+      console.log(optionsSelected);
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
@@ -239,7 +239,7 @@ function RegjistroFaturen(props) {
             {
               qmimiBleres: prod.qmimiBleres,
               qmimiProduktit: prod.qmimiProduktit,
-              sasiaNeStok: parseFloat(produkti.Sasia),
+              sasiaNeStok: parseFloat(produkti["Sasia"]),
               qmimiMeShumic: prod.qmimiMeShumic,
             },
             authentikimi

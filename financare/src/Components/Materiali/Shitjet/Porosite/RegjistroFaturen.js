@@ -253,7 +253,9 @@ function RegjistroFaturen(props) {
             idProduktit: optionsSelected?.value,
             sasiaStokut: sasia,
             qmimiBleres: optionsSelected?.item?.qmimiBleres,
-            qmimiShites: optionsSelected?.item?.qmimiProduktit,
+            qmimiShites: sasia >= optionsSelected?.item?.sasiaShumices
+            ? optionsSelected?.item?.qmimiMeShumic
+            : optionsSelected?.item?.qmimiProduktit,
             qmimiShitesMeShumic: optionsSelected?.item?.qmimiMeShumic,
             rabati1: optionsSelected?.item?.rabati ?? 0,
             rabati2: rabati2 ?? 0,
@@ -299,7 +301,7 @@ function RegjistroFaturen(props) {
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
-              sasiaNeStok: produkti.sasiaStokut,
+              sasiaNeStok: produkti["Sasia"],
             },
             authentikimi
           );
@@ -363,7 +365,9 @@ function RegjistroFaturen(props) {
           `https://localhost:7285/api/Faturat/ruajKalkulimin/PerditesoTeDhenat?id=${id}`,
           {
             qmimiBleres: qmimiB,
-            qmimiShites: qmimiShites,
+            qmimiShites: sasia >= optionsSelected[0]?.item?.sasiaShumices
+            ? optionsSelected[0]?.item?.qmimiMeShumic
+            : optionsSelected[0]?.item?.qmimiProduktit,
             sasiaStokut: sasia,
             qmimiShitesMeShumic: qmimiSH2,
             rabati1: rabati1,

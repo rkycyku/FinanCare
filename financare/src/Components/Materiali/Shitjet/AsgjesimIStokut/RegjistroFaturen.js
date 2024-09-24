@@ -267,7 +267,7 @@ function RegjistroFaturen(props) {
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/asgjesoStokun/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
-              sasiaNeStok: produkti.sasiaStokut,
+              sasiaNeStok: produkti["Sasia"],
             },
             authentikimi
           );

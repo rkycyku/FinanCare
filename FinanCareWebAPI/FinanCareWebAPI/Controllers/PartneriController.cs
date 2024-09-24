@@ -151,7 +151,8 @@ namespace FinanCareWebAPI.Controllers
                     x.LlojiPageses,
                     x.StatusiKalkulimit,
                     x.NrRendorFatures,
-                    x.PershkrimShtese
+                    x.PershkrimShtese,
+                    x.NrFatures
                 })
                 .ToListAsync();
 
@@ -160,6 +161,7 @@ namespace FinanCareWebAPI.Controllers
                     (x.LlojiKalkulimit.Equals("FL")
                     || x.LlojiKalkulimit.Equals("KMSH")
                     || x.LlojiKalkulimit.Equals("PAGES")
+                    || x.LlojiKalkulimit.Equals("KMB")
                     ) && x.StatusiKalkulimit.Equals("true")
                 )
                 .ToListAsync();
@@ -170,7 +172,7 @@ namespace FinanCareWebAPI.Controllers
                     (x.LlojiKalkulimit.Equals("HYRJE")
                     || x.LlojiKalkulimit.Equals("FAT")
                     || x.LlojiKalkulimit.Equals("AS")
-                    || x.LlojiKalkulimit.Equals("KMB")
+                    
                     || x.LlojiKalkulimit.Equals("PARAGON")
                     || x.LlojiKalkulimit.Equals("FATURIM")
                     ) && x.StatusiKalkulimit.Equals("true")

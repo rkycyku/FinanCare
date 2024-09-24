@@ -290,27 +290,14 @@ function POS(props) {
   }
 
   function kontrolloQmimin(e) {
-    setSasia((e && e.target && e.target.value) || e);
+    setSasia(e?.target?.value || e);
 
     console.log(e.target);
 
-    if (e && e.target && e.target.value % sasiaShumices === 0) {
-      setQmimiSH(
-        (e &&
-          e.target &&
-          e.target.value &&
-          e.target.value.qmimiShitesMeShumic) ||
-          qmimiSH2
-      );
+    if (e?.target?.value >= sasiaShumices) {
+      setQmimiSH(e?.target?.value?.qmimiShitesMeShumic || qmimiSH2);
     } else {
-      setQmimiSH(
-        (e &&
-          e.target &&
-          e.target.value &&
-          e.target.value &&
-          e.target.value.qmimiProduktit) ||
-          qmimiSH
-      );
+      setQmimiSH(e?.target?.value?.qmimiProduktit || qmimiSH);
     }
   }
 
@@ -512,6 +499,7 @@ function POS(props) {
         setIDPartneri(1);
         setTeDhenatKartelaBleresit(null);
         setIDProduktiFunditShtuar(null);
+        setKartelaBleresit(null);
       });
   };
 
@@ -577,7 +565,7 @@ function POS(props) {
               sasiaStokut: produkti.sasiaStokut,
               qmimiShites: produkti.qmimiShites,
               qmimiShitesMeShumic: produkti.qmimiShitesMeShumic,
-              rabati1: produkti.rabati1,
+              rabati1: produkti?.rabati1 ?? 0,
               rabati2: kaKartele.data.rabati,
             },
             authentikimi

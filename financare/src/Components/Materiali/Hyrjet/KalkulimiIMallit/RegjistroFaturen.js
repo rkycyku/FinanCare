@@ -111,7 +111,7 @@ function RegjistroFaturen(props) {
               "Qmimi Shites me Pakic + TVSH €": parseFloat(
                 k.qmimiShites
               ).toFixed(2),
-              "Qmimi Shites me Shumic + TVSH€": parseFloat(
+              "Qmimi Shites me Shumic + TVSH €": parseFloat(
                 k.qmimiShitesMeShumic
               ).toFixed(2),
               "Totali Bleres €": parseFloat(
@@ -267,17 +267,20 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
+          console.log(produkti)
           var prod = produktet.find(
             (item) => item.emriProduktit == produkti["Emri Produktit"]
           );
 
+          console.log(produktet)
+
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStokunQmimin?id=${prod.produktiID}`,
             {
-              qmimiBleres: produkti.qmimiBleres,
-              qmimiProduktit: produkti.qmimiShites,
-              sasiaNeStok: produkti.sasiaStokut,
-              qmimiMeShumic: produkti.qmimiShitesMeShumic,
+              qmimiBleres: produkti["Qmimi Bleres + TVSH €"],
+              qmimiProduktit: produkti["Qmimi Shites me Pakic + TVSH €"],
+              sasiaNeStok: produkti["Sasia"],
+              qmimiMeShumic: produkti["Qmimi Shites me Shumic + TVSH €"],
             },
             authentikimi
           );
@@ -514,7 +517,9 @@ function RegjistroFaturen(props) {
                           const qmimbleres = parseFloat(e.target.value);
                           setQmimiBleres(qmimbleres);
                           const qmimishites =
-                            qmimbleres + qmimbleres * (llojiTVSH / 100);
+                            qmimbleres +
+                            qmimbleres *
+                              ((optionsSelected.item.llojiTVSH + 8) / 100);
                           setQmimiShites(qmimishites.toFixed(2));
                           setQmimiShitesMeShumic(qmimishites.toFixed(2));
                         }}

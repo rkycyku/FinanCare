@@ -196,7 +196,8 @@ function KalkulimiIMallit(props) {
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
             idPartneri: Partneri,
-            statusiPageses: statusiIPageses,
+            statusiPageses:
+              llojiIPageses == "Borxh" ? "Pa Paguar" : statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: nrFatures,
             nrRendorFatures: nrRendorKalkulimit + 1,

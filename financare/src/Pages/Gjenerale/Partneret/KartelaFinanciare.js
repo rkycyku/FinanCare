@@ -98,11 +98,12 @@ function KartelaFinanciare(props) {
           authentikimi
         );
 
+        console.log(response.data)
+
         const kalkulimet = response.data.kalkulimet || [];
         let saldo = 0;
 
         const formattedData = kalkulimet.map((p, index) => {
-          // Calculate price with discounts
           const qmimiMeTVSHRab = parseFloat(
             p.qmimiShites -
               p.qmimiShites * (p.rabati1 / 100) -
@@ -125,11 +126,11 @@ function KartelaFinanciare(props) {
               ? (p.totaliPaTVSH + p.tvsh - p.rabati) * -1
               : p.totaliPaTVSH + p.tvsh - p.rabati;
 
-          if (["HYRJE", "FAT", "AS", "KMB", "PARAGON"].includes(p.llojiKalkulimit)) {
+          if (["HYRJE", "FAT", "AS", "PARAGON"].includes(p.llojiKalkulimit)) {
             faturimValue = parseFloat(vlera).toFixed(2);
             saldo += parseFloat(faturimValue);
           } else if (
-            ["FL", "KMSH", "PAGES"].includes(p.llojiKalkulimit)
+            ["FL", "KMSH", "KMB", "PAGES"].includes(p.llojiKalkulimit)
           ) {
             faturimValue = parseFloat(vlera).toFixed(2);
             saldo -= parseFloat(faturimValue);
@@ -142,14 +143,14 @@ function KartelaFinanciare(props) {
               { dateStyle: "short" }
             ),
             "Lloji Fat.": p.llojiKalkulimit,
-            "Nr. Fat": p.nrRendorFatures,
+            "Nr. Fat": p.nrFatures,
             Pershkrimi: p.pershkrimShtese,
-            "Faturim €": ["HYRJE", "FAT", "AS", "KMB", "PARAGON"].includes(
+            "Faturim €": ["HYRJE", "FAT", "AS", "PARAGON"].includes(
               p.llojiKalkulimit
             )
               ? faturimValue
               : "-",
-            "Pagese €": ["FL", "KMSH", "PAGES"].includes(
+            "Pagese €": ["FL", "KMSH", "KMB", "PAGES"].includes(
               p.llojiKalkulimit
             )
               ? faturimValue
