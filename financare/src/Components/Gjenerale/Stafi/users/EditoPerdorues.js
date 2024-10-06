@@ -142,6 +142,41 @@ function EditoPerdorues(props) {
     }
   };
 
+  const handleResetoPasswordin = async () => {
+    try {
+      await axios.post(
+        `https://localhost:7285/api/Authenticate/ResetoFjalekalimin?AspNetID=${props.id}`,
+        {},
+        authentikimi
+      ).then((r) =>  props.setPershkrimiMesazhit(
+        "<strong>Password u resetua me sukses</strong>" +
+          "<br> </br>" +
+          `<p><strong>Email:</strong> ${
+            r.data.email
+          }</p>` +
+          `<p><strong>Username:</strong> ${
+            r.data.username
+          }</p>` +
+          `<p><strong>Password:</strong> ${
+            r.data.passwordiGjeneruar
+          }</p>`
+      ));
+      props.perditesoTeDhenat();
+      props.largo();
+      props.setTipiMesazhit("success");
+      props.shfaqmesazhin();
+    } catch (error) {
+      console.log(error);
+      props.perditesoTeDhenat();
+      props.largo();
+      props.setTipiMesazhit("danger");
+      props.setPershkrimiMesazhit(
+        "Ndodhi nje gabim gjate perditesimit te aksesit!"
+      );
+      props.shfaqmesazhin();
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       await axios.put(
@@ -157,7 +192,7 @@ function EditoPerdorues(props) {
       props.perditesoTeDhenat();
       props.largo();
       props.setTipiMesazhit("success");
-      props.setPershkrimiMesazhit("Aksesi i perdoruesit u perditesua!");
+      props.setPershkrimiMesazhit("Perdoruesi u perditesua!");
       props.shfaqmesazhin();
     } catch (error) {
       console.log(error);
@@ -172,7 +207,7 @@ function EditoPerdorues(props) {
   };
 
   if (!perdoruesi) {
-    return <div>Loading...</div>;
+    return;
   }
 
   return (
@@ -467,6 +502,21 @@ function EditoPerdorues(props) {
                   </Row>
                 </Form.Group>
               </Form>
+            </Tab>
+
+            <Tab eventKey="fjalekalimi" title="Fjalëkalimi">
+              <div>
+                <p>
+                  Kjo do të rivendosë fjalëkalimin për përdoruesin në një
+                  fjalëkalim të paracaktuar. Ju lutemi, sigurohuni që përdoruesi
+                  ta ndryshojë fjalëkalimin pas rivendosjes.
+                </p>
+                <Button
+                  variant="danger"
+                  onClick={() => handleResetoPasswordin()}>
+                  Rivendos Fjalëkalimin
+                </Button>
+              </div>
             </Tab>
           </Tabs>
         </Modal.Body>

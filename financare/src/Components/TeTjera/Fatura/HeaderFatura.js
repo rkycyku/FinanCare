@@ -60,7 +60,7 @@ function HeaderFatura(props) {
             style={{ width: "150px", height: "auto", marginTop: "0.5em" }}
           />
           <h2 style={{ fontSize: "24pt" }}>
-            {teDhenatBiznesit && teDhenatBiznesit.emriIbiznesit}
+            {teDhenatBiznesit && teDhenatBiznesit.emriIBiznesit}
           </h2>
           <p>
             <strong>Adresa: </strong>

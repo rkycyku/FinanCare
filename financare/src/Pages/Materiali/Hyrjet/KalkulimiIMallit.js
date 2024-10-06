@@ -66,7 +66,7 @@ function KalkulimiIMallit(props) {
 
   const [teDhenat, setTeDhenat] = useState([]);
 
-  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Borxh");
+  const [statusiIPagesesValue, setStatusiIPagesesValue] = useState("Pa Paguar");
 
   const navigate = useNavigate();
 
@@ -196,8 +196,7 @@ function KalkulimiIMallit(props) {
             totaliPaTVSH: totPaTVSH,
             tvsh: TVSH,
             idPartneri: Partneri,
-            statusiPageses:
-              llojiIPageses == "Borxh" ? "Pa Paguar" : statusiIPageses,
+            statusiPageses: statusiIPageses,
             llojiPageses: llojiIPageses,
             nrFatures: nrFatures,
             nrRendorFatures: nrRendorKalkulimit + 1,
@@ -206,6 +205,7 @@ function KalkulimiIMallit(props) {
           authentikimi
         )
         .then((response) => {
+          console.log(response);
           if (response.status === 200 || response.status === 201) {
             setPerditeso(Date.now());
             setIdKalkulimitEdit(response.data.idRegjistrimit);
@@ -286,14 +286,6 @@ function KalkulimiIMallit(props) {
     setShfaqTeDhenat(false);
   };
 
-  useEffect(() => {
-    if (llojiIPageses === "Borxh") {
-      setStatusiIPagesesValue("Borxh");
-    } else {
-      setStatusiIPagesesValue(statusiIPageses ? statusiIPageses : 0);
-    }
-  }, [llojiIPageses, statusiIPageses]);
-
   const [options, setOptions] = useState([]);
   const [optionsSelected, setOptionsSelected] = useState(null);
   const customStyles = {
@@ -325,6 +317,14 @@ function KalkulimiIMallit(props) {
   const handleChange = async (partneri) => {
     setPartneri(partneri.value);
     setOptionsSelected(partneri);
+
+    document.getElementById("nrFatures").focus();
+  };
+
+  const handleMenaxhoTastetPagesa = (event) => {
+    if (event.key === "Enter") {
+      handleRegjistroKalkulimin();
+    }
   };
 
   return (
@@ -443,6 +443,9 @@ function KalkulimiIMallit(props) {
                         value={llojiIPageses ? llojiIPageses : 0}
                         onChange={(e) => {
                           setLlojiIPageses(e.target.value);
+                          if (e.target.value == "Borxh") {
+                            setStatusiIPageses("Pa Paguar");
+                          }
                         }}
                         onKeyDown={(e) => {
                           ndrroField(e, "statusiIPageses");
@@ -467,7 +470,7 @@ function KalkulimiIMallit(props) {
                         id="statusiIPageses"
                         placeholder="Statusi i Pageses"
                         className="form-select"
-                        value={statusiIPagesesValue}
+                        value={statusiIPageses}
                         onChange={(e) => {
                           setStatusiIPageses(e.target.value);
                         }}
@@ -481,7 +484,7 @@ function KalkulimiIMallit(props) {
                         <option key={1} value="E Paguar">
                           E Paguar
                         </option>
-                        <option key={2} value="Borxh">
+                        <option key={2} value="Pa Paguar">
                           Pa Paguar
                         </option>
                       </select>
@@ -511,6 +514,7 @@ function KalkulimiIMallit(props) {
                         onChange={(e) => {
                           setTVSH(e.target.value);
                         }}
+                        onKeyDown={handleMenaxhoTastetPagesa}
                       />
                     </Form.Group>
                     <br />

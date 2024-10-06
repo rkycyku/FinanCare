@@ -21,6 +21,7 @@ import useKeyboardNavigation from "../../../Context/useKeyboardNavigation";
 import Select from "react-select";
 import Titulli from "../../../Components/TeTjera/Titulli";
 import KontrolloAksesinNeFaqe from "../../../Components/TeTjera/KontrolliAksesit/KontrolloAksesinNeFaqe";
+import jsPDF from "jspdf";
 
 function POS(props) {
   const [perditeso, setPerditeso] = useState("");
@@ -69,6 +70,8 @@ function POS(props) {
   const [optionsBarkodi, setOptionsBarkodi] = useState([]);
   const [optionsBarkodiSelected, setOptionsBarkodiSelected] = useState(null);
 
+  const [teDhenatBiznesit, setTeDhenatBiznesit] = useState(null); // Changed to null for better checks
+
   const navigate = useNavigate();
 
   const getID = localStorage.getItem("id");
@@ -80,6 +83,23 @@ function POS(props) {
       Authorization: `Bearer ${getToken}`,
     },
   };
+
+  useEffect(() => {
+    const vendosTeDhenatBiznesit = async () => {
+      try {
+        const teDhenat = await axios.get(
+          "https://localhost:7285/api/TeDhenatBiznesit/ShfaqTeDhenat",
+          authentikimi
+        );
+        console.log(teDhenat.data);
+        setTeDhenatBiznesit(teDhenat.data);
+      } catch (err) {
+        console.error("Error fetching business details:", err);
+      }
+    };
+
+    vendosTeDhenatBiznesit();
+  }, [perditeso]);
 
   useEffect(() => {
     if (getID) {
@@ -324,7 +344,7 @@ function POS(props) {
       )
       .then((response) => {
         // Assuming the response data is an array of objects with `value` and `label` properties
-        const fetchedOptionsBarkodi = response.data.map((item) => ({
+        const fetchedOptionsBarkodi = response.data.filter((item) => item.qmimiProduktit > 0).map((item) => ({
           value: item.produktiID,
           label:
             item.barkodi +
@@ -389,11 +409,14 @@ function POS(props) {
   };
 
   const handleMenaxhoTastetPagesa = (event) => {
-    event.preventDefault();
     if (event.key === "F4") {
+      
+    event.preventDefault();
       setVendosKartelenBleresit(true);
     }
     if (event.key === "F5") {
+      
+    event.preventDefault();
       mbyllFature();
     }
   };
@@ -411,6 +434,386 @@ function POS(props) {
       VendosKartelenFshirjesProduktit();
     }
   };
+
+  async function generateInvoice(data) {
+    // Step 1: Create an initial doc to calculate dynamic height
+    const initialDoc = new jsPDF({
+      unit: "mm",
+      format: [75, 1000], // Set a large height for initial calculation
+    });
+
+    // Set up some helper variables and functions
+    const logoUrl = `${process.env.PUBLIC_URL}/img/web/${teDhenatBiznesit?.logo}`;
+    const logoImage = await loadImage(logoUrl);
+    initialDoc.addImage(logoImage, "PNG", 10, 5, 55, 15); // Logo position
+    let currentY = 25; // Initial Y position for the document content
+
+    function addShrinkText(doc, text, x, y, maxWidth) {
+      let fontSize = 10; // Start with a default font size
+      doc.setFont("Courier");
+      doc.setFontSize(fontSize);
+
+      while (doc.getTextWidth(text) > maxWidth && fontSize > 7) {
+        fontSize -= 1; // Decrease font size
+        doc.setFontSize(fontSize);
+      }
+
+      doc.text(text, x, y, { align: "center" });
+    }
+
+    addShrinkText(
+      initialDoc,
+      teDhenatBiznesit?.emriIBiznesit,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down for the next line
+    addShrinkText(
+      initialDoc,
+      `Adresa: ${teDhenatBiznesit?.adresa}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(
+      initialDoc,
+      `Kontakti: ${teDhenatBiznesit?.nrKontaktit} - ${teDhenatBiznesit?.email}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(
+      initialDoc,
+      `NUI: ${teDhenatBiznesit?.nui}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(
+      initialDoc,
+      `TVSH: ${teDhenatBiznesit?.nrTVSH}`,
+      38.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(
+      initialDoc,
+      `NRF: ${teDhenatBiznesit?.nf}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+
+    currentY += 5;
+    // Draw a line
+    initialDoc.line(0, currentY, 75, currentY); // Line after store info
+    currentY += 5;
+
+    // Redraw the content using the new initialDoc
+    addShrinkText(initialDoc, "PARAGON", 37.5, currentY, 70);
+    currentY += 5;
+    addShrinkText(
+      initialDoc,
+      `Paragon #: ${data.invoiceNumber}`,
+      25.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+    addShrinkText(initialDoc, `Data: ${data.date}`, 18, currentY, 70);
+    currentY += 5;
+    addShrinkText(
+      initialDoc,
+      `Shitësi: ${data.salesUsername}`,
+      32.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+
+    // Draw a line
+    initialDoc.line(0, currentY, 75, currentY); // Line before the product list
+    currentY += 5; // Move down for product list header
+
+    // Line Items Header
+    currentY += 5; // Move down for item row header
+    addShrinkText(initialDoc, "Produkti", 11, currentY, 30); // Product Name
+    addShrinkText(initialDoc, "TVSH (%)", 63, currentY, 20); // VAT %
+    currentY += 5; // Move down for the second row
+
+    // Second row for prices, quantity, and total
+    addShrinkText(initialDoc, "Çmimi", 11, currentY, 20); // Price
+    addShrinkText(initialDoc, "Sasia", 38, currentY, 20); // Quantity
+    addShrinkText(initialDoc, "Totali", 63, currentY, 20); // Overall Price
+    currentY += 5;
+    addShrinkText(
+      initialDoc,
+      "----------------------------------",
+      37.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+
+    data.items.forEach((item) => {
+      addShrinkText(initialDoc, item.name, 38, currentY, 30);
+      currentY += 5;
+      addShrinkText(
+        initialDoc,
+        `${parseFloat(item.vatPercentage).toFixed(2)} %`,
+        63,
+        currentY,
+        20
+      );
+      currentY += 5;
+      addShrinkText(
+        initialDoc,
+        `${parseFloat(item.price).toFixed(2)} €`,
+        11,
+        currentY,
+        20
+      );
+      addShrinkText(initialDoc, `${item.quantity}`, 38, currentY, 20);
+      addShrinkText(
+        initialDoc,
+        `${parseFloat(item.total).toFixed(2)} €`,
+        63,
+        currentY,
+        20
+      );
+      currentY += 5;
+      addShrinkText(
+        initialDoc,
+        "----------------------------------",
+        37.5,
+        currentY,
+        70
+      );
+      currentY += 5;
+    });
+    initialDoc.line(0, currentY, 75, currentY); // Line after the items
+    currentY += 5;
+
+    addShrinkText(
+      initialDoc,
+      `Totali pa TVSH: ${data.totalWithoutVAT} €`,
+      25.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+    addShrinkText(initialDoc, `TVSH: ${data.vat} €`, 14, currentY, 70);
+    currentY += 5;
+    addShrinkText(
+      initialDoc,
+      `Totali pa Rabat: ${parseFloat(
+        parseFloat(data.totalWithoutVAT) +
+          parseFloat(data.vat) +
+          parseFloat(data.rabati)
+      ).toFixed(2)} €`,
+      27.5,
+      currentY,
+      70
+    );
+
+    currentY += 5;
+    addShrinkText(initialDoc, `Rabati: ${data.rabati} €`, 17.5, currentY, 70);
+    currentY += 5;
+    addShrinkText(
+      initialDoc,
+      `Totali: ${parseFloat(
+        parseFloat(data.totalWithoutVAT) + parseFloat(data.vat)
+      ).toFixed(2)} €`,
+      17.5,
+      currentY,
+      70
+    );
+
+    // Step 2: Calculate the final height needed for the document
+    const finalHeight = currentY + 20; // Add some margin
+
+    // Step 3: Create a new jsPDF document with the calculated height
+    const doc = new jsPDF({
+      unit: "mm",
+      format: [75, finalHeight], // Set the height to fit the content
+    });
+
+    // Step 4: Regenerate content with the new height
+    // Add content again as previously done with the calculated height
+    doc.addImage(logoImage, "PNG", 10, 5, 55, 15); // Logo position
+    currentY = 25; // Reset Y position
+
+    addShrinkText(doc, teDhenatBiznesit?.emriIBiznesit, 37.5, currentY, 70); // Centered
+    currentY += 5; // Move down for the next line
+    addShrinkText(
+      doc,
+      `Adresa: ${teDhenatBiznesit?.adresa}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(
+      doc,
+      `Kontakti: ${teDhenatBiznesit?.nrKontaktit} - ${teDhenatBiznesit?.email}`,
+      37.5,
+      currentY,
+      70
+    ); // Centered
+    currentY += 5; // Move down
+    addShrinkText(doc, `NUI: ${teDhenatBiznesit?.nui}`, 37.5, currentY, 70); // Centered
+    currentY += 5; // Move down
+    addShrinkText(doc, `TVSH: ${teDhenatBiznesit?.nrTVSH}`, 38.5, currentY, 70); // Centered
+    currentY += 5; // Move down
+    addShrinkText(doc, `NRF: ${teDhenatBiznesit?.nf}`, 37.5, currentY, 70); // Centered
+
+    currentY += 5;
+    // Draw a line
+    doc.line(0, currentY, 75, currentY); // Line after store info
+    currentY += 5;
+
+    // Redraw the content using the new doc
+    addShrinkText(doc, "PARAGON", 37.5, currentY, 70);
+    currentY += 5;
+    addShrinkText(doc, `Paragon #: ${data.invoiceNumber}`, 26.5, currentY, 70);
+    currentY += 5;
+    addShrinkText(doc, `Data: ${data.date}`, 18, currentY, 70);
+    currentY += 5;
+    addShrinkText(doc, `Shitësi: ${data.salesUsername}`, 32.5, currentY, 70);
+    currentY += 5;
+
+    // Draw a line
+    doc.line(0, currentY, 75, currentY); // Line before the product list
+    currentY += 5; // Move down for product list header
+
+    // Line Items Header
+    currentY += 5; // Move down for item row header
+    addShrinkText(doc, "Produkti", 11, currentY, 30); // Product Name
+    addShrinkText(doc, "TVSH (%)", 63, currentY, 20); // VAT %
+    currentY += 5; // Move down for the second row
+
+    // Second row for prices, quantity, and total
+    addShrinkText(doc, "Çmimi", 11, currentY, 20); // Price
+    addShrinkText(doc, "Sasia", 38, currentY, 20); // Quantity
+    addShrinkText(doc, "Totali", 63, currentY, 20); // Overall Price
+    currentY += 5;
+    addShrinkText(
+      doc,
+      "----------------------------------",
+      37.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+
+    data.items.forEach((item) => {
+      addShrinkText(doc, item.name, 38, currentY, 30);
+      currentY += 5;
+      addShrinkText(
+        doc,
+        `${parseFloat(item.vatPercentage).toFixed(2)} %`,
+        63,
+        currentY,
+        20
+      );
+      currentY += 5;
+      addShrinkText(
+        doc,
+        `${parseFloat(item.price).toFixed(2)} €`,
+        11,
+        currentY,
+        20
+      );
+      addShrinkText(doc, `${item.quantity}`, 38, currentY, 20);
+      addShrinkText(
+        doc,
+        `${parseFloat(item.total).toFixed(2)} €`,
+        63,
+        currentY,
+        20
+      );
+      currentY += 5;
+      addShrinkText(
+        doc,
+        "----------------------------------",
+        37.5,
+        currentY,
+        70
+      );
+      currentY += 5;
+    });
+    doc.line(0, currentY, 75, currentY); // Line after the items
+    currentY += 5;
+
+    addShrinkText(
+      doc,
+      `Totali pa TVSH: ${data.totalWithoutVAT} €`,
+      25.5,
+      currentY,
+      70
+    );
+    currentY += 5;
+    addShrinkText(doc, `TVSH: ${data.vat} €`, 14, currentY, 70);
+    currentY += 5;
+    addShrinkText(
+      doc,
+      `Totali pa Rabat: ${parseFloat(
+        parseFloat(data.totalWithoutVAT) +
+          parseFloat(data.vat) +
+          parseFloat(data.rabati)
+      ).toFixed(2)} €`,
+      26.5,
+      currentY,
+      70
+    );
+
+    currentY += 5;
+    addShrinkText(doc, `Rabati: ${data.rabati} €`, 16.5, currentY, 70);
+    currentY += 5;
+
+    addShrinkText(
+      doc,
+      `Totali: ${parseFloat(
+        parseFloat(data.totalWithoutVAT) + parseFloat(data.vat)
+      ).toFixed(2)} €`,
+      17.5,
+      currentY,
+      70
+    );
+
+    // Footer
+    currentY += 10;
+    addShrinkText(doc, "Faleminderit për blerjen!", 37.5, currentY, 70);
+
+    // Step 5: Save the document with the final height
+    doc.save(`Paragon #${data.invoiceNumber}.pdf`);
+
+    setPerditeso(Date.now());
+    setShumaPageses(0);
+    setLlojiPageses("Cash");
+    setOptionsBarkodiSelected(null);
+    setIDPartneri(1);
+    setTeDhenatKartelaBleresit(null);
+    setIDProduktiFunditShtuar(null);
+    setKartelaBleresit(null);
+    setRabati2(0);
+    setRabati1(0);
+  }
+
+  // Helper function to load an image from a URL
+  function loadImage(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(img);
+      img.onerror = (error) => reject(error);
+    });
+  }
 
   const mbyllFature = async (event) => {
     await axios
@@ -492,14 +895,40 @@ function POS(props) {
         }
 
         document.getElementById("barkodiSelect-input").focus();
-        setPerditeso(Date.now());
-        setShumaPageses(0);
-        setLlojiPageses("Cash");
-        setOptionsBarkodiSelected(null);
-        setIDPartneri(1);
-        setTeDhenatKartelaBleresit(null);
-        setIDProduktiFunditShtuar(null);
-        setKartelaBleresit(null);
+        const data = {
+          invoiceNumber: r?.data?.regjistrimet?.nrFatures,
+          date: currentDate,
+          salesUsername:
+            r?.data?.regjistrimet?.stafiID +
+            " - " +
+            r?.data?.regjistrimet?.username,
+          items: [
+            // Map through totTVSH8 and totTVSH18 arrays and convert them to item objects
+            ...(r?.data?.totTVSH8?.map((item) => ({
+              name: item.produkti?.emriProduktit || "Unknown Product",
+              vatPercentage: 8, // Assuming VAT 8% for these items
+              quantity: item.sasiaStokut || 1, // Use sasiaStokut for the quantity
+              price: item.qmimiShites.toFixed(2) || "0.00", // Use qmimiShites for the price
+              total: (item.qmimiShites * item.sasiaStokut).toFixed(2) || "0.00", // Calculate total
+            })) || []),
+
+            ...(r?.data?.totTVSH18?.map((item) => ({
+              name: item.produkti?.emriProduktit || "Unknown Product",
+              vatPercentage: 18, // Assuming VAT 18% for these items
+              quantity: item.sasiaStokut || 1, // Use sasiaStokut for the quantity
+              price: item.qmimiShites.toFixed(2) || "0.00", // Use qmimiShites for the price
+              total: (item.qmimiShites * item.sasiaStokut).toFixed(2) || "0.00", // Calculate total
+            })) || []),
+          ],
+          totalWithoutVAT: parseFloat(
+            r?.data?.regjistrimet?.totaliPaTVSH
+          ).toFixed(2),
+          vat: parseFloat(r?.data?.regjistrimet?.tvsh).toFixed(2),
+          rabati: parseFloat(r?.data?.rabati ?? 0).toFixed(2),
+        };
+
+        // Generate the invoice
+        generateInvoice(data);
       });
   };
 

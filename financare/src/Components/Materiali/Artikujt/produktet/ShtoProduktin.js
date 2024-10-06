@@ -164,7 +164,7 @@ const ShtoProduktin = (props) => {
       )
       .then((response) => {
         console.log(response);
-        const fetchedoptions = response.data.map((item) => ({
+        const fetchedoptions = response.data.filter((item) => item.idPartneri != 1 && item.idPartneri != 2 && item.idPartneri != 3).map((item) => ({
           value: item.idPartneri,
           label: item.emriBiznesit,
         }));
@@ -228,6 +228,12 @@ const ShtoProduktin = (props) => {
     setOptionsSelectedLlojiTVSH(partneri);
     setProdukti({ ...produkti, llojiTVSH: partneri.value });
     document.getElementById("sasiaShumices").focus();
+  };
+
+  const handleMenaxhoTastetPagesa = (event) => {
+    if (event.key === "Enter") {
+      handleKontrolli();
+    }
   };
 
   return (
@@ -337,7 +343,7 @@ const ShtoProduktin = (props) => {
                 id="emriProduktit"
                 type="text"
                 placeholder="Emri Produktit"
-                onKeyDown={(e) => ndrroField(e, "grupiproduktit")}
+                onKeyDown={(e) => ndrroField(e, "grupiProduktitSelect-input")}
                 label={
                   <span>
                     Emri Produktit<span style={{ color: "red" }}>*</span>
@@ -418,6 +424,7 @@ const ShtoProduktin = (props) => {
                   </span>
                 }
                 autoComplete={false}
+                onKeyDown={handleMenaxhoTastetPagesa}
               />
             </MDBCol>
             <MDBCol md="4" id="kodiProduktit">

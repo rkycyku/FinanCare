@@ -239,6 +239,13 @@ function ShtoPagesat(props) {
     document.getElementById("pershkrimiPageses").focus();
   };
 
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleRegjistroKalkulimin();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Financa"]} />
@@ -384,6 +391,7 @@ function ShtoPagesat(props) {
                       onChange={(e) => {
                         setShumaPageses(e.target.value);
                       }}
+                      onKeyDown={handleMenaxhoTastet}
                     />
                   </Form.Group>
                   <br />

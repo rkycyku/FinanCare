@@ -184,7 +184,7 @@ function RegjistroFaturen(props) {
                 totaliPaTVSH: r.data.regjistrimet.totaliPaTVSH,
                 tvsh: r.data.regjistrimet.tvsh,
                 idPartneri: r.data.regjistrimet.idPartneri,
-                statusiPageses: r.data.statusiPageses,
+                statusiPageses: r.data.regjistrimet.statusiPageses,
                 llojiPageses: r.data.regjistrimet.llojiPageses,
                 llojiKalkulimit: r.data.regjistrimet.llojiKalkulimit,
                 nrFatures: r.data.regjistrimet.nrFatures,
@@ -216,13 +216,10 @@ function RegjistroFaturen(props) {
 
   const handleSubmit = async (event) => {
     if (sasia <= 0 || qmimiShites <= 0 || qmimiBleres <= 0) {
-      event.preventDefault();
       setPershkrimiMesazhit("Ju lutem plotesoni te gjitha te dhenat!");
       setTipiMesazhit("danger");
       setShfaqMesazhin(true);
     } else {
-      event.preventDefault();
-
       await axios
         .post(
           "https://localhost:7285/api/Faturat/ruajKalkulimin/teDhenat",
@@ -250,6 +247,7 @@ function RegjistroFaturen(props) {
       setQmimiSH(0);
       setQmimiSH2(0);
       setPerditeso(Date.now());
+      document.getElementById("produktiSelect-input").focus();
     }
   };
 
@@ -267,12 +265,12 @@ function RegjistroFaturen(props) {
         props.mbyllPerkohesisht();
       } else {
         for (let produkti of produktetNeKalkulim) {
-          console.log(produkti)
+          console.log(produkti);
           var prod = produktet.find(
             (item) => item.emriProduktit == produkti["Emri Produktit"]
           );
 
-          console.log(produktet)
+          console.log(produktet);
 
           await axios.put(
             `https://localhost:7285/api/Faturat/ruajKalkulimin/perditesoStokunQmimin?id=${prod.produktiID}`,
@@ -416,6 +414,17 @@ function RegjistroFaturen(props) {
     vendosTeDhenatBiznesit();
   }, [perditeso]);
 
+  const handleMenaxhoTastetPagesa = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if(!edito){
+      handleSubmit();
+      }else{
+        handleEdito(idTeDhenatKalk);
+      }
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFunksione
@@ -557,12 +566,17 @@ function RegjistroFaturen(props) {
                           );
                           setQmimiShitesMeShumic(qmimishitesmeshumic);
                         }}
+                        onKeyDown={handleMenaxhoTastetPagesa}
                       />
                     </Form.Group>
 
                     <br />
                     <div style={{ display: "flex", gap: "0.3em" }}>
-                      <Button variant="success" type="submit" disabled={edito}>
+                      <Button
+                        variant="success"
+                        type="submit"
+                        disabled={edito}
+                        onClick={(e) => {e.preventDefault(); handleSubmit();}}>
                         Shto Produktin <FontAwesomeIcon icon={faPlus} />
                       </Button>
                       {edito && (

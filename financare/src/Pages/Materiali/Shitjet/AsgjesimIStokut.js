@@ -257,6 +257,13 @@ function KalkulimiIMallit(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleRegjistroKalkulimin();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFaqe
@@ -353,9 +360,7 @@ function KalkulimiIMallit(props) {
                         onChange={(e) => {
                           setDataEFatures(e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
+                        onKeyDown={handleMenaxhoTastet}
                       />
                     </Form.Group>
                     <br />

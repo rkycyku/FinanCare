@@ -122,6 +122,7 @@ namespace FinanCareWebAPI.Controllers
         {
             var partneri = await _context.Partneri
                 .Where(p => p.IDPartneri == id)
+                .Include(x => x.Kartela)
                 .Select(x => new
                 {
                     x.IDPartneri,
@@ -133,7 +134,8 @@ namespace FinanCareWebAPI.Controllers
                     x.Adresa,
                     x.NrKontaktit,
                     x.LlojiPartnerit,
-                    x.ShkurtesaPartnerit
+                    x.ShkurtesaPartnerit,
+                    x.Kartela
                 })
                 .FirstOrDefaultAsync();
 

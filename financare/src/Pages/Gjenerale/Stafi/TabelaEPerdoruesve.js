@@ -51,7 +51,7 @@ function TabelaEPerdoruesve() {
             "Emri & Mbiemri": k.perdoruesi.emri + " " + k.perdoruesi.mbiemri,
             Email: k.perdoruesi.email,
             Username: k.perdoruesi.username,
-            Aksesi: k.rolet.join(", "),
+            Aksesi: k.rolet.filter((item) => item !== "User").join(", "),
             Kartela: k.perdoruesi?.kartelat?.kodiKartela ?? " - ",
           }))
         );

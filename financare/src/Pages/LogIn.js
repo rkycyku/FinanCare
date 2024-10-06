@@ -95,6 +95,20 @@ const LogIn = () => {
     }
   }
 
+  const ndrroField = (e, tjetra) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById(tjetra).focus();
+    }
+  };
+
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleLogIn(event);
+    }
+  };
+
   return (
     <>
       <Titulli titulli={"Login"} />
@@ -144,6 +158,9 @@ const LogIn = () => {
                 type="email"
                 size="lg"
                 onChange={(e) => vendosEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  ndrroField(e, "formControlPassword");
+                }}
               />
               <MDBInput
                 wrapperClass="mb-4 w-100"
@@ -152,6 +169,7 @@ const LogIn = () => {
                 type="password"
                 size="lg"
                 onChange={(e) => vendosPasswordin(e.target.value)}
+                onKeyDown={handleMenaxhoTastet}
               />
               <button
                 class="button btn btn-primary btn-lg "

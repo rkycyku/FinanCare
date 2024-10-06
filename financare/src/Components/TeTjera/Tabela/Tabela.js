@@ -333,6 +333,21 @@ function Tabela({
                 <h1 style={{ textAlign: "center" }}>{tableName}</h1>
               </th>
             </tr>
+            <tr>
+                  <th colSpan={filteredHeaders.length + 1}>
+                    <Row className="align-items-center">
+                      <Col xs="auto" className="pe-0 mx-1">
+                        {funksionButonShto && (
+                          <Button
+                            variant="success"
+                            onClick={() => funksionButonShto()}>
+                            <FontAwesomeIcon icon={faPlus} />
+                          </Button>
+                        )}
+                      </Col>
+                    </Row>
+                  </th>
+                </tr>
           </thead>
           <tbody>
             <tr>

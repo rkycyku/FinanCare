@@ -24,19 +24,19 @@ function ShtoPerdorues(props) {
   const [emri, setEmri] = useState(null);
   const [mbiemri, setMbiemri] = useState(null);
   const [dataFillimitKontrates, setDataFillimitKontrates] = useState(null);
-  const [dataMbarimitKontrates, setDataMbarimitKontrates] = useState(null);
-  const [nrLeternjoftimit, setNrLeternjoftimit] = useState(null);
-  const [pagaBruto, setPagaBruto] = useState(null);
-  const [adresa, setAdresa] = useState(null);
-  const [dataLindjes, setDataLindjes] = useState(null);
-  const [nrKontaktit, setNrKontaktit] = useState(null);
-  const [emailPrivat, setEmailPrivat] = useState(null);
-  const [profesioni, setProfesioni] = useState(null);
-  const [specializimi, setSpecializimi] = useState(null);
-  const [kualifikimi, setKualifikimi] = useState(null);
+  const [dataMbarimitKontrates, setDataMbarimitKontrates] =  useState(null);
+  const [nrLeternjoftimit, setNrLeternjoftimit] = useState("1122334455");
+  const [pagaBruto, setPagaBruto] = useState(99999.99);
+  const [adresa, setAdresa] = useState("P.A.");
+  const [dataLindjes, setDataLindjes] =  useState(null);
+  const [nrKontaktit, setNrKontaktit] = useState("+38344123456");
+  const [emailPrivat, setEmailPrivat] = useState("email@domain.com");
+  const [profesioni, setProfesioni] = useState("P.P.");
+  const [specializimi, setSpecializimi] = useState("P.S.");
+  const [kualifikimi, setKualifikimi] = useState("P.K.");
   const [bankaID, setBankaID] = useState(0);
-  const [nrLlogarisBankare, setNrLlogarisBankare] = useState(null);
-  const [eshtePuntorAktiv, setEshtePuntorAktiv] = useState(false);
+  const [nrLlogarisBankare, setNrLlogarisBankare] = useState("1290012345678900");
+  const [eshtePuntorAktiv, setEshtePuntorAktiv] = useState(true);
   const [roli, setRoli] = useState();
 
   const [key, setKey] = useState("kryesore");
@@ -268,6 +268,10 @@ function ShtoPerdorues(props) {
       }
     }
   }
+
+  useEffect(() => {
+    console.log(dataFillimitKontrates)
+  }, [dataFillimitKontrates]);
 
   return (
     <>

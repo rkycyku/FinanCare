@@ -187,8 +187,8 @@ function ShtoPartnerin(props) {
             {
               emriBiznesit: emriPartnerit,
               nui: NUI.toString(),
-              nrf: NF.toString(),
-              tvsh: NRTVSH.toString(),
+              nrf: NF?.toString() ?? "0",
+              tvsh: NRTVSH?.toString() ?? "0",
               email: email,
               adresa: adresa,
               nrKontaktit: nrKontaktit,
@@ -224,6 +224,22 @@ function ShtoPartnerin(props) {
     }
   }
 
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      key == "klientPrivat"
+        ? ShtoPartnerinBleres(event)
+        : ShtoPartnerinFurnitor(event);
+    }
+  };
+
+  const ndrroField = (e, tjetra) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById(tjetra).focus();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFunksione
@@ -255,7 +271,11 @@ function ShtoPartnerin(props) {
                       <Form.Control
                         type="text"
                         placeholder="Filan"
+                        id="emriKP"
                         onChange={(e) => setEmri(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "mbiemriKP");
+                        }}
                       />
                     </Col>
                     <Col>
@@ -263,9 +283,13 @@ function ShtoPartnerin(props) {
                         Mbiemri<span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="mbiemriKP"
                         type="text"
                         placeholder="Fisteku"
                         onChange={(e) => setMbiemri(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "adresaKP");
+                        }}
                       />
                     </Col>
                   </Row>
@@ -276,24 +300,36 @@ function ShtoPartnerin(props) {
                       <Form.Label>Adresa</Form.Label>
                       <Form.Control
                         type="text"
+                        id="adresaKP"
                         placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
                         onChange={(e) => setAdresa(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "nrKontaktitKP");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Nr. Kontaktit</Form.Label>
                       <Form.Control
+                        id="nrKontaktitKP"
                         type="text"
                         placeholder="+38344111222"
                         onChange={(e) => setNrKontaktit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "emailKP");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Email</Form.Label>
                       <Form.Control
+                        id="emailKP"
                         type="text"
                         placeholder="example@email.com"
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "rabatiKP");
+                        }}
                       />
                     </Col>
                     <Col>
@@ -302,6 +338,8 @@ function ShtoPartnerin(props) {
                         type="number"
                         placeholder="0"
                         onChange={(e) => setRabati(e.target.value)}
+                        onKeyDown={handleMenaxhoTastet}
+                        id="rabatiKP"
                       />
                     </Col>
                   </Row>
@@ -317,9 +355,13 @@ function ShtoPartnerin(props) {
                         Emri Biznesit<span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="emriKB"
                         type="text"
                         placeholder="FinanCare SH.P.K."
                         onChange={(e) => setEmriPartnerit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "shkurtesaPartneritKB");
+                        }}
                       />
                     </Col>
                     <Col>
@@ -328,9 +370,13 @@ function ShtoPartnerin(props) {
                         <span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="shkurtesaPartneritKB"
                         type="text"
                         placeholder="FC"
                         onChange={(e) => setShkurtesaEmrit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "NUIKB");
+                        }}
                       />
                     </Col>
                   </Row>
@@ -343,25 +389,37 @@ function ShtoPartnerin(props) {
                         <span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="NUIKB"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNUI(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "NFKB");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
                       <Form.Control
+                        id="NFKB"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNF(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "TVSHKB");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Numri TVSH: NRTVSH</Form.Label>
                       <Form.Control
+                        id="TVSHKB"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNRTVSH(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "adresaKB");
+                        }}
                       />
                     </Col>
                   </Row>
@@ -373,33 +431,47 @@ function ShtoPartnerin(props) {
                         Adresa<span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="adresaKB"
                         type="text"
                         placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
                         onChange={(e) => setAdresa(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "nrKontaktitKB");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Nr. Kontaktit</Form.Label>
                       <Form.Control
+                        id="nrKontaktitKB"
                         type="text"
                         placeholder="+38344111222"
                         onChange={(e) => setNrKontaktit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "emailKB");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Email</Form.Label>
                       <Form.Control
+                        id="emailKB"
                         type="text"
                         placeholder="example@email.com"
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "rabatiKB");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Rabati</Form.Label>
                       <Form.Control
+                        id="rabatiKB"
                         type="number"
                         placeholder="0"
                         onChange={(e) => setRabati(e.target.value)}
+                        onKeyDown={handleMenaxhoTastet}
                       />
                     </Col>
                   </Row>
@@ -415,9 +487,13 @@ function ShtoPartnerin(props) {
                         Emri Biznesit<span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="emriF"
                         type="text"
                         placeholder="FinanCare SH.P.K."
                         onChange={(e) => setEmriPartnerit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "shkurtesaPartneritF");
+                        }}
                       />
                     </Col>
                     <Col>
@@ -426,9 +502,13 @@ function ShtoPartnerin(props) {
                         <span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="shkurtesaPartneritF"
                         type="text"
                         placeholder="FC"
                         onChange={(e) => setShkurtesaEmrit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "NUIF");
+                        }}
                       />
                     </Col>
                   </Row>
@@ -441,25 +521,37 @@ function ShtoPartnerin(props) {
                         <span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="NUIF"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNUI(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "NFF");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Numri Fiskal: NF / NRF</Form.Label>
                       <Form.Control
+                        id="NFF"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNF(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "TVSHF");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Numri TVSH: NRTVSH</Form.Label>
                       <Form.Control
+                        id="TVSHF"
                         type="number"
                         placeholder="111222333"
                         onChange={(e) => setNRTVSH(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "adresaF");
+                        }}
                       />
                     </Col>
                   </Row>
@@ -471,25 +563,35 @@ function ShtoPartnerin(props) {
                         Adresa<span style={{ color: "red" }}>*</span>
                       </Form.Label>
                       <Form.Control
+                        id="adresaF"
                         type="text"
                         placeholder="Rr. B, Lagjja Kalabria, Nr. 56, 10000 Prishtina, Kosovo"
                         onChange={(e) => setAdresa(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "nrKontaktitF");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Nr. Kontaktit</Form.Label>
                       <Form.Control
+                        id="nrKontaktitF"
                         type="text"
                         placeholder="+38344111222"
                         onChange={(e) => setNrKontaktit(e.target.value)}
+                        onKeyDown={(e) => {
+                          ndrroField(e, "emailF");
+                        }}
                       />
                     </Col>
                     <Col>
                       <Form.Label>Email</Form.Label>
                       <Form.Control
+                        id="emailF"
                         type="text"
                         placeholder="example@email.com"
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={handleMenaxhoTastet}
                       />
                     </Col>
                   </Row>

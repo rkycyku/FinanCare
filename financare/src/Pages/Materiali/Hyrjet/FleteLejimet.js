@@ -269,12 +269,12 @@ function KalkulimiIMallit(props) {
   useEffect(() => {
     axios
       .get(
-        "https://localhost:7285/api/Partneri/shfaqPartneretFurntiore",
+        "https://localhost:7285/api/Partneri/shfaqPartneret",
         authentikimi
       )
       .then((response) => {
         const fetchedoptions = response.data
-          .filter((item) => item.idPartneri !== 2 && item.idPartneri !== 3)
+          .filter((item) => item.idPartneri !== 1 && item.idPartneri !== 2 && item.idPartneri !== 3)
           .map((item) => ({
             value: item.idPartneri,
             label: item.emriBiznesit,
@@ -290,6 +290,13 @@ function KalkulimiIMallit(props) {
     setOptionsSelected(partneri);
 
     document.getElementById("pershkrimShtese").focus();
+  };
+
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleRegjistroKalkulimin();
+    }
   };
 
   return (
@@ -398,9 +405,7 @@ function KalkulimiIMallit(props) {
                         onChange={(e) => {
                           setDataEFatures(e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
+                        onKeyDown={handleMenaxhoTastet}
                       />
                     </Form.Group>
                     <br />

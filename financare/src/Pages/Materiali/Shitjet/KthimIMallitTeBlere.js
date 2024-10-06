@@ -268,6 +268,12 @@ function KthimIMallitTeBlere(props) {
     setOptionsSelected(partneri);
   };
 
+  const handleMenaxhoTastetPagesa = (event) => {
+    if (event.key === "Enter") {
+      handleRegjistroKalkulimin();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFaqe
@@ -376,9 +382,7 @@ function KthimIMallitTeBlere(props) {
                         onChange={(e) => {
                           setDataEFatures(e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
+                        onKeyDown={handleMenaxhoTastetPagesa}
                       />
                     </Form.Group>
                     <br />

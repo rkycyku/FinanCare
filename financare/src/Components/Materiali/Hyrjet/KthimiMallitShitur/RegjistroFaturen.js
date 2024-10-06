@@ -335,7 +335,7 @@ function RegjistroFaturen(props) {
         authentikimi
       )
       .then((response) => {
-        const fetchedoptions = response.data.map((item) => ({
+        const fetchedoptions = response.data.filter((item) => item.qmimiProduktit > 0).map((item) => ({
           value: item.produktiID,
           label:
             item.emriProduktit +

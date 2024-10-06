@@ -269,6 +269,46 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("ResetoFjalekalimin")]
+        public async Task<IActionResult> ResetoFjalekalimin(string AspNetID)
+        {
+            var perdoruesiASPNet = await _userManager.FindByIdAsync(AspNetID);
+
+            var perdoruesi = await _context.Perdoruesi.Where(x => x.AspNetUserID == AspNetID).FirstOrDefaultAsync();
+
+
+            if (perdoruesi == null)
+            {
+                return BadRequest("Perdoreusi nuk egziston");
+            }
+
+
+            var emri = perdoruesi.Emri.ToLower();
+            var mbiemri = perdoruesi.Mbiemri.ToLower();
+
+            var PasswordiGjeneruar = $"{emri}{mbiemri}1@";
+
+            var tokeniPassword = await _userManager.GeneratePasswordResetTokenAsync(perdoruesiASPNet);
+
+            var passwodiINdryshuar = await _userManager.ResetPasswordAsync(perdoruesiASPNet, tokeniPassword, PasswordiGjeneruar);
+
+            if (!passwodiINdryshuar.Succeeded)
+            {
+                return BadRequest("Ndodhi nje gabim gjate resetimit te fjalekalimit");
+            }
+
+            var PerdoruesiObject = new
+            {
+                perdoruesiASPNet.Email,
+                perdoruesi.Username,
+                PasswordiGjeneruar
+            };
+
+            return Ok(PerdoruesiObject);
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("shtoRolin")]
         public async Task<IActionResult> ShtoRolin(string roli)
         {

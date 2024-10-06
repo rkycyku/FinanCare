@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Form, Col, Button, Modal } from "react-bootstrap";
+import { Form, Col, Button, Modal, Tabs, Tab } from "react-bootstrap";
 import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBTooltip } from "mdb-react-ui-kit";
 import KontrolloAksesinNeFunksione from "../../../TeTjera/KontrolliAksesit/KontrolloAksesinNeFunksione";
 
@@ -15,6 +15,9 @@ function EditoKompanin(props) {
   const [fushatEZbrazura, setFushatEZbrazura] = useState(false);
 
   const [llojiPartnerit, setLlojiPartnerit] = useState("");
+  const [rabati, setRabati] = useState(0);
+
+  const [key, setKey] = useState("teDhenat");
 
   const getToken = localStorage.getItem("token");
 
@@ -33,6 +36,7 @@ function EditoKompanin(props) {
         );
         setPartneri(partneri.data);
         setLlojiPartnerit(partneri.data.llojiPartnerit);
+        setRabati(partneri?.data?.kartela?.rabati ?? 0);
       } catch (err) {
         console.log(err);
       }
@@ -46,6 +50,9 @@ function EditoKompanin(props) {
   };
   const handleLlojiPartneritChange = (event) => {
     setLlojiPartnerit(event.target.value);
+  };
+  const handleRabatiChange = (event) => {
+    setRabati(event.target.value);
   };
 
   function isNullOrEmpty(value) {
@@ -110,6 +117,41 @@ function EditoKompanin(props) {
     }
   };
 
+  async function PerditesoKartelen() {
+    try {
+      await axios
+        .put(
+          `https://localhost:7285/api/Kartelat/perditesoKartelen?id=${partneri?.kartela?.idKartela}`,
+          {
+            kodiKartela: partneri?.kartela?.kodiKartela,
+            llojiKarteles: partneri?.kartela?.llojiKarteles,
+            rabati: rabati,
+            stafiID: partneri?.kartela?.stafiID,
+            partneriID: partneri?.kartela?.partneriID,
+          },
+          authentikimi
+        )
+        .then((x) => {
+          props.setTipiMesazhit("success");
+          props.setPershkrimiMesazhit("Partneri u Perditesua me sukses!");
+          props.perditesoTeDhenat();
+          props.largo();
+          props.shfaqmesazhin();
+        })
+        .catch((error) => {
+          console.error("Error saving partneri:", error);
+          props.setTipiMesazhit("danger");
+          props.setPershkrimiMesazhit(
+            "Ndodhi nje gabim gjate perditesimit te kompanis!"
+          );
+          props.perditesoTeDhenat();
+          props.shfaqmesazhin();
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <KontrolloAksesinNeFunksione
@@ -155,134 +197,172 @@ function EditoKompanin(props) {
           <Modal.Title>Edito Partnerin</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <MDBRow className="g-3">
-            <MDBCol md="6">
-              <MDBInput
-                value={partneri.emriBiznesit ?? ""}
-                name="emriBiznesit"
-                onChange={onChange}
-                id="validationCustom01"
-                label={
-                  <span>
-                    Emri i Biznesit / Klientit / Parnerit
-                    <span style={{ color: "red" }}>*</span>
-                  </span>
-                }
-              />
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBTooltip
-                placement="bottom"
-                title="Perderoni inicialet per klient te thejshte"
-                wrapperClass="mdb-tooltip mdb-tooltip-content">
-                <MDBInput
-                  value={partneri.shkurtesaPartnerit ?? ""}
-                  name="shkurtesaPartnerit"
-                  onChange={onChange}
-                  id="validationCustom03"
-                  label={
-                    <span>
-                      Shkurtesa e Partnerit
-                      <span style={{ color: "red" }}>*</span>
-                    </span>
-                  }
-                />
-              </MDBTooltip>
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBTooltip
-                placement="bottom"
-                title="Vendosni 0 per klient te thejshte"
-                wrapperClass="mdb-tooltip mdb-tooltip-content">
-                <MDBInput
-                  value={partneri.nui ?? ""}
-                  name="nui"
-                  onChange={onChange}
-                  id="validationCustom03"
-                  label={
-                    <span>
-                      Numri Unik Identifikues: NUI
-                      <span style={{ color: "red" }}>*</span>
-                    </span>
-                  }
-                />
-              </MDBTooltip>
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={partneri.nrf ?? ""}
-                name="nrf"
-                onChange={onChange}
-                id="validationCustom03"
-                label="Numri Fiskal: NF / NRF"
-              />
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={partneri.tvsh ?? ""}
-                name="tvsh"
-                onChange={onChange}
-                id="validationCustom03"
-                label="Numri TVSH: NRTVSH"
-              />
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={partneri.email ?? ""}
-                name="email"
-                onChange={onChange}
-                id="validationCustom02"
-                label="Email"
-              />
-            </MDBCol>
-            <MDBCol md="6">
-              <MDBInput
-                value={partneri.adresa ?? ""}
-                name="adresa"
-                onChange={onChange}
-                id="validationCustom03"
-                label={
-                  <span>
-                    Adresa<span style={{ color: "red" }}>*</span>
-                  </span>
-                }
-              />
-            </MDBCol>
-            <MDBCol md="4">
-              <MDBInput
-                value={partneri.nrKontaktit ?? ""}
-                name="nrKontaktit"
-                onChange={onChange}
-                id="validationCustom05"
-                label="Numri i Kontaktit"
-              />
-            </MDBCol>
-            <Form.Group as={Col} className="p-0" controlId="formGridState">
-              <Form.Select
-                value={llojiPartnerit}
-                onChange={handleLlojiPartneritChange}>
-                <option hidden disabled value={0}>
-                  Zgjedhni Llojin e Partnerit
-                </option>
-                <option value="B">Bleres</option>
-                <option value="F">Furnitore</option>
-                <option value="B/F">Bleres & Furnitore</option>
-              </Form.Select>
-              <Form.Label>
-                {
-                  <span>
-                    Lloji i Partnerit<span style={{ color: "red" }}>*</span>
-                  </span>
-                }
-              </Form.Label>
-            </Form.Group>
-          </MDBRow>
+          <Tabs
+            id="editoPartnerin"
+            activeKey={key}
+            onSelect={(k) => setKey(k)}
+            className="mb-3">
+            <Tab eventKey="teDhenat" title="Te Dhenat Partnerit">
+              <MDBRow className="g-3">
+                <MDBCol md="6">
+                  <MDBInput
+                    value={partneri.emriBiznesit ?? ""}
+                    name="emriBiznesit"
+                    onChange={onChange}
+                    id="validationCustom01"
+                    label={
+                      <span>
+                        Emri i Biznesit / Klientit / Parnerit
+                        <span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                  />
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBTooltip
+                    placement="bottom"
+                    title="Perderoni inicialet per klient te thejshte"
+                    wrapperClass="mdb-tooltip mdb-tooltip-content">
+                    <MDBInput
+                      value={partneri.shkurtesaPartnerit ?? ""}
+                      name="shkurtesaPartnerit"
+                      onChange={onChange}
+                      id="validationCustom03"
+                      label={
+                        <span>
+                          Shkurtesa e Partnerit
+                          <span style={{ color: "red" }}>*</span>
+                        </span>
+                      }
+                    />
+                  </MDBTooltip>
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBTooltip
+                    placement="bottom"
+                    title="Vendosni 0 per klient te thejshte"
+                    wrapperClass="mdb-tooltip mdb-tooltip-content">
+                    <MDBInput
+                      value={partneri.nui ?? ""}
+                      name="nui"
+                      onChange={onChange}
+                      id="validationCustom03"
+                      label={
+                        <span>
+                          Numri Unik Identifikues: NUI
+                          <span style={{ color: "red" }}>*</span>
+                        </span>
+                      }
+                    />
+                  </MDBTooltip>
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBInput
+                    value={partneri.nrf ?? ""}
+                    name="nrf"
+                    onChange={onChange}
+                    id="validationCustom03"
+                    label="Numri Fiskal: NF / NRF"
+                  />
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBInput
+                    value={partneri.tvsh ?? ""}
+                    name="tvsh"
+                    onChange={onChange}
+                    id="validationCustom03"
+                    label="Numri TVSH: NRTVSH"
+                  />
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBInput
+                    value={partneri.email ?? ""}
+                    name="email"
+                    onChange={onChange}
+                    id="validationCustom02"
+                    label="Email"
+                  />
+                </MDBCol>
+                <MDBCol md="6">
+                  <MDBInput
+                    value={partneri.adresa ?? ""}
+                    name="adresa"
+                    onChange={onChange}
+                    id="validationCustom03"
+                    label={
+                      <span>
+                        Adresa<span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                  />
+                </MDBCol>
+                <MDBCol md="4">
+                  <MDBInput
+                    value={partneri.nrKontaktit ?? ""}
+                    name="nrKontaktit"
+                    onChange={onChange}
+                    id="validationCustom05"
+                    label="Numri i Kontaktit"
+                  />
+                </MDBCol>
+                <Form.Group as={Col} className="p-0" controlId="formGridState">
+                  <Form.Select
+                    value={llojiPartnerit}
+                    onChange={handleLlojiPartneritChange}>
+                    <option hidden disabled value={0}>
+                      Zgjedhni Llojin e Partnerit
+                    </option>
+                    <option value="B">Bleres</option>
+                    <option value="F">Furnitore</option>
+                    <option value="B/F">Bleres & Furnitore</option>
+                  </Form.Select>
+                  <Form.Label>
+                    {
+                      <span>
+                        Lloji i Partnerit<span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                  </Form.Label>
+                </Form.Group>
+              </MDBRow>
+            </Tab>
+            <Tab eventKey="kartelaRabati" title="Kartela - Rabati">
+              <MDBRow>
+                <MDBCol md="6">
+                  <MDBInput
+                    value={partneri?.kartela?.kodiKartela ?? ""}
+                    name="adresa"
+                    id="validationCustom03"
+                    disabled
+                    label={
+                      <span>
+                        Kartela<span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                  />
+                </MDBCol>
+                <MDBCol md="6">
+                  <MDBInput
+                    value={rabati}
+                    name="rabati"
+                    onChange={handleRabatiChange}
+                    id="validationCustom05"
+                    label="Rabati %"
+                  />
+                </MDBCol>
+              </MDBRow>
+            </Tab>
+          </Tabs>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => props.largo()}>
             Anulo <FontAwesomeIcon icon={faXmark} />
           </Button>
-          <Button className="Butoni" onClick={handleKontrolli}>
+          <Button
+            className="Butoni"
+            onClick={(e) =>
+              key == "teDhenat" ? handleKontrolli() : PerditesoKartelen()
+            }>
             Edito Partnerin <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </Modal.Footer>

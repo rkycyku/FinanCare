@@ -296,6 +296,13 @@ function KthimIMallitTeBlere(props) {
     document.getElementById("pershkrimShtese").focus();
   };
 
+  const handleMenaxhoTastet = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleRegjistroKalkulimin();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFaqe
@@ -399,7 +406,7 @@ function KthimIMallitTeBlere(props) {
                             setPershkrimShtese(e.target.value);
                           }}
                           onKeyDown={(e) => {
-                            ndrroField(e, "dataEFatures");
+                            ndrroField(e, "llojiIPageses");
                           }}
                         />
                       </Form.Group>
@@ -414,9 +421,7 @@ function KthimIMallitTeBlere(props) {
                         onChange={(e) => {
                           setLlojiIPageses(e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "statusiIPageses");
-                        }}>
+                        onKeyDown={handleMenaxhoTastet}>
                         <option defaultValue value={0} key={0} disabled>
                           Zgjedhni Llojin e Pageses
                         </option>

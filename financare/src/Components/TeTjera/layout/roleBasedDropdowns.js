@@ -59,7 +59,7 @@ export const roleBasedDropdowns = [
         ],
       },
       {
-        roles: ["Menaxher", "Kalkulant", "Komercialist", "Faturist"],
+        roles: ["Menaxher", "Kalkulant", "Komercialist", "Faturist", "Arkatar"],
         label: "Shitjet",
         subItems: [
           {
@@ -98,7 +98,7 @@ export const roleBasedDropdowns = [
             shfaqNeDashboard: true,
           },
           {
-            roles: ["Menaxher", "Arkatar"],
+            roles: ["Arkatar", "Menaxher"],
             path: "/POS",
             label: "POS",
             shfaqNeDashboard: true,

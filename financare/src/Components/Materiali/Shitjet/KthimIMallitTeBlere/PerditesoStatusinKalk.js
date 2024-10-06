@@ -81,6 +81,7 @@ function PerditesoStatusinKalk(props) {
           (item) => item.llojiKalkulimit === "KMB"
         );
         setKalkulimetEFiltruara(kthimet);
+        console.log(kthimet)
       } catch (err) {
         console.log(err);
       }
@@ -362,7 +363,7 @@ function PerditesoStatusinKalk(props) {
                     <td>{k.idRegjistrimit}</td>
                     <td>{k.nrFatures}</td>
                     <td>{k.emriBiznesit}</td>
-                    <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                    <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                     <td>{k.tvsh.toFixed(2)} €</td>
                     <td>
                       {new Date(k.dataRegjistrimit).toLocaleDateString(
@@ -416,7 +417,7 @@ function PerditesoStatusinKalk(props) {
                     <td>{k.idRegjistrimit}</td>
                     <td>{k.nrFatures}</td>
                     <td>{k.emriBiznesit}</td>
-                    <td>{k.totaliPaTvsh.toFixed(2)} €</td>
+                    <td>{k.totaliPaTVSH.toFixed(2)} €</td>
                     <td>{k.tvsh.toFixed(2)} €</td>
                     <td>
                       {new Date(k.dataRegjistrimit).toLocaleDateString(

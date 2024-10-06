@@ -98,8 +98,6 @@ function KartelaFinanciare(props) {
           authentikimi
         );
 
-        console.log(response.data)
-
         const kalkulimet = response.data.kalkulimet || [];
         let saldo = 0;
 
@@ -273,6 +271,12 @@ function KartelaFinanciare(props) {
                       kartelaEProduktit.partneri?.llojiPartnerit) ??
                       ""}
                   </p>
+                  <p>
+                    <strong>Kodi Karteles:</strong>{" "}
+                    {(kartelaEProduktit &&
+                      kartelaEProduktit.partneri?.kartela?.kodiKartela) ??
+                      "-"}
+                  </p>
                 </Col>
                 <Col>
                   <h3>Te dhenat Ndihmese</h3>
@@ -303,6 +307,12 @@ function KartelaFinanciare(props) {
                     {(kartelaEProduktit &&
                       kartelaEProduktit.partneri?.nrKontaktit) ??
                       0}
+                  </p>
+                  <p>
+                    <strong>Rabati %:</strong>{" "}
+                    {parseFloat(kartelaEProduktit &&
+                      kartelaEProduktit.partneri?.kartela?.rabati).toFixed(2) ??
+                      "-"}
                   </p>
                 </Col>
                 <Col>
