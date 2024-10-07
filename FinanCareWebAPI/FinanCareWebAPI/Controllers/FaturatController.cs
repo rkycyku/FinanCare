@@ -89,7 +89,7 @@ namespace WebAPI.Controllers
             return Ok(regjistrimet);
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         [Route("shfaqRegjistrimetNgaID")]
         public async Task<IActionResult> GetRegjistrimin(int id)

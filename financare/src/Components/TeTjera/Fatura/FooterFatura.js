@@ -165,7 +165,7 @@ function FooterFatura(props) {
           <span>(Emri, Mbiemri, Nenshkrimi & Vula)</span>
           <span>(Personi Përgjegjës)</span>
           <br />
-          <strong>© FinanCare - POS, eOrder & More by Rilind Kycyku</strong>
+          <strong>© FinanCare - POS, eOrder & More by Rilind Kyçyku</strong>
         </div>
         <div className="nenshkrimi">
           <span>

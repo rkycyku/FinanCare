@@ -255,6 +255,13 @@ function KalkulimiIMallit(props) {
     }
   }, [llojiIPageses, statusiIPageses]);
 
+  
+  const handleMenaxhoTastetPagesa = (event) => {
+    if (event.key === "Enter") {
+      handleRegjistroKalkulimin();
+    }
+  };
+
   return (
     <>
       <KontrolloAksesinNeFaqe roletELejuara={["Menaxher", "Kalkulant", "Arkatar"]} />
@@ -347,9 +354,7 @@ function KalkulimiIMallit(props) {
                         onChange={(e) => {
                           setDataEFatures(e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                          ndrroField(e, "llojiIPageses");
-                        }}
+                        onKeyDown={handleMenaxhoTastetPagesa}
                       />
                     </Form.Group>
                     <br />
