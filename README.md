@@ -51,6 +51,8 @@ Pasi qe te behet konfigurimi ju mund te kyqeni me keto te dhena:
 | menaxher.menaxher@financare.com         | menaxhermenaxher1@         | Menaxher              |
 | komercialist.komercialist@financare.com | komercialistkomercialist1@ | Komercialist          |
 | arkatar.arkatar@financare.com           | arkatararkatar1@           | Arkatar               |
+| burime.njerzore@financare.com           | burimenjerzore1@           | Burime Njerzore       |
+| puntor.thjeshte@financare.com           | puntorthjeshte1@           | Puntor i Thjeshte     |
 
 ## Informata te tjera
 
