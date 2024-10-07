@@ -23,7 +23,6 @@ Ky projekt eshte i punuar ne
 - **Barcode** - Secila fature ka te vendosur Barcode i cili permban numrin e fatures.
 - **Statistikat** - Kjo eshte nje faqe e dedikuar vetem per statistikat e Dyqanit e cila ka qasje vetem Roli i Admin, Ne kete faqe gjenden statistika te ndryshme per shtije, produkte dhe klient.
 - **Zbritjet e Produktit** - Zbritjet mundesohen per te gjitha produktet dhe mund te vendosen sipas datave te ndryshme.
-- **Kodi i Zbritjev** - Kodi i Zbritjeve mundeson qe te krijohet kod i veqant i cili ka ne brendesi te saj qmimin e zbritjes, ky kod mundesohet per zbritje ne te gjithe shporten ose vetem ne produkt te caktuar.
 - **Te dhenat e Biznesit** - Ketu mund te vendosen Te dhenat e Biznesit si Emri Biznesit, Numri Unik, TVSH etj., Logo si dhe Infomatat bankare te cilat shfaqen tek pjesa e fatures.
 - **Atributi isDeleted** - Me kete atribut mundesohet qe gjate largimit se produkteve, kategorive, kompanive etj. nga sistemi ato ne te vertet nuk fshihen por si te tilla mbeten ne databaze por qe nuk shfaqen tek klienti, kjo eshte bere qe te mos kete probleme pas largimit te mos kete probleme ne sistem dhe te mos ndryshohen faturat e statistikat.
 - **Menaxhimi i Borxheve - POS** - Qdo klient qe posedon bonus kartele ne sistem ka mundesi qe gjate pageses te marr borxh gje qe sistemi ben kalkulimin automatik te tij.
